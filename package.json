@@ -1,0 +1,37 @@
+{
+  "name": "anime_card_board",
+  "version": "1.0.0",
+  "description": "Anime Card Board Game",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/velioo/anime_card_board.git"
+  },
+  "keywords": [
+    "anime",
+    "card",
+    "board",
+    "game",
+    "web",
+    "multiplayer",
+    "browser"
+  ],
+  "author": "Velioo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/velioo/anime_card_board/issues"
+  },
+  "homepage": "https://github.com/velioo/anime_card_board#readme",
+  "dependencies": {
+    "koa": "^2.6.2",
+    "koa-body": "^4.0.6",
+    "koa-router": "^7.4.0",
+    "koa-session": "^5.10.1",
+    "koa-static-cache": "^5.1.2",
+    "koa-validate": "^1.0.7",
+    "winston": "^3.1.0"
+  }
+}

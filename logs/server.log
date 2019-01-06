@@ -1,0 +1,81 @@
+2019-1-6 20:57:12 info: Server started on port: 8882
+2019-1-6 20:57:33 info: Server started on port: 8882
+2019-1-6 21:09:57 info: Server started on port: 8882
+2019-1-6 21:25:41 info: Server started on port: 8882
+2019-1-6 21:26:20 info: Server started on port: 8882
+2019-1-6 21:26:24 error: Error while executing code: Error: .keys required for signed cookies
+    at Cookies.get (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\cookies\index.js:72:25)
+    at ContextSession.initFromCookie (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-session\lib\context.js:111:32)
+    at ContextSession.get (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-session\lib\context.js:37:27)
+    at Object.get (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-session\index.js:136:38)
+    at app.use (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:35:7)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at session (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-session\index.js:41:13)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-static-cache\index.js:62:42
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+2019-1-6 21:26:24 error: Error while executing code: Error: .keys required for signed cookies
+    at Cookies.get (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\cookies\index.js:72:25)
+    at ContextSession.initFromCookie (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-session\lib\context.js:111:32)
+    at ContextSession.get (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-session\lib\context.js:37:27)
+    at Object.get (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-session\index.js:136:38)
+    at app.use (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:35:7)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at session (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-session\index.js:41:13)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-static-cache\index.js:62:42
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+2019-1-6 21:26:31 error: Error while executing code: Error: .keys required for signed cookies
+    at Cookies.get (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\cookies\index.js:72:25)
+    at ContextSession.initFromCookie (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-session\lib\context.js:111:32)
+    at ContextSession.get (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-session\lib\context.js:37:27)
+    at Object.get (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-session\index.js:136:38)
+    at app.use (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:35:7)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at session (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-session\index.js:41:13)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-static-cache\index.js:62:42
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+2019-1-6 21:26:31 error: Error while executing code: Error: .keys required for signed cookies
+    at Cookies.get (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\cookies\index.js:72:25)
+    at ContextSession.initFromCookie (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-session\lib\context.js:111:32)
+    at ContextSession.get (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-session\lib\context.js:37:27)
+    at Object.get (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-session\index.js:136:38)
+    at app.use (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:35:7)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at session (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-session\index.js:41:13)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-static-cache\index.js:62:42
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+2019-1-6 21:26:47 error: Error while executing code: Error: .keys required for signed cookies
+    at Cookies.get (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\cookies\index.js:72:25)
+    at ContextSession.initFromCookie (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-session\lib\context.js:111:32)
+    at ContextSession.get (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-session\lib\context.js:37:27)
+    at Object.get (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-session\index.js:136:38)
+    at app.use (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:35:7)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at session (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-session\index.js:41:13)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-static-cache\index.js:62:42
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+2019-1-6 21:26:47 error: Error while executing code: Error: .keys required for signed cookies
+    at Cookies.get (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\cookies\index.js:72:25)
+    at ContextSession.initFromCookie (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-session\lib\context.js:111:32)
+    at ContextSession.get (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-session\lib\context.js:37:27)
+    at Object.get (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-session\index.js:136:38)
+    at app.use (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:35:7)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at session (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-session\index.js:41:13)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-static-cache\index.js:62:42
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+2019-1-6 21:27:46 info: Server started on port: 8882
+2019-1-6 21:27:50 info: Server started on port: 8882
+2019-1-6 21:27:54 info: Server started on port: 8882
+2019-1-6 21:28:28 info: Server started on port: 8882
+2019-1-6 21:28:31 info: Server started on port: 8882
+2019-1-6 21:28:35 info: Server started on port: 8882
+2019-1-6 21:29:09 info: Server started on port: 8882
+2019-1-6 21:29:11 info: Server started on port: 8882
+2019-1-6 21:29:34 info: Server started on port: 8882
+2019-1-6 21:29:40 info: Server started on port: 8882
