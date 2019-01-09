@@ -26,12 +26,14 @@
   },
   "homepage": "https://github.com/velioo/anime_card_board#readme",
   "dependencies": {
+    "handlebars": "^4.0.12",
     "koa": "^2.6.2",
     "koa-body": "^4.0.6",
     "koa-router": "^7.4.0",
     "koa-session": "^5.10.1",
     "koa-static-cache": "^5.1.2",
     "koa-validate": "^1.0.7",
+    "koa-views": "^6.1.5",
     "winston": "^3.1.0"
   }
 }

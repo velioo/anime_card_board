@@ -8,7 +8,8 @@ const KoaBody = require('koa-body');
 const router = new Router();
 
 router.get('/hello', async (ctx) => {
-    ctx.body = 'Hello World!';
+  ctx.state = { user: { name: "World" } };
+  await ctx.render('./views/test.hbs');
 });
 
 // router.get('/not_found', notFound);

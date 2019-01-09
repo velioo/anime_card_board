@@ -10,16 +10,18 @@ const {
 
 const logger = require('./helpers/logger');
 const globalErrHandler = require('./middlewares/errorHandler');
+const hbaHelpers = require('./helpers/handlebars/helpers');
+const hbaPartials = require('./helpers/handlebars/partials');
 const { routes, allowedMethods } = require('./routes');
 const dirs = {};
+const path = require('path');
 
 const Koa = require('koa');
 const app = new Koa();
-const Router = require('koa-router');
-const router = new Router();
 const Session = require('koa-session');
 const StaticCache = require('koa-static-cache');
 const Validate = require('koa-validate');
+const Views = require('koa-views');
 
 app.use(globalErrHandler);
 
@@ -30,7 +32,7 @@ app.use(new StaticCache('./uploads', {
   maxAge: MAX_UPLOADS_AGE
 }, dirs));
 
-app.keys = ['Shh, its a secret!!!'];
+app.keys = ['dca23e28c111808d1f9e6230849ee19e '];
 
 app.use(new Session(app));
 app.use(async (ctx, next) => {
@@ -40,6 +42,16 @@ app.use(async (ctx, next) => {
 });
 
 Validate(app);
+
+app.use(new Views(path.resolve(__dirname, 'render'), {
+  map: {
+    hbs: 'handlebars'
+  },
+  options: {
+    helpers: hbaHelpers,
+    partials: hbaPartials,
+  }
+}));
 
 app.use(routes);
 app.use(allowedMethods);
