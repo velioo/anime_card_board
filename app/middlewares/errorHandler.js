@@ -33,6 +33,6 @@ module.exports = async (ctx, next) => {
       logger.error(`Error while executing code: ${err.stack}`);
     }
 
-    ctx.body = ctx.body || 'Problem while processing your request';
+    await ctx.render('./views/500.hbs');
   }
 };

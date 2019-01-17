@@ -1,0 +1,22 @@
+body {
+	background-image: url("../imgs/home_background.jpg");
+}
+
+#acb-main-wrapper {
+	min-height: 100%;
+	margin: auto;
+}
+
+.center-screen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  min-height: 100vh;
+}
+
+.server-error {
+	margin: 30px;
+	color: red;
+}

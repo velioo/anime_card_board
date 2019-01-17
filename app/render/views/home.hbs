@@ -1,0 +1,25 @@
+{{> header }}
+
+<script src="/socket.io-client/dist/socket.io.js"></script>
+
+<script type="text/javascript">
+	const socket = io();
+
+	socket.on('chat', function(msg){
+        $('#test_chat').val(msg);
+    });
+
+	socket.emit('chat', 'Hello There !');
+</script>
+
+<div class="center-screen">
+	<div class="btn-group-vertical">
+	    <button type="button" class="btn btn-primary">Apple</button>
+	    <button type="button" class="btn btn-primary">Samsung</button>
+	    <button type="button" class="btn btn-primary">Sony</button>
+ 	</div>
+</div>
+
+<input type="text" value="" id="test_chat">
+
+{{> footer }}

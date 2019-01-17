@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Home</title>
+    <meta charset="utf-8">
+    <link rel="icon" href="http://downloadicons.net/sites/default/files/computer-icon-65917.png">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ajv/5.3.0/ajv.min.js"></script>
+    <script src="/log4javascript/log4javascript.js"></script>
+    <!-- <script src="/js/schemas.js"></script> -->
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+
+<script type="text/javascript">
+    window.onerror = function (msg, url, lineNo, columnNo, error) {
+      infoLog = '';
+      window.alert(`There was a problem while processing your request.`);
+      if(error !== null) {
+        if(error.stack != '') {
+          logger.error(error.name + ': ', error.message + '\n' + error.stack);
+        } else {
+          logger.error(error.name + ': ', error.message + '\n' + url + ':' + lineNo + ':' + columnNo + '\n');
+        }
+      } else if(ajv.errors) {
+        logger.error("Request didn\'t return a valid JSON object\n" + JSON.stringify(ajv.errors, null, 2));
+      } else {
+        logger.error(msg + ': ' + url + ': ' + lineNo + ': ' + columnNo + '\n');
+      }
+      return true;
+    };
+
+    const logger = log4javascript.getLogger();
+    const ajaxAppender = new log4javascript.AjaxAppender('/frontend_logger');
+
+    ajaxAppender.setSendAllOnUnload();
+    ajaxAppender.setTimerInterval({{FRONTEND_LOGGER_INTERVAL}});
+    ajaxAppender.setTimed(true);
+
+    logger.addAppender(ajaxAppender);
+
+    function getLogger() {
+      return logger;
+    }
+
+    var infoLog = '';
+
+    var ajv = new Ajv({ allErrors: true });
+
+    function assert(condition, message) {
+        if (!condition) {
+          message = message || 'Assertion failed';
+          if (typeof Error !== 'undefined') {
+            throw new Error(message);
+          }
+          throw message;
+        }
+    }
+</script>
+
+<div id="acb-main-wrapper">

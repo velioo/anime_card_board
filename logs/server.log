@@ -669,3 +669,389 @@
 2019-1-9 21:08:35 error: Error while executing code: Error: ENOENT: no such file or directory, open 'E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\render\partials\hell.hbs'
 2019-1-9 21:08:38 info: Server started on port: 8882
 2019-1-9 21:08:49 info: Server started on port: 8882
+2019-1-16 23:26:33 info: Server started on port: 8882
+2019-1-17 00:03:29 info: Server started on port: 8882
+2019-1-17 00:03:46 error: Error while executing code: Error: ENOENT: no such file or directory, stat 'E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\render\views\main.hbs.html'
+2019-1-17 00:04:49 info: Server started on port: 8882
+2019-1-17 00:04:56 info: Server started on port: 8882
+2019-1-17 00:06:10 info: Server started on port: 8882
+2019-1-17 00:06:12 error: Error while executing code: Error: ENOENT: no such file or directory, stat 'E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\render\views\test.hbs.html'
+2019-1-17 00:06:13 error: Error while executing code: Error: ENOENT: no such file or directory, stat 'E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\render\views\test.hbs.html'
+2019-1-17 00:06:13 error: Error while executing code: Error: ENOENT: no such file or directory, stat 'E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\render\views\test.hbs.html'
+2019-1-17 00:06:26 info: Server started on port: 8882
+2019-1-17 00:06:27 info: Server started on port: 8882
+2019-1-17 00:06:40 info: Server started on port: 8882
+2019-1-17 00:06:46 info: Server started on port: 8882
+2019-1-17 00:06:57 info: Server started on port: 8882
+2019-1-17 00:06:58 info: Server started on port: 8882
+2019-1-17 00:07:00 info: Server started on port: 8882
+2019-1-17 00:08:21 info: Server started on port: 8882
+2019-1-17 00:08:21 info: Server started on port: 8882
+2019-1-17 00:08:22 info: Server started on port: 8882
+2019-1-17 00:08:23 info: Server started on port: 8882
+2019-1-17 00:08:29 info: Server started on port: 8882
+2019-1-17 00:08:32 info: Server started on port: 8882
+2019-1-17 00:08:39 info: Server started on port: 8882
+2019-1-17 00:08:53 info: Server started on port: 8882
+2019-1-17 00:08:54 error: Error while executing code: Error: ENOENT: no such file or directory, stat 'E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\render\views\main.hbs.html'
+2019-1-17 00:10:15 info: Server started on port: 8882
+2019-1-17 00:10:16 error: Error while executing code: Error: ENOENT: no such file or directory, stat 'E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\render\views\main.hbs.html'
+2019-1-17 00:10:30 info: Server started on port: 8882
+2019-1-17 00:10:31 error: Error while executing code: Error: ENOENT: no such file or directory, stat 'E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\render\views\main.hbs.html'
+2019-1-17 00:10:45 info: Server started on port: 8882
+2019-1-17 00:10:50 info: Server started on port: 8882
+2019-1-17 00:10:50 error: Error while executing code: Error: ENOENT: no such file or directory, stat 'E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\render\views\main.html'
+2019-1-17 00:11:23 info: Server started on port: 8882
+2019-1-17 00:11:24 info: Server started on port: 8882
+2019-1-17 00:11:27 info: Server started on port: 8882
+2019-1-17 00:11:28 info: Server started on port: 8882
+2019-1-17 00:11:29 info: Server started on port: 8882
+2019-1-17 00:11:29 error: Error while executing code: Error: ENOENT: no such file or directory, stat 'E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\render\views\main.html'
+2019-1-17 00:12:31 info: Server started on port: 8882
+2019-1-17 00:12:33 info: Server started on port: 8882
+2019-1-17 00:12:52 info: Server started on port: 8882
+2019-1-17 00:13:01 info: Server started on port: 8882
+2019-1-17 00:13:05 info: Server started on port: 8882
+2019-1-17 00:13:06 error: Error while executing code: Error: ENOENT: no such file or directory, stat 'E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\render\views\home.html'
+2019-1-17 00:13:26 info: Server started on port: 8882
+2019-1-17 00:13:34 info: Server started on port: 8882
+2019-1-17 00:13:35 info: Server started on port: 8882
+2019-1-17 00:14:36 info: Server started on port: 8882
+2019-1-17 00:14:41 info: Server started on port: 8882
+2019-1-17 00:14:55 info: Server started on port: 8882
+2019-1-17 00:17:51 info: Server started on port: 8882
+2019-1-17 00:17:52 info: Server started on port: 8882
+2019-1-17 00:18:21 info: Server started on port: 8882
+2019-1-17 00:18:42 info: Server started on port: 8882
+2019-1-17 00:18:43 error: Error while executing code: Error: The partial helo could not be found
+    at Object.invokePartial (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:281:11)
+    at Object.invokePartialWrapper [as invokePartial] (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:68:39)
+    at Object.eval [as main] (eval at createFunctionContext (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\javascript-compiler.js:254:23), <anonymous>:8:28)
+    at main (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:175:32)
+    at ret (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:178:12)
+    at ret (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\compiler.js:526:21)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:876:16
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:161:5
+    at Promise._execute (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\bluebird\js\release\debuggability.js:313:9)
+    at Promise._resolveFromExecutor (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\bluebird\js\release\promise.js:483:18)
+    at new Promise (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\bluebird\js\release\promise.js:79:10)
+    at promisify (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:154:10)
+    at Function.exports.handlebars.render (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:866:10)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:181:27
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:101:5
+    at FSReqWrap.readFileAfterClose [as oncomplete] (internal/fs/read_file_context.js:53:3)
+2019-1-17 00:18:43 error: Error while executing code: Error: The partial helo could not be found
+    at Object.invokePartial (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:281:11)
+    at Object.invokePartialWrapper [as invokePartial] (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:68:39)
+    at Object.eval [as main] (eval at createFunctionContext (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\javascript-compiler.js:254:23), <anonymous>:8:28)
+    at main (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:175:32)
+    at ret (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:178:12)
+    at ret (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\compiler.js:526:21)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:876:16
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:161:5
+    at Promise._execute (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\bluebird\js\release\debuggability.js:313:9)
+    at Promise._resolveFromExecutor (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\bluebird\js\release\promise.js:483:18)
+    at new Promise (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\bluebird\js\release\promise.js:79:10)
+    at promisify (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:154:10)
+    at Function.exports.handlebars.render (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:866:10)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:181:27
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:101:5
+    at FSReqWrap.readFileAfterClose [as oncomplete] (internal/fs/read_file_context.js:53:3)
+2019-1-17 00:19:13 error: Error while executing code: TypeError: Cannot read property 'toUpperCase' of undefined
+    at Object.upper (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\helpers\handlebars\helpers.js:2:23)
+    at Object.eval [as main] (eval at createFunctionContext (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\javascript-compiler.js:254:23), <anonymous>:4:103)
+    at main (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:175:32)
+    at Object.ret (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:178:12)
+    at Object.ret [as hello] (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\compiler.js:526:21)
+    at Object.invokePartialWrapper [as invokePartial] (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:72:46)
+    at Object.eval [as main] (eval at createFunctionContext (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\javascript-compiler.js:254:23), <anonymous>:8:28)
+    at main (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:175:32)
+    at ret (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:178:12)
+    at ret (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\compiler.js:526:21)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:876:16
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:161:5
+    at Promise._execute (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\bluebird\js\release\debuggability.js:313:9)
+    at Promise._resolveFromExecutor (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\bluebird\js\release\promise.js:483:18)
+    at new Promise (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\bluebird\js\release\promise.js:79:10)
+    at promisify (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:154:10)
+2019-1-17 00:19:13 error: Error while executing code: TypeError: Cannot read property 'toUpperCase' of undefined
+    at Object.upper (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\helpers\handlebars\helpers.js:2:23)
+    at Object.eval [as main] (eval at createFunctionContext (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\javascript-compiler.js:254:23), <anonymous>:4:103)
+    at main (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:175:32)
+    at Object.ret (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:178:12)
+    at Object.ret [as hello] (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\compiler.js:526:21)
+    at Object.invokePartialWrapper [as invokePartial] (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:72:46)
+    at Object.eval [as main] (eval at createFunctionContext (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\javascript-compiler.js:254:23), <anonymous>:8:28)
+    at main (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:175:32)
+    at ret (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:178:12)
+    at ret (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\compiler.js:526:21)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:876:16
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:161:5
+    at Promise._execute (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\bluebird\js\release\debuggability.js:313:9)
+    at Promise._resolveFromExecutor (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\bluebird\js\release\promise.js:483:18)
+    at new Promise (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\bluebird\js\release\promise.js:79:10)
+    at promisify (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:154:10)
+2019-1-17 00:19:16 info: Server started on port: 8882
+2019-1-17 00:19:17 error: Error while executing code: TypeError: Cannot read property 'toUpperCase' of undefined
+    at Object.upper (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\helpers\handlebars\helpers.js:2:23)
+    at Object.eval [as main] (eval at createFunctionContext (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\javascript-compiler.js:254:23), <anonymous>:4:103)
+    at main (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:175:32)
+    at Object.ret (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:178:12)
+    at Object.ret [as hello] (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\compiler.js:526:21)
+    at Object.invokePartialWrapper [as invokePartial] (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:72:46)
+    at Object.eval [as main] (eval at createFunctionContext (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\javascript-compiler.js:254:23), <anonymous>:8:28)
+    at main (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:175:32)
+    at ret (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:178:12)
+    at ret (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\compiler.js:526:21)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:876:16
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:161:5
+    at Promise._execute (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\bluebird\js\release\debuggability.js:313:9)
+    at Promise._resolveFromExecutor (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\bluebird\js\release\promise.js:483:18)
+    at new Promise (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\bluebird\js\release\promise.js:79:10)
+    at promisify (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:154:10)
+2019-1-17 00:19:17 error: Error while executing code: TypeError: Cannot read property 'toUpperCase' of undefined
+    at Object.upper (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\helpers\handlebars\helpers.js:2:23)
+    at Object.eval [as main] (eval at createFunctionContext (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\javascript-compiler.js:254:23), <anonymous>:4:103)
+    at main (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:175:32)
+    at Object.ret (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:178:12)
+    at Object.ret [as hello] (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\compiler.js:526:21)
+    at Object.invokePartialWrapper [as invokePartial] (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:72:46)
+    at Object.eval [as main] (eval at createFunctionContext (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\javascript-compiler.js:254:23), <anonymous>:8:28)
+    at main (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:175:32)
+    at ret (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:178:12)
+    at ret (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\compiler.js:526:21)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:876:16
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:161:5
+    at Promise._execute (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\bluebird\js\release\debuggability.js:313:9)
+    at Promise._resolveFromExecutor (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\bluebird\js\release\promise.js:483:18)
+    at new Promise (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\bluebird\js\release\promise.js:79:10)
+    at promisify (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:154:10)
+2019-1-17 00:19:17 error: Error while executing code: TypeError: Cannot read property 'toUpperCase' of undefined
+    at Object.upper (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\helpers\handlebars\helpers.js:2:23)
+    at Object.eval [as main] (eval at createFunctionContext (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\javascript-compiler.js:254:23), <anonymous>:4:103)
+    at main (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:175:32)
+    at Object.ret (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:178:12)
+    at Object.ret [as hello] (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\compiler.js:526:21)
+    at Object.invokePartialWrapper [as invokePartial] (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:72:46)
+    at Object.eval [as main] (eval at createFunctionContext (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\javascript-compiler.js:254:23), <anonymous>:8:28)
+    at main (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:175:32)
+    at ret (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:178:12)
+    at ret (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\compiler.js:526:21)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:876:16
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:161:5
+    at Promise._execute (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\bluebird\js\release\debuggability.js:313:9)
+    at Promise._resolveFromExecutor (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\bluebird\js\release\promise.js:483:18)
+    at new Promise (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\bluebird\js\release\promise.js:79:10)
+    at promisify (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:154:10)
+2019-1-17 00:19:17 error: Error while executing code: TypeError: Cannot read property 'toUpperCase' of undefined
+    at Object.upper (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\helpers\handlebars\helpers.js:2:23)
+    at Object.eval [as main] (eval at createFunctionContext (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\javascript-compiler.js:254:23), <anonymous>:4:103)
+    at main (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:175:32)
+    at Object.ret (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:178:12)
+    at Object.ret [as hello] (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\compiler.js:526:21)
+    at Object.invokePartialWrapper [as invokePartial] (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:72:46)
+    at Object.eval [as main] (eval at createFunctionContext (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\javascript-compiler.js:254:23), <anonymous>:8:28)
+    at main (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:175:32)
+    at ret (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:178:12)
+    at ret (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\compiler.js:526:21)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:876:16
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:161:5
+    at Promise._execute (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\bluebird\js\release\debuggability.js:313:9)
+    at Promise._resolveFromExecutor (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\bluebird\js\release\promise.js:483:18)
+    at new Promise (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\bluebird\js\release\promise.js:79:10)
+    at promisify (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:154:10)
+2019-1-17 00:19:42 info: Server started on port: 8882
+2019-1-17 00:19:44 info: Server started on port: 8882
+2019-1-17 00:19:54 info: Server started on port: 8882
+2019-1-17 00:19:55 info: Server started on port: 8882
+2019-1-17 00:19:56 info: Server started on port: 8882
+2019-1-17 00:19:57 info: Server started on port: 8882
+2019-1-17 00:21:04 info: Server started on port: 8882
+2019-1-17 00:21:08 info: Server started on port: 8882
+2019-1-17 00:21:25 info: Server started on port: 8882
+2019-1-17 00:21:27 info: Server started on port: 8882
+2019-1-17 00:21:41 info: Server started on port: 8882
+2019-1-17 00:21:42 info: Server started on port: 8882
+2019-1-17 00:21:47 info: Server started on port: 8882
+2019-1-17 00:21:49 info: Server started on port: 8882
+2019-1-17 00:22:25 info: Server started on port: 8882
+2019-1-17 00:23:30 info: Server started on port: 8882
+2019-1-17 00:24:01 info: Server started on port: 8882
+2019-1-17 00:24:04 info: Server started on port: 8882
+2019-1-17 00:24:04 info: Server started on port: 8882
+2019-1-17 00:29:57 info: Server started on port: 8882
+2019-1-17 00:36:09 info: Server started on port: 8882
+2019-1-17 00:36:13 info: Server started on port: 8882
+2019-1-17 00:36:29 info: Server started on port: 8882
+2019-1-17 00:37:49 info: Server started on port: 8882
+2019-1-17 00:37:50 info: Server started on port: 8882
+2019-1-17 00:37:51 info: Server started on port: 8882
+2019-1-17 00:39:45 info: Server started on port: 8882
+2019-1-17 00:39:49 info: Server started on port: 8882
+2019-1-17 00:39:58 info: Server started on port: 8882
+2019-1-17 00:40:07 info: Server started on port: 8882
+2019-1-17 00:40:53 info: Server started on port: 8882
+2019-1-17 00:40:57 info: Server started on port: 8882
+2019-1-17 00:41:00 info: Server started on port: 8882
+2019-1-17 00:41:00 info: Server started on port: 8882
+2019-1-17 00:41:01 info: Server started on port: 8882
+2019-1-17 00:41:39 info: Server started on port: 8882
+2019-1-17 00:41:51 info: Server started on port: 8882
+2019-1-17 00:41:52 info: Server started on port: 8882
+2019-1-17 00:42:00 info: Server started on port: 8882
+2019-1-17 00:42:03 info: Server started on port: 8882
+2019-1-17 00:42:09 info: Server started on port: 8882
+2019-1-17 00:42:11 info: Server started on port: 8882
+2019-1-17 00:42:35 info: Server started on port: 8882
+2019-1-17 00:50:26 error: Error while executing code: Error: Parse error on line 34:
+...-right">    {{#if !isUserLoggedIn }}
+----------------------^
+Expecting 'CLOSE_RAW_BLOCK', 'CLOSE', 'CLOSE_UNESCAPED', 'OPEN_SEXPR', 'CLOSE_SEXPR', 'ID', 'OPEN_BLOCK_PARAMS', 'STRING', 'NUMBER', 'BOOLEAN', 'UNDEFINED', 'NULL', 'DATA', 'SEP', got 'INVALID'
+    at Parser.parseError (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\parser.js:268:19)
+    at Parser.parse (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\parser.js:337:30)
+    at HandlebarsEnvironment.parse (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\base.js:46:43)
+    at compileInput (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\compiler.js:515:19)
+    at Object.ret [as header] (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\compiler.js:524:18)
+    at Object.invokePartialWrapper [as invokePartial] (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:72:46)
+    at Object.eval [as main] (eval at createFunctionContext (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\javascript-compiler.js:254:23), <anonymous>:5:31)
+    at main (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:175:32)
+    at ret (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:178:12)
+    at ret (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\compiler.js:526:21)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:876:16
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:161:5
+    at Promise._execute (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\bluebird\js\release\debuggability.js:313:9)
+    at Promise._resolveFromExecutor (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\bluebird\js\release\promise.js:483:18)
+    at new Promise (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\bluebird\js\release\promise.js:79:10)
+    at promisify (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:154:10)
+2019-1-17 00:51:01 error: Error while executing code: TypeError: Cannot read property 'hash' of undefined
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\helpers\if.js:16:18)
+    at Object.eval [as main] (eval at createFunctionContext (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\javascript-compiler.js:254:23), <anonymous>:6:32)
+    at main (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:175:32)
+    at Object.ret (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:178:12)
+    at Object.ret [as header] (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\compiler.js:526:21)
+    at Object.invokePartialWrapper [as invokePartial] (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:72:46)
+    at Object.eval [as main] (eval at createFunctionContext (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\javascript-compiler.js:254:23), <anonymous>:5:31)
+    at main (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:175:32)
+    at ret (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:178:12)
+    at ret (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\compiler.js:526:21)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:876:16
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:161:5
+    at Promise._execute (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\bluebird\js\release\debuggability.js:313:9)
+    at Promise._resolveFromExecutor (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\bluebird\js\release\promise.js:483:18)
+    at new Promise (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\bluebird\js\release\promise.js:79:10)
+    at promisify (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:154:10)
+2019-1-17 00:54:55 info: Server started on port: 8882
+2019-1-17 00:59:56 info: Server started on port: 8882
+2019-1-17 00:59:58 info: Server started on port: 8882
+2019-1-17 01:00:37 info: Server started on port: 8882
+2019-1-17 01:00:42 info: Server started on port: 8882
+2019-1-17 01:00:43 info: Server started on port: 8882
+2019-1-17 01:00:44 info: Server started on port: 8882
+2019-1-17 01:00:46 info: Server started on port: 8882
+2019-1-17 01:11:36 info: Server started on port: 8882
+2019-1-17 01:12:10 info: Server started on port: 8882
+2019-1-17 01:12:12 info: Server started on port: 8882
+2019-1-17 01:12:16 error: FRONTEND ERROR-------------------------------
+ReferenceError: ,h is not defined
+ReferenceError: h is not defined
+    at http://localhost:8882/:64:15
+URL = http://localhost:8882/
+------------------------------------------------------------
+2019-1-17 01:15:11 info: Server started on port: 8882
+2019-1-17 01:15:14 info: Server started on port: 8882
+2019-1-17 01:15:16 info: Server started on port: 8882
+2019-1-17 01:15:30 info: Server started on port: 8882
+2019-1-17 01:15:36 info: Server started on port: 8882
+2019-1-17 01:15:53 info: Server started on port: 8882
+2019-1-17 01:16:01 error: Error while executing code: Error: The partial homeHeade could not be found
+    at Object.invokePartial (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:281:11)
+    at Object.invokePartialWrapper [as invokePartial] (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:68:39)
+    at Object.eval [as main] (eval at createFunctionContext (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\javascript-compiler.js:254:23), <anonymous>:5:31)
+    at main (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:175:32)
+    at ret (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\runtime.js:178:12)
+    at ret (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\handlebars\dist\cjs\handlebars\compiler\compiler.js:526:21)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:876:16
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:161:5
+    at Promise._execute (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\bluebird\js\release\debuggability.js:313:9)
+    at Promise._resolveFromExecutor (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\bluebird\js\release\promise.js:483:18)
+    at new Promise (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\bluebird\js\release\promise.js:79:10)
+    at promisify (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:154:10)
+    at Function.exports.handlebars.render (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:866:10)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:181:27
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\consolidate\lib\consolidate.js:101:5
+    at FSReqWrap.readFileAfterClose [as oncomplete] (internal/fs/read_file_context.js:53:3)
+2019-1-17 01:17:49 info: Server started on port: 8882
+2019-1-17 01:20:12 info: Server started on port: 8882
+2019-1-17 01:20:13 info: Server started on port: 8882
+2019-1-17 01:22:12 info: Server started on port: 8882
+2019-1-17 01:24:44 info: Server started on port: 8882
+2019-1-17 01:24:48 info: Server started on port: 8882
+2019-1-17 01:24:51 info: Server started on port: 8882
+2019-1-17 01:24:53 info: Server started on port: 8882
+2019-1-17 01:25:28 info: Server started on port: 8882
+2019-1-17 01:25:28 error: Error while executing code: Error: ENOENT: no such file or directory, stat 'E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\render\views\home.hb.html'
+2019-1-17 01:25:34 info: Server started on port: 8882
+2019-1-17 01:25:38 info: Server started on port: 8882
+2019-1-17 01:25:39 info: Server started on port: 8882
+2019-1-17 01:25:42 info: Server started on port: 8882
+2019-1-17 01:25:43 info: Server started on port: 8882
+2019-1-17 01:26:00 info: Server started on port: 8882
+2019-1-17 01:26:25 info: Server started on port: 8882
+2019-1-17 01:26:26 info: Server started on port: 8882
+2019-1-17 01:26:30 info: Server started on port: 8882
+2019-1-17 01:26:31 info: Server started on port: 8882
+2019-1-17 01:30:33 info: Server started on port: 8882
+2019-1-17 01:30:58 info: Server started on port: 8882
+2019-1-17 01:30:58 error: Error while executing code: Error: ENOENT: no such file or directory, stat 'E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\render\views\home.hb.html'
+2019-1-17 01:31:02 info: Server started on port: 8882
+2019-1-17 02:41:40 info: Server started on port: 8882
+2019-1-17 02:41:42 info: Server started on port: 8882
+2019-1-17 02:41:52 info: Server started on port: 8882
+2019-1-17 02:47:40 info: Server started on port: 8882
+2019-1-17 02:47:43 info: Server started on port: 8882
+2019-1-17 02:48:06 info: Server started on port: 8882
+2019-1-17 02:48:50 info: Server started on port: 8882
+2019-1-17 02:48:51 info: Server started on port: 8882
+2019-1-17 02:48:53 info: Server started on port: 8882
+2019-1-17 02:48:55 info: Server started on port: 8882
+2019-1-17 02:57:08 info: Server started on port: 8882
+2019-1-17 02:58:14 info: Server started on port: 8882
+2019-1-17 02:58:15 info: Server started on port: 8882
+2019-1-17 02:58:17 info: Server started on port: 8882
+2019-1-17 02:58:18 info: Server started on port: 8882
+2019-1-17 02:58:18 info: Server started on port: 8882
+2019-1-17 03:00:44 info: Server started on port: 8882
+2019-1-17 03:01:51 info: Server started on port: 8882
+2019-1-17 03:01:53 info: Server started on port: 8882
+2019-1-17 03:13:39 info: Server started on port: 8882
+2019-1-17 03:13:42 info: Server started on port: 8882
+2019-1-17 03:13:44 info: Server started on port: 8882
+2019-1-17 03:20:55 info: Server started on port: 8882
+2019-1-17 03:20:56 info: Server started on port: 8882
+2019-1-17 03:21:03 info: Server started on port: 8882
+2019-1-17 03:39:38 info: Server started on port: 8882
+2019-1-17 03:40:03 info: Server started on port: 8882
+2019-1-17 03:42:14 info: Server started on port: 8882
+2019-1-17 03:42:19 info: Server started on port: 8882
+2019-1-17 03:42:30 info: Server started on port: 8882
+2019-1-17 03:42:33 info: Server started on port: 8882
+2019-1-17 03:42:38 info: Server started on port: 8882
+2019-1-17 03:42:47 info: Server started on port: 8882
+2019-1-17 03:43:45 info: Server started on port: 8882
+2019-1-17 03:44:34 info: Server started on port: 8882
+2019-1-17 03:44:42 info: Server started on port: 8882
+2019-1-17 03:46:03 info: Server started on port: 8882
+2019-1-17 03:48:32 info: Server started on port: 8882
+2019-1-17 03:49:13 info: Server started on port: 8882
+2019-1-17 03:49:17 info: Server started on port: 8882
+2019-1-17 03:52:09 info: Server started on port: 8882
+2019-1-17 03:52:12 info: Server started on port: 8882
+2019-1-17 03:52:13 info: Server started on port: 8882
+2019-1-17 03:56:01 info: Server started on port: 8882
+2019-1-17 03:56:05 info: Server started on port: 8882
+2019-1-17 03:56:17 info: Server started on port: 8882
+2019-1-17 04:05:59 info: Server started on port: 8882
+2019-1-17 04:06:12 info: Server started on port: 8882
+2019-1-17 04:09:05 info: Server started on port: 8882
+2019-1-17 04:10:38 info: Server started on port: 8882
+2019-1-17 04:10:52 info: Server started on port: 8882
