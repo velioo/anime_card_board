@@ -14,9 +14,9 @@ const logger = require('./helpers/logger');
 const globalErrHandler = require('./middlewares/errorHandler');
 const hbaHelpers = require('./helpers/handlebars/helpers');
 const hbaPartials = require('./helpers/handlebars/partials');
+const socketRouter = require('./socket/socketRouter.js');
 const { routes, allowedMethods } = require('./routes');
 const dirs = {};
-const path = require('path');
 
 const Koa = require('koa');
 const app = new Koa();
@@ -24,9 +24,13 @@ const Session = require('koa-session');
 const StaticCache = require('koa-static-cache');
 const Validate = require('koa-validate');
 const Views = require('koa-views');
+const path = require('path');
 const Http = require('http');
 const server = Http.createServer(app.callback());
-const io = require('socket.io')(server);
+const IO = require( 'koa-socket.io' );
+const io = new IO({ namespace: '/' });
+
+io.start(server);
 
 app.use(globalErrHandler);
 
@@ -44,7 +48,7 @@ app.use(new Session(app));
 app.use(async (ctx, next) => {
   ctx.state.FRONTEND_LOGGER_INTERVAL = FRONTEND_LOGGER_INTERVAL
   ctx.state.session = ctx.session
-  ctx.session.isUserLoggedIn = ctx.session.isUserLoggedIn || true;
+  ctx.session.isUserLoggedIn = ctx.session.isUserLoggedIn || false;
 
   await next();
 });
@@ -77,13 +81,18 @@ app.use( async (ctx) => {
   }
 });
 
-io.on('connection', function(socket){
-    console.log('socket id: ' + socket.id);
+// io.use(async (ctx, next) => {
+//   console.log('middleware invoke begin: %s, %s', ctx.event, ctx.id);
 
-    socket.on('chat', function(msg){
-        console.log('Someone chated: ' + msg);
-        io.emit('chat', msg + "222222");
-    });
+//   console.log('middleware invoke end: %s, %s', ctx.event, ctx.id);
+// });
+
+io.on('connect', async (ctx, next) => {
+  try {
+    await socketRouter.routeRequest(ctx, next);
+  } catch (err) {
+    logger.error('IO Errors: %o', err);
+  }
 });
 
 server.listen(PORT, () => {

@@ -1,0 +1,20 @@
+<div class="anime-cb-main-menu anime-cb-screen">
+	<div class="center-screen">
+		<div class="anime-cb-page-title">
+			<h1>Welcome to Anime Card Board Game</h1>
+		</div>
+		{{#if userMessage}}
+			<div class="user-message">{{userMessage}}</div>
+		{{/if}}
+		<div class="btn-group-vertical anime-cb-btn-group">
+		{{#if session.isUserLoggedIn}}
+			<button type="button" class="btn btn-primary anime-cb-button">Create Room</button>
+		    <button type="button" class="btn btn-primary anime-cb-button">Browse Rooms</button>
+		    <button type="button" class="btn btn-primary anime-cb-button">Settings</button>
+		{{else}}
+		    <button type="button" class="btn btn-primary anime-cb-button signup-btn">Sign Up</button>
+		    <button type="button" class="btn btn-primary anime-cb-button login-btn">Login</button>
+		{{/if}}
+	 	</div>
+	</div>
+</div>

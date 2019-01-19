@@ -1314,3 +1314,1261 @@ ReferenceError: sio is not defined
     at Function.Module._load (internal/modules/cjs/loader.js:530:3)
     at Function.Module.runMain (internal/modules/cjs/loader.js:742:12)
     at startup (internal/bootstrap/node.js:283:19)
+2019-1-17 17:27:41 error: uncaughtException: Identifier 'renderHomeScreen' has already been declared
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\routes\index.js:6
+  renderHomeScreen,
+  ^
+
+SyntaxError: Identifier 'renderHomeScreen' has already been declared
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-1-17 17:27:46 error: uncaughtException: Identifier 'renderHomeScreen' has already been declared
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\routes\index.js:7
+  renderHomeScreen,
+  ^
+
+SyntaxError: Identifier 'renderHomeScreen' has already been declared
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-1-17 17:27:54 error: uncaughtException: Cannot find module '../db/mysql'
+Error: Cannot find module '../db/mysql'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:2:15)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:28:02 error: uncaughtException: missing ) after argument list
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\routes\index.js:21
+	.post('/login', new KoaBody()  login);
+	                            ^
+
+SyntaxError: missing ) after argument list
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-1-17 17:28:04 error: uncaughtException: Cannot find module '../db/mysql'
+Error: Cannot find module '../db/mysql'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:2:15)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:28:08 error: uncaughtException: Cannot find module '../db/mysql'
+Error: Cannot find module '../db/mysql'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:2:15)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:28:09 error: uncaughtException: Cannot find module '../db/mysql'
+Error: Cannot find module '../db/mysql'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:2:15)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:28:39 error: uncaughtException: Cannot find module '../db/mysql'
+Error: Cannot find module '../db/mysql'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:2:15)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:28:42 error: uncaughtException: Cannot find module '../db/mysql'
+Error: Cannot find module '../db/mysql'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:2:15)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:28:46 error: uncaughtException: Cannot find module '../db/mysql'
+Error: Cannot find module '../db/mysql'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:2:15)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:35:41 error: uncaughtException: Cannot find module '../db/mysql'
+Error: Cannot find module '../db/mysql'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:2:15)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:36:18 error: uncaughtException: Cannot find module 'promise-mysql'
+Error: Cannot find module 'promise-mysql'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\db\mysql.js:3:15)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:36:26 error: uncaughtException: Cannot find module '../db/mysql'
+Error: Cannot find module '../db/mysql'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:2:15)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:37:41 error: uncaughtException: Cannot find module '../db/mysql'
+Error: Cannot find module '../db/mysql'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:2:15)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:38:15 error: uncaughtException: Cannot find module '../db/mysql'
+Error: Cannot find module '../db/mysql'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:2:15)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:38:42 error: uncaughtException: Cannot find module '../db/mysql'
+Error: Cannot find module '../db/mysql'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:2:15)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:39:45 error: uncaughtException: Cannot find module '../db/mysql'
+Error: Cannot find module '../db/mysql'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:2:15)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:39:52 error: uncaughtException: Cannot find module '../db/mysql'
+Error: Cannot find module '../db/mysql'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:2:15)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:39:53 error: uncaughtException: Cannot find module '../db/mysql'
+Error: Cannot find module '../db/mysql'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:2:15)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:39:58 error: uncaughtException: Cannot find module '../db/mysql'
+Error: Cannot find module '../db/mysql'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:2:15)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:40:00 error: uncaughtException: Cannot find module '../db/mysql'
+Error: Cannot find module '../db/mysql'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:2:15)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:40:32 error: uncaughtException: Cannot find module '../db/mysql'
+Error: Cannot find module '../db/mysql'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:2:15)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:40:34 error: uncaughtException: Cannot find module '../db/mysql'
+Error: Cannot find module '../db/mysql'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:2:15)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:40:35 error: uncaughtException: Cannot find module '../db/mysql'
+Error: Cannot find module '../db/mysql'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:2:15)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:41:06 error: uncaughtException: Cannot find module '../db/mysql'
+Error: Cannot find module '../db/mysql'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:2:15)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:41:08 error: uncaughtException: Cannot find module '../db/mysql'
+Error: Cannot find module '../db/mysql'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:2:15)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:41:09 error: uncaughtException: Cannot find module '../db/mysql'
+Error: Cannot find module '../db/mysql'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:2:15)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:41:14 error: uncaughtException: Cannot find module '../db/mysql'
+Error: Cannot find module '../db/mysql'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:2:15)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:41:15 error: uncaughtException: Cannot find module '../db/mysql'
+Error: Cannot find module '../db/mysql'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:2:15)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:41:20 error: uncaughtException: Cannot find module '../db/mysql'
+Error: Cannot find module '../db/mysql'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:2:15)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:41:22 error: uncaughtException: Cannot find module '../db/mysql'
+Error: Cannot find module '../db/mysql'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:2:15)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:41:25 error: uncaughtException: Cannot find module '../db/mysql'
+Error: Cannot find module '../db/mysql'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:2:15)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:41:32 error: uncaughtException: Cannot find module '../helpers/utils'
+Error: Cannot find module '../helpers/utils'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:3:15)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:41:49 error: uncaughtException: Cannot find module '../helpers/utils'
+Error: Cannot find module '../helpers/utils'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:3:15)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:41:54 error: uncaughtException: Cannot find module '../helpers/validations'
+Error: Cannot find module '../helpers/validations'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:22:21)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:42:04 error: uncaughtException: Cannot find module '../helpers/utils'
+Error: Cannot find module '../helpers/utils'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:3:15)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:43:35 error: uncaughtException: Cannot find module '../db/mysql'
+Error: Cannot find module '../db/mysql'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\helpers\utils.js:4:15)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:44:00 error: uncaughtException: Cannot find module '../db/mysql'
+Error: Cannot find module '../db/mysql'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\helpers\utils.js:4:15)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:44:00 error: uncaughtException: Cannot find module '../db/mysql'
+Error: Cannot find module '../db/mysql'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\helpers\utils.js:4:15)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:44:21 error: uncaughtException: Cannot find module '../db/mysql'
+Error: Cannot find module '../db/mysql'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\helpers\utils.js:4:15)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:44:47 error: uncaughtException: Cannot find module '../db/mysql'
+Error: Cannot find module '../db/mysql'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\helpers\validations.js:2:15)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:45:18 error: uncaughtException: Cannot find module 'js-sha256'
+Error: Cannot find module 'js-sha256'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:23:16)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:45:36 error: uncaughtException: Cannot find module 'js-sha256'
+Error: Cannot find module 'js-sha256'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:23:16)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:46:12 error: uncaughtException: Cannot find module 'nodemailer'
+Error: Cannot find module 'nodemailer'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:24:20)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 17:53:05 error: uncaughtException: Unexpected token .
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:242
+    from: `Anime Card Board Game, ${SERVICE_EMAIL}`,pug.render('PC Store, <#{email}>', { email: SERVICE_EMAIL }, { fromString: true }),
+                                                       ^
+
+SyntaxError: Unexpected token .
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-1-17 19:24:11 error: uncaughtException: io.of is not a function
+TypeError: io.of is not a function
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:83:14)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\index.js:1:63)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Function.Module.runMain (internal/modules/cjs/loader.js:742:12)
+    at startup (internal/bootstrap/node.js:283:19)
+2019-1-17 19:26:18 error: uncaughtException: io.of is not a function
+TypeError: io.of is not a function
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:84:14)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\index.js:1:63)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Function.Module.runMain (internal/modules/cjs/loader.js:742:12)
+    at startup (internal/bootstrap/node.js:283:19)
+2019-1-17 19:37:07 error: uncaughtException: io2 is not defined
+ReferenceError: io2 is not defined
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:83:1)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\index.js:1:63)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Function.Module.runMain (internal/modules/cjs/loader.js:742:12)
+    at startup (internal/bootstrap/node.js:283:19)
+2019-1-17 19:56:03 error: uncaughtException: Cannot find module './game.server.j'
+Error: Cannot find module './game.server.j'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\general.server.js:4:20)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 20:03:30 error: uncaughtException: Cannot find module './socket/socketRouter.js'
+Error: Cannot find module './socket/socketRouter.js'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:17:22)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 20:04:10 error: uncaughtException: Cannot find module './game.core.js'
+Error: Cannot find module './game.core.js'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\game.server.js:2:18)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 20:04:16 error: uncaughtException: Cannot find module './game.server.js'
+Error: Cannot find module './game.server.js'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\socketRouter.js:4:20)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 20:04:22 error: uncaughtException: Cannot find module './game.server.js'
+Error: Cannot find module './game.server.js'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\socketRouter.js:4:20)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 20:04:32 error: uncaughtException: Cannot find module './game.core.js'
+Error: Cannot find module './game.core.js'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\gameServer.js:2:18)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 20:04:33 error: uncaughtException: Cannot find module './game.core.js'
+Error: Cannot find module './game.core.js'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\gameServer.js:2:18)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-17 20:21:45 error: uncaughtException: missing ) after argument list
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\generalServer.js:8
+  	await usersController.signUp(ctx, next;
+  	                                  ^^^^
+
+SyntaxError: missing ) after argument list
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-1-17 21:40:25 error: uncaughtException: missing ) after argument list
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\helpers\utils.js:111
+        console.error('pg ERRORRRR'
+                      ^^^^^^^^^^^^^
+
+SyntaxError: missing ) after argument list
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-1-17 22:12:01 error: uncaughtException: Unexpected token {
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\socketRouter.js:15
+		socket.onevent = async (packet) {
+		                                ^
+
+SyntaxError: Unexpected token {
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-1-17 22:30:21 error: uncaughtException: missing ) after argument list
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\socketRouter.js:15
+	  socket.on('error', async (ctx) {
+	                               ^
+
+SyntaxError: missing ) after argument list
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-1-17 22:58:24 error: uncaughtException: Unexpected string
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\socketRouter.js:18
+		  	throw new Error('asdas')';'
+		  	                        ^^^
+
+SyntaxError: Unexpected string
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-1-18 01:01:28 error: uncaughtException: Unexpected string
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\schemas\schemas.js:29
+      "conf_password": 'should have a string property "bar"'
+      ^^^^^^^^^^^^^^^
+
+SyntaxError: Unexpected string
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-1-18 01:01:33 error: uncaughtException: Unexpected string
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\schemas\schemas.js:29
+      "conf_password": 'should have a string property "bar"'
+      ^^^^^^^^^^^^^^^
+
+SyntaxError: Unexpected string
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-1-18 01:01:51 error: uncaughtException: Unexpected string
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\schemas\schemas.js:29
+      "conf_password": 'should have a string property "bar"'
+      ^^^^^^^^^^^^^^^
+
+SyntaxError: Unexpected string
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-1-18 01:02:03 error: uncaughtException: Unexpected string
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\schemas\schemas.js:29
+      "conf_password": 'You must confirm your password'
+      ^^^^^^^^^^^^^^^
+
+SyntaxError: Unexpected string
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-1-18 01:02:09 error: uncaughtException: Unexpected string
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\schemas\schemas.js:29
+      "conf_password": 'You must confirm your password'
+      ^^^^^^^^^^^^^^^
+
+SyntaxError: Unexpected string
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-1-18 01:02:15 error: uncaughtException: Unexpected string
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\schemas\schemas.js:29
+      "conf_password": 'You must confirm your password'
+      ^^^^^^^^^^^^^^^
+
+SyntaxError: Unexpected string
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-1-18 01:02:24 error: uncaughtException: Unexpected string
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\schemas\schemas.js:29
+      "conf_password": 'You must confirm your password'
+      ^^^^^^^^^^^^^^^
+
+SyntaxError: Unexpected string
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-1-18 01:02:41 error: uncaughtException: Unexpected string
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\schemas\schemas.js:30
+      "email": 'You must enter an email'
+      ^^^^^^^
+
+SyntaxError: Unexpected string
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-1-18 16:53:28 error: uncaughtException: Cannot find module '../helpers/logger'
+Error: Cannot find module '../helpers/logger'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\socket\usersController.js:1:78)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-18 16:54:25 error: uncaughtException: Cannot find module '../db/pg'
+Error: Cannot find module '../db/pg'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\socket\usersController.js:2:12)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-18 16:54:25 error: uncaughtException: Cannot find module '../db/pg'
+Error: Cannot find module '../db/pg'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\socket\usersController.js:2:12)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-18 16:54:29 error: uncaughtException: Cannot find module '../constants/constants'
+Error: Cannot find module '../constants/constants'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\socket\usersController.js:10:5)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-18 16:54:30 error: uncaughtException: Cannot find module '../constants/constants'
+Error: Cannot find module '../constants/constants'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\socket\usersController.js:10:5)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-18 16:54:31 error: uncaughtException: Cannot find module '../constants/constants'
+Error: Cannot find module '../constants/constants'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\socket\usersController.js:10:5)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-18 16:55:09 error: uncaughtException: Cannot find module '../controllers/socket/usersController'
+Error: Cannot find module '../controllers/socket/usersController'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\generalServer.js:4:25)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-18 16:55:30 error: uncaughtException: Cannot find module '../controllers/socket/usersController'
+Error: Cannot find module '../controllers/socket/usersController'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\generalServer.js:4:25)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-18 16:55:55 error: uncaughtException: Cannot find module '../controllers/socket/usersController'
+Error: Cannot find module '../controllers/socket/usersController'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\generalServer.js:4:25)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-18 16:56:02 error: uncaughtException: Cannot find module '../controllers/socket/usersControllerSocket'
+Error: Cannot find module '../controllers/socket/usersControllerSocket'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\generalServer.js:4:25)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-18 16:56:03 error: uncaughtException: Cannot find module '../controllers/socket/usersControllerSocket'
+Error: Cannot find module '../controllers/socket/usersControllerSocket'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\generalServer.js:4:25)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-1-18 18:10:28 error: uncaughtException: Unexpected token .
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\helpers\handlebars\partials.js:7
+  signUpSuccess.hbs: 'sign_up_success.hbs',
+               ^
+
+SyntaxError: Unexpected token .
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-1-18 19:13:38 error: uncaughtException: Unexpected token .
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\routes\index.js:15
+	.post('/frontend_logger', new KoaBody(), frontendLogger)
+	^
+
+SyntaxError: Unexpected token .
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-1-18 19:14:19 error: uncaughtException: Unexpected token .
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\routes\index.js:15
+	.post('/frontend_logger', new KoaBody(), frontendLogger)
+	^
+
+SyntaxError: Unexpected token .
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-1-18 19:14:26 error: uncaughtException: Unexpected token .
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\routes\index.js:15
+	.post('/frontend_logger', new KoaBody(), frontendLogger)
+	^
+
+SyntaxError: Unexpected token .
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-1-18 19:14:28 error: uncaughtException: Unexpected token .
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\routes\index.js:15
+	.post('/frontend_logger', new KoaBody(), frontendLogger)
+	^
+
+SyntaxError: Unexpected token .
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-1-18 19:14:29 error: uncaughtException: Unexpected token .
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\routes\index.js:15
+	.post('/frontend_logger', new KoaBody(), frontendLogger)
+	^
+
+SyntaxError: Unexpected token .
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-1-18 19:16:44 error: uncaughtException: Unexpected token .
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\routes\index.js:15
+	.post('/frontend_logger', new KoaBody(), frontendLogger)
+	^
+
+SyntaxError: Unexpected token .
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-1-18 19:16:47 error: uncaughtException: Unexpected token .
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\routes\index.js:15
+	.post('/frontend_logger', new KoaBody(), frontendLogger)
+	^
+
+SyntaxError: Unexpected token .
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-1-18 19:16:50 error: uncaughtException: Unexpected token .
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\routes\index.js:15
+	.post('/frontend_logger', new KoaBody(), frontendLogger)
+	^
+
+SyntaxError: Unexpected token .
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-1-18 19:18:09 error: uncaughtException: Unexpected token .
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\routes\index.js:15
+	.post('/frontend_logger', new KoaBody(), frontendLogger)
+	^
+
+SyntaxError: Unexpected token .
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-1-18 19:18:27 error: uncaughtException: Unexpected token .
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\routes\index.js:15
+	.post('/frontend_logger', new KoaBody(), frontendLogger)
+	^
+
+SyntaxError: Unexpected token .
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-1-18 19:18:39 error: uncaughtException: Unexpected token .
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\routes\index.js:15
+	.post('/frontend_logger', new KoaBody(), frontendLogger)
+	^
+
+SyntaxError: Unexpected token .
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-1-18 19:21:36 error: uncaughtException: Unexpected token .
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\routes\index.js:15
+	.post('/frontend_logger', new KoaBody(), frontendLogger)
+	^
+
+SyntaxError: Unexpected token .
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-1-18 19:23:33 error: uncaughtException: Unexpected token .
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\routes\index.js:15
+	.post('/frontend_logger', new KoaBody(), frontendLogger)
+	^
+
+SyntaxError: Unexpected token .
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)

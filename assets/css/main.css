@@ -1,10 +1,23 @@
 body {
-	background-image: url("../imgs/home_background.jpg");
+	background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url("../imgs/home_background.jpg") no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  background-position: center top;
 }
 
 #acb-main-wrapper {
 	min-height: 100%;
 	margin: auto;
+}
+
+.anime-cb-screen {
+  display: none;
+}
+
+.anime-cb-main-menu {
+  display: block;
 }
 
 .center-screen {
@@ -14,6 +27,70 @@ body {
   align-items: center;
   text-align: center;
   min-height: 100vh;
+  color: white;
+}
+
+.anime-cb-page-title {
+  margin-bottom: 5%;
+}
+
+.anime-cb-btn-group {
+  width: 20%;
+  padding: 10px;
+}
+
+.anime-cb-button {
+  font-size: 20px;
+  margin-bottom: 10px;
+  padding: 20px;
+  background-color: #D2691E;
+  outline-style: none;
+  border: none;
+}
+
+.anime-cb-form {
+  width: 20%;
+  max-width: 20%;
+}
+
+.anime-cb-screen-footer {
+  margin-top: 5%;
+}
+
+.spinner {
+  display: none;
+  max-width: 100px;
+  max-height: 100px;
+  margin-top: -20px;
+  position: absolute;
+}
+
+.spinner:focus, .spinner:active, .spinner:hover {
+  border: 0;
+  outline: none;
+}
+
+#anime-cb-signup-form .spinner {
+  margin-left: -90px;
+  margin-top: -30px;
+}
+
+#anime-cb-login-form .spinner {
+  margin-left: -90px;
+  margin-top: -30px;
+}
+
+.user-message {
+  font-weight: bold;
+  margin-bottom: 50px;
+  font-size: 20px;
+}
+
+.errors {
+  display: none;
+  color: red;
+  padding: 5px;
+  background-color: rgba(0, 0, 0, 0.6);
 }
 
 .server-error {
