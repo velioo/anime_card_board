@@ -12,46 +12,47 @@ const self = module.exports = {
 
 	  console.log('socket id: ' + socket.id);
 
-	  socket.on('signUp', async (ctx) => {
-	  	try {
-		  	console.log('Client data: ', ctx.data);
+	  // socket.on('signUp', async (ctx) => {
+	  // 	try {
+		 //  	console.log('Client data: ', ctx.data);
 
-		  	await generalServer.signUp(ctx, next);
+		 //  	await generalServer.signUp(ctx, next);
 
-		  	let isSuccessful = ctx.errors.length ? false : true;
+		 //  	let isSuccessful = ctx.errors.length ? false : true;
 
-		  	console.log('Errors: ', ctx.errors);
+		 //  	console.log('Errors: ', ctx.errors);
 
-		  	socket.emit('signUp', {
-		  		errors: ctx.errors,
-		  		userMessage: ctx.userMessage,
-		  		isSuccessful: isSuccessful
-		  	});
-	  	} catch(err) {
-	  		socket.emit('serverError', err);
-	  		logger.error("Error: %o", err);
-	  	}
-	  });
+		 //  	socket.emit('signUp', {
+		 //  		errors: ctx.errors,
+		 //  		userMessage: ctx.userMessage,
+		 //  		isSuccessful: isSuccessful
+		 //  	});
+	  // 	} catch(err) {
+	  // 		socket.emit('serverError', err);
+	  // 		logger.error("Error: %o", err);
+	  // 	}
+	  // });
 
-	  socket.on('login', async (ctx) => {
-	  	try {
-		  	console.log('Client data: ', ctx.data);
+	  // socket.on('login', async (ctx) => {
+	  // 	try {
+		 //  	console.log('Client data: ', ctx.data);
+		 //  	console.log('Is Logged in: ', ctx.isUserLoggedIn);
 
-		  	await generalServer.login(ctx, next);
+		 //  	await generalServer.login(ctx, next);
 
-		  	let isSuccessful = ctx.errors.length ? false : true;
+		 //  	let isSuccessful = ctx.errors.length ? false : true;
 
-		  	console.log('Errors: ', ctx.errors);
+		 //  	console.log('Errors: ', ctx.errors);
 
-		  	socket.emit('login', {
-		  		errors: ctx.errors,
-		  		userMessage: ctx.userMessage,
-		  		isSuccessful: isSuccessful
-		  	});
-	  	} catch(err) {
-	  		socket.emit('serverError', err);
-	  		logger.error("Error: %o", err);
-	  	}
-	  });
+		 //  	socket.emit('login', {
+		 //  		errors: ctx.errors,
+		 //  		userMessage: ctx.userMessage,
+		 //  		isSuccessful: isSuccessful
+		 //  	});
+	  // 	} catch(err) {
+	  // 		socket.emit('serverError', err);
+	  // 		logger.error("Error: %o", err);
+	  // 	}
+	  // });
   },
 };

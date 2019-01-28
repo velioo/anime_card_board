@@ -20,7 +20,7 @@ const dirs = {};
 
 const Koa = require('koa');
 const app = new Koa();
-const Session = require('koa-session');
+const KoaSession = require('koa-session');
 const StaticCache = require('koa-static-cache');
 const Validate = require('koa-validate');
 const Views = require('koa-views');
@@ -28,9 +28,8 @@ const path = require('path');
 const Http = require('http');
 const server = Http.createServer(app.callback());
 const IO = require( 'koa-socket.io' );
+const KoaSocketSession = require('koa-socket-session');
 const io = new IO({ namespace: '/' });
-
-io.start(server);
 
 app.use(globalErrHandler);
 
@@ -44,14 +43,27 @@ app.use(new StaticCache('./node_modules'));
 
 app.keys = ['dca23e28c111808d1f9e6230849ee19e '];
 
-app.use(new Session(app));
+const SESSION_CONFIG = {
+    key: 'koa:sess', /** (string) cookie key (default is koa:sess) */
+    maxAge: 86400000, /** (number) maxAge in ms (default is 1 days) */
+    overwrite: true, /** (boolean) can overwrite or not (default true) */
+    httpOnly: true, /** (boolean) httpOnly or not (default true) */
+    signed: true, /** (boolean) signed or not (default true) */
+};
+
+const session = new KoaSession(SESSION_CONFIG, app);
+app.use(session);
+
 app.use(async (ctx, next) => {
-  ctx.state.FRONTEND_LOGGER_INTERVAL = FRONTEND_LOGGER_INTERVAL
-  ctx.state.session = ctx.session
+  ctx.state.FRONTEND_LOGGER_INTERVAL = FRONTEND_LOGGER_INTERVAL;
+  ctx.state.session = ctx.session;
   ctx.session.isUserLoggedIn = ctx.session.isUserLoggedIn || false;
 
   await next();
 });
+
+io.start(server);
+io.use(KoaSocketSession(app, session));
 
 Validate(app);
 

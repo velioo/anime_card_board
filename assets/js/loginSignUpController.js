@@ -1,47 +1,67 @@
-var loginSignUpController = function(generalClient) {
+var logInSignUpController = function(generalClient) {
 	this.client = generalClient;
 	this.initConstants();
 	this.initElements();
 	this.initListeners();
 };
 
-loginSignUpController.prototype.initConstants = function() {
+logInSignUpController.prototype.initConstants = function() {
+	this.FORM = '.anime-cb-form';
 	this.SIGN_UP_FORM = '#anime-cb-signup-form';
+	this.LOGIN_FORM = '#anime-cb-login-form';
+
 	this.SIGN_UP_SUBMIT_BTN = '#anime-cb-submit-sign-up';
 	this.RESET_SIGN_UP_BTN = '#anime-cb-reset-sign-up';
 	this.LOGIN_SUBMIT_BTN = '#anime-cb-submit-login';
-	this.LOGIN_FORM = '#anime-cb-login-form';
 	this.RESET_LOGIN_BTN = '#anime-cb-reset-login';
-	this.SCREENS = '.anime-cb-screen';
+	this.SIGN_OUT_BTN = '.logout-btn';
 	this.CHANGE_SCREEN_BTNS = '.anime-cb-button';
+
+	this.CHANGE_TO_MAIN_MENU_SCREEN_BTN = '.main-menu-btn';
+	this.CHANGE_TO_LOGIN_SCREEN_BTN = '.login-btn';
+	this.CHANGE_TO_SIGNUP_SCREEN_BTN = '.signup-btn';
+
+	this.SCREENS = '.anime-cb-screen';
+	this.MAIN_MENU_SCREEN = '.anime-cb-main-menu';
+	this.LOGIN_SCREEN = '.anime-cb-login';
+	this.SIGN_UP_SCREEN = '.anime-cb-sign-up';
+	this.SIGN_UP_SUCCESS_SCREEN = '.anime-cb-sign-up-success';
+
+	this.SPINNER = '.spinner';
+	this.PRE_SCREEN_SPINNER = '.pre-screen-spinner';
 };
 
-loginSignUpController.prototype.initElements = function() {
+logInSignUpController.prototype.initElements = function() {
 	this.$signUpInputs = $(this.SIGN_UP_FORM).find('input');
 	this.$loginInputs = $(this.LOGIN_FORM).find('input');
+	this.$allInputs = $(this.FORM).find('input');
 };
 
-loginSignUpController.prototype.initListeners = function() {
+logInSignUpController.prototype.initListeners = function() {
 	var _self = this;
 
-	$('.main-menu-btn').on('click', function(e) {
-		_self.hideScreens();
-		$('.anime-cb-main-menu').show();
+	$(this.CHANGE_TO_MAIN_MENU_SCREEN_BTN).on('click', function(e) {
+		_self.switchToMainMenuScreen();
 	});
 
-	$('.signup-btn').on('click', function(e) {
-		_self.hideScreens();
-		$('.anime-cb-sign-up').show();
+	$(this.CHANGE_TO_SIGNUP_SCREEN_BTN).on('click', function(e) {
+		_self.switchToSignUpScreen();
 	});
 
-	$('.login-btn').on('click', function(e) {
-		_self.hideScreens();
-		$('.anime-cb-login').show();
+	$(this.CHANGE_TO_LOGIN_SCREEN_BTN).on('click', function(e) {
+		_self.switchToLoginScreen();
+	});
+
+	$(this.SIGN_OUT_BTN).on('click', function(e) {
+		console.log('Trying to logout...');
+
+	  _self.showLogOutSpinner();
+
+	  _self.client.sendLogOutRequest();
 	});
 
 	$(this.CHANGE_SCREEN_BTNS).on('click', function(e) {
-		_self.clearAllUserMessages();
-		history.replaceState(null, null, '/');
+		_self.processChangeScreen(this);
 	});
 
 	$(this.SIGN_UP_SUBMIT_BTN).on('click', function(e) {
@@ -68,7 +88,7 @@ loginSignUpController.prototype.initListeners = function() {
 	      values[this.name] = $(this).val();
 	  });
 
-	  console.log('Form loign values: ', values);
+	  console.log('Form login values: ', values);
 
 	  _self.showLoginSpinner();
 
@@ -90,7 +110,7 @@ loginSignUpController.prototype.initListeners = function() {
 	});
 };
 
-loginSignUpController.prototype.processSignUpResponse = function(data) {
+logInSignUpController.prototype.processSignUpResponse = function(data) {
 	console.log('processSignUpResponse');
 	console.log('To validate: ', data);
 
@@ -108,11 +128,11 @@ loginSignUpController.prototype.processSignUpResponse = function(data) {
 	}
 };
 
-loginSignUpController.prototype.processLoginResponse = function(data) {
+logInSignUpController.prototype.processLoginResponse = function(data) {
 	console.log('processLoginResponse');
 	console.log('To validate: ', data);
 
-  assert(ajv.validate(loginResponse, data), 'LoginResponse is invalid' +
+  assert(ajv.validate(logInResponse, data), 'LogInResponse is invalid' +
   	JSON.stringify(ajv.errors, null, 2));
 
 	if (data.isSuccessful) {
@@ -125,7 +145,24 @@ loginSignUpController.prototype.processLoginResponse = function(data) {
 	}
 };
 
-loginSignUpController.prototype.renderSignUpErrors = function(data) {
+logInSignUpController.prototype.processLogoutResponse = function(data) {
+	console.log('processLogoutResponse');
+	console.log('To validate: ', data);
+
+  assert(ajv.validate(logOutResponse, data), 'LogOutResponse is invalid' +
+  	JSON.stringify(ajv.errors, null, 2));
+
+	if (data.isSuccessful) {
+		console.log('Data is valid: ', data);
+		this.showLogOutSuccess(data);
+	} else {
+		assert(data.errors.length > 0);
+		console.log('There are validation errors: ', data.errors);
+		this.showAlertError();
+	}
+};
+
+logInSignUpController.prototype.renderSignUpErrors = function(data) {
 	console.log('showSignUpErrors');
 	console.log('Data: ', data);
 
@@ -146,24 +183,16 @@ loginSignUpController.prototype.renderSignUpErrors = function(data) {
 	this.hideAllSpinner();
 };
 
-loginSignUpController.prototype.showSignUpSuccess = function(data) {
+logInSignUpController.prototype.showSignUpSuccess = function(data) {
 	console.log('showSignUpSuccess');
 	console.log('Data: ', data);
 
-	this.hideScreens();
-	$('.anime-cb-sign-up-success').show();
-	this.clearSignUpInputs();
-	this.clearSignUpErrors();
-	this.hideSignUpErrors();
-	this.clearLoginInputs();
-	this.clearLoginErrors();
-	this.hideLoginErrors();
-	this.hideAllSpinner();
+	this.switchToSignUpSuccessScreen();
 
 	$('.user-message').html('<span>' + data.userMessage + '</span>');
 };
 
-loginSignUpController.prototype.renderLoginErrors = function(data) {
+logInSignUpController.prototype.renderLoginErrors = function(data) {
 	console.log('showLoginErrors');
 	console.log('Data: ', data);
 
@@ -184,74 +213,163 @@ loginSignUpController.prototype.renderLoginErrors = function(data) {
 	this.hideAllSpinner();
 };
 
-loginSignUpController.prototype.showLoginSuccess = function(data) {
+logInSignUpController.prototype.showLoginSuccess = function(data) {
 	console.log('showLoginSuccess');
 	console.log('Data: ', data);
 
-	this.clearSignUpInputs();
-	this.clearSignUpErrors();
-	this.hideSignUpErrors();
-	this.clearLoginInputs();
-	this.clearLoginErrors();
-	this.hideLoginErrors();
-	this.hideAllSpinner();
-
-	// TODO Not like that
-	$('.user-message').html('<span>' + data.userMessage + '</span>');
+	this.switchMainMenuToLoggedIn();
+	this.switchToMainMenuScreen();
 };
 
-loginSignUpController.prototype.clearSignUpInputs = function() {
+logInSignUpController.prototype.showLogOutSuccess = function(data) {
+	console.log('showLogOutSuccess');
+	console.log('Data: ', data);
+
+	this.hideAllPreSpinner();
+	this.switchMainMenuToLoggedOut();
+	this.switchToMainMenuScreen();
+};
+
+logInSignUpController.prototype.switchToMainMenuScreen = function() {
+	this.hideScreens();
+	this.resetAllScreens();
+	this.showMainMenuScreen();
+};
+
+logInSignUpController.prototype.switchToSignUpScreen = function() {
+	this.hideScreens();
+	this.resetAllScreens();
+	this.showSignUpScreen();
+};
+
+logInSignUpController.prototype.switchToSignUpSuccessScreen = function() {
+	this.hideScreens();
+	this.resetAllScreens();
+	this.showSignUpSuccessScreen();
+};
+
+logInSignUpController.prototype.switchToLoginScreen = function() {
+	this.hideScreens();
+	this.resetAllScreens();
+	this.showLoginScreen();
+};
+
+logInSignUpController.prototype.resetAllScreens = function() {
+	this.clearAllInputs();
+	this.clearAllErrors();
+	this.hideAllErrors();
+	this.clearAllUserMessages();
+	this.hideAllSpinner();
+};
+
+logInSignUpController.prototype.switchMainMenuToLoggedIn = function() {
+	$(this.MAIN_MENU_SCREEN).find('.logged-out').hide();
+	$(this.MAIN_MENU_SCREEN).find('.logged-in').show();
+};
+
+logInSignUpController.prototype.switchMainMenuToLoggedOut = function() {
+	$(this.MAIN_MENU_SCREEN).find('.logged-in').hide();
+	$(this.MAIN_MENU_SCREEN).find('.logged-out').show();
+};
+
+logInSignUpController.prototype.showMainMenuScreen = function() {
+	$(this.MAIN_MENU_SCREEN).show();
+};
+
+logInSignUpController.prototype.showLoginScreen = function() {
+	$(this.LOGIN_SCREEN).show();
+};
+
+logInSignUpController.prototype.showSignUpScreen = function() {
+	$(this.SIGN_UP_SCREEN).show();
+};
+
+logInSignUpController.prototype.showSignUpSuccessScreen = function() {
+	$(this.SIGN_UP_SUCCESS_SCREEN).show();
+};
+
+logInSignUpController.prototype.clearAllInputs = function() {
+	this.$allInputs.val('');
+};
+
+logInSignUpController.prototype.clearAllErrors = function() {
+	this.$allInputs.parent().find('.errors').html('');
+};
+
+logInSignUpController.prototype.hideAllErrors = function() {
+	this.$allInputs.parent().find('.errors').hide();
+};
+
+logInSignUpController.prototype.clearSignUpInputs = function() {
 	this.$signUpInputs.val('');
 };
 
-loginSignUpController.prototype.clearLoginInputs = function() {
+logInSignUpController.prototype.clearLoginInputs = function() {
 	this.$loginInputs.val('');
 };
 
-loginSignUpController.prototype.clearSignUpErrors = function() {
+logInSignUpController.prototype.clearSignUpErrors = function() {
 	this.$signUpInputs.parent().find('.errors').html('');
 };
 
-loginSignUpController.prototype.showSignUpErrors = function() {
+logInSignUpController.prototype.showSignUpErrors = function() {
 	this.$signUpInputs.parent().find('.errors').show();
 };
 
-loginSignUpController.prototype.hideSignUpErrors = function() {
+logInSignUpController.prototype.hideSignUpErrors = function() {
 	this.$signUpInputs.parent().find('.errors').hide();
 };
 
-loginSignUpController.prototype.clearLoginErrors = function() {
+logInSignUpController.prototype.clearLoginErrors = function() {
 	this.$loginInputs.parent().find('.errors').html('');
 };
 
-loginSignUpController.prototype.showLoginErrors = function() {
+logInSignUpController.prototype.showLoginErrors = function() {
 	this.$loginInputs.parent().find('.errors').show();
 };
 
-loginSignUpController.prototype.hideLoginErrors = function() {
+logInSignUpController.prototype.hideLoginErrors = function() {
 	this.$loginInputs.parent().find('.errors').hide();
 };
 
-loginSignUpController.prototype.hideScreens = function() {
+logInSignUpController.prototype.hideScreens = function() {
 	$(this.SCREENS).hide();
 };
 
-loginSignUpController.prototype.showLoginSpinner = function() {
-	$(this.LOGIN_FORM).find('.spinner').show();
+logInSignUpController.prototype.showLoginSpinner = function() {
+	$(this.LOGIN_FORM).find(this.SPINNER).show();
 };
 
-loginSignUpController.prototype.showSignUpSpinner = function() {
-	$(this.SIGN_UP_FORM).find('.spinner').show();
+logInSignUpController.prototype.showSignUpSpinner = function() {
+	$(this.SIGN_UP_FORM).find(this.SPINNER).show();
 };
 
-loginSignUpController.prototype.showAllSpinner = function() {
-	$('.spinner').show();
+logInSignUpController.prototype.showLogOutSpinner = function() {
+	$(this.MAIN_MENU_SCREEN).find(this.PRE_SCREEN_SPINNER).show();
 };
 
-loginSignUpController.prototype.hideAllSpinner = function() {
-	$('.spinner').hide();
+logInSignUpController.prototype.showAllSpinner = function() {
+	$(this.SPINNER).show();
 };
 
-loginSignUpController.prototype.clearAllUserMessages = function() {
+logInSignUpController.prototype.hideAllSpinner = function() {
+	$(this.SPINNER).hide();
+};
+
+logInSignUpController.prototype.hideAllPreSpinner = function() {
+	$(this.PRE_SCREEN_SPINNER).hide();
+};
+
+logInSignUpController.prototype.clearAllUserMessages = function() {
 	$('.user-message').html('');
+};
+
+logInSignUpController.prototype.showAlertError = function(msg) {
+	msg = msg || 'There was a problem while processing your request. Please try again later.';
+	window.alert(msg);
+};
+
+logInSignUpController.prototype.processChangeScreen = function(btn) {
+	this.resetAllScreens();
+	history.replaceState(null, null, '/');
 };

@@ -2572,3 +2572,191 @@ SyntaxError: Unexpected token .
     at Function.Module._load (internal/modules/cjs/loader.js:530:3)
     at Module.require (internal/modules/cjs/loader.js:637:17)
     at require (internal/modules/cjs/helpers.js:22:18)
+2019-1-28 18:47:01 error: uncaughtException: Unexpected token ;
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:63
+      isSuccessful: ctx.errors.length ? false : true;
+                                                    ^
+
+SyntaxError: Unexpected token ;
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-1-28 18:47:18 error: uncaughtException: Unexpected token ;
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:63
+      isSuccessful: ctx.errors.length ? false : true;
+                                                    ^
+
+SyntaxError: Unexpected token ;
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-1-28 18:47:50 error: uncaughtException: Unexpected token ;
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:63
+      isSuccessful: ctx.errors.length ? false : true;
+                                                    ^
+
+SyntaxError: Unexpected token ;
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-1-28 18:48:49 error: uncaughtException: Unexpected token ;
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:63
+      isSuccessful: ctx.errors.length ? false : true;
+                                                    ^
+
+SyntaxError: Unexpected token ;
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-1-28 18:48:51 error: uncaughtException: Unexpected token ;
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:63
+      isSuccessful: ctx.errors.length ? false : true;
+                                                    ^
+
+SyntaxError: Unexpected token ;
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-1-28 18:48:56 error: uncaughtException: Unexpected token ;
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:63
+      isSuccessful: ctx.errors.length ? false : true;
+                                                    ^
+
+SyntaxError: Unexpected token ;
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-1-28 18:48:59 error: uncaughtException: Unexpected token ;
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:63
+      isSuccessful: ctx.errors.length ? false : true;
+                                                    ^
+
+SyntaxError: Unexpected token ;
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-1-28 18:49:01 error: uncaughtException: Unexpected token ;
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:63
+      isSuccessful: ctx.errors.length ? false : true;
+                                                    ^
+
+SyntaxError: Unexpected token ;
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-1-28 19:23:58 error: uncaughtException: post `/sign_up`: `middleware` must be a function, not `undefined`
+Error: post `/sign_up`: `middleware` must be a function, not `undefined`
+    at Layer.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-router\lib\layer.js:39:13)
+    at Array.forEach (<anonymous>)
+    at new Layer (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-router\lib\layer.js:36:14)
+    at Router.register (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-router\lib\router.js:553:15)
+    at Router.(anonymous function) [as post] (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-router\lib\router.js:202:10)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\routes\index.js:19:3)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+2019-1-28 19:24:16 error: uncaughtException: post `/sign_up`: `middleware` must be a function, not `undefined`
+Error: post `/sign_up`: `middleware` must be a function, not `undefined`
+    at Layer.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-router\lib\layer.js:39:13)
+    at Array.forEach (<anonymous>)
+    at new Layer (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-router\lib\layer.js:36:14)
+    at Router.register (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-router\lib\router.js:553:15)
+    at Router.(anonymous function) [as post] (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-router\lib\router.js:202:10)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\routes\index.js:19:3)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+2019-1-28 20:35:45 error: uncaughtException: post `/log_out`: `middleware` must be a function, not `undefined`
+Error: post `/log_out`: `middleware` must be a function, not `undefined`
+    at Layer.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-router\lib\layer.js:39:13)
+    at Array.forEach (<anonymous>)
+    at new Layer (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-router\lib\layer.js:36:14)
+    at Router.register (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-router\lib\router.js:553:15)
+    at Router.(anonymous function) [as post] (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-router\lib\router.js:202:10)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\routes\index.js:21:3)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+2019-1-28 20:35:54 error: uncaughtException: logout is not defined
+ReferenceError: logout is not defined
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\routes\index.js:21:35)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:18:36)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+2019-1-28 20:36:12 error: uncaughtException: post `/login`: `middleware` must be a function, not `undefined`
+Error: post `/login`: `middleware` must be a function, not `undefined`
+    at Layer.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-router\lib\layer.js:39:13)
+    at Array.forEach (<anonymous>)
+    at new Layer (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-router\lib\layer.js:36:14)
+    at Router.register (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-router\lib\router.js:553:15)
+    at Router.(anonymous function) [as post] (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-router\lib\router.js:202:10)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\routes\index.js:19:3)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)

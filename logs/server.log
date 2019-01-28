@@ -10212,3 +10212,894 @@ URL = http://localhost:8882/
       Please confirm your account before logging in.
 2019-1-19 20:14:54 info: Confirmation email sent
 2019-1-19 20:15:54 info: Successfully validated your account
+2019-1-28 16:46:58 info: Server started on port: 8882
+2019-1-28 16:47:23 info: Server started on port: 8882
+2019-1-28 16:52:09 info: Server started on port: 8882
+2019-1-28 16:55:45 info: Server started on port: 8882
+2019-1-28 17:02:29 info: Server started on port: 8882
+2019-1-28 17:03:16 info: Server started on port: 8882
+2019-1-28 17:06:22 info: Server started on port: 8882
+2019-1-28 17:09:16 info: Server started on port: 8882
+2019-1-28 17:10:23 info: Server started on port: 8882
+2019-1-28 17:10:30 info: Server started on port: 8882
+2019-1-28 17:10:44 info: Server started on port: 8882
+2019-1-28 17:11:27 info: Server started on port: 8882
+2019-1-28 17:12:47 info: Server started on port: 8882
+2019-1-28 17:13:33 info: Server started on port: 8882
+2019-1-28 17:13:37 info: Server started on port: 8882
+2019-1-28 17:13:54 info: Server started on port: 8882
+2019-1-28 17:14:07 info: Server started on port: 8882
+2019-1-28 17:16:34 info: Server started on port: 8882
+2019-1-28 17:18:12 info: Server started on port: 8882
+2019-1-28 17:19:06 info: Server started on port: 8882
+2019-1-28 17:19:40 info: Server started on port: 8882
+2019-1-28 17:19:43 info: Server started on port: 8882
+2019-1-28 17:21:57 info: Server started on port: 8882
+2019-1-28 17:24:22 info: Server started on port: 8882
+2019-1-28 17:25:36 info: Server started on port: 8882
+2019-1-28 17:26:04 info: Server started on port: 8882
+2019-1-28 17:26:07 info: Server started on port: 8882
+2019-1-28 17:26:16 info: Server started on port: 8882
+2019-1-28 17:26:19 info: Server started on port: 8882
+2019-1-28 17:26:22 info: Server started on port: 8882
+2019-1-28 17:26:46 info: Server started on port: 8882
+2019-1-28 17:26:59 info: Server started on port: 8882
+2019-1-28 17:27:28 info: Server started on port: 8882
+2019-1-28 17:28:28 info: Server started on port: 8882
+2019-1-28 17:29:33 info: Server started on port: 8882
+2019-1-28 17:29:37 info: Server started on port: 8882
+2019-1-28 17:29:58 info: Server started on port: 8882
+2019-1-28 17:30:39 info: Server started on port: 8882
+2019-1-28 17:32:08 info: Server started on port: 8882
+2019-1-28 17:32:12 info: Server started on port: 8882
+2019-1-28 17:32:25 info: Server started on port: 8882
+2019-1-28 17:33:21 info: Server started on port: 8882
+2019-1-28 17:34:24 info: Server started on port: 8882
+2019-1-28 17:34:42 info: Server started on port: 8882
+2019-1-28 17:36:16 info: Server started on port: 8882
+2019-1-28 17:36:38 info: Server started on port: 8882
+2019-1-28 17:36:42 info: Server started on port: 8882
+2019-1-28 17:36:48 info: Server started on port: 8882
+2019-1-28 17:37:23 info: Server started on port: 8882
+2019-1-28 17:37:37 info: Server started on port: 8882
+2019-1-28 17:38:59 info: Server started on port: 8882
+2019-1-28 17:39:15 info: Server started on port: 8882
+2019-1-28 17:39:21 info: Server started on port: 8882
+2019-1-28 17:40:10 info: Server started on port: 8882
+2019-1-28 17:40:30 info: Server started on port: 8882
+2019-1-28 17:53:00 info: Server started on port: 8882
+2019-1-28 17:53:04 info: Server started on port: 8882
+2019-1-28 17:53:23 info: Server started on port: 8882
+2019-1-28 17:53:23 error: IO Errors: { TypeError: Cannot read property 'url' of undefined
+    at Application.createContext (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa\lib\application.js:170:53)
+    at Object.routeRequest (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\socketRouter.js:13:22)
+    at io.on (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:108:24)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:34:12
+    at Namespace.nodifyOn (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:160:17)
+    at success (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:86:18)
+    at composed.then (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:99:21)
+    at process._tickCallback (internal/process/next_tick.js:68:7)
+  [stack]:
+   'TypeError: Cannot read property \'url\' of undefined\n    at Application.createContext (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa\\lib\\application.js:170:53)\n    at Object.routeRequest (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\socket\\socketRouter.js:13:22)\n    at io.on (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\app.js:108:24)\n    at dispatch (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:42:32)\n    at E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:34:12\n    at Namespace.nodifyOn (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:160:17)\n    at success (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:86:18)\n    at composed.then (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:99:21)\n    at process._tickCallback (internal/process/next_tick.js:68:7)',
+  [message]: 'Cannot read property \'url\' of undefined' }
+2019-1-28 17:54:37 info: Server started on port: 8882
+2019-1-28 17:54:40 error: IO Errors: { TypeError: Cannot read property 'url' of undefined
+    at Application.createContext (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa\lib\application.js:170:53)
+    at Object.routeRequest (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\socketRouter.js:13:22)
+    at io.on (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:108:24)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:34:12
+    at Namespace.nodifyOn (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:160:17)
+    at success (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:86:18)
+    at composed.then (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:99:21)
+    at process._tickCallback (internal/process/next_tick.js:68:7)
+  [stack]:
+   'TypeError: Cannot read property \'url\' of undefined\n    at Application.createContext (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa\\lib\\application.js:170:53)\n    at Object.routeRequest (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\socket\\socketRouter.js:13:22)\n    at io.on (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\app.js:108:24)\n    at dispatch (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:42:32)\n    at E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:34:12\n    at Namespace.nodifyOn (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:160:17)\n    at success (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:86:18)\n    at composed.then (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:99:21)\n    at process._tickCallback (internal/process/next_tick.js:68:7)',
+  [message]: 'Cannot read property \'url\' of undefined' }
+2019-1-28 17:54:50 info: Server started on port: 8882
+2019-1-28 17:54:50 error: IO Errors: { TypeError: Cannot read property 'url' of undefined
+    at Application.createContext (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa\lib\application.js:170:53)
+    at Object.routeRequest (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\socketRouter.js:13:22)
+    at io.on (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:108:24)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:34:12
+    at Namespace.nodifyOn (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:160:17)
+    at success (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:86:18)
+    at composed.then (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:99:21)
+    at process._tickCallback (internal/process/next_tick.js:68:7)
+  [stack]:
+   'TypeError: Cannot read property \'url\' of undefined\n    at Application.createContext (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa\\lib\\application.js:170:53)\n    at Object.routeRequest (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\socket\\socketRouter.js:13:22)\n    at io.on (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\app.js:108:24)\n    at dispatch (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:42:32)\n    at E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:34:12\n    at Namespace.nodifyOn (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:160:17)\n    at success (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:86:18)\n    at composed.then (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:99:21)\n    at process._tickCallback (internal/process/next_tick.js:68:7)',
+  [message]: 'Cannot read property \'url\' of undefined' }
+2019-1-28 17:54:53 info: Server started on port: 8882
+2019-1-28 17:54:53 error: IO Errors: { TypeError: Cannot read property 'url' of undefined
+    at Application.createContext (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa\lib\application.js:170:53)
+    at Object.routeRequest (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\socketRouter.js:13:22)
+    at io.on (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:108:24)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:34:12
+    at Namespace.nodifyOn (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:160:17)
+    at success (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:86:18)
+    at composed.then (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:99:21)
+    at process._tickCallback (internal/process/next_tick.js:68:7)
+  [stack]:
+   'TypeError: Cannot read property \'url\' of undefined\n    at Application.createContext (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa\\lib\\application.js:170:53)\n    at Object.routeRequest (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\socket\\socketRouter.js:13:22)\n    at io.on (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\app.js:108:24)\n    at dispatch (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:42:32)\n    at E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:34:12\n    at Namespace.nodifyOn (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:160:17)\n    at success (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:86:18)\n    at composed.then (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:99:21)\n    at process._tickCallback (internal/process/next_tick.js:68:7)',
+  [message]: 'Cannot read property \'url\' of undefined' }
+2019-1-28 17:55:00 error: IO Errors: { TypeError: Cannot read property 'url' of undefined
+    at Application.createContext (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa\lib\application.js:170:53)
+    at Object.routeRequest (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\socketRouter.js:13:22)
+    at io.on (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:108:24)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:34:12
+    at Namespace.nodifyOn (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:160:17)
+    at success (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:86:18)
+    at composed.then (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:99:21)
+    at process._tickCallback (internal/process/next_tick.js:68:7)
+  [stack]:
+   'TypeError: Cannot read property \'url\' of undefined\n    at Application.createContext (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa\\lib\\application.js:170:53)\n    at Object.routeRequest (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\socket\\socketRouter.js:13:22)\n    at io.on (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\app.js:108:24)\n    at dispatch (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:42:32)\n    at E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:34:12\n    at Namespace.nodifyOn (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:160:17)\n    at success (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:86:18)\n    at composed.then (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:99:21)\n    at process._tickCallback (internal/process/next_tick.js:68:7)',
+  [message]: 'Cannot read property \'url\' of undefined' }
+2019-1-28 17:55:06 error: IO Errors: { TypeError: Cannot read property 'url' of undefined
+    at Application.createContext (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa\lib\application.js:170:53)
+    at Object.routeRequest (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\socketRouter.js:13:22)
+    at io.on (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:108:24)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:34:12
+    at Namespace.nodifyOn (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:160:17)
+    at success (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:86:18)
+    at composed.then (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:99:21)
+    at process._tickCallback (internal/process/next_tick.js:68:7)
+  [stack]:
+   'TypeError: Cannot read property \'url\' of undefined\n    at Application.createContext (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa\\lib\\application.js:170:53)\n    at Object.routeRequest (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\socket\\socketRouter.js:13:22)\n    at io.on (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\app.js:108:24)\n    at dispatch (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:42:32)\n    at E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:34:12\n    at Namespace.nodifyOn (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:160:17)\n    at success (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:86:18)\n    at composed.then (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:99:21)\n    at process._tickCallback (internal/process/next_tick.js:68:7)',
+  [message]: 'Cannot read property \'url\' of undefined' }
+2019-1-28 17:55:48 info: Server started on port: 8882
+2019-1-28 17:55:50 error: IO Errors: { TypeError: Cannot read property 'url' of undefined
+    at Application.createContext (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa\lib\application.js:170:53)
+    at Object.routeRequest (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\socketRouter.js:13:22)
+    at io.on (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:108:24)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:34:12
+    at Namespace.nodifyOn (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:160:17)
+    at success (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:86:18)
+    at composed.then (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:99:21)
+    at process._tickCallback (internal/process/next_tick.js:68:7)
+  [stack]:
+   'TypeError: Cannot read property \'url\' of undefined\n    at Application.createContext (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa\\lib\\application.js:170:53)\n    at Object.routeRequest (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\socket\\socketRouter.js:13:22)\n    at io.on (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\app.js:108:24)\n    at dispatch (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:42:32)\n    at E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:34:12\n    at Namespace.nodifyOn (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:160:17)\n    at success (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:86:18)\n    at composed.then (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:99:21)\n    at process._tickCallback (internal/process/next_tick.js:68:7)',
+  [message]: 'Cannot read property \'url\' of undefined' }
+2019-1-28 17:55:53 error: IO Errors: { TypeError: Cannot read property 'url' of undefined
+    at Application.createContext (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa\lib\application.js:170:53)
+    at Object.routeRequest (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\socketRouter.js:13:22)
+    at io.on (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:108:24)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:34:12
+    at Namespace.nodifyOn (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:160:17)
+    at success (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:86:18)
+    at composed.then (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:99:21)
+    at process._tickCallback (internal/process/next_tick.js:68:7)
+  [stack]:
+   'TypeError: Cannot read property \'url\' of undefined\n    at Application.createContext (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa\\lib\\application.js:170:53)\n    at Object.routeRequest (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\socket\\socketRouter.js:13:22)\n    at io.on (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\app.js:108:24)\n    at dispatch (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:42:32)\n    at E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:34:12\n    at Namespace.nodifyOn (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:160:17)\n    at success (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:86:18)\n    at composed.then (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:99:21)\n    at process._tickCallback (internal/process/next_tick.js:68:7)',
+  [message]: 'Cannot read property \'url\' of undefined' }
+2019-1-28 17:55:56 error: IO Errors: { TypeError: Cannot read property 'url' of undefined
+    at Application.createContext (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa\lib\application.js:170:53)
+    at Object.routeRequest (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\socketRouter.js:13:22)
+    at io.on (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:108:24)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:34:12
+    at Namespace.nodifyOn (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:160:17)
+    at success (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:86:18)
+    at composed.then (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:99:21)
+    at process._tickCallback (internal/process/next_tick.js:68:7)
+  [stack]:
+   'TypeError: Cannot read property \'url\' of undefined\n    at Application.createContext (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa\\lib\\application.js:170:53)\n    at Object.routeRequest (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\socket\\socketRouter.js:13:22)\n    at io.on (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\app.js:108:24)\n    at dispatch (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:42:32)\n    at E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:34:12\n    at Namespace.nodifyOn (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:160:17)\n    at success (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:86:18)\n    at composed.then (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:99:21)\n    at process._tickCallback (internal/process/next_tick.js:68:7)',
+  [message]: 'Cannot read property \'url\' of undefined' }
+2019-1-28 17:55:58 error: IO Errors: { TypeError: Cannot read property 'url' of undefined
+    at Application.createContext (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa\lib\application.js:170:53)
+    at Object.routeRequest (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\socketRouter.js:13:22)
+    at io.on (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:108:24)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:34:12
+    at Namespace.nodifyOn (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:160:17)
+    at success (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:86:18)
+    at composed.then (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:99:21)
+    at process._tickCallback (internal/process/next_tick.js:68:7)
+  [stack]:
+   'TypeError: Cannot read property \'url\' of undefined\n    at Application.createContext (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa\\lib\\application.js:170:53)\n    at Object.routeRequest (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\socket\\socketRouter.js:13:22)\n    at io.on (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\app.js:108:24)\n    at dispatch (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:42:32)\n    at E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:34:12\n    at Namespace.nodifyOn (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:160:17)\n    at success (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:86:18)\n    at composed.then (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:99:21)\n    at process._tickCallback (internal/process/next_tick.js:68:7)',
+  [message]: 'Cannot read property \'url\' of undefined' }
+2019-1-28 17:58:06 info: Server started on port: 8882
+2019-1-28 17:58:27 info: Server started on port: 8882
+2019-1-28 17:59:06 info: Server started on port: 8882
+2019-1-28 17:59:41 info: Server started on port: 8882
+2019-1-28 18:00:42 info: Server started on port: 8882
+2019-1-28 18:02:44 info: Server started on port: 8882
+2019-1-28 18:03:42 info: Server started on port: 8882
+2019-1-28 18:03:42 error: IO Errors: { TypeError: Cannot read property 'createContext' of undefined
+    at Object.routeRequest (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\socketRouter.js:13:22)
+    at io.on (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:110:24)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:34:12
+    at Namespace.nodifyOn (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:160:17)
+    at success (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:86:18)
+    at composed.then (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:99:21)
+    at process._tickCallback (internal/process/next_tick.js:68:7)
+  [stack]:
+   'TypeError: Cannot read property \'createContext\' of undefined\n    at Object.routeRequest (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\socket\\socketRouter.js:13:22)\n    at io.on (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\app.js:110:24)\n    at dispatch (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:42:32)\n    at E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:34:12\n    at Namespace.nodifyOn (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:160:17)\n    at success (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:86:18)\n    at composed.then (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:99:21)\n    at process._tickCallback (internal/process/next_tick.js:68:7)',
+  [message]: 'Cannot read property \'createContext\' of undefined' }
+2019-1-28 18:03:58 info: Server started on port: 8882
+2019-1-28 18:03:58 error: IO Errors: { TypeError: Cannot read property 'createContext' of undefined
+    at Object.routeRequest (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\socketRouter.js:13:22)
+    at io.on (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:110:24)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:34:12
+    at Namespace.nodifyOn (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:160:17)
+    at success (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:86:18)
+    at composed.then (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:99:21)
+    at process._tickCallback (internal/process/next_tick.js:68:7)
+  [stack]:
+   'TypeError: Cannot read property \'createContext\' of undefined\n    at Object.routeRequest (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\socket\\socketRouter.js:13:22)\n    at io.on (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\app.js:110:24)\n    at dispatch (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:42:32)\n    at E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:34:12\n    at Namespace.nodifyOn (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:160:17)\n    at success (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:86:18)\n    at composed.then (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:99:21)\n    at process._tickCallback (internal/process/next_tick.js:68:7)',
+  [message]: 'Cannot read property \'createContext\' of undefined' }
+2019-1-28 18:04:05 info: Server started on port: 8882
+2019-1-28 18:04:05 error: IO Errors: { TypeError: Cannot read property 'createContext' of undefined
+    at Object.routeRequest (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\socketRouter.js:13:22)
+    at io.on (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:108:24)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:34:12
+    at Namespace.nodifyOn (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:160:17)
+    at success (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:86:18)
+    at composed.then (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:99:21)
+    at process._tickCallback (internal/process/next_tick.js:68:7)
+  [stack]:
+   'TypeError: Cannot read property \'createContext\' of undefined\n    at Object.routeRequest (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\socket\\socketRouter.js:13:22)\n    at io.on (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\app.js:108:24)\n    at dispatch (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:42:32)\n    at E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:34:12\n    at Namespace.nodifyOn (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:160:17)\n    at success (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:86:18)\n    at composed.then (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:99:21)\n    at process._tickCallback (internal/process/next_tick.js:68:7)',
+  [message]: 'Cannot read property \'createContext\' of undefined' }
+2019-1-28 18:04:52 info: Server started on port: 8882
+2019-1-28 18:04:53 error: IO Errors: { TypeError: Cannot read property 'createContext' of undefined
+    at Object.routeRequest (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\socketRouter.js:13:22)
+    at io.on (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:108:24)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:34:12
+    at Namespace.nodifyOn (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:160:17)
+    at success (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:86:18)
+    at composed.then (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:99:21)
+    at process._tickCallback (internal/process/next_tick.js:68:7)
+  [stack]:
+   'TypeError: Cannot read property \'createContext\' of undefined\n    at Object.routeRequest (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\socket\\socketRouter.js:13:22)\n    at io.on (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\app.js:108:24)\n    at dispatch (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:42:32)\n    at E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:34:12\n    at Namespace.nodifyOn (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:160:17)\n    at success (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:86:18)\n    at composed.then (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:99:21)\n    at process._tickCallback (internal/process/next_tick.js:68:7)',
+  [message]: 'Cannot read property \'createContext\' of undefined' }
+2019-1-28 18:04:56 info: Server started on port: 8882
+2019-1-28 18:04:56 error: IO Errors: { TypeError: Cannot read property 'createContext' of undefined
+    at Object.routeRequest (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\socketRouter.js:13:22)
+    at io.on (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:108:24)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:34:12
+    at Namespace.nodifyOn (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:160:17)
+    at success (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:86:18)
+    at composed.then (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:99:21)
+    at process._tickCallback (internal/process/next_tick.js:68:7)
+  [stack]:
+   'TypeError: Cannot read property \'createContext\' of undefined\n    at Object.routeRequest (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\socket\\socketRouter.js:13:22)\n    at io.on (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\app.js:108:24)\n    at dispatch (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:42:32)\n    at E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:34:12\n    at Namespace.nodifyOn (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:160:17)\n    at success (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:86:18)\n    at composed.then (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:99:21)\n    at process._tickCallback (internal/process/next_tick.js:68:7)',
+  [message]: 'Cannot read property \'createContext\' of undefined' }
+2019-1-28 18:05:00 info: Server started on port: 8882
+2019-1-28 18:05:00 error: IO Errors: { TypeError: Cannot read property 'createContext' of undefined
+    at Object.routeRequest (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\socketRouter.js:13:22)
+    at io.on (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:108:24)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:34:12
+    at Namespace.nodifyOn (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:160:17)
+    at success (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:86:18)
+    at composed.then (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:99:21)
+    at process._tickCallback (internal/process/next_tick.js:68:7)
+  [stack]:
+   'TypeError: Cannot read property \'createContext\' of undefined\n    at Object.routeRequest (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\socket\\socketRouter.js:13:22)\n    at io.on (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\app.js:108:24)\n    at dispatch (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:42:32)\n    at E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:34:12\n    at Namespace.nodifyOn (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:160:17)\n    at success (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:86:18)\n    at composed.then (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:99:21)\n    at process._tickCallback (internal/process/next_tick.js:68:7)',
+  [message]: 'Cannot read property \'createContext\' of undefined' }
+2019-1-28 18:05:09 info: Server started on port: 8882
+2019-1-28 18:05:09 error: IO Errors: { TypeError: Cannot read property 'createContext' of undefined
+    at Object.routeRequest (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\socketRouter.js:13:22)
+    at io.on (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:108:24)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:34:12
+    at Namespace.nodifyOn (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:160:17)
+    at success (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:86:18)
+    at composed.then (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:99:21)
+    at process._tickCallback (internal/process/next_tick.js:68:7)
+  [stack]:
+   'TypeError: Cannot read property \'createContext\' of undefined\n    at Object.routeRequest (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\socket\\socketRouter.js:13:22)\n    at io.on (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\app.js:108:24)\n    at dispatch (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:42:32)\n    at E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:34:12\n    at Namespace.nodifyOn (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:160:17)\n    at success (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:86:18)\n    at composed.then (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:99:21)\n    at process._tickCallback (internal/process/next_tick.js:68:7)',
+  [message]: 'Cannot read property \'createContext\' of undefined' }
+2019-1-28 18:05:09 error: IO Errors: { TypeError: Cannot read property 'createContext' of undefined
+    at Object.routeRequest (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\socketRouter.js:13:22)
+    at io.on (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:108:24)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:34:12
+    at Namespace.nodifyOn (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:160:17)
+    at success (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:86:18)
+    at composed.then (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:99:21)
+    at process._tickCallback (internal/process/next_tick.js:68:7)
+  [stack]:
+   'TypeError: Cannot read property \'createContext\' of undefined\n    at Object.routeRequest (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\socket\\socketRouter.js:13:22)\n    at io.on (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\app.js:108:24)\n    at dispatch (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:42:32)\n    at E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:34:12\n    at Namespace.nodifyOn (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:160:17)\n    at success (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:86:18)\n    at composed.then (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:99:21)\n    at process._tickCallback (internal/process/next_tick.js:68:7)',
+  [message]: 'Cannot read property \'createContext\' of undefined' }
+2019-1-28 18:05:12 error: IO Errors: { TypeError: Cannot read property 'createContext' of undefined
+    at Object.routeRequest (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\socketRouter.js:13:22)
+    at io.on (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:108:24)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:34:12
+    at Namespace.nodifyOn (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:160:17)
+    at success (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:86:18)
+    at composed.then (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:99:21)
+    at process._tickCallback (internal/process/next_tick.js:68:7)
+  [stack]:
+   'TypeError: Cannot read property \'createContext\' of undefined\n    at Object.routeRequest (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\socket\\socketRouter.js:13:22)\n    at io.on (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\app.js:108:24)\n    at dispatch (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:42:32)\n    at E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:34:12\n    at Namespace.nodifyOn (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:160:17)\n    at success (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:86:18)\n    at composed.then (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:99:21)\n    at process._tickCallback (internal/process/next_tick.js:68:7)',
+  [message]: 'Cannot read property \'createContext\' of undefined' }
+2019-1-28 18:05:13 error: IO Errors: { TypeError: Cannot read property 'createContext' of undefined
+    at Object.routeRequest (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\socketRouter.js:13:22)
+    at io.on (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:108:24)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:34:12
+    at Namespace.nodifyOn (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:160:17)
+    at success (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:86:18)
+    at composed.then (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:99:21)
+    at process._tickCallback (internal/process/next_tick.js:68:7)
+  [stack]:
+   'TypeError: Cannot read property \'createContext\' of undefined\n    at Object.routeRequest (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\socket\\socketRouter.js:13:22)\n    at io.on (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\app.js:108:24)\n    at dispatch (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:42:32)\n    at E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:34:12\n    at Namespace.nodifyOn (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:160:17)\n    at success (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:86:18)\n    at composed.then (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:99:21)\n    at process._tickCallback (internal/process/next_tick.js:68:7)',
+  [message]: 'Cannot read property \'createContext\' of undefined' }
+2019-1-28 18:05:28 error: IO Errors: { TypeError: Cannot read property 'createContext' of undefined
+    at Object.routeRequest (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\socketRouter.js:13:22)
+    at io.on (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:108:24)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:34:12
+    at Namespace.nodifyOn (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:160:17)
+    at success (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:86:18)
+    at composed.then (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:99:21)
+    at process._tickCallback (internal/process/next_tick.js:68:7)
+  [stack]:
+   'TypeError: Cannot read property \'createContext\' of undefined\n    at Object.routeRequest (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\socket\\socketRouter.js:13:22)\n    at io.on (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\app.js:108:24)\n    at dispatch (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:42:32)\n    at E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:34:12\n    at Namespace.nodifyOn (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:160:17)\n    at success (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:86:18)\n    at composed.then (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:99:21)\n    at process._tickCallback (internal/process/next_tick.js:68:7)',
+  [message]: 'Cannot read property \'createContext\' of undefined' }
+2019-1-28 18:05:45 info: Server started on port: 8882
+2019-1-28 18:05:45 error: IO Errors: { TypeError: Cannot read property 'url' of undefined
+    at Application.createContext (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa\lib\application.js:170:53)
+    at Object.routeRequest (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\socketRouter.js:13:22)
+    at io.on (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:108:24)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:34:12
+    at Namespace.nodifyOn (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:160:17)
+    at success (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:86:18)
+    at composed.then (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:99:21)
+    at process._tickCallback (internal/process/next_tick.js:68:7)
+  [stack]:
+   'TypeError: Cannot read property \'url\' of undefined\n    at Application.createContext (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa\\lib\\application.js:170:53)\n    at Object.routeRequest (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\socket\\socketRouter.js:13:22)\n    at io.on (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\app.js:108:24)\n    at dispatch (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:42:32)\n    at E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:34:12\n    at Namespace.nodifyOn (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:160:17)\n    at success (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:86:18)\n    at composed.then (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:99:21)\n    at process._tickCallback (internal/process/next_tick.js:68:7)',
+  [message]: 'Cannot read property \'url\' of undefined' }
+2019-1-28 18:05:48 info: Server started on port: 8882
+2019-1-28 18:05:48 error: IO Errors: { TypeError: Cannot read property 'url' of undefined
+    at Application.createContext (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa\lib\application.js:170:53)
+    at Object.routeRequest (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\socketRouter.js:13:22)
+    at io.on (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:108:24)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:34:12
+    at Namespace.nodifyOn (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:160:17)
+    at success (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:86:18)
+    at composed.then (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:99:21)
+    at process._tickCallback (internal/process/next_tick.js:68:7)
+  [stack]:
+   'TypeError: Cannot read property \'url\' of undefined\n    at Application.createContext (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa\\lib\\application.js:170:53)\n    at Object.routeRequest (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\socket\\socketRouter.js:13:22)\n    at io.on (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\app.js:108:24)\n    at dispatch (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:42:32)\n    at E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:34:12\n    at Namespace.nodifyOn (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:160:17)\n    at success (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:86:18)\n    at composed.then (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:99:21)\n    at process._tickCallback (internal/process/next_tick.js:68:7)',
+  [message]: 'Cannot read property \'url\' of undefined' }
+2019-1-28 18:05:49 error: IO Errors: { TypeError: Cannot read property 'url' of undefined
+    at Application.createContext (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa\lib\application.js:170:53)
+    at Object.routeRequest (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\socketRouter.js:13:22)
+    at io.on (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:108:24)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:34:12
+    at Namespace.nodifyOn (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:160:17)
+    at success (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:86:18)
+    at composed.then (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:99:21)
+    at process._tickCallback (internal/process/next_tick.js:68:7)
+  [stack]:
+   'TypeError: Cannot read property \'url\' of undefined\n    at Application.createContext (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa\\lib\\application.js:170:53)\n    at Object.routeRequest (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\socket\\socketRouter.js:13:22)\n    at io.on (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\app.js:108:24)\n    at dispatch (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:42:32)\n    at E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:34:12\n    at Namespace.nodifyOn (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:160:17)\n    at success (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:86:18)\n    at composed.then (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:99:21)\n    at process._tickCallback (internal/process/next_tick.js:68:7)',
+  [message]: 'Cannot read property \'url\' of undefined' }
+2019-1-28 18:05:52 error: IO Errors: { TypeError: Cannot read property 'url' of undefined
+    at Application.createContext (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa\lib\application.js:170:53)
+    at Object.routeRequest (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\socketRouter.js:13:22)
+    at io.on (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:108:24)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:34:12
+    at Namespace.nodifyOn (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:160:17)
+    at success (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:86:18)
+    at composed.then (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:99:21)
+    at process._tickCallback (internal/process/next_tick.js:68:7)
+  [stack]:
+   'TypeError: Cannot read property \'url\' of undefined\n    at Application.createContext (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa\\lib\\application.js:170:53)\n    at Object.routeRequest (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\socket\\socketRouter.js:13:22)\n    at io.on (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\app.js:108:24)\n    at dispatch (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:42:32)\n    at E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:34:12\n    at Namespace.nodifyOn (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:160:17)\n    at success (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:86:18)\n    at composed.then (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:99:21)\n    at process._tickCallback (internal/process/next_tick.js:68:7)',
+  [message]: 'Cannot read property \'url\' of undefined' }
+2019-1-28 18:06:05 info: Server started on port: 8882
+2019-1-28 18:06:07 error: IO Errors: { TypeError: Cannot read property 'url' of undefined
+    at Application.createContext (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa\lib\application.js:170:53)
+    at Object.routeRequest (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\socketRouter.js:13:22)
+    at io.on (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:108:24)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:34:12
+    at Namespace.nodifyOn (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:160:17)
+    at success (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:86:18)
+    at composed.then (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:99:21)
+    at process._tickCallback (internal/process/next_tick.js:68:7)
+  [stack]:
+   'TypeError: Cannot read property \'url\' of undefined\n    at Application.createContext (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa\\lib\\application.js:170:53)\n    at Object.routeRequest (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\socket\\socketRouter.js:13:22)\n    at io.on (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\app.js:108:24)\n    at dispatch (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:42:32)\n    at E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:34:12\n    at Namespace.nodifyOn (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:160:17)\n    at success (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:86:18)\n    at composed.then (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:99:21)\n    at process._tickCallback (internal/process/next_tick.js:68:7)',
+  [message]: 'Cannot read property \'url\' of undefined' }
+2019-1-28 18:06:18 info: Server started on port: 8882
+2019-1-28 18:06:19 error: IO Errors: { TypeError: Cannot read property 'url' of undefined
+    at Application.createContext (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa\lib\application.js:170:53)
+    at Object.routeRequest (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\socketRouter.js:13:22)
+    at io.on (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:108:24)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:34:12
+    at Namespace.nodifyOn (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:160:17)
+    at success (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:86:18)
+    at composed.then (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:99:21)
+    at process._tickCallback (internal/process/next_tick.js:68:7)
+  [stack]:
+   'TypeError: Cannot read property \'url\' of undefined\n    at Application.createContext (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa\\lib\\application.js:170:53)\n    at Object.routeRequest (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\socket\\socketRouter.js:13:22)\n    at io.on (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\app.js:108:24)\n    at dispatch (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:42:32)\n    at E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:34:12\n    at Namespace.nodifyOn (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:160:17)\n    at success (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:86:18)\n    at composed.then (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:99:21)\n    at process._tickCallback (internal/process/next_tick.js:68:7)',
+  [message]: 'Cannot read property \'url\' of undefined' }
+2019-1-28 18:06:43 info: Server started on port: 8882
+2019-1-28 18:06:44 error: IO Errors: { TypeError: Cannot read property 'url' of undefined
+    at Application.createContext (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa\lib\application.js:170:53)
+    at Object.routeRequest (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\socketRouter.js:13:22)
+    at io.on (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:108:24)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:34:12
+    at Namespace.nodifyOn (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:160:17)
+    at success (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:86:18)
+    at composed.then (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:99:21)
+    at process._tickCallback (internal/process/next_tick.js:68:7)
+  [stack]:
+   'TypeError: Cannot read property \'url\' of undefined\n    at Application.createContext (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa\\lib\\application.js:170:53)\n    at Object.routeRequest (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\socket\\socketRouter.js:13:22)\n    at io.on (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\app.js:108:24)\n    at dispatch (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:42:32)\n    at E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:34:12\n    at Namespace.nodifyOn (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:160:17)\n    at success (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:86:18)\n    at composed.then (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:99:21)\n    at process._tickCallback (internal/process/next_tick.js:68:7)',
+  [message]: 'Cannot read property \'url\' of undefined' }
+2019-1-28 18:06:46 error: IO Errors: { TypeError: Cannot read property 'url' of undefined
+    at Application.createContext (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa\lib\application.js:170:53)
+    at Object.routeRequest (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\socketRouter.js:13:22)
+    at io.on (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:108:24)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:34:12
+    at Namespace.nodifyOn (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:160:17)
+    at success (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:86:18)
+    at composed.then (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:99:21)
+    at process._tickCallback (internal/process/next_tick.js:68:7)
+  [stack]:
+   'TypeError: Cannot read property \'url\' of undefined\n    at Application.createContext (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa\\lib\\application.js:170:53)\n    at Object.routeRequest (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\socket\\socketRouter.js:13:22)\n    at io.on (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\app.js:108:24)\n    at dispatch (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:42:32)\n    at E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:34:12\n    at Namespace.nodifyOn (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:160:17)\n    at success (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:86:18)\n    at composed.then (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:99:21)\n    at process._tickCallback (internal/process/next_tick.js:68:7)',
+  [message]: 'Cannot read property \'url\' of undefined' }
+2019-1-28 18:07:56 info: Server started on port: 8882
+2019-1-28 18:07:56 error: IO Errors: { TypeError: Cannot read property 'url' of undefined
+    at Application.createContext (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa\lib\application.js:170:53)
+    at Object.routeRequest (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\socketRouter.js:13:22)
+    at io.on (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:108:24)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:34:12
+    at Namespace.nodifyOn (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:160:17)
+    at success (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:86:18)
+    at composed.then (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:99:21)
+    at process._tickCallback (internal/process/next_tick.js:68:7)
+  [stack]:
+   'TypeError: Cannot read property \'url\' of undefined\n    at Application.createContext (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa\\lib\\application.js:170:53)\n    at Object.routeRequest (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\socket\\socketRouter.js:13:22)\n    at io.on (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\app.js:108:24)\n    at dispatch (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:42:32)\n    at E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:34:12\n    at Namespace.nodifyOn (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:160:17)\n    at success (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:86:18)\n    at composed.then (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:99:21)\n    at process._tickCallback (internal/process/next_tick.js:68:7)',
+  [message]: 'Cannot read property \'url\' of undefined' }
+2019-1-28 18:07:56 error: IO Errors: { TypeError: Cannot read property 'url' of undefined
+    at Application.createContext (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa\lib\application.js:170:53)
+    at Object.routeRequest (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\socket\socketRouter.js:13:22)
+    at io.on (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:108:24)
+    at dispatch (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:42:32)
+    at E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-compose\index.js:34:12
+    at Namespace.nodifyOn (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:160:17)
+    at success (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:86:18)
+    at composed.then (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-socket.io\lib\namespace.js:99:21)
+    at process._tickCallback (internal/process/next_tick.js:68:7)
+  [stack]:
+   'TypeError: Cannot read property \'url\' of undefined\n    at Application.createContext (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa\\lib\\application.js:170:53)\n    at Object.routeRequest (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\socket\\socketRouter.js:13:22)\n    at io.on (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\app\\app.js:108:24)\n    at dispatch (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:42:32)\n    at E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-compose\\index.js:34:12\n    at Namespace.nodifyOn (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:160:17)\n    at success (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:86:18)\n    at composed.then (E:\\Darth Velioo\\Personal Projects\\Anime Card Board Game\\anime_card_board\\node_modules\\koa-socket.io\\lib\\namespace.js:99:21)\n    at process._tickCallback (internal/process/next_tick.js:68:7)',
+  [message]: 'Cannot read property \'url\' of undefined' }
+2019-1-28 18:15:51 info: Server started on port: 8882
+2019-1-28 18:16:00 info: Server started on port: 8882
+2019-1-28 18:16:06 info: Server started on port: 8882
+2019-1-28 18:17:23 info: Server started on port: 8882
+2019-1-28 18:18:08 info: Server started on port: 8882
+2019-1-28 18:18:38 info: Server started on port: 8882
+2019-1-28 18:27:46 info: Server started on port: 8882
+2019-1-28 18:29:03 info: Server started on port: 8882
+2019-1-28 18:29:19 info: Server started on port: 8882
+2019-1-28 18:29:42 info: Server started on port: 8882
+2019-1-28 18:29:56 info: Server started on port: 8882
+2019-1-28 18:30:24 info: Server started on port: 8882
+2019-1-28 18:30:31 info: Server started on port: 8882
+2019-1-28 18:31:14 info: Server started on port: 8882
+2019-1-28 18:31:20 info: Server started on port: 8882
+2019-1-28 18:31:43 info: Server started on port: 8882
+2019-1-28 18:31:49 info: Server started on port: 8882
+2019-1-28 18:32:00 info: Server started on port: 8882
+2019-1-28 18:32:03 info: Server started on port: 8882
+2019-1-28 18:32:08 info: Server started on port: 8882
+2019-1-28 18:33:10 info: Server started on port: 8882
+2019-1-28 18:34:28 info: Server started on port: 8882
+2019-1-28 18:34:53 info: Server started on port: 8882
+2019-1-28 18:35:03 info: Server started on port: 8882
+2019-1-28 18:35:10 info: Server started on port: 8882
+2019-1-28 18:35:30 info: Server started on port: 8882
+2019-1-28 18:36:39 info: Server started on port: 8882
+2019-1-28 18:36:57 info: Server started on port: 8882
+2019-1-28 18:37:08 info: Server started on port: 8882
+2019-1-28 18:37:15 info: Server started on port: 8882
+2019-1-28 18:38:18 info: Server started on port: 8882
+2019-1-28 18:38:28 info: Server started on port: 8882
+2019-1-28 18:38:33 info: Server started on port: 8882
+2019-1-28 18:38:49 info: Server started on port: 8882
+2019-1-28 18:39:10 info: Server started on port: 8882
+2019-1-28 18:40:09 info: Server started on port: 8882
+2019-1-28 18:40:20 info: FL: The resource at the requested location
+          could not be found
+2019-1-28 18:40:20 info: FL: Response Text: Not Found
+ Ready State: 4
+ Status Code: 404
+2019-1-28 18:40:57 info: Server started on port: 8882
+2019-1-28 18:41:17 info: Server started on port: 8882
+2019-1-28 18:41:19 info: FL: The resource at the requested location
+          could not be found
+2019-1-28 18:41:19 info: FL: Response Text: Not Found
+ Ready State: 4
+ Status Code: 404
+2019-1-28 18:42:01 info: Server started on port: 8882
+2019-1-28 18:42:40 info: Server started on port: 8882
+2019-1-28 18:42:46 info: FL: The resource at the requested location
+          could not be found
+2019-1-28 18:42:46 info: FL: Response Text: Not Found
+ Ready State: 4
+ Status Code: 404
+2019-1-28 18:43:19 info: Server started on port: 8882
+2019-1-28 18:43:22 info: FL: The resource at the requested location
+          could not be found
+2019-1-28 18:43:22 info: FL: Response Text: Not Found
+ Ready State: 4
+ Status Code: 404
+2019-1-28 18:43:28 info: Server started on port: 8882
+2019-1-28 18:43:34 info: FL: The resource at the requested location
+          could not be found
+2019-1-28 18:43:34 info: FL: Response Text: Not Found
+ Ready State: 4
+ Status Code: 404
+2019-1-28 18:43:56 info: Server started on port: 8882
+2019-1-28 18:44:00 info: FL: The resource at the requested location
+          could not be found
+2019-1-28 18:44:00 info: FL: Response Text: Not Found
+ Ready State: 4
+ Status Code: 404
+2019-1-28 18:44:09 info: Server started on port: 8882
+2019-1-28 18:44:50 info: Server started on port: 8882
+2019-1-28 18:49:39 info: Server started on port: 8882
+2019-1-28 18:49:47 info: FL: The resource at the requested location
+          could not be found
+2019-1-28 18:49:47 info: FL: Response Text: Not Found
+ Ready State: 4
+ Status Code: 404
+2019-1-28 18:50:19 info: Server started on port: 8882
+2019-1-28 18:50:35 info: Server started on port: 8882
+2019-1-28 18:50:39 info: Server started on port: 8882
+2019-1-28 18:51:49 info: Server started on port: 8882
+2019-1-28 19:00:38 info: Server started on port: 8882
+2019-1-28 19:03:46 info: Server started on port: 8882
+2019-1-28 19:03:50 info: Server started on port: 8882
+2019-1-28 19:03:54 info: Server started on port: 8882
+2019-1-28 19:04:06 info: Server started on port: 8882
+2019-1-28 19:04:15 info: Server started on port: 8882
+2019-1-28 19:04:21 info: Server started on port: 8882
+2019-1-28 19:04:28 info: Server started on port: 8882
+2019-1-28 19:04:35 info: Server started on port: 8882
+2019-1-28 19:04:47 info: Server started on port: 8882
+2019-1-28 19:04:51 info: Server started on port: 8882
+2019-1-28 19:05:07 info: Server started on port: 8882
+2019-1-28 19:05:15 info: Server started on port: 8882
+2019-1-28 19:05:21 info: Server started on port: 8882
+2019-1-28 19:05:28 info: Server started on port: 8882
+2019-1-28 19:05:40 info: Server started on port: 8882
+2019-1-28 19:05:58 info: Server started on port: 8882
+2019-1-28 19:06:17 info: Server started on port: 8882
+2019-1-28 19:06:28 info: Server started on port: 8882
+2019-1-28 19:06:47 info: Server started on port: 8882
+2019-1-28 19:08:55 info: Server started on port: 8882
+2019-1-28 19:09:13 info: Server started on port: 8882
+2019-1-28 19:09:31 info: Server started on port: 8882
+2019-1-28 19:11:27 info: Server started on port: 8882
+2019-1-28 19:11:56 info: Server started on port: 8882
+2019-1-28 19:11:58 info: Server started on port: 8882
+2019-1-28 19:12:47 info: Server started on port: 8882
+2019-1-28 19:13:07 info: Server started on port: 8882
+2019-1-28 19:13:27 info: Server started on port: 8882
+2019-1-28 19:14:02 info: Server started on port: 8882
+2019-1-28 19:14:16 info: Server started on port: 8882
+2019-1-28 19:14:28 info: Server started on port: 8882
+2019-1-28 19:14:51 info: Server started on port: 8882
+2019-1-28 19:14:54 info: Server started on port: 8882
+2019-1-28 19:14:57 info: Server started on port: 8882
+2019-1-28 19:15:03 info: Server started on port: 8882
+2019-1-28 19:15:23 info: Server started on port: 8882
+2019-1-28 19:16:52 info: Server started on port: 8882
+2019-1-28 19:17:06 info: Server started on port: 8882
+2019-1-28 19:17:16 info: Server started on port: 8882
+2019-1-28 19:18:11 info: Server started on port: 8882
+2019-1-28 19:18:58 info: Server started on port: 8882
+2019-1-28 19:19:46 info: Server started on port: 8882
+2019-1-28 19:21:02 info: Server started on port: 8882
+2019-1-28 19:21:05 info: Server started on port: 8882
+2019-1-28 19:21:37 info: Server started on port: 8882
+2019-1-28 19:23:26 info: Server started on port: 8882
+2019-1-28 19:23:32 info: Server started on port: 8882
+2019-1-28 19:23:50 info: Server started on port: 8882
+2019-1-28 19:24:48 info: Server started on port: 8882
+2019-1-28 19:24:54 info: Server started on port: 8882
+2019-1-28 19:25:36 info: Server started on port: 8882
+2019-1-28 19:26:49 info: Server started on port: 8882
+2019-1-28 19:27:09 info: Server started on port: 8882
+2019-1-28 19:28:14 info: Server started on port: 8882
+2019-1-28 19:28:35 info: Server started on port: 8882
+2019-1-28 19:29:17 info: Server started on port: 8882
+2019-1-28 19:32:31 info: Server started on port: 8882
+2019-1-28 19:33:19 info: Server started on port: 8882
+2019-1-28 19:33:23 info: Server started on port: 8882
+2019-1-28 19:33:26 info: Server started on port: 8882
+2019-1-28 19:33:47 info: Server started on port: 8882
+2019-1-28 19:34:49 info: FL: The resource at the requested location
+          could not be found
+2019-1-28 19:34:49 info: FL: Response Text: Not Found
+ Ready State: 4
+ Status Code: 404
+2019-1-28 19:35:30 info: Server started on port: 8882
+2019-1-28 19:35:44 info: Server started on port: 8882
+2019-1-28 19:35:58 info: FL: The resource at the requested location
+          could not be found
+2019-1-28 19:35:58 info: FL: Response Text: Not Found
+ Ready State: 4
+ Status Code: 404
+2019-1-28 19:38:11 info: Server started on port: 8882
+2019-1-28 19:38:34 info: Server started on port: 8882
+2019-1-28 19:38:46 info: Server started on port: 8882
+2019-1-28 19:38:49 info: Server started on port: 8882
+2019-1-28 19:38:52 info: Server started on port: 8882
+2019-1-28 19:38:58 info: Server started on port: 8882
+2019-1-28 19:39:04 info: Server started on port: 8882
+2019-1-28 19:39:06 info: Server started on port: 8882
+2019-1-28 19:39:09 error: Error while executing code: ReferenceError: sendResponse is not defined
+    at signUp (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\usersController.js:38:7)
+    at process._tickCallback (internal/process/next_tick.js:68:7)
+2019-1-28 19:39:11 info: FL: Internal sever error
+2019-1-28 19:39:11 info: FL: Response Text: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Home</title>
+    <meta charset="utf-8">
+    <link rel="icon" href="http://downloadicons.net/sites/default/files/computer-icon-65917.png">
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.css">
+    <script src="/jquery/dist/jquery.js"></script>
+    <script src="/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="/ajv/dist/ajv.min.js"></script>
+    <script src="/log4javascript/log4javascript.js"></script>
+    <!-- <script src="/js/schemas.js"></script> -->
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+
+<script type="text/javascript">
+    window.onerror = function (msg, url, lineNo, columnNo, error) {
+      infoLog = '';
+      window.alert(`There was a problem while processing your request.`);
+      if(error !== null) {
+        if(error.stack != '') {
+          logger.error(error.name + ': ', error.message + '\n' + error.stack);
+        } else {
+          logger.error(error.name + ': ', error.message + '\n' + url + ':' + lineNo + ':' + columnNo + '\n');
+        }
+      } else if(ajv.errors) {
+        logger.error("Request didn\'t return a valid JSON object\n" + JSON.stringify(ajv.errors, null, 2));
+      } else {
+        logger.error(msg + ': ' + url + ': ' + lineNo + ': ' + columnNo + '\n');
+      }
+      return true;
+    };
+
+    const logger = log4javascript.getLogger();
+    const ajaxAppender = new log4javascript.AjaxAppender('/frontend_logger');
+
+    ajaxAppender.setSendAllOnUnload();
+    ajaxAppender.setTimerInterval(1000);
+    ajaxAppender.setTimed(true);
+
+    logger.addAppender(ajaxAppender);
+
+    function getLogger() {
+      return logger;
+    }
+
+    var infoLog = '';
+
+    var ajv = new Ajv({ allErrors: true });
+
+    function assert(condition, message) {
+        if (!condition) {
+          message = message || 'Assertion failed';
+          if (typeof Error !== 'undefined') {
+            throw new Error(message);
+          }
+          throw message;
+        }
+    }
+</script>
+
+<div id="acb-main-wrapper">
+<div class="server-error">
+	<h1>Interal Server Error 500. The server encountered an error, please try again later.</h1>
+</div>
+
+</div>
+
+</body>
+</html>
+ Ready State: 4
+ Status Code: 500
+2019-1-28 19:40:12 info: Server started on port: 8882
+2019-1-28 19:40:17 info: Server started on port: 8882
+2019-1-28 19:40:20 info: Server started on port: 8882
+2019-1-28 19:40:23 info: Server started on port: 8882
+2019-1-28 19:40:46 info: Server started on port: 8882
+2019-1-28 19:41:00 info: Server started on port: 8882
+2019-1-28 19:41:05 info: Server started on port: 8882
+2019-1-28 19:41:10 info: Server started on port: 8882
+2019-1-28 19:41:23 info: Server started on port: 8882
+2019-1-28 19:41:57 info: User Data = { username: 'velioo98',
+  email: 'velioocs@gmail.com',
+  password:
+   'bd4ce4bd72a766ce9715b62f2955af1ce773e98b5611eb4f5b4e2825d040b4a0',
+  salt: 'vi40Mwo5YwWbp3dFNbfOcuDxPj1uf7FpEDRoZjnOV1g=' }
+2019-1-28 19:42:00 info: userMessageMail = A confirmation email was sent to your email address.
+      Please confirm your account before logging in.
+2019-1-28 19:42:00 info: Confirmation email sent
+2019-1-28 19:42:18 info: Successfully validated your account
+2019-1-28 19:42:42 info: Server started on port: 8882
+2019-1-28 19:43:04 info: Server started on port: 8882
+2019-1-28 19:43:10 info: Server started on port: 8882
+2019-1-28 19:43:14 info: Server started on port: 8882
+2019-1-28 19:43:32 info: Server started on port: 8882
+2019-1-28 19:43:41 info: Server started on port: 8882
+2019-1-28 19:44:24 info: Server started on port: 8882
+2019-1-28 19:44:53 info: Server started on port: 8882
+2019-1-28 19:45:27 info: Server started on port: 8882
+2019-1-28 19:45:52 info: Server started on port: 8882
+2019-1-28 19:46:06 info: Server started on port: 8882
+2019-1-28 19:46:14 info: Server started on port: 8882
+2019-1-28 19:46:48 info: Server started on port: 8882
+2019-1-28 19:47:03 info: Server started on port: 8882
+2019-1-28 19:47:07 info: Server started on port: 8882
+2019-1-28 19:48:18 info: Server started on port: 8882
+2019-1-28 19:48:30 info: Server started on port: 8882
+2019-1-28 19:48:37 info: Server started on port: 8882
+2019-1-28 19:48:48 info: Server started on port: 8882
+2019-1-28 19:48:51 info: Server started on port: 8882
+2019-1-28 19:49:05 info: Server started on port: 8882
+2019-1-28 19:50:18 info: Server started on port: 8882
+2019-1-28 19:50:27 info: Server started on port: 8882
+2019-1-28 19:50:58 info: Server started on port: 8882
+2019-1-28 19:51:23 info: Server started on port: 8882
+2019-1-28 19:51:45 info: Server started on port: 8882
+2019-1-28 19:51:58 info: Server started on port: 8882
+2019-1-28 19:52:54 info: Server started on port: 8882
+2019-1-28 19:53:15 info: Server started on port: 8882
+2019-1-28 19:53:24 info: Server started on port: 8882
+2019-1-28 19:53:45 info: Server started on port: 8882
+2019-1-28 19:54:02 info: Server started on port: 8882
+2019-1-28 19:54:30 info: Server started on port: 8882
+2019-1-28 19:54:53 info: Server started on port: 8882
+2019-1-28 19:55:00 info: Server started on port: 8882
+2019-1-28 19:55:16 info: Server started on port: 8882
+2019-1-28 19:55:23 info: Server started on port: 8882
+2019-1-28 20:00:18 info: Server started on port: 8882
+2019-1-28 20:00:20 info: Server started on port: 8882
+2019-1-28 20:01:13 info: Server started on port: 8882
+2019-1-28 20:01:21 info: Server started on port: 8882
+2019-1-28 20:01:34 info: Server started on port: 8882
+2019-1-28 20:01:43 info: Server started on port: 8882
+2019-1-28 20:04:48 info: Server started on port: 8882
+2019-1-28 20:04:55 info: Server started on port: 8882
+2019-1-28 20:05:00 info: Server started on port: 8882
+2019-1-28 20:05:11 info: Server started on port: 8882
+2019-1-28 20:06:19 info: Server started on port: 8882
+2019-1-28 20:06:32 info: Server started on port: 8882
+2019-1-28 20:07:44 info: Server started on port: 8882
+2019-1-28 20:07:59 info: Server started on port: 8882
+2019-1-28 20:08:10 info: Server started on port: 8882
+2019-1-28 20:08:49 info: Server started on port: 8882
+2019-1-28 20:08:52 info: Server started on port: 8882
+2019-1-28 20:09:00 info: Server started on port: 8882
+2019-1-28 20:09:20 info: Server started on port: 8882
+2019-1-28 20:10:06 info: Server started on port: 8882
+2019-1-28 20:10:27 info: Server started on port: 8882
+2019-1-28 20:10:48 info: Server started on port: 8882
+2019-1-28 20:10:51 info: Server started on port: 8882
+2019-1-28 20:11:09 info: Server started on port: 8882
+2019-1-28 20:11:13 info: Server started on port: 8882
+2019-1-28 20:11:46 info: Server started on port: 8882
+2019-1-28 20:12:46 info: Server started on port: 8882
+2019-1-28 20:12:49 info: Server started on port: 8882
+2019-1-28 20:12:54 info: Server started on port: 8882
+2019-1-28 20:13:04 info: Server started on port: 8882
+2019-1-28 20:13:10 info: Server started on port: 8882
+2019-1-28 20:14:17 info: Server started on port: 8882
+2019-1-28 20:14:21 info: Server started on port: 8882
+2019-1-28 20:15:43 info: Server started on port: 8882
+2019-1-28 20:16:17 info: Server started on port: 8882
+2019-1-28 20:18:41 info: Server started on port: 8882
+2019-1-28 20:20:08 info: Server started on port: 8882
+2019-1-28 20:21:03 info: Server started on port: 8882
+2019-1-28 20:21:38 info: Server started on port: 8882
+2019-1-28 20:22:57 info: Server started on port: 8882
+2019-1-28 20:24:06 info: Server started on port: 8882
+2019-1-28 20:24:17 info: Server started on port: 8882
+2019-1-28 20:24:45 info: Server started on port: 8882
+2019-1-28 20:25:06 info: Server started on port: 8882
+2019-1-28 20:25:14 info: Server started on port: 8882
+2019-1-28 20:25:20 info: Server started on port: 8882
+2019-1-28 20:25:45 info: Server started on port: 8882
+2019-1-28 20:26:03 info: Server started on port: 8882
+2019-1-28 20:26:09 info: Server started on port: 8882
+2019-1-28 20:26:28 info: Server started on port: 8882
+2019-1-28 20:26:55 info: Server started on port: 8882
+2019-1-28 20:27:09 info: Server started on port: 8882
+2019-1-28 20:28:16 info: Server started on port: 8882
+2019-1-28 20:28:24 info: Server started on port: 8882
+2019-1-28 20:30:04 info: Server started on port: 8882
+2019-1-28 20:30:11 info: Server started on port: 8882
+2019-1-28 20:30:19 info: Server started on port: 8882
+2019-1-28 20:31:18 info: Server started on port: 8882
+2019-1-28 20:31:48 info: Server started on port: 8882
+2019-1-28 20:33:57 info: Server started on port: 8882
+2019-1-28 20:34:31 info: Server started on port: 8882
+2019-1-28 20:34:54 info: Server started on port: 8882
+2019-1-28 20:34:59 info: Server started on port: 8882
+2019-1-28 20:35:04 info: Server started on port: 8882
+2019-1-28 20:35:13 info: Server started on port: 8882
+2019-1-28 20:35:27 info: Server started on port: 8882
+2019-1-28 20:36:20 info: Server started on port: 8882
+2019-1-28 20:36:25 info: Server started on port: 8882
+2019-1-28 20:36:43 info: Server started on port: 8882
+2019-1-28 20:36:49 info: Server started on port: 8882
+2019-1-28 20:36:52 info: Server started on port: 8882
+2019-1-28 20:36:57 info: Server started on port: 8882
+2019-1-28 20:37:11 info: Server started on port: 8882
+2019-1-28 20:37:19 info: Server started on port: 8882
+2019-1-28 20:37:27 info: Server started on port: 8882
+2019-1-28 20:37:29 info: Server started on port: 8882
+2019-1-28 20:37:33 info: Server started on port: 8882
+2019-1-28 20:38:49 info: Server started on port: 8882
+2019-1-28 20:38:59 info: Server started on port: 8882
+2019-1-28 20:39:06 info: Server started on port: 8882
+2019-1-28 20:39:18 info: Server started on port: 8882
+2019-1-28 20:39:28 info: Server started on port: 8882
+2019-1-28 20:39:37 info: Server started on port: 8882
+2019-1-28 20:39:41 info: Server started on port: 8882
+2019-1-28 20:40:12 info: Server started on port: 8882
+2019-1-28 20:41:13 info: Server started on port: 8882
+2019-1-28 20:41:43 info: Server started on port: 8882
+2019-1-28 20:42:35 info: Server started on port: 8882
+2019-1-28 20:44:01 info: Server started on port: 8882
+2019-1-28 20:45:19 info: Server started on port: 8882
+2019-1-28 20:46:20 info: Server started on port: 8882
+2019-1-28 20:48:58 info: Server started on port: 8882
+2019-1-28 20:50:58 info: Server started on port: 8882
+2019-1-28 20:51:30 info: Server started on port: 8882
+2019-1-28 20:51:56 info: Server started on port: 8882
+2019-1-28 20:52:09 info: Server started on port: 8882
+2019-1-28 20:53:13 info: Server started on port: 8882
+2019-1-28 20:54:28 info: Server started on port: 8882
+2019-1-28 20:55:19 info: Server started on port: 8882
+2019-1-28 20:55:31 info: Server started on port: 8882
+2019-1-28 20:55:36 info: Server started on port: 8882
+2019-1-28 20:58:06 info: Server started on port: 8882
+2019-1-28 20:58:22 info: Server started on port: 8882
+2019-1-28 20:58:34 info: Server started on port: 8882
+2019-1-28 20:58:43 info: Server started on port: 8882
+2019-1-28 20:58:51 info: Server started on port: 8882
+2019-1-28 20:58:54 info: Server started on port: 8882
+2019-1-28 20:59:01 info: Server started on port: 8882
+2019-1-28 20:59:37 info: User Data = { username: 'velioo98',
+  email: 'velioocs@gmail.com',
+  password:
+   '1a3e68d94380c0669e79ce06f9c1bb4e661008b00b432bba592168e4eec249f5',
+  salt: '0PNz1VMxjEzAiB1xpZRf+xgEaEAJc6M9t8pyiEaWj0U=' }
+2019-1-28 20:59:39 info: userMessageMail = A confirmation email was sent to your email address.
+      Please confirm your account before logging in.
+2019-1-28 20:59:39 info: Confirmation email sent
+2019-1-28 20:59:49 info: Successfully validated your account
+2019-1-28 21:00:30 info: Server started on port: 8882
+2019-1-28 21:00:42 info: Server started on port: 8882

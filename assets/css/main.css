@@ -80,6 +80,24 @@ body {
   margin-top: -30px;
 }
 
+.pre-screen-spinner {
+  display: none;
+  max-width: 100px;
+  max-height: 100px;
+  margin-top: -20px;
+  position: absolute;
+}
+
+.pre-screen-spinner:focus, .pre-screen-spinner:active, .pre-screen-spinner:hover {
+  border: 0;
+  outline: none;
+}
+
+.anime-cb-main-menu .pre-screen-spinner {
+  margin-left: -120px;
+  z-index: 10;
+}
+
 .user-message {
   font-weight: bold;
   margin-bottom: 50px;

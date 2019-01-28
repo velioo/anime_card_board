@@ -18,4 +18,13 @@ var signUpResponse = {
 	"required": [ "errors", "isSuccessful" ],
 };
 
-var loginResponse = signUpResponse;
+var logInResponse = signUpResponse;
+
+var logOutResponse = {
+	"type": "object",
+	"properties": {
+		"isSuccessful": { "type": "boolean" },
+		"userMessage": { "type": "string" },
+	},
+	"required": [ "isSuccessful" ],
+};

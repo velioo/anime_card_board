@@ -36,6 +36,7 @@
     "koa-body": "^4.0.6",
     "koa-router": "^7.4.0",
     "koa-session": "^5.10.1",
+    "koa-socket-session": "^1.2.0",
     "koa-socket.io": "^1.1.2",
     "koa-static-cache": "^5.1.2",
     "koa-validate": "^1.0.7",
