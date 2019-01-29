@@ -11103,3 +11103,189 @@ URL = http://localhost:8882/
 2019-1-28 20:59:49 info: Successfully validated your account
 2019-1-28 21:00:30 info: Server started on port: 8882
 2019-1-28 21:00:42 info: Server started on port: 8882
+2019-1-29 17:32:05 info: Server started on port: 8882
+2019-1-29 17:36:21 info: Server started on port: 8882
+2019-1-29 17:44:21 info: Server started on port: 8882
+2019-1-29 17:44:42 info: Server started on port: 8882
+2019-1-29 17:44:57 info: Server started on port: 8882
+2019-1-29 17:45:06 info: Server started on port: 8882
+2019-1-29 17:45:10 info: Server started on port: 8882
+2019-1-29 17:53:51 info: Server started on port: 8882
+2019-1-29 17:53:55 info: Server started on port: 8882
+2019-1-29 18:01:30 info: Server started on port: 8882
+2019-1-29 18:01:33 info: Server started on port: 8882
+2019-1-29 18:01:40 info: Server started on port: 8882
+2019-1-29 18:01:44 error: FRONTEND ERROR-------------------------------
+DataCloneError: ,Failed to execute 'pushState' on 'History': HTMLDivElement object could not be cloned.
+Error: Failed to execute 'pushState' on 'History': HTMLDivElement object could not be cloned.
+    at logInSignUpController.processChangeScreen (http://localhost:8882/js/loginSignUpController.js:390:10)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/loginSignUpController.js:64:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/
+------------------------------------------------------------
+2019-1-29 18:01:47 error: FRONTEND ERROR-------------------------------
+DataCloneError: ,Failed to execute 'pushState' on 'History': HTMLDivElement object could not be cloned.
+Error: Failed to execute 'pushState' on 'History': HTMLDivElement object could not be cloned.
+    at logInSignUpController.processChangeScreen (http://localhost:8882/js/loginSignUpController.js:390:10)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/loginSignUpController.js:64:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/
+------------------------------------------------------------
+2019-1-29 18:04:03 info: Server started on port: 8882
+2019-1-29 18:05:00 info: Server started on port: 8882
+2019-1-29 18:05:33 info: Server started on port: 8882
+2019-1-29 18:05:45 info: Server started on port: 8882
+2019-1-29 18:06:09 info: Server started on port: 8882
+2019-1-29 18:06:12 info: Server started on port: 8882
+2019-1-29 18:06:19 info: Server started on port: 8882
+2019-1-29 18:06:22 info: Server started on port: 8882
+2019-1-29 18:06:39 info: Server started on port: 8882
+2019-1-29 18:06:50 info: Server started on port: 8882
+2019-1-29 18:07:06 info: Server started on port: 8882
+2019-1-29 18:16:58 info: Server started on port: 8882
+2019-1-29 18:17:50 info: Server started on port: 8882
+2019-1-29 18:20:05 info: User Data = { username: 'velioo98',
+  email: 'velioocs@gmail.com',
+  password:
+   '6fafa70708ca123f531755530c8088d51d4d927866f70fc56af5db134455b235',
+  salt: 'oIt43eZXqpCHJ8rKY7HNUMP64yR3DbyzOH/shN5vSvc=' }
+2019-1-29 18:20:07 info: userMessageMail = A confirmation email was sent to your email address.
+      Please confirm your account before logging in.
+2019-1-29 18:20:07 info: Confirmation email sent
+2019-1-29 18:20:23 info: Successfully validated your account
+2019-1-29 18:20:48 info: Server started on port: 8882
+2019-1-29 18:21:01 info: Server started on port: 8882
+2019-1-29 18:21:27 info: Server started on port: 8882
+2019-1-29 18:21:44 info: Server started on port: 8882
+2019-1-29 18:24:46 info: Server started on port: 8882
+2019-1-29 18:25:06 info: Server started on port: 8882
+2019-1-29 18:25:11 info: Server started on port: 8882
+2019-1-29 18:27:49 info: Server started on port: 8882
+2019-1-29 18:28:03 info: Server started on port: 8882
+2019-1-29 18:28:07 info: Server started on port: 8882
+2019-1-29 18:28:10 error: FRONTEND ERROR-------------------------------
+ReferenceError: ,closestScreen is not defined
+ReferenceError: closestScreen is not defined
+    at logInSignUpController.processChangeScreen (http://localhost:8882/js/loginSignUpController.js:395:42)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/loginSignUpController.js:65:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/
+------------------------------------------------------------
+2019-1-29 18:28:10 error: FRONTEND ERROR-------------------------------
+ReferenceError: ,closestScreen is not defined
+ReferenceError: closestScreen is not defined
+    at logInSignUpController.processChangeScreen (http://localhost:8882/js/loginSignUpController.js:395:42)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/loginSignUpController.js:65:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/
+------------------------------------------------------------
+2019-1-29 18:28:24 info: Server started on port: 8882
+2019-1-29 18:28:26 info: Server started on port: 8882
+2019-1-29 18:28:44 info: Server started on port: 8882
+2019-1-29 18:28:47 error: FRONTEND ERROR-------------------------------
+ReferenceError: ,closestScreen is not defined
+ReferenceError: closestScreen is not defined
+    at logInSignUpController.processChangeScreen (http://localhost:8882/js/loginSignUpController.js:395:42)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/loginSignUpController.js:65:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/
+------------------------------------------------------------
+2019-1-29 18:28:55 info: Server started on port: 8882
+2019-1-29 18:28:58 error: FRONTEND ERROR-------------------------------
+ReferenceError: ,closestScreen is not defined
+ReferenceError: closestScreen is not defined
+    at logInSignUpController.processChangeScreen (http://localhost:8882/js/loginSignUpController.js:395:42)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/loginSignUpController.js:65:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/
+------------------------------------------------------------
+2019-1-29 18:29:02 info: Server started on port: 8882
+2019-1-29 18:29:07 info: Server started on port: 8882
+2019-1-29 18:29:16 info: Server started on port: 8882
+2019-1-29 18:29:20 info: Server started on port: 8882
+2019-1-29 18:29:23 info: Server started on port: 8882
+2019-1-29 18:30:22 info: Server started on port: 8882
+2019-1-29 18:30:26 info: Server started on port: 8882
+2019-1-29 18:30:30 info: Server started on port: 8882
+2019-1-29 18:33:26 info: Server started on port: 8882
+2019-1-29 18:36:25 info: Server started on port: 8882
+2019-1-29 18:39:34 info: Server started on port: 8882
+2019-1-29 18:39:41 info: Server started on port: 8882
+2019-1-29 18:39:43 info: Server started on port: 8882
+2019-1-29 18:40:16 info: Server started on port: 8882
+2019-1-29 18:40:19 error: FRONTEND ERROR-------------------------------
+TypeError: ,el.classList.some is not a function
+TypeError: el.classList.some is not a function
+    at logInSignUpController.createUrlFromScreenClass (http://localhost:8882/js/loginSignUpController.js:380:15)
+    at logInSignUpController.processChangeScreen (http://localhost:8882/js/loginSignUpController.js:395:17)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/loginSignUpController.js:65:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/
+------------------------------------------------------------
+2019-1-29 18:42:29 info: Server started on port: 8882
+2019-1-29 18:42:32 error: FRONTEND ERROR-------------------------------
+TypeError: ,el.classList.values(...).some is not a function
+TypeError: el.classList.values(...).some is not a function
+    at logInSignUpController.createUrlFromScreenClass (http://localhost:8882/js/loginSignUpController.js:380:24)
+    at logInSignUpController.processChangeScreen (http://localhost:8882/js/loginSignUpController.js:395:17)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/loginSignUpController.js:65:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/
+------------------------------------------------------------
+2019-1-29 18:43:22 info: Server started on port: 8882
+2019-1-29 18:43:25 error: FRONTEND ERROR-------------------------------
+TypeError: ,el.classList.entries(...).some is not a function
+TypeError: el.classList.entries(...).some is not a function
+    at logInSignUpController.createUrlFromScreenClass (http://localhost:8882/js/loginSignUpController.js:380:25)
+    at logInSignUpController.processChangeScreen (http://localhost:8882/js/loginSignUpController.js:395:17)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/loginSignUpController.js:65:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/
+------------------------------------------------------------
+2019-1-29 18:44:00 info: Server started on port: 8882
+2019-1-29 18:44:07 info: Server started on port: 8882
+2019-1-29 18:44:11 info: Server started on port: 8882
+2019-1-29 18:44:15 error: FRONTEND ERROR-------------------------------
+TypeError: ,classes.some is not a function
+TypeError: classes.some is not a function
+    at logInSignUpController.createUrlFromScreenClass (http://localhost:8882/js/loginSignUpController.js:382:10)
+    at logInSignUpController.processChangeScreen (http://localhost:8882/js/loginSignUpController.js:397:17)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/loginSignUpController.js:65:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/
+------------------------------------------------------------
+2019-1-29 18:44:36 info: Server started on port: 8882
+2019-1-29 18:44:40 error: FRONTEND ERROR-------------------------------
+TypeError: ,classes.some is not a function
+TypeError: classes.some is not a function
+    at logInSignUpController.createUrlFromScreenClass (http://localhost:8882/js/loginSignUpController.js:384:10)
+    at logInSignUpController.processChangeScreen (http://localhost:8882/js/loginSignUpController.js:399:17)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/loginSignUpController.js:65:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/
+------------------------------------------------------------
+2019-1-29 18:47:14 info: Server started on port: 8882
+2019-1-29 18:48:25 info: Server started on port: 8882
+2019-1-29 18:48:36 info: Server started on port: 8882
+2019-1-29 18:49:22 info: User Data = { username: 'velioo98',
+  email: 'velioocs@gmail.com',
+  password:
+   '3870eeb20aa13a2d860c1657b539dabc18ba08fa471685bd6cbc9ae6ecb6312e',
+  salt: 'mUiOk06XBiNDQSOHsOfZoxwzTB3WSE0NY5RdLXYaX30=' }
+2019-1-29 18:49:24 info: userMessageMail = A confirmation email was sent to your email address.
+      Please confirm your account before logging in.
+2019-1-29 18:49:24 info: Confirmation email sent
+2019-1-29 18:49:40 info: Successfully validated your account
+2019-1-29 18:49:59 info: Server started on port: 8882
+2019-1-29 18:51:02 info: Server started on port: 8882

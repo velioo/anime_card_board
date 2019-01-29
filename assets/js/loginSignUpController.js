@@ -7,8 +7,8 @@ var logInSignUpController = function(generalClient) {
 
 logInSignUpController.prototype.initConstants = function() {
 	this.FORM = '.anime-cb-form';
-	this.SIGN_UP_FORM = '#anime-cb-signup-form';
-	this.LOGIN_FORM = '#anime-cb-login-form';
+	this.SIGN_UP_FORM = '#anime-cb-form-sign-up';
+	this.LOGIN_FORM = '#anime-cb-form-login';
 
 	this.SIGN_UP_SUBMIT_BTN = '#anime-cb-submit-sign-up';
 	this.RESET_SIGN_UP_BTN = '#anime-cb-reset-sign-up';
@@ -19,13 +19,14 @@ logInSignUpController.prototype.initConstants = function() {
 
 	this.CHANGE_TO_MAIN_MENU_SCREEN_BTN = '.main-menu-btn';
 	this.CHANGE_TO_LOGIN_SCREEN_BTN = '.login-btn';
-	this.CHANGE_TO_SIGNUP_SCREEN_BTN = '.signup-btn';
+	this.CHANGE_TO_SIGNUP_SCREEN_BTN = '.sign-up-btn';
 
+	this.PRE_SCREEN_CLASS = 'anime-cb-screen-';
 	this.SCREENS = '.anime-cb-screen';
-	this.MAIN_MENU_SCREEN = '.anime-cb-main-menu';
-	this.LOGIN_SCREEN = '.anime-cb-login';
-	this.SIGN_UP_SCREEN = '.anime-cb-sign-up';
-	this.SIGN_UP_SUCCESS_SCREEN = '.anime-cb-sign-up-success';
+	this.MAIN_MENU_SCREEN = '.anime-cb-screen-main-menu';
+	this.LOGIN_SCREEN = '.anime-cb-screen-login';
+	this.SIGN_UP_SCREEN = '.anime-cb-screen-sign-up';
+	this.SIGN_UP_SUCCESS_SCREEN = '.anime-cb-screen-sign-up-success';
 
 	this.SPINNER = '.spinner';
 	this.PRE_SCREEN_SPINNER = '.pre-screen-spinner';
@@ -369,7 +370,34 @@ logInSignUpController.prototype.showAlertError = function(msg) {
 	window.alert(msg);
 };
 
+logInSignUpController.prototype.extractScreenClass = function(el) {
+
+};
+
+logInSignUpController.prototype.createUrlFromScreenClass = function(el) {
+	var url = null;
+
+	var classes = el.classList;
+
+	console.log('Classes: ', classes);
+
+  for (var i = 0; i < classes.length; i++) {
+  	if (classes[i].startsWith(this.PRE_SCREEN_CLASS)) {
+			url = classes[i].split(this.PRE_SCREEN_CLASS)[1];
+		}
+  }
+
+	return url;
+};
+
 logInSignUpController.prototype.processChangeScreen = function(btn) {
 	this.resetAllScreens();
-	history.replaceState(null, null, '/');
+
+	var closestScreen = $(btn).closest('.anime-cb-screen')[0];
+	// var currentScreenClass = this.extractScreenClass(closestScreen);
+	var url = this.createUrlFromScreenClass(closestScreen);
+	console.log('Url: ', url);
+	// var stateObj = { prevScreenClass: currentScreenClass };
+
+	// history.pushState(stateObj, null, url);
 };

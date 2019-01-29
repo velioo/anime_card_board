@@ -16,7 +16,7 @@ body {
   display: none;
 }
 
-.anime-cb-main-menu {
+.anime-cb-screen-main-menu {
   display: block;
 }
 
@@ -30,7 +30,7 @@ body {
   color: white;
 }
 
-.anime-cb-page-title {
+.anime-cb-title-page {
   margin-bottom: 5%;
 }
 
@@ -53,7 +53,7 @@ body {
   max-width: 20%;
 }
 
-.anime-cb-screen-footer {
+.anime-cb-screen_footer {
   margin-top: 5%;
 }
 
@@ -70,12 +70,12 @@ body {
   outline: none;
 }
 
-#anime-cb-signup-form .spinner {
+#anime-cb-form-sign-up .spinner {
   margin-left: -90px;
   margin-top: -30px;
 }
 
-#anime-cb-login-form .spinner {
+#anime-cb-form-login .spinner {
   margin-left: -90px;
   margin-top: -30px;
 }
@@ -93,7 +93,7 @@ body {
   outline: none;
 }
 
-.anime-cb-main-menu .pre-screen-spinner {
+.anime-cb-screen-main-menu .pre-screen-spinner {
   margin-left: -120px;
   z-index: 10;
 }
