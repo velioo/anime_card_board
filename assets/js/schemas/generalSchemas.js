@@ -28,3 +28,12 @@ var logOutResponse = {
 	},
 	"required": [ "isSuccessful" ],
 };
+
+var isUserLoggedInResponse = {
+	"type": "object",
+	"properties": {
+		"isSuccessful": { "type": "boolean" },
+		"isUserLoggedIn": { "type": "boolean" },
+	},
+	"required": [ "isSuccessful", "isUserLoggedIn" ],
+};

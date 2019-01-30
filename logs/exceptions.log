@@ -2760,3 +2760,15 @@ Error: post `/login`: `middleware` must be a function, not `undefined`
     at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
     at Module.load (internal/modules/cjs/loader.js:599:32)
     at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+2019-1-30 22:32:01 error: uncaughtException: post `/is_user_logged_in`: `middleware` must be a function, not `undefined`
+Error: post `/is_user_logged_in`: `middleware` must be a function, not `undefined`
+    at Layer.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-router\lib\layer.js:39:13)
+    at Array.forEach (<anonymous>)
+    at new Layer (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-router\lib\layer.js:36:14)
+    at Router.register (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-router\lib\router.js:553:15)
+    at Router.(anonymous function) [as post] (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-router\lib\router.js:202:10)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\routes\index.js:27:3)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)

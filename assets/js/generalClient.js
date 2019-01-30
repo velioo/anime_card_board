@@ -1,5 +1,5 @@
 var generalClient = function() {
-	this.controller = new logInSignUpController(this);
+	this.loginSignUpController = new logInSignUpController(this);
 	this.clientConnectToServer();
 };
 
@@ -37,8 +37,8 @@ generalClient.prototype.sendSignUpData = function(data) {
 	console.log('sendSignUpData');
 	console.log('Sending data to signup: ', data);
 
-  $.post("/sign_up", { data: data }, function (data, status) {
-    _self.controller.processSignUpResponse(data);
+  $.post('/sign_up', { data: data }, function (data, status) {
+    _self.loginSignUpController.processSignUpResponse(data);
   }).fail(_self.failHandler);
 };
 
@@ -47,8 +47,8 @@ generalClient.prototype.sendLoginData = function(data) {
 	console.log('sendLoginData');
 	console.log('Sending data to login: ', data);
 
-  $.post("/log_in", { data: data }, function (data, status) {
-    _self.controller.processLoginResponse(data);
+  $.post('/log_in', { data: data }, function (data, status) {
+    _self.loginSignUpController.processLoginResponse(data);
   }).fail(_self.failHandler);
 };
 
@@ -56,8 +56,17 @@ generalClient.prototype.sendLogOutRequest = function(data) {
 	var _self = this;
 	console.log('sendLogOutRequest');
 
-  $.post("/log_out", {}, function (data, status) {
-    _self.controller.processLogoutResponse(data);
+  $.post('/log_out', {}, function (data, status) {
+    _self.loginSignUpController.processLogoutResponse(data);
+  }).fail(_self.failHandler);
+};
+
+generalClient.prototype.checkIfUserIsLoggedIn = function() {
+	var _self = this;
+	console.log('checkIfUserIsLoggedIn');
+
+  $.post('/is_user_logged_in', {}, function (data, status) {
+    _self.loginSignUpController.processIsUserLoggedInResponse(data);
   }).fail(_self.failHandler);
 };
 

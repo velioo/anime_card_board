@@ -3,15 +3,20 @@
 <script src="/socket.io-client/dist/socket.io.js"></script>
 <script src="/js/schemas/generalSchemas.js"></script>
 <script src="/js/schemas/gameSchemas.js"></script>
+<script src="/js/baseController.js"></script>
 <script src="/js/loginSignUpController.js"></script>
 <script src="/js/client.js"></script>
 <script src="/js/generalClient.js"></script>
 <script src="/js/gameClient.js"></script>
+
+<div id="acb-submain-wrapper">
 
 {{> mainMenu }}
 {{> signUp }}
 {{> login }}
 
 {{> signUpSuccess }}
+
+</div>
 
 {{> footer }}

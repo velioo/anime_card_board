@@ -123,6 +123,12 @@ var self = module.exports = {
 
     return self.sendResponse(ctx, next);
   },
+  isUserLoggedIn: async (ctx, next) => {
+    ctx.body = {
+      isUserLoggedIn: ctx.session.isUserLoggedIn,
+      isSuccessful: true,
+    };
+  },
   sendResponse: async (ctx, next) => {
     ctx.body = {
       errors: ctx.errors,

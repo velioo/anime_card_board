@@ -11289,3 +11289,1197 @@ URL = http://localhost:8882/
 2019-1-29 18:49:40 info: Successfully validated your account
 2019-1-29 18:49:59 info: Server started on port: 8882
 2019-1-29 18:51:02 info: Server started on port: 8882
+2019-1-30 00:57:15 info: Server started on port: 8882
+2019-1-30 00:57:40 info: Server started on port: 8882
+2019-1-30 00:59:02 info: Server started on port: 8882
+2019-1-30 01:00:40 info: Server started on port: 8882
+2019-1-30 01:02:22 info: Server started on port: 8882
+2019-1-30 01:03:06 error: Error while executing code: Error: connect ECONNREFUSED 127.0.0.1:5432
+    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1117:14)
+2019-1-30 01:03:08 info: FL: Internal sever error
+2019-1-30 01:03:08 info: FL: Response Text: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Home</title>
+    <meta charset="utf-8">
+    <link rel="icon" href="http://downloadicons.net/sites/default/files/computer-icon-65917.png">
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.css">
+    <script src="/jquery/dist/jquery.js"></script>
+    <script src="/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="/ajv/dist/ajv.min.js"></script>
+    <script src="/log4javascript/log4javascript.js"></script>
+    <!-- <script src="/js/schemas.js"></script> -->
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+
+<script type="text/javascript">
+    window.onerror = function (msg, url, lineNo, columnNo, error) {
+      infoLog = '';
+      window.alert(`There was a problem while processing your request.`);
+      if(error !== null) {
+        if(error.stack != '') {
+          logger.error(error.name + ': ', error.message + '\n' + error.stack);
+        } else {
+          logger.error(error.name + ': ', error.message + '\n' + url + ':' + lineNo + ':' + columnNo + '\n');
+        }
+      } else if(ajv.errors) {
+        logger.error("Request didn\'t return a valid JSON object\n" + JSON.stringify(ajv.errors, null, 2));
+      } else {
+        logger.error(msg + ': ' + url + ': ' + lineNo + ': ' + columnNo + '\n');
+      }
+      return true;
+    };
+
+    const logger = log4javascript.getLogger();
+    const ajaxAppender = new log4javascript.AjaxAppender('/frontend_logger');
+
+    ajaxAppender.setSendAllOnUnload();
+    ajaxAppender.setTimerInterval(1000);
+    ajaxAppender.setTimed(true);
+
+    logger.addAppender(ajaxAppender);
+
+    function getLogger() {
+      return logger;
+    }
+
+    var infoLog = '';
+
+    var ajv = new Ajv({ allErrors: true });
+
+    function assert(condition, message) {
+        if (!condition) {
+          message = message || 'Assertion failed';
+          if (typeof Error !== 'undefined') {
+            throw new Error(message);
+          }
+          throw message;
+        }
+    }
+</script>
+
+<div id="acb-main-wrapper">
+<div class="server-error">
+	<h1>Interal Server Error 500. The server encountered an error, please try again later.</h1>
+</div>
+
+</div>
+
+</body>
+</html>
+ Ready State: 4
+ Status Code: 500
+2019-1-30 01:03:12 error: Error while executing code: Error: connect ECONNREFUSED 127.0.0.1:5432
+    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1117:14)
+2019-1-30 01:03:14 error: Error while executing code: Error: connect ECONNREFUSED 127.0.0.1:5432
+    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1117:14)
+2019-1-30 01:03:17 error: Error while executing code: Error: connect ECONNREFUSED 127.0.0.1:5432
+    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1117:14)
+2019-1-30 01:03:21 error: Error while executing code: Error: connect ECONNREFUSED 127.0.0.1:5432
+    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1117:14)
+2019-1-30 01:03:23 error: Error while executing code: Error: connect ECONNREFUSED 127.0.0.1:5432
+    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1117:14)
+2019-1-30 01:03:25 info: FL: Internal sever error
+2019-1-30 01:03:25 info: FL: Response Text: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Home</title>
+    <meta charset="utf-8">
+    <link rel="icon" href="http://downloadicons.net/sites/default/files/computer-icon-65917.png">
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.css">
+    <script src="/jquery/dist/jquery.js"></script>
+    <script src="/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="/ajv/dist/ajv.min.js"></script>
+    <script src="/log4javascript/log4javascript.js"></script>
+    <!-- <script src="/js/schemas.js"></script> -->
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+
+<script type="text/javascript">
+    window.onerror = function (msg, url, lineNo, columnNo, error) {
+      infoLog = '';
+      window.alert(`There was a problem while processing your request.`);
+      if(error !== null) {
+        if(error.stack != '') {
+          logger.error(error.name + ': ', error.message + '\n' + error.stack);
+        } else {
+          logger.error(error.name + ': ', error.message + '\n' + url + ':' + lineNo + ':' + columnNo + '\n');
+        }
+      } else if(ajv.errors) {
+        logger.error("Request didn\'t return a valid JSON object\n" + JSON.stringify(ajv.errors, null, 2));
+      } else {
+        logger.error(msg + ': ' + url + ': ' + lineNo + ': ' + columnNo + '\n');
+      }
+      return true;
+    };
+
+    const logger = log4javascript.getLogger();
+    const ajaxAppender = new log4javascript.AjaxAppender('/frontend_logger');
+
+    ajaxAppender.setSendAllOnUnload();
+    ajaxAppender.setTimerInterval(1000);
+    ajaxAppender.setTimed(true);
+
+    logger.addAppender(ajaxAppender);
+
+    function getLogger() {
+      return logger;
+    }
+
+    var infoLog = '';
+
+    var ajv = new Ajv({ allErrors: true });
+
+    function assert(condition, message) {
+        if (!condition) {
+          message = message || 'Assertion failed';
+          if (typeof Error !== 'undefined') {
+            throw new Error(message);
+          }
+          throw message;
+        }
+    }
+</script>
+
+<div id="acb-main-wrapper">
+<div class="server-error">
+	<h1>Interal Server Error 500. The server encountered an error, please try again later.</h1>
+</div>
+
+</div>
+
+</body>
+</html>
+ Ready State: 4
+ Status Code: 500
+2019-1-30 01:03:29 error: Error while executing code: Error: connect ECONNREFUSED 127.0.0.1:5432
+    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1117:14)
+2019-1-30 01:03:30 info: FL: Internal sever error
+2019-1-30 01:03:30 info: FL: Response Text: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Home</title>
+    <meta charset="utf-8">
+    <link rel="icon" href="http://downloadicons.net/sites/default/files/computer-icon-65917.png">
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.css">
+    <script src="/jquery/dist/jquery.js"></script>
+    <script src="/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="/ajv/dist/ajv.min.js"></script>
+    <script src="/log4javascript/log4javascript.js"></script>
+    <!-- <script src="/js/schemas.js"></script> -->
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+
+<script type="text/javascript">
+    window.onerror = function (msg, url, lineNo, columnNo, error) {
+      infoLog = '';
+      window.alert(`There was a problem while processing your request.`);
+      if(error !== null) {
+        if(error.stack != '') {
+          logger.error(error.name + ': ', error.message + '\n' + error.stack);
+        } else {
+          logger.error(error.name + ': ', error.message + '\n' + url + ':' + lineNo + ':' + columnNo + '\n');
+        }
+      } else if(ajv.errors) {
+        logger.error("Request didn\'t return a valid JSON object\n" + JSON.stringify(ajv.errors, null, 2));
+      } else {
+        logger.error(msg + ': ' + url + ': ' + lineNo + ': ' + columnNo + '\n');
+      }
+      return true;
+    };
+
+    const logger = log4javascript.getLogger();
+    const ajaxAppender = new log4javascript.AjaxAppender('/frontend_logger');
+
+    ajaxAppender.setSendAllOnUnload();
+    ajaxAppender.setTimerInterval(1000);
+    ajaxAppender.setTimed(true);
+
+    logger.addAppender(ajaxAppender);
+
+    function getLogger() {
+      return logger;
+    }
+
+    var infoLog = '';
+
+    var ajv = new Ajv({ allErrors: true });
+
+    function assert(condition, message) {
+        if (!condition) {
+          message = message || 'Assertion failed';
+          if (typeof Error !== 'undefined') {
+            throw new Error(message);
+          }
+          throw message;
+        }
+    }
+</script>
+
+<div id="acb-main-wrapper">
+<div class="server-error">
+	<h1>Interal Server Error 500. The server encountered an error, please try again later.</h1>
+</div>
+
+</div>
+
+</body>
+</html>
+ Ready State: 4
+ Status Code: 500
+2019-1-30 01:03:32 error: Error while executing code: Error: connect ECONNREFUSED 127.0.0.1:5432
+    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1117:14)
+2019-1-30 01:03:34 info: FL: Internal sever error
+2019-1-30 01:03:34 info: FL: Response Text: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Home</title>
+    <meta charset="utf-8">
+    <link rel="icon" href="http://downloadicons.net/sites/default/files/computer-icon-65917.png">
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.css">
+    <script src="/jquery/dist/jquery.js"></script>
+    <script src="/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="/ajv/dist/ajv.min.js"></script>
+    <script src="/log4javascript/log4javascript.js"></script>
+    <!-- <script src="/js/schemas.js"></script> -->
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+
+<script type="text/javascript">
+    window.onerror = function (msg, url, lineNo, columnNo, error) {
+      infoLog = '';
+      window.alert(`There was a problem while processing your request.`);
+      if(error !== null) {
+        if(error.stack != '') {
+          logger.error(error.name + ': ', error.message + '\n' + error.stack);
+        } else {
+          logger.error(error.name + ': ', error.message + '\n' + url + ':' + lineNo + ':' + columnNo + '\n');
+        }
+      } else if(ajv.errors) {
+        logger.error("Request didn\'t return a valid JSON object\n" + JSON.stringify(ajv.errors, null, 2));
+      } else {
+        logger.error(msg + ': ' + url + ': ' + lineNo + ': ' + columnNo + '\n');
+      }
+      return true;
+    };
+
+    const logger = log4javascript.getLogger();
+    const ajaxAppender = new log4javascript.AjaxAppender('/frontend_logger');
+
+    ajaxAppender.setSendAllOnUnload();
+    ajaxAppender.setTimerInterval(1000);
+    ajaxAppender.setTimed(true);
+
+    logger.addAppender(ajaxAppender);
+
+    function getLogger() {
+      return logger;
+    }
+
+    var infoLog = '';
+
+    var ajv = new Ajv({ allErrors: true });
+
+    function assert(condition, message) {
+        if (!condition) {
+          message = message || 'Assertion failed';
+          if (typeof Error !== 'undefined') {
+            throw new Error(message);
+          }
+          throw message;
+        }
+    }
+</script>
+
+<div id="acb-main-wrapper">
+<div class="server-error">
+	<h1>Interal Server Error 500. The server encountered an error, please try again later.</h1>
+</div>
+
+</div>
+
+</body>
+</html>
+ Ready State: 4
+ Status Code: 500
+2019-1-30 01:03:36 error: Error while executing code: Error: connect ECONNREFUSED 127.0.0.1:5432
+    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1117:14)
+2019-1-30 01:03:40 info: FL: Internal sever error
+2019-1-30 01:03:40 info: FL: Response Text: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Home</title>
+    <meta charset="utf-8">
+    <link rel="icon" href="http://downloadicons.net/sites/default/files/computer-icon-65917.png">
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.css">
+    <script src="/jquery/dist/jquery.js"></script>
+    <script src="/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="/ajv/dist/ajv.min.js"></script>
+    <script src="/log4javascript/log4javascript.js"></script>
+    <!-- <script src="/js/schemas.js"></script> -->
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+
+<script type="text/javascript">
+    window.onerror = function (msg, url, lineNo, columnNo, error) {
+      infoLog = '';
+      window.alert(`There was a problem while processing your request.`);
+      if(error !== null) {
+        if(error.stack != '') {
+          logger.error(error.name + ': ', error.message + '\n' + error.stack);
+        } else {
+          logger.error(error.name + ': ', error.message + '\n' + url + ':' + lineNo + ':' + columnNo + '\n');
+        }
+      } else if(ajv.errors) {
+        logger.error("Request didn\'t return a valid JSON object\n" + JSON.stringify(ajv.errors, null, 2));
+      } else {
+        logger.error(msg + ': ' + url + ': ' + lineNo + ': ' + columnNo + '\n');
+      }
+      return true;
+    };
+
+    const logger = log4javascript.getLogger();
+    const ajaxAppender = new log4javascript.AjaxAppender('/frontend_logger');
+
+    ajaxAppender.setSendAllOnUnload();
+    ajaxAppender.setTimerInterval(1000);
+    ajaxAppender.setTimed(true);
+
+    logger.addAppender(ajaxAppender);
+
+    function getLogger() {
+      return logger;
+    }
+
+    var infoLog = '';
+
+    var ajv = new Ajv({ allErrors: true });
+
+    function assert(condition, message) {
+        if (!condition) {
+          message = message || 'Assertion failed';
+          if (typeof Error !== 'undefined') {
+            throw new Error(message);
+          }
+          throw message;
+        }
+    }
+</script>
+
+<div id="acb-main-wrapper">
+<div class="server-error">
+	<h1>Interal Server Error 500. The server encountered an error, please try again later.</h1>
+</div>
+
+</div>
+
+</body>
+</html>
+ Ready State: 4
+ Status Code: 500
+2019-1-30 01:18:43 info: Server started on port: 8882
+2019-1-30 18:06:47 info: Server started on port: 8882
+2019-1-30 18:07:39 info: Server started on port: 8882
+2019-1-30 18:09:19 info: Server started on port: 8882
+2019-1-30 18:09:22 info: Server started on port: 8882
+2019-1-30 18:09:33 info: Server started on port: 8882
+2019-1-30 18:11:39 info: Server started on port: 8882
+2019-1-30 18:12:54 info: Server started on port: 8882
+2019-1-30 18:13:55 info: Server started on port: 8882
+2019-1-30 18:14:15 info: Server started on port: 8882
+2019-1-30 18:14:21 info: Server started on port: 8882
+2019-1-30 18:14:44 info: Server started on port: 8882
+2019-1-30 18:14:50 info: Server started on port: 8882
+2019-1-30 18:16:15 info: Server started on port: 8882
+2019-1-30 18:16:21 info: Server started on port: 8882
+2019-1-30 18:16:31 info: Server started on port: 8882
+2019-1-30 18:16:35 info: Server started on port: 8882
+2019-1-30 18:16:39 info: Server started on port: 8882
+2019-1-30 18:17:00 info: Server started on port: 8882
+2019-1-30 18:17:02 info: Server started on port: 8882
+2019-1-30 18:17:06 info: Server started on port: 8882
+2019-1-30 18:17:43 info: Server started on port: 8882
+2019-1-30 18:24:44 info: Server started on port: 8882
+2019-1-30 18:28:59 info: Server started on port: 8882
+2019-1-30 18:31:46 info: Server started on port: 8882
+2019-1-30 18:32:00 info: Server started on port: 8882
+2019-1-30 18:32:43 info: Server started on port: 8882
+2019-1-30 18:39:39 info: Server started on port: 8882
+2019-1-30 18:39:46 info: Server started on port: 8882
+2019-1-30 18:40:02 info: Server started on port: 8882
+2019-1-30 18:44:01 info: Server started on port: 8882
+2019-1-30 18:44:27 info: Server started on port: 8882
+2019-1-30 18:46:09 info: Server started on port: 8882
+2019-1-30 18:47:59 info: Server started on port: 8882
+2019-1-30 18:59:30 info: Server started on port: 8882
+2019-1-30 18:59:34 info: Server started on port: 8882
+2019-1-30 18:59:37 info: Server started on port: 8882
+2019-1-30 18:59:47 info: Server started on port: 8882
+2019-1-30 19:04:19 info: Server started on port: 8882
+2019-1-30 19:04:58 info: Server started on port: 8882
+2019-1-30 19:05:00 info: Server started on port: 8882
+2019-1-30 19:05:19 info: Server started on port: 8882
+2019-1-30 19:05:36 info: Server started on port: 8882
+2019-1-30 19:05:43 error: FRONTEND ERROR-------------------------------
+ReferenceError: ,baseController is not defined
+ReferenceError: baseController is not defined
+    at http://localhost:8882/js/loginSignUpController.js:353:49
+URL = http://localhost:8882/
+------------------------------------------------------------
+2019-1-30 19:05:43 error: FRONTEND ERROR-------------------------------
+ReferenceError: ,baseController is not defined
+ReferenceError: baseController is not defined
+    at new logInSignUpController (http://localhost:8882/js/loginSignUpController.js:2:2)
+    at new generalClient (http://localhost:8882/js/generalClient.js:2:31)
+    at window.onload (http://localhost:8882/js/client.js:5:18)
+URL = http://localhost:8882/
+------------------------------------------------------------
+2019-1-30 19:07:14 info: Server started on port: 8882
+2019-1-30 19:07:22 error: FRONTEND ERROR-------------------------------
+TypeError: ,this.initConstants is not a function
+TypeError: this.initConstants is not a function
+    at new logInSignUpController (http://localhost:8882/js/loginSignUpController.js:4:7)
+    at new generalClient (http://localhost:8882/js/generalClient.js:2:31)
+    at window.onload (http://localhost:8882/js/client.js:5:18)
+URL = http://localhost:8882/
+------------------------------------------------------------
+2019-1-30 19:08:07 info: Server started on port: 8882
+2019-1-30 19:08:33 info: Server started on port: 8882
+2019-1-30 19:08:35 info: Server started on port: 8882
+2019-1-30 19:08:38 info: Server started on port: 8882
+2019-1-30 19:09:05 info: Server started on port: 8882
+2019-1-30 19:09:08 error: FRONTEND ERROR-------------------------------
+TypeError: ,this.initConstants is not a function
+TypeError: this.initConstants is not a function
+    at new logInSignUpController (http://localhost:8882/js/loginSignUpController.js:6:7)
+    at new generalClient (http://localhost:8882/js/generalClient.js:2:31)
+    at window.onload (http://localhost:8882/js/client.js:5:18)
+URL = http://localhost:8882/
+------------------------------------------------------------
+2019-1-30 19:10:47 info: Server started on port: 8882
+2019-1-30 19:11:12 info: Server started on port: 8882
+2019-1-30 19:11:15 error: FRONTEND ERROR-------------------------------
+TypeError: ,Cannot set property 'prototype' of undefined
+TypeError: Cannot set property 'prototype' of undefined
+    at http://localhost:8882/js/loginSignUpController.js:1:33
+URL = http://localhost:8882/
+------------------------------------------------------------
+2019-1-30 19:11:15 error: FRONTEND ERROR-------------------------------
+TypeError: ,logInSignUpController is not a constructor
+TypeError: logInSignUpController is not a constructor
+    at new generalClient (http://localhost:8882/js/generalClient.js:2:31)
+    at window.onload (http://localhost:8882/js/client.js:5:18)
+URL = http://localhost:8882/
+------------------------------------------------------------
+2019-1-30 19:11:18 info: Server started on port: 8882
+2019-1-30 19:12:56 info: Server started on port: 8882
+2019-1-30 19:13:37 info: Server started on port: 8882
+2019-1-30 19:13:40 info: Server started on port: 8882
+2019-1-30 19:13:50 info: Server started on port: 8882
+2019-1-30 19:14:11 info: Server started on port: 8882
+2019-1-30 19:15:06 info: Server started on port: 8882
+2019-1-30 19:15:41 info: Server started on port: 8882
+2019-1-30 19:16:27 info: Server started on port: 8882
+2019-1-30 19:16:34 info: Server started on port: 8882
+2019-1-30 19:16:38 info: Server started on port: 8882
+2019-1-30 19:19:34 info: Server started on port: 8882
+2019-1-30 19:23:04 info: Server started on port: 8882
+2019-1-30 19:23:28 info: Server started on port: 8882
+2019-1-30 19:23:59 info: Server started on port: 8882
+2019-1-30 19:24:50 info: Server started on port: 8882
+2019-1-30 19:33:12 info: Server started on port: 8882
+2019-1-30 19:33:21 info: Server started on port: 8882
+2019-1-30 19:33:24 info: Server started on port: 8882
+2019-1-30 19:34:09 info: Server started on port: 8882
+2019-1-30 19:34:15 info: Server started on port: 8882
+2019-1-30 19:34:17 info: Server started on port: 8882
+2019-1-30 19:34:23 error: FRONTEND ERROR-------------------------------
+TypeError: ,Cannot read property 'screenClass' of null
+TypeError: Cannot read property 'screenClass' of null
+    at http://localhost:8882/js/baseController.js:137:36
+URL = http://localhost:8882/
+------------------------------------------------------------
+2019-1-30 19:35:26 info: Server started on port: 8882
+2019-1-30 19:35:31 error: FRONTEND ERROR-------------------------------
+TypeError: ,Cannot read property 'screenClass' of null
+TypeError: Cannot read property 'screenClass' of null
+    at http://localhost:8882/js/baseController.js:138:36
+URL = http://localhost:8882/
+------------------------------------------------------------
+2019-1-30 19:36:48 error: FRONTEND ERROR-------------------------------
+TypeError: ,this.switchToScreen is not a function
+TypeError: this.switchToScreen is not a function
+    at http://localhost:8882/js/baseController.js:140:8
+URL = http://localhost:8882/login
+------------------------------------------------------------
+2019-1-30 19:37:48 info: Server started on port: 8882
+2019-1-30 19:38:44 info: Server started on port: 8882
+2019-1-30 19:38:52 error: FRONTEND ERROR-------------------------------
+TypeError: ,this.switchToScreen is not a function
+TypeError: this.switchToScreen is not a function
+    at http://localhost:8882/js/baseController.js:148:8
+URL = http://localhost:8882/main-menu
+------------------------------------------------------------
+2019-1-30 19:39:36 info: Server started on port: 8882
+2019-1-30 19:39:46 info: Server started on port: 8882
+2019-1-30 19:39:55 error: FRONTEND ERROR-------------------------------
+TypeError: ,Cannot read property 'screenClass' of null
+TypeError: Cannot read property 'screenClass' of null
+    at http://localhost:8882/js/baseController.js:36:37
+URL = http://localhost:8882/
+------------------------------------------------------------
+2019-1-30 19:40:04 info: Server started on port: 8882
+2019-1-30 19:40:47 info: Server started on port: 8882
+2019-1-30 19:41:01 info: Server started on port: 8882
+2019-1-30 19:41:08 info: Server started on port: 8882
+2019-1-30 19:41:13 info: Server started on port: 8882
+2019-1-30 19:41:31 info: Server started on port: 8882
+2019-1-30 19:44:29 info: Server started on port: 8882
+2019-1-30 19:45:05 info: Server started on port: 8882
+2019-1-30 19:45:28 info: Server started on port: 8882
+2019-1-30 19:51:12 info: Server started on port: 8882
+2019-1-30 19:52:32 info: Server started on port: 8882
+2019-1-30 19:52:41 info: Server started on port: 8882
+2019-1-30 19:53:22 info: Server started on port: 8882
+2019-1-30 19:53:37 info: Server started on port: 8882
+2019-1-30 19:54:16 info: Server started on port: 8882
+2019-1-30 19:54:22 info: Server started on port: 8882
+2019-1-30 20:10:20 info: Server started on port: 8882
+2019-1-30 20:16:00 info: Server started on port: 8882
+2019-1-30 20:20:55 info: Server started on port: 8882
+2019-1-30 20:22:34 info: Server started on port: 8882
+2019-1-30 20:23:00 info: Server started on port: 8882
+2019-1-30 20:23:13 info: Server started on port: 8882
+2019-1-30 20:23:17 info: Server started on port: 8882
+2019-1-30 20:24:45 info: Server started on port: 8882
+2019-1-30 20:24:52 error: FRONTEND ERROR-------------------------------
+TypeError: ,Cannot read property 'split' of undefined
+TypeError: Cannot read property 'split' of undefined
+    at logInSignUpController.baseController.extractBaseScreenClass (http://localhost:8882/js/baseController.js:140:39)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:163:29)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:33:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/
+------------------------------------------------------------
+2019-1-30 20:25:20 info: Server started on port: 8882
+2019-1-30 20:27:55 info: Server started on port: 8882
+2019-1-30 20:28:08 info: Server started on port: 8882
+2019-1-30 20:28:24 info: Server started on port: 8882
+2019-1-30 20:29:35 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/sign-up:56:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:167:2)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:33:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/login
+------------------------------------------------------------
+2019-1-30 20:29:35 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/sign-up:56:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:167:2)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:33:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/login
+------------------------------------------------------------
+2019-1-30 20:29:39 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/sign-up:56:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:167:2)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:33:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/login
+------------------------------------------------------------
+2019-1-30 20:32:35 info: Server started on port: 8882
+2019-1-30 20:32:49 info: Server started on port: 8882
+2019-1-30 20:33:51 info: Server started on port: 8882
+2019-1-30 20:33:56 info: Server started on port: 8882
+2019-1-30 20:34:56 info: Server started on port: 8882
+2019-1-30 20:35:17 info: Server started on port: 8882
+2019-1-30 20:35:26 info: Server started on port: 8882
+2019-1-30 20:35:32 info: Server started on port: 8882
+2019-1-30 20:35:36 info: Server started on port: 8882
+2019-1-30 20:35:48 info: Server started on port: 8882
+2019-1-30 20:36:04 info: Server started on port: 8882
+2019-1-30 20:36:25 info: Server started on port: 8882
+2019-1-30 20:38:11 info: Server started on port: 8882
+2019-1-30 20:38:38 info: Server started on port: 8882
+2019-1-30 20:38:56 info: Server started on port: 8882
+2019-1-30 20:40:47 info: Server started on port: 8882
+2019-1-30 20:40:50 info: Server started on port: 8882
+2019-1-30 20:40:52 error: FRONTEND ERROR-------------------------------
+ReferenceError: ,_self is not defined
+ReferenceError: _self is not defined
+    at logInSignUpController.baseController._initState (http://localhost:8882/js/baseController.js:54:4)
+    at logInSignUpController.baseController (http://localhost:8882/js/baseController.js:6:7)
+    at new logInSignUpController (http://localhost:8882/js/loginSignUpController.js:2:17)
+    at new generalClient (http://localhost:8882/js/generalClient.js:2:31)
+    at window.onload (http://localhost:8882/js/client.js:5:18)
+URL = http://localhost:8882/sign-up
+------------------------------------------------------------
+2019-1-30 20:41:09 info: Server started on port: 8882
+2019-1-30 20:42:44 info: Server started on port: 8882
+2019-1-30 20:43:11 info: Server started on port: 8882
+2019-1-30 20:44:37 info: Server started on port: 8882
+2019-1-30 20:45:09 info: Server started on port: 8882
+2019-1-30 20:47:37 info: Server started on port: 8882
+2019-1-30 20:47:48 info: Server started on port: 8882
+2019-1-30 20:48:34 info: Server started on port: 8882
+2019-1-30 20:49:54 info: Server started on port: 8882
+2019-1-30 20:54:25 info: Server started on port: 8882
+2019-1-30 20:55:25 info: Server started on port: 8882
+2019-1-30 20:55:48 info: Server started on port: 8882
+2019-1-30 20:56:22 info: Server started on port: 8882
+2019-1-30 20:56:39 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/login:56:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:181:2)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:36:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/main-menu
+------------------------------------------------------------
+2019-1-30 20:57:56 info: Server started on port: 8882
+2019-1-30 20:58:31 info: Server started on port: 8882
+2019-1-30 20:58:34 info: Server started on port: 8882
+2019-1-30 20:59:18 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/login:56:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:181:2)
+    at logInSignUpController.showLoginSuccess (http://localhost:8882/js/loginSignUpController.js:219:7)
+    at logInSignUpController.processLoginResponse (http://localhost:8882/js/loginSignUpController.js:137:8)
+    at Object.success (http://localhost:8882/js/generalClient.js:51:33)
+    at fire (http://localhost:8882/jquery/dist/jquery.js:3268:31)
+    at Object.fireWith [as resolveWith] (http://localhost:8882/jquery/dist/jquery.js:3398:7)
+    at done (http://localhost:8882/jquery/dist/jquery.js:9305:14)
+    at XMLHttpRequest.<anonymous> (http://localhost:8882/jquery/dist/jquery.js:9548:9)
+URL = http://localhost:8882/login
+------------------------------------------------------------
+2019-1-30 21:08:02 info: Server started on port: 8882
+2019-1-30 21:11:52 info: Server started on port: 8882
+2019-1-30 21:11:56 info: Server started on port: 8882
+2019-1-30 21:12:01 info: Server started on port: 8882
+2019-1-30 21:12:04 info: Server started on port: 8882
+2019-1-30 21:12:06 info: Server started on port: 8882
+2019-1-30 21:12:12 info: Server started on port: 8882
+2019-1-30 21:12:17 info: Server started on port: 8882
+2019-1-30 21:12:21 info: Server started on port: 8882
+2019-1-30 21:12:25 info: Server started on port: 8882
+2019-1-30 21:12:34 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/login:56:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:182:3)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:36:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/main-menu
+------------------------------------------------------------
+2019-1-30 21:12:47 error: FRONTEND ERROR-------------------------------
+Error: ,Syntax error, unrecognized expression: ..anime-cb-screen-main-menu
+Error: Syntax error, unrecognized expression: ..anime-cb-screen-main-menu
+    at Function.Sizzle.error (http://localhost:8882/jquery/dist/jquery.js:1541:8)
+    at Sizzle.tokenize (http://localhost:8882/jquery/dist/jquery.js:2193:11)
+    at Sizzle.select (http://localhost:8882/jquery/dist/jquery.js:2620:20)
+    at Function.Sizzle [as find] (http://localhost:8882/jquery/dist/jquery.js:845:9)
+    at jQuery.fn.init.find (http://localhost:8882/jquery/dist/jquery.js:2873:11)
+    at new jQuery.fn.init (http://localhost:8882/jquery/dist/jquery.js:2983:32)
+    at jQuery (http://localhost:8882/jquery/dist/jquery.js:139:10)
+    at logInSignUpController.baseController.switchToScreen (http://localhost:8882/js/baseController.js:65:2)
+    at logInSignUpController.baseController._initState (http://localhost:8882/js/baseController.js:56:9)
+    at logInSignUpController.baseController (http://localhost:8882/js/baseController.js:6:7)
+URL = http://localhost:8882/main-menu
+------------------------------------------------------------
+2019-1-30 21:15:22 info: Server started on port: 8882
+2019-1-30 21:15:41 info: Server started on port: 8882
+2019-1-30 21:16:25 info: Server started on port: 8882
+2019-1-30 21:16:47 info: Server started on port: 8882
+2019-1-30 21:17:01 info: Server started on port: 8882
+2019-1-30 21:17:19 info: Server started on port: 8882
+2019-1-30 21:17:31 info: Server started on port: 8882
+2019-1-30 21:17:58 info: Server started on port: 8882
+2019-1-30 21:18:01 info: Server started on port: 8882
+2019-1-30 21:18:07 info: Server started on port: 8882
+2019-1-30 21:18:09 info: Server started on port: 8882
+2019-1-30 21:18:26 info: Server started on port: 8882
+2019-1-30 21:18:28 info: Server started on port: 8882
+2019-1-30 21:18:30 info: Server started on port: 8882
+2019-1-30 21:18:40 info: Server started on port: 8882
+2019-1-30 21:18:45 info: Server started on port: 8882
+2019-1-30 21:19:23 info: Server started on port: 8882
+2019-1-30 21:19:29 info: Server started on port: 8882
+2019-1-30 21:19:32 info: Server started on port: 8882
+2019-1-30 21:19:40 info: Server started on port: 8882
+2019-1-30 21:21:32 info: Server started on port: 8882
+2019-1-30 21:22:04 info: Server started on port: 8882
+2019-1-30 21:22:42 info: Server started on port: 8882
+2019-1-30 21:23:07 info: Server started on port: 8882
+2019-1-30 21:23:37 info: Server started on port: 8882
+2019-1-30 21:23:44 info: Server started on port: 8882
+2019-1-30 21:23:47 info: Server started on port: 8882
+2019-1-30 21:25:20 info: Server started on port: 8882
+2019-1-30 21:25:25 info: Server started on port: 8882
+2019-1-30 21:26:37 info: Server started on port: 8882
+2019-1-30 21:26:45 info: Server started on port: 8882
+2019-1-30 21:26:47 error: FRONTEND ERROR-------------------------------
+Error: ,Syntax error, unrecognized expression: ..anime-cb-screen-main-menu
+Error: Syntax error, unrecognized expression: ..anime-cb-screen-main-menu
+    at Function.Sizzle.error (http://localhost:8882/jquery/dist/jquery.js:1541:8)
+    at Sizzle.tokenize (http://localhost:8882/jquery/dist/jquery.js:2193:11)
+    at Sizzle.select (http://localhost:8882/jquery/dist/jquery.js:2620:20)
+    at Function.Sizzle [as find] (http://localhost:8882/jquery/dist/jquery.js:845:9)
+    at jQuery.fn.init.find (http://localhost:8882/jquery/dist/jquery.js:2873:11)
+    at new jQuery.fn.init (http://localhost:8882/jquery/dist/jquery.js:2983:32)
+    at jQuery (http://localhost:8882/jquery/dist/jquery.js:139:10)
+    at logInSignUpController.baseController.switchToScreen (http://localhost:8882/js/baseController.js:65:2)
+    at logInSignUpController.baseController._initState (http://localhost:8882/js/baseController.js:56:9)
+    at logInSignUpController.baseController (http://localhost:8882/js/baseController.js:6:7)
+URL = http://localhost:8882/main-menu
+------------------------------------------------------------
+2019-1-30 21:26:53 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 21:26:53 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-30 21:26:55 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 21:26:55 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-30 21:26:58 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 21:27:00 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/sign-up:56:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:182:3)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:36:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/main-menu
+------------------------------------------------------------
+2019-1-30 21:27:05 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-30 21:27:09 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-30 21:27:10 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 21:27:13 info: Server started on port: 8882
+2019-1-30 21:27:40 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-30 21:27:41 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 21:27:46 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 21:28:39 info: Server started on port: 8882
+2019-1-30 21:28:42 info: Server started on port: 8882
+2019-1-30 21:29:03 info: Server started on port: 8882
+2019-1-30 21:29:05 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-30 21:29:34 info: User Data = { username: 'velioo98',
+  email: 'velioocs@gmail.com',
+  password:
+   '4f831dd98595de22db2e6c9b51cd28abe75ab12083a9acd32734561fb3a19746',
+  salt: 'vYdSRbbcLw4lZWU1ZoCx/Z//B5uavhO3aORyA1frV0M=' }
+2019-1-30 21:29:37 info: userMessageMail = A confirmation email was sent to your email address.
+      Please confirm your account before logging in.
+2019-1-30 21:29:37 info: Confirmation email sent
+2019-1-30 21:29:38 info: FL: Screen class: ,anime-cb-screen-sign-up-success
+2019-1-30 21:30:02 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 21:30:13 info: Successfully validated your account
+2019-1-30 21:30:26 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-30 21:30:31 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 21:30:31 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/login:56:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:182:3)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:36:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/main-menu
+------------------------------------------------------------
+2019-1-30 21:30:32 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 21:30:57 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-30 21:31:01 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-30 21:31:07 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-30 21:31:23 info: Server started on port: 8882
+2019-1-30 21:53:58 info: Server started on port: 8882
+2019-1-30 21:54:13 info: Server started on port: 8882
+2019-1-30 21:54:42 info: Server started on port: 8882
+2019-1-30 21:54:56 info: Server started on port: 8882
+2019-1-30 21:55:50 info: Server started on port: 8882
+2019-1-30 21:55:52 info: Server started on port: 8882
+2019-1-30 21:56:12 info: Server started on port: 8882
+2019-1-30 21:56:32 info: Server started on port: 8882
+2019-1-30 21:57:34 info: Server started on port: 8882
+2019-1-30 21:57:37 info: Server started on port: 8882
+2019-1-30 21:57:49 info: Server started on port: 8882
+2019-1-30 22:00:39 info: Server started on port: 8882
+2019-1-30 22:00:45 info: Server started on port: 8882
+2019-1-30 22:00:52 info: Server started on port: 8882
+2019-1-30 22:01:01 info: Server started on port: 8882
+2019-1-30 22:01:48 info: Server started on port: 8882
+2019-1-30 22:04:07 info: Server started on port: 8882
+2019-1-30 22:04:12 info: Server started on port: 8882
+2019-1-30 22:04:28 info: Server started on port: 8882
+2019-1-30 22:04:48 info: Server started on port: 8882
+2019-1-30 22:04:58 info: Server started on port: 8882
+2019-1-30 22:05:06 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-30 22:05:11 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 22:05:22 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 22:06:35 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/:56:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:191:3)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:36:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/main-menu
+------------------------------------------------------------
+2019-1-30 22:06:37 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-30 22:06:39 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 22:08:25 info: Server started on port: 8882
+2019-1-30 22:12:10 info: Server started on port: 8882
+2019-1-30 22:12:38 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-30 22:12:41 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 22:13:49 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 22:14:34 info: Server started on port: 8882
+2019-1-30 22:16:01 info: Server started on port: 8882
+2019-1-30 22:16:05 info: Server started on port: 8882
+2019-1-30 22:16:21 info: Server started on port: 8882
+2019-1-30 22:16:59 info: Server started on port: 8882
+2019-1-30 22:17:11 info: Server started on port: 8882
+2019-1-30 22:17:38 info: Server started on port: 8882
+2019-1-30 22:18:27 info: Server started on port: 8882
+2019-1-30 22:18:46 info: Server started on port: 8882
+2019-1-30 22:22:02 info: Server started on port: 8882
+2019-1-30 22:22:04 info: Server started on port: 8882
+2019-1-30 22:22:13 info: Server started on port: 8882
+2019-1-30 22:22:17 info: Server started on port: 8882
+2019-1-30 22:22:21 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-30 22:22:22 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 22:22:27 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 22:22:29 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-30 22:22:31 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 22:22:34 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/sign-up:55:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:192:3)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:37:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/main-menu
+------------------------------------------------------------
+2019-1-30 22:22:36 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/sign-up:55:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:192:3)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:37:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/main-menu
+------------------------------------------------------------
+2019-1-30 22:22:36 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 22:22:43 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-30 22:22:53 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 22:23:00 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-30 22:23:20 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-30 22:23:36 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-30 22:23:37 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 22:23:38 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-30 22:23:40 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 22:23:42 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/login:55:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:192:3)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:37:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/main-menu
+------------------------------------------------------------
+2019-1-30 22:23:58 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 22:23:59 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-30 22:24:05 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 22:24:07 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-30 22:24:08 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 22:24:09 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/login:55:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:192:3)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:37:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/main-menu
+------------------------------------------------------------
+2019-1-30 22:24:12 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/login:55:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:192:3)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:37:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/main-menu
+------------------------------------------------------------
+2019-1-30 22:25:00 info: Server started on port: 8882
+2019-1-30 22:25:11 info: Server started on port: 8882
+2019-1-30 22:25:14 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/main-menu:55:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:192:3)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:37:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/main-menu
+------------------------------------------------------------
+2019-1-30 22:25:14 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 22:25:15 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-30 22:25:16 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 22:25:17 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-30 22:25:24 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-30 22:25:25 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-30 22:25:49 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-30 22:26:25 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-30 22:26:26 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-30 22:26:40 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-30 22:26:41 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-30 22:26:42 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 22:26:43 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-30 22:27:03 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-30 22:27:11 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-30 22:27:12 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-30 22:27:13 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 22:27:34 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-30 22:27:35 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 22:27:36 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-30 22:27:37 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 22:29:22 info: Server started on port: 8882
+2019-1-30 22:29:32 info: Server started on port: 8882
+2019-1-30 22:31:58 info: Server started on port: 8882
+2019-1-30 22:33:45 info: Server started on port: 8882
+2019-1-30 22:34:53 info: Server started on port: 8882
+2019-1-30 22:35:24 info: Server started on port: 8882
+2019-1-30 22:36:41 info: Server started on port: 8882
+2019-1-30 22:36:49 info: Server started on port: 8882
+2019-1-30 22:36:56 info: Server started on port: 8882
+2019-1-30 22:37:01 info: Server started on port: 8882
+2019-1-30 22:37:13 info: Server started on port: 8882
+2019-1-30 22:37:27 info: Server started on port: 8882
+2019-1-30 22:37:54 info: Server started on port: 8882
+2019-1-30 22:38:09 info: Server started on port: 8882
+2019-1-30 22:38:24 info: Server started on port: 8882
+2019-1-30 22:38:54 info: Server started on port: 8882
+2019-1-30 22:38:59 info: Server started on port: 8882
+2019-1-30 22:40:04 info: Server started on port: 8882
+2019-1-30 22:40:09 info: Server started on port: 8882
+2019-1-30 22:40:22 info: Server started on port: 8882
+2019-1-30 22:41:01 info: Server started on port: 8882
+2019-1-30 22:42:08 info: Server started on port: 8882
+2019-1-30 22:42:25 info: Server started on port: 8882
+2019-1-30 22:43:07 info: Server started on port: 8882
+2019-1-30 22:43:11 info: Server started on port: 8882
+2019-1-30 22:43:35 info: Server started on port: 8882
+2019-1-30 22:44:43 info: Server started on port: 8882
+2019-1-30 22:45:14 info: Server started on port: 8882
+2019-1-30 22:45:17 info: Server started on port: 8882
+2019-1-30 22:45:43 info: Server started on port: 8882
+2019-1-30 22:45:47 info: Server started on port: 8882
+2019-1-30 22:46:05 info: Server started on port: 8882
+2019-1-30 22:46:15 info: Server started on port: 8882
+2019-1-30 22:47:01 info: Server started on port: 8882
+2019-1-30 22:47:07 info: Server started on port: 8882
+2019-1-30 22:47:12 info: Server started on port: 8882
+2019-1-30 22:47:19 info: Server started on port: 8882
+2019-1-30 22:47:22 info: Server started on port: 8882
+2019-1-30 22:47:31 error: FRONTEND ERROR-------------------------------
+TypeError: ,_self.isUserLoggedIn is not a function
+TypeError: _self.isUserLoggedIn is not a function
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:36:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/main-menu
+------------------------------------------------------------
+2019-1-30 22:47:58 info: Server started on port: 8882
+2019-1-30 22:48:05 info: Server started on port: 8882
+2019-1-30 22:48:13 info: Server started on port: 8882
+2019-1-30 22:48:14 error: FRONTEND ERROR-------------------------------
+ReferenceError: ,_self is not defined
+ReferenceError: _self is not defined
+    at logInSignUpController.checkIsUserLoggedIn (http://localhost:8882/js/loginSignUpController.js:122:2)
+    at logInSignUpController.<anonymous> (http://localhost:8882/js/loginSignUpController.js:116:8)
+URL = http://localhost:8882/main-menu
+------------------------------------------------------------
+2019-1-30 22:48:16 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-30 22:48:18 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 22:48:19 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-30 22:48:22 error: FRONTEND ERROR-------------------------------
+ReferenceError: ,_self is not defined
+ReferenceError: _self is not defined
+    at logInSignUpController.checkIsUserLoggedIn (http://localhost:8882/js/loginSignUpController.js:122:2)
+    at logInSignUpController.<anonymous> (http://localhost:8882/js/loginSignUpController.js:116:8)
+URL = http://localhost:8882/login
+------------------------------------------------------------
+2019-1-30 22:48:47 info: Server started on port: 8882
+2019-1-30 22:48:49 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 22:48:49 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-30 22:48:50 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 22:48:51 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-30 22:48:53 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-30 22:48:53 error: FRONTEND ERROR-------------------------------
+ReferenceError: ,processIsUserLoggedInResponse is not defined
+ReferenceError: processIsUserLoggedInResponse is not defined
+    at logInSignUpController.processIsUserLoggedInResponse (http://localhost:8882/js/loginSignUpController.js:181:23)
+    at Object.success (http://localhost:8882/js/generalClient.js:69:33)
+    at fire (http://localhost:8882/jquery/dist/jquery.js:3268:31)
+    at Object.fireWith [as resolveWith] (http://localhost:8882/jquery/dist/jquery.js:3398:7)
+    at done (http://localhost:8882/jquery/dist/jquery.js:9305:14)
+    at XMLHttpRequest.<anonymous> (http://localhost:8882/jquery/dist/jquery.js:9548:9)
+URL = http://localhost:8882/login
+------------------------------------------------------------
+2019-1-30 22:49:44 info: Server started on port: 8882
+2019-1-30 22:49:44 error: FRONTEND ERROR-------------------------------
+ReferenceError: ,processIsUserLoggedInResponse is not defined
+ReferenceError: processIsUserLoggedInResponse is not defined
+    at logInSignUpController.processIsUserLoggedInResponse (http://localhost:8882/js/loginSignUpController.js:181:23)
+    at Object.success (http://localhost:8882/js/generalClient.js:69:33)
+    at fire (http://localhost:8882/jquery/dist/jquery.js:3268:31)
+    at Object.fireWith [as resolveWith] (http://localhost:8882/jquery/dist/jquery.js:3398:7)
+    at done (http://localhost:8882/jquery/dist/jquery.js:9305:14)
+    at XMLHttpRequest.<anonymous> (http://localhost:8882/jquery/dist/jquery.js:9548:9)
+URL = http://localhost:8882/login
+------------------------------------------------------------
+2019-1-30 22:50:07 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 22:53:19 info: Server started on port: 8882
+2019-1-30 22:54:16 info: Server started on port: 8882
+2019-1-30 22:55:28 info: Server started on port: 8882
+2019-1-30 22:56:08 info: Server started on port: 8882
+2019-1-30 22:56:12 info: Server started on port: 8882
+2019-1-30 22:56:17 info: Server started on port: 8882
+2019-1-30 22:56:32 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 22:56:51 info: Server started on port: 8882
+2019-1-30 22:56:55 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-30 22:56:57 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 22:57:06 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/main-menu:55:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:192:3)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:37:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/main-menu
+------------------------------------------------------------
+2019-1-30 22:57:07 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/main-menu:55:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:192:3)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:37:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/main-menu
+------------------------------------------------------------
+2019-1-30 22:57:08 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 22:57:09 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-30 22:57:10 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-30 22:57:11 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 22:57:15 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-30 22:57:16 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 22:57:17 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-30 22:57:19 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-30 22:57:20 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-30 22:57:21 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 22:57:22 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 22:57:23 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-30 22:57:26 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 22:57:26 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/main-menu:55:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:192:3)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:37:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/main-menu
+------------------------------------------------------------
+2019-1-30 22:57:46 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/main-menu:55:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:192:3)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:37:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/main-menu
+------------------------------------------------------------
+2019-1-30 22:57:47 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 22:57:56 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-30 22:58:00 info: Server started on port: 8882
+2019-1-30 22:58:07 info: Server started on port: 8882
+2019-1-30 22:58:33 info: Server started on port: 8882
+2019-1-30 23:01:52 info: Server started on port: 8882
+2019-1-30 23:02:03 info: Server started on port: 8882
+2019-1-30 23:02:07 info: Server started on port: 8882
+2019-1-30 23:02:09 info: Server started on port: 8882
+2019-1-30 23:02:14 info: Server started on port: 8882
+2019-1-30 23:02:19 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-30 23:02:21 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 23:02:42 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/login:55:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:199:3)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:37:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/sign-up
+------------------------------------------------------------
+2019-1-30 23:06:09 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 23:06:09 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/sign-up:55:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:199:3)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:37:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/main-menu
+------------------------------------------------------------
+2019-1-30 23:06:15 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-30 23:06:16 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 23:06:56 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 23:06:56 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-30 23:07:40 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-30 23:07:44 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/main-menu:55:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:199:3)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:37:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/login
+------------------------------------------------------------
+2019-1-30 23:08:20 info: Server started on port: 8882
+2019-1-30 23:09:42 info: Server started on port: 8882
+2019-1-30 23:10:19 info: Server started on port: 8882
+2019-1-30 23:10:31 info: Server started on port: 8882
+2019-1-30 23:10:33 info: Server started on port: 8882
+2019-1-30 23:11:26 info: Server started on port: 8882
+2019-1-30 23:11:32 info: Server started on port: 8882
+2019-1-30 23:11:36 info: Server started on port: 8882
+2019-1-30 23:11:43 info: Server started on port: 8882
+2019-1-30 23:11:49 info: Server started on port: 8882
+2019-1-30 23:12:10 info: Server started on port: 8882
+2019-1-30 23:12:23 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-30 23:12:26 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 23:12:26 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-30 23:12:28 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-30 23:12:37 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-30 23:12:43 info: Server started on port: 8882
