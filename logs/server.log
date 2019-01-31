@@ -12483,3 +12483,2104 @@ URL = http://localhost:8882/login
 2019-1-30 23:12:28 info: FL: Screen class: ,anime-cb-screen-main-menu
 2019-1-30 23:12:37 info: FL: Screen class: ,anime-cb-screen-sign-up
 2019-1-30 23:12:43 info: Server started on port: 8882
+2019-1-31 16:18:55 info: Server started on port: 8882
+2019-1-31 16:22:27 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-31 16:22:30 error: Error while executing code: Error: connect ECONNREFUSED 127.0.0.1:5432
+    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1117:14)
+2019-1-31 16:22:30 error: Error while executing code: Error: connect ECONNREFUSED 127.0.0.1:5432
+    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1117:14)
+2019-1-31 16:22:30 error: Error while executing code: Error: connect ECONNREFUSED 127.0.0.1:5432
+    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1117:14)
+2019-1-31 16:22:30 error: Error while executing code: Error: connect ECONNREFUSED 127.0.0.1:5432
+    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1117:14)
+2019-1-31 16:22:30 error: Error while executing code: Error: connect ECONNREFUSED 127.0.0.1:5432
+    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1117:14)
+2019-1-31 16:22:30 error: Error while executing code: Error: connect ECONNREFUSED 127.0.0.1:5432
+    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1117:14)
+2019-1-31 16:22:31 error: Error while executing code: Error: connect ECONNREFUSED 127.0.0.1:5432
+    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1117:14)
+2019-1-31 16:22:36 info: FL: Internal sever error
+2019-1-31 16:22:36 info: FL: Response Text: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Home</title>
+    <meta charset="utf-8">
+    <link rel="icon" href="http://downloadicons.net/sites/default/files/computer-icon-65917.png">
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.css">
+    <script src="/jquery/dist/jquery.js"></script>
+    <script src="/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="/ajv/dist/ajv.min.js"></script>
+    <script src="/log4javascript/log4javascript.js"></script>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+
+<script type="text/javascript">
+    window.onerror = function (msg, url, lineNo, columnNo, error) {
+      infoLog = '';
+      window.alert(`There was a problem while processing your request.`);
+      if(error !== null) {
+        if(error.stack != '') {
+          logger.error(error.name + ': ', error.message + '\n' + error.stack);
+        } else {
+          logger.error(error.name + ': ', error.message + '\n' + url + ':' + lineNo + ':' + columnNo + '\n');
+        }
+      } else if(ajv.errors) {
+        logger.error("Request didn\'t return a valid JSON object\n" + JSON.stringify(ajv.errors, null, 2));
+      } else {
+        logger.error(msg + ': ' + url + ': ' + lineNo + ': ' + columnNo + '\n');
+      }
+      return true;
+    };
+
+    const logger = log4javascript.getLogger();
+    const ajaxAppender = new log4javascript.AjaxAppender('/frontend_logger');
+
+    ajaxAppender.setSendAllOnUnload();
+    ajaxAppender.setTimerInterval(1000);
+    ajaxAppender.setTimed(true);
+
+    logger.addAppender(ajaxAppender);
+
+    function getLogger() {
+      return logger;
+    }
+
+    var infoLog = '';
+
+    var ajv = new Ajv({ allErrors: true });
+
+    function assert(condition, message) {
+        if (!condition) {
+          message = message || 'Assertion failed';
+          if (typeof Error !== 'undefined') {
+            throw new Error(message);
+          }
+          throw message;
+        }
+    }
+</script>
+
+<div id="acb-main-wrapper">
+<div class="server-error">
+	<h1>Interal Server Error 500. The server encountered an error, please try again later.</h1>
+</div>
+
+</div>
+
+</body>
+</html>
+ Ready State: 4
+ Status Code: 500
+2019-1-31 16:22:36 info: FL: Internal sever error
+2019-1-31 16:22:36 info: FL: Response Text: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Home</title>
+    <meta charset="utf-8">
+    <link rel="icon" href="http://downloadicons.net/sites/default/files/computer-icon-65917.png">
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.css">
+    <script src="/jquery/dist/jquery.js"></script>
+    <script src="/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="/ajv/dist/ajv.min.js"></script>
+    <script src="/log4javascript/log4javascript.js"></script>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+
+<script type="text/javascript">
+    window.onerror = function (msg, url, lineNo, columnNo, error) {
+      infoLog = '';
+      window.alert(`There was a problem while processing your request.`);
+      if(error !== null) {
+        if(error.stack != '') {
+          logger.error(error.name + ': ', error.message + '\n' + error.stack);
+        } else {
+          logger.error(error.name + ': ', error.message + '\n' + url + ':' + lineNo + ':' + columnNo + '\n');
+        }
+      } else if(ajv.errors) {
+        logger.error("Request didn\'t return a valid JSON object\n" + JSON.stringify(ajv.errors, null, 2));
+      } else {
+        logger.error(msg + ': ' + url + ': ' + lineNo + ': ' + columnNo + '\n');
+      }
+      return true;
+    };
+
+    const logger = log4javascript.getLogger();
+    const ajaxAppender = new log4javascript.AjaxAppender('/frontend_logger');
+
+    ajaxAppender.setSendAllOnUnload();
+    ajaxAppender.setTimerInterval(1000);
+    ajaxAppender.setTimed(true);
+
+    logger.addAppender(ajaxAppender);
+
+    function getLogger() {
+      return logger;
+    }
+
+    var infoLog = '';
+
+    var ajv = new Ajv({ allErrors: true });
+
+    function assert(condition, message) {
+        if (!condition) {
+          message = message || 'Assertion failed';
+          if (typeof Error !== 'undefined') {
+            throw new Error(message);
+          }
+          throw message;
+        }
+    }
+</script>
+
+<div id="acb-main-wrapper">
+<div class="server-error">
+	<h1>Interal Server Error 500. The server encountered an error, please try again later.</h1>
+</div>
+
+</div>
+
+</body>
+</html>
+ Ready State: 4
+ Status Code: 500
+2019-1-31 16:22:36 info: FL: Internal sever error
+2019-1-31 16:22:36 info: FL: Response Text: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Home</title>
+    <meta charset="utf-8">
+    <link rel="icon" href="http://downloadicons.net/sites/default/files/computer-icon-65917.png">
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.css">
+    <script src="/jquery/dist/jquery.js"></script>
+    <script src="/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="/ajv/dist/ajv.min.js"></script>
+    <script src="/log4javascript/log4javascript.js"></script>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+
+<script type="text/javascript">
+    window.onerror = function (msg, url, lineNo, columnNo, error) {
+      infoLog = '';
+      window.alert(`There was a problem while processing your request.`);
+      if(error !== null) {
+        if(error.stack != '') {
+          logger.error(error.name + ': ', error.message + '\n' + error.stack);
+        } else {
+          logger.error(error.name + ': ', error.message + '\n' + url + ':' + lineNo + ':' + columnNo + '\n');
+        }
+      } else if(ajv.errors) {
+        logger.error("Request didn\'t return a valid JSON object\n" + JSON.stringify(ajv.errors, null, 2));
+      } else {
+        logger.error(msg + ': ' + url + ': ' + lineNo + ': ' + columnNo + '\n');
+      }
+      return true;
+    };
+
+    const logger = log4javascript.getLogger();
+    const ajaxAppender = new log4javascript.AjaxAppender('/frontend_logger');
+
+    ajaxAppender.setSendAllOnUnload();
+    ajaxAppender.setTimerInterval(1000);
+    ajaxAppender.setTimed(true);
+
+    logger.addAppender(ajaxAppender);
+
+    function getLogger() {
+      return logger;
+    }
+
+    var infoLog = '';
+
+    var ajv = new Ajv({ allErrors: true });
+
+    function assert(condition, message) {
+        if (!condition) {
+          message = message || 'Assertion failed';
+          if (typeof Error !== 'undefined') {
+            throw new Error(message);
+          }
+          throw message;
+        }
+    }
+</script>
+
+<div id="acb-main-wrapper">
+<div class="server-error">
+	<h1>Interal Server Error 500. The server encountered an error, please try again later.</h1>
+</div>
+
+</div>
+
+</body>
+</html>
+ Ready State: 4
+ Status Code: 500
+2019-1-31 16:22:36 info: FL: Internal sever error
+2019-1-31 16:22:36 info: FL: Response Text: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Home</title>
+    <meta charset="utf-8">
+    <link rel="icon" href="http://downloadicons.net/sites/default/files/computer-icon-65917.png">
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.css">
+    <script src="/jquery/dist/jquery.js"></script>
+    <script src="/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="/ajv/dist/ajv.min.js"></script>
+    <script src="/log4javascript/log4javascript.js"></script>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+
+<script type="text/javascript">
+    window.onerror = function (msg, url, lineNo, columnNo, error) {
+      infoLog = '';
+      window.alert(`There was a problem while processing your request.`);
+      if(error !== null) {
+        if(error.stack != '') {
+          logger.error(error.name + ': ', error.message + '\n' + error.stack);
+        } else {
+          logger.error(error.name + ': ', error.message + '\n' + url + ':' + lineNo + ':' + columnNo + '\n');
+        }
+      } else if(ajv.errors) {
+        logger.error("Request didn\'t return a valid JSON object\n" + JSON.stringify(ajv.errors, null, 2));
+      } else {
+        logger.error(msg + ': ' + url + ': ' + lineNo + ': ' + columnNo + '\n');
+      }
+      return true;
+    };
+
+    const logger = log4javascript.getLogger();
+    const ajaxAppender = new log4javascript.AjaxAppender('/frontend_logger');
+
+    ajaxAppender.setSendAllOnUnload();
+    ajaxAppender.setTimerInterval(1000);
+    ajaxAppender.setTimed(true);
+
+    logger.addAppender(ajaxAppender);
+
+    function getLogger() {
+      return logger;
+    }
+
+    var infoLog = '';
+
+    var ajv = new Ajv({ allErrors: true });
+
+    function assert(condition, message) {
+        if (!condition) {
+          message = message || 'Assertion failed';
+          if (typeof Error !== 'undefined') {
+            throw new Error(message);
+          }
+          throw message;
+        }
+    }
+</script>
+
+<div id="acb-main-wrapper">
+<div class="server-error">
+	<h1>Interal Server Error 500. The server encountered an error, please try again later.</h1>
+</div>
+
+</div>
+
+</body>
+</html>
+ Ready State: 4
+ Status Code: 500
+2019-1-31 16:22:36 info: FL: Internal sever error
+2019-1-31 16:22:36 info: FL: Response Text: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Home</title>
+    <meta charset="utf-8">
+    <link rel="icon" href="http://downloadicons.net/sites/default/files/computer-icon-65917.png">
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.css">
+    <script src="/jquery/dist/jquery.js"></script>
+    <script src="/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="/ajv/dist/ajv.min.js"></script>
+    <script src="/log4javascript/log4javascript.js"></script>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+
+<script type="text/javascript">
+    window.onerror = function (msg, url, lineNo, columnNo, error) {
+      infoLog = '';
+      window.alert(`There was a problem while processing your request.`);
+      if(error !== null) {
+        if(error.stack != '') {
+          logger.error(error.name + ': ', error.message + '\n' + error.stack);
+        } else {
+          logger.error(error.name + ': ', error.message + '\n' + url + ':' + lineNo + ':' + columnNo + '\n');
+        }
+      } else if(ajv.errors) {
+        logger.error("Request didn\'t return a valid JSON object\n" + JSON.stringify(ajv.errors, null, 2));
+      } else {
+        logger.error(msg + ': ' + url + ': ' + lineNo + ': ' + columnNo + '\n');
+      }
+      return true;
+    };
+
+    const logger = log4javascript.getLogger();
+    const ajaxAppender = new log4javascript.AjaxAppender('/frontend_logger');
+
+    ajaxAppender.setSendAllOnUnload();
+    ajaxAppender.setTimerInterval(1000);
+    ajaxAppender.setTimed(true);
+
+    logger.addAppender(ajaxAppender);
+
+    function getLogger() {
+      return logger;
+    }
+
+    var infoLog = '';
+
+    var ajv = new Ajv({ allErrors: true });
+
+    function assert(condition, message) {
+        if (!condition) {
+          message = message || 'Assertion failed';
+          if (typeof Error !== 'undefined') {
+            throw new Error(message);
+          }
+          throw message;
+        }
+    }
+</script>
+
+<div id="acb-main-wrapper">
+<div class="server-error">
+	<h1>Interal Server Error 500. The server encountered an error, please try again later.</h1>
+</div>
+
+</div>
+
+</body>
+</html>
+ Ready State: 4
+ Status Code: 500
+2019-1-31 16:22:36 info: FL: Internal sever error
+2019-1-31 16:22:36 info: FL: Response Text: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Home</title>
+    <meta charset="utf-8">
+    <link rel="icon" href="http://downloadicons.net/sites/default/files/computer-icon-65917.png">
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.css">
+    <script src="/jquery/dist/jquery.js"></script>
+    <script src="/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="/ajv/dist/ajv.min.js"></script>
+    <script src="/log4javascript/log4javascript.js"></script>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+
+<script type="text/javascript">
+    window.onerror = function (msg, url, lineNo, columnNo, error) {
+      infoLog = '';
+      window.alert(`There was a problem while processing your request.`);
+      if(error !== null) {
+        if(error.stack != '') {
+          logger.error(error.name + ': ', error.message + '\n' + error.stack);
+        } else {
+          logger.error(error.name + ': ', error.message + '\n' + url + ':' + lineNo + ':' + columnNo + '\n');
+        }
+      } else if(ajv.errors) {
+        logger.error("Request didn\'t return a valid JSON object\n" + JSON.stringify(ajv.errors, null, 2));
+      } else {
+        logger.error(msg + ': ' + url + ': ' + lineNo + ': ' + columnNo + '\n');
+      }
+      return true;
+    };
+
+    const logger = log4javascript.getLogger();
+    const ajaxAppender = new log4javascript.AjaxAppender('/frontend_logger');
+
+    ajaxAppender.setSendAllOnUnload();
+    ajaxAppender.setTimerInterval(1000);
+    ajaxAppender.setTimed(true);
+
+    logger.addAppender(ajaxAppender);
+
+    function getLogger() {
+      return logger;
+    }
+
+    var infoLog = '';
+
+    var ajv = new Ajv({ allErrors: true });
+
+    function assert(condition, message) {
+        if (!condition) {
+          message = message || 'Assertion failed';
+          if (typeof Error !== 'undefined') {
+            throw new Error(message);
+          }
+          throw message;
+        }
+    }
+</script>
+
+<div id="acb-main-wrapper">
+<div class="server-error">
+	<h1>Interal Server Error 500. The server encountered an error, please try again later.</h1>
+</div>
+
+</div>
+
+</body>
+</html>
+ Ready State: 4
+ Status Code: 500
+2019-1-31 16:22:36 info: FL: Internal sever error
+2019-1-31 16:22:36 info: FL: Response Text: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Home</title>
+    <meta charset="utf-8">
+    <link rel="icon" href="http://downloadicons.net/sites/default/files/computer-icon-65917.png">
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.css">
+    <script src="/jquery/dist/jquery.js"></script>
+    <script src="/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="/ajv/dist/ajv.min.js"></script>
+    <script src="/log4javascript/log4javascript.js"></script>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+
+<script type="text/javascript">
+    window.onerror = function (msg, url, lineNo, columnNo, error) {
+      infoLog = '';
+      window.alert(`There was a problem while processing your request.`);
+      if(error !== null) {
+        if(error.stack != '') {
+          logger.error(error.name + ': ', error.message + '\n' + error.stack);
+        } else {
+          logger.error(error.name + ': ', error.message + '\n' + url + ':' + lineNo + ':' + columnNo + '\n');
+        }
+      } else if(ajv.errors) {
+        logger.error("Request didn\'t return a valid JSON object\n" + JSON.stringify(ajv.errors, null, 2));
+      } else {
+        logger.error(msg + ': ' + url + ': ' + lineNo + ': ' + columnNo + '\n');
+      }
+      return true;
+    };
+
+    const logger = log4javascript.getLogger();
+    const ajaxAppender = new log4javascript.AjaxAppender('/frontend_logger');
+
+    ajaxAppender.setSendAllOnUnload();
+    ajaxAppender.setTimerInterval(1000);
+    ajaxAppender.setTimed(true);
+
+    logger.addAppender(ajaxAppender);
+
+    function getLogger() {
+      return logger;
+    }
+
+    var infoLog = '';
+
+    var ajv = new Ajv({ allErrors: true });
+
+    function assert(condition, message) {
+        if (!condition) {
+          message = message || 'Assertion failed';
+          if (typeof Error !== 'undefined') {
+            throw new Error(message);
+          }
+          throw message;
+        }
+    }
+</script>
+
+<div id="acb-main-wrapper">
+<div class="server-error">
+	<h1>Interal Server Error 500. The server encountered an error, please try again later.</h1>
+</div>
+
+</div>
+
+</body>
+</html>
+ Ready State: 4
+ Status Code: 500
+2019-1-31 16:23:38 error: Error while executing code: Error: connect ECONNREFUSED 127.0.0.1:5432
+    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1117:14)
+2019-1-31 16:23:42 error: Error while executing code: Error: connect ECONNREFUSED 127.0.0.1:5432
+    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1117:14)
+2019-1-31 16:23:44 info: FL: Internal sever error
+2019-1-31 16:23:44 info: FL: Response Text: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Home</title>
+    <meta charset="utf-8">
+    <link rel="icon" href="http://downloadicons.net/sites/default/files/computer-icon-65917.png">
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.css">
+    <script src="/jquery/dist/jquery.js"></script>
+    <script src="/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="/ajv/dist/ajv.min.js"></script>
+    <script src="/log4javascript/log4javascript.js"></script>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+
+<script type="text/javascript">
+    window.onerror = function (msg, url, lineNo, columnNo, error) {
+      infoLog = '';
+      window.alert(`There was a problem while processing your request.`);
+      if(error !== null) {
+        if(error.stack != '') {
+          logger.error(error.name + ': ', error.message + '\n' + error.stack);
+        } else {
+          logger.error(error.name + ': ', error.message + '\n' + url + ':' + lineNo + ':' + columnNo + '\n');
+        }
+      } else if(ajv.errors) {
+        logger.error("Request didn\'t return a valid JSON object\n" + JSON.stringify(ajv.errors, null, 2));
+      } else {
+        logger.error(msg + ': ' + url + ': ' + lineNo + ': ' + columnNo + '\n');
+      }
+      return true;
+    };
+
+    const logger = log4javascript.getLogger();
+    const ajaxAppender = new log4javascript.AjaxAppender('/frontend_logger');
+
+    ajaxAppender.setSendAllOnUnload();
+    ajaxAppender.setTimerInterval(1000);
+    ajaxAppender.setTimed(true);
+
+    logger.addAppender(ajaxAppender);
+
+    function getLogger() {
+      return logger;
+    }
+
+    var infoLog = '';
+
+    var ajv = new Ajv({ allErrors: true });
+
+    function assert(condition, message) {
+        if (!condition) {
+          message = message || 'Assertion failed';
+          if (typeof Error !== 'undefined') {
+            throw new Error(message);
+          }
+          throw message;
+        }
+    }
+</script>
+
+<div id="acb-main-wrapper">
+<div class="server-error">
+	<h1>Interal Server Error 500. The server encountered an error, please try again later.</h1>
+</div>
+
+</div>
+
+</body>
+</html>
+ Ready State: 4
+ Status Code: 500
+2019-1-31 16:23:51 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-31 16:23:51 error: Error while executing code: Error: connect ECONNREFUSED 127.0.0.1:5432
+    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1117:14)
+2019-1-31 16:23:53 info: FL: Internal sever error
+2019-1-31 16:23:53 info: FL: Response Text: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Home</title>
+    <meta charset="utf-8">
+    <link rel="icon" href="http://downloadicons.net/sites/default/files/computer-icon-65917.png">
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.css">
+    <script src="/jquery/dist/jquery.js"></script>
+    <script src="/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="/ajv/dist/ajv.min.js"></script>
+    <script src="/log4javascript/log4javascript.js"></script>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+
+<script type="text/javascript">
+    window.onerror = function (msg, url, lineNo, columnNo, error) {
+      infoLog = '';
+      window.alert(`There was a problem while processing your request.`);
+      if(error !== null) {
+        if(error.stack != '') {
+          logger.error(error.name + ': ', error.message + '\n' + error.stack);
+        } else {
+          logger.error(error.name + ': ', error.message + '\n' + url + ':' + lineNo + ':' + columnNo + '\n');
+        }
+      } else if(ajv.errors) {
+        logger.error("Request didn\'t return a valid JSON object\n" + JSON.stringify(ajv.errors, null, 2));
+      } else {
+        logger.error(msg + ': ' + url + ': ' + lineNo + ': ' + columnNo + '\n');
+      }
+      return true;
+    };
+
+    const logger = log4javascript.getLogger();
+    const ajaxAppender = new log4javascript.AjaxAppender('/frontend_logger');
+
+    ajaxAppender.setSendAllOnUnload();
+    ajaxAppender.setTimerInterval(1000);
+    ajaxAppender.setTimed(true);
+
+    logger.addAppender(ajaxAppender);
+
+    function getLogger() {
+      return logger;
+    }
+
+    var infoLog = '';
+
+    var ajv = new Ajv({ allErrors: true });
+
+    function assert(condition, message) {
+        if (!condition) {
+          message = message || 'Assertion failed';
+          if (typeof Error !== 'undefined') {
+            throw new Error(message);
+          }
+          throw message;
+        }
+    }
+</script>
+
+<div id="acb-main-wrapper">
+<div class="server-error">
+	<h1>Interal Server Error 500. The server encountered an error, please try again later.</h1>
+</div>
+
+</div>
+
+</body>
+</html>
+ Ready State: 4
+ Status Code: 500
+2019-1-31 16:24:42 info: Server started on port: 8882
+2019-1-31 16:24:50 info: Server started on port: 8882
+2019-1-31 16:25:01 info: Server started on port: 8882
+2019-1-31 16:25:17 info: Server started on port: 8882
+2019-1-31 16:25:26 info: Server started on port: 8882
+2019-1-31 16:25:51 info: Server started on port: 8882
+2019-1-31 16:25:57 error: Error while executing code: Error: connect ECONNREFUSED 127.0.0.1:5432
+    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1117:14)
+2019-1-31 16:25:59 info: FL: Internal sever error
+2019-1-31 16:25:59 info: FL: Response Text: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Home</title>
+    <meta charset="utf-8">
+    <link rel="icon" href="http://downloadicons.net/sites/default/files/computer-icon-65917.png">
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.css">
+    <script src="/jquery/dist/jquery.js"></script>
+    <script src="/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="/ajv/dist/ajv.min.js"></script>
+    <script src="/log4javascript/log4javascript.js"></script>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+
+<script type="text/javascript">
+    window.onerror = function (msg, url, lineNo, columnNo, error) {
+      infoLog = '';
+      window.alert(`There was a problem while processing your request.`);
+      if(error !== null) {
+        if(error.stack != '') {
+          logger.error(error.name + ': ', error.message + '\n' + error.stack);
+        } else {
+          logger.error(error.name + ': ', error.message + '\n' + url + ':' + lineNo + ':' + columnNo + '\n');
+        }
+      } else if(ajv.errors) {
+        logger.error("Request didn\'t return a valid JSON object\n" + JSON.stringify(ajv.errors, null, 2));
+      } else {
+        logger.error(msg + ': ' + url + ': ' + lineNo + ': ' + columnNo + '\n');
+      }
+      return true;
+    };
+
+    const logger = log4javascript.getLogger();
+    const ajaxAppender = new log4javascript.AjaxAppender('/frontend_logger');
+
+    ajaxAppender.setSendAllOnUnload();
+    ajaxAppender.setTimerInterval(1000);
+    ajaxAppender.setTimed(true);
+
+    logger.addAppender(ajaxAppender);
+
+    function getLogger() {
+      return logger;
+    }
+
+    var infoLog = '';
+
+    var ajv = new Ajv({ allErrors: true });
+
+    function assert(condition, message) {
+        if (!condition) {
+          message = message || 'Assertion failed';
+          if (typeof Error !== 'undefined') {
+            throw new Error(message);
+          }
+          throw message;
+        }
+    }
+</script>
+
+<div id="acb-main-wrapper">
+<div class="server-error">
+	<h1>Interal Server Error 500. The server encountered an error, please try again later.</h1>
+</div>
+
+</div>
+
+</body>
+</html>
+ Ready State: 4
+ Status Code: 500
+2019-1-31 16:26:11 error: Error while executing code: Error: connect ECONNREFUSED 127.0.0.1:5432
+    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1117:14)
+2019-1-31 16:26:13 info: FL: Internal sever error
+2019-1-31 16:26:13 info: FL: Response Text: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Home</title>
+    <meta charset="utf-8">
+    <link rel="icon" href="http://downloadicons.net/sites/default/files/computer-icon-65917.png">
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.css">
+    <script src="/jquery/dist/jquery.js"></script>
+    <script src="/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="/ajv/dist/ajv.min.js"></script>
+    <script src="/log4javascript/log4javascript.js"></script>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+
+<script type="text/javascript">
+    window.onerror = function (msg, url, lineNo, columnNo, error) {
+      infoLog = '';
+      window.alert(`There was a problem while processing your request.`);
+      if(error !== null) {
+        if(error.stack != '') {
+          logger.error(error.name + ': ', error.message + '\n' + error.stack);
+        } else {
+          logger.error(error.name + ': ', error.message + '\n' + url + ':' + lineNo + ':' + columnNo + '\n');
+        }
+      } else if(ajv.errors) {
+        logger.error("Request didn\'t return a valid JSON object\n" + JSON.stringify(ajv.errors, null, 2));
+      } else {
+        logger.error(msg + ': ' + url + ': ' + lineNo + ': ' + columnNo + '\n');
+      }
+      return true;
+    };
+
+    const logger = log4javascript.getLogger();
+    const ajaxAppender = new log4javascript.AjaxAppender('/frontend_logger');
+
+    ajaxAppender.setSendAllOnUnload();
+    ajaxAppender.setTimerInterval(1000);
+    ajaxAppender.setTimed(true);
+
+    logger.addAppender(ajaxAppender);
+
+    function getLogger() {
+      return logger;
+    }
+
+    var infoLog = '';
+
+    var ajv = new Ajv({ allErrors: true });
+
+    function assert(condition, message) {
+        if (!condition) {
+          message = message || 'Assertion failed';
+          if (typeof Error !== 'undefined') {
+            throw new Error(message);
+          }
+          throw message;
+        }
+    }
+</script>
+
+<div id="acb-main-wrapper">
+<div class="server-error">
+	<h1>Interal Server Error 500. The server encountered an error, please try again later.</h1>
+</div>
+
+</div>
+
+</body>
+</html>
+ Ready State: 4
+ Status Code: 500
+2019-1-31 16:26:51 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-31 16:26:57 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-31 16:27:39 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-31 16:27:40 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-31 16:27:42 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-31 16:27:42 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-31 16:27:43 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-31 16:27:44 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-31 16:28:47 info: Server started on port: 8882
+2019-1-31 16:33:25 info: Server started on port: 8882
+2019-1-31 16:33:40 info: Server started on port: 8882
+2019-1-31 16:33:47 info: Server started on port: 8882
+2019-1-31 16:33:53 info: Server started on port: 8882
+2019-1-31 16:33:57 info: Server started on port: 8882
+2019-1-31 16:33:59 info: Server started on port: 8882
+2019-1-31 16:34:15 info: Server started on port: 8882
+2019-1-31 16:35:20 info: Server started on port: 8882
+2019-1-31 16:36:08 info: Server started on port: 8882
+2019-1-31 16:36:14 info: Server started on port: 8882
+2019-1-31 16:36:45 info: Server started on port: 8882
+2019-1-31 16:36:56 info: Server started on port: 8882
+2019-1-31 16:37:47 info: Server started on port: 8882
+2019-1-31 16:37:57 info: Server started on port: 8882
+2019-1-31 16:38:02 info: Server started on port: 8882
+2019-1-31 16:38:15 info: Server started on port: 8882
+2019-1-31 16:38:28 info: Server started on port: 8882
+2019-1-31 16:38:40 info: Server started on port: 8882
+2019-1-31 16:38:50 info: Server started on port: 8882
+2019-1-31 16:39:01 info: Server started on port: 8882
+2019-1-31 16:39:18 info: Server started on port: 8882
+2019-1-31 16:39:22 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-31 16:39:22 error: FRONTEND ERROR-------------------------------
+ReferenceError: ,_self is not defined
+ReferenceError: _self is not defined
+    at logInSignUpController.processLoginResponse (http://localhost:8882/js/loginSignUpController.js:162:2)
+    at Object.success (http://localhost:8882/js/generalClient.js:51:33)
+    at fire (http://localhost:8882/jquery/dist/jquery.js:3268:31)
+    at Object.fireWith [as resolveWith] (http://localhost:8882/jquery/dist/jquery.js:3398:7)
+    at done (http://localhost:8882/jquery/dist/jquery.js:9305:14)
+    at XMLHttpRequest.<anonymous> (http://localhost:8882/jquery/dist/jquery.js:9548:9)
+URL = http://localhost:8882/login
+------------------------------------------------------------
+2019-1-31 16:39:32 info: Server started on port: 8882
+2019-1-31 16:39:40 info: Server started on port: 8882
+2019-1-31 16:39:47 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-31 16:41:21 info: Server started on port: 8882
+2019-1-31 16:41:23 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-31 16:41:57 info: Server started on port: 8882
+2019-1-31 16:42:03 info: Server started on port: 8882
+2019-1-31 16:42:05 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-31 16:42:16 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-31 16:42:34 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-31 16:42:35 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-31 16:42:36 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-31 16:42:46 info: Server started on port: 8882
+2019-1-31 16:42:49 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-31 16:42:49 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-31 16:42:50 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-31 16:42:55 info: Server started on port: 8882
+2019-1-31 16:42:58 info: Server started on port: 8882
+2019-1-31 16:43:45 info: Server started on port: 8882
+2019-1-31 16:44:37 info: Server started on port: 8882
+2019-1-31 16:45:55 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-31 16:45:55 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-31 16:45:55 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-31 16:45:55 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-31 16:45:55 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-31 16:45:55 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-31 16:45:55 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-31 16:45:55 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-31 16:45:55 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-31 16:46:11 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-31 16:46:14 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-31 16:46:29 info: Server started on port: 8882
+2019-1-31 16:46:32 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-31 16:46:40 info: Server started on port: 8882
+2019-1-31 16:46:47 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-31 16:46:47 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-31 16:46:47 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-31 16:46:47 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-31 16:46:49 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-31 16:46:54 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-31 16:47:01 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-31 16:47:03 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-31 16:47:18 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-31 16:47:18 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-31 16:47:19 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-31 16:47:19 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-31 16:47:20 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/login:55:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:208:3)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:38:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/main-menu
+------------------------------------------------------------
+2019-1-31 16:47:22 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/login:55:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:208:3)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:38:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/main-menu
+------------------------------------------------------------
+2019-1-31 16:47:22 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-31 16:47:23 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-31 16:47:32 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-31 16:47:32 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-31 16:47:43 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/login:55:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:208:3)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:38:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/main-menu
+------------------------------------------------------------
+2019-1-31 16:47:43 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-31 16:47:45 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-31 16:48:57 info: Server started on port: 8882
+2019-1-31 16:48:59 info: FL: Internet connection is off or server is not responding
+2019-1-31 16:48:59 info: FL: Response Text: undefined
+ Ready State: 0
+ Status Code: 0
+2019-1-31 16:49:07 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-31 16:49:08 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-31 16:49:53 info: Server started on port: 8882
+2019-1-31 16:50:25 info: Server started on port: 8882
+2019-1-31 16:51:20 info: Server started on port: 8882
+2019-1-31 16:51:37 info: Server started on port: 8882
+2019-1-31 16:51:46 info: Server started on port: 8882
+2019-1-31 16:51:54 info: Server started on port: 8882
+2019-1-31 16:51:59 info: FL: Internet connection is off or server is not responding
+2019-1-31 16:51:59 error: FRONTEND ERROR-------------------------------
+TypeError: ,Cannot read property 'enableAllElements' of undefined
+TypeError: Cannot read property 'enableAllElements' of undefined
+    at Object.generalClient.failHandler (http://localhost:8882/js/generalClient.js:109:30)
+    at fire (http://localhost:8882/jquery/dist/jquery.js:3268:31)
+    at Object.fireWith [as rejectWith] (http://localhost:8882/jquery/dist/jquery.js:3398:7)
+    at done (http://localhost:8882/jquery/dist/jquery.js:9307:14)
+    at XMLHttpRequest.<anonymous> (http://localhost:8882/jquery/dist/jquery.js:9540:10)
+URL = http://localhost:8882/login
+------------------------------------------------------------
+2019-1-31 16:52:11 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-31 16:52:11 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-31 16:52:37 info: Server started on port: 8882
+2019-1-31 16:54:15 info: Server started on port: 8882
+2019-1-31 16:54:24 info: Server started on port: 8882
+2019-1-31 16:54:28 info: FL: Internet connection is off or server is not responding
+2019-1-31 16:54:28 error: FRONTEND ERROR-------------------------------
+TypeError: ,Cannot read property 'enableAllElements' of undefined
+TypeError: Cannot read property 'enableAllElements' of undefined
+    at Object.generalClient.failHandler (http://localhost:8882/js/generalClient.js:111:30)
+    at fire (http://localhost:8882/jquery/dist/jquery.js:3268:31)
+    at Object.fireWith [as rejectWith] (http://localhost:8882/jquery/dist/jquery.js:3398:7)
+    at done (http://localhost:8882/jquery/dist/jquery.js:9307:14)
+    at XMLHttpRequest.<anonymous> (http://localhost:8882/jquery/dist/jquery.js:9540:10)
+URL = http://localhost:8882/login
+------------------------------------------------------------
+2019-1-31 16:57:08 info: Server started on port: 8882
+2019-1-31 16:57:37 info: Server started on port: 8882
+2019-1-31 16:57:57 info: Server started on port: 8882
+2019-1-31 16:58:01 info: Server started on port: 8882
+2019-1-31 16:58:13 info: Server started on port: 8882
+2019-1-31 16:58:13 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-31 16:58:18 info: Server started on port: 8882
+2019-1-31 16:58:20 info: FL: Internet connection is off or server is not responding
+2019-1-31 16:58:20 info: FL: Response Text: undefined
+ Ready State: 0
+ Status Code: 0
+2019-1-31 16:59:15 info: Server started on port: 8882
+2019-1-31 16:59:23 info: Server started on port: 8882
+2019-1-31 16:59:30 info: Server started on port: 8882
+2019-1-31 16:59:32 info: FL: Internet connection is off or server is not responding
+2019-1-31 16:59:32 info: FL: Response Text: undefined
+ Ready State: 0
+ Status Code: 0
+2019-1-31 16:59:46 info: Server started on port: 8882
+2019-1-31 17:00:14 info: Server started on port: 8882
+2019-1-31 17:00:26 info: Server started on port: 8882
+2019-1-31 17:00:41 info: Server started on port: 8882
+2019-1-31 17:00:48 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-31 17:00:59 info: Server started on port: 8882
+2019-1-31 17:00:59 info: FL: Internet connection is off or server is not responding
+2019-1-31 17:00:59 info: FL: Response Text: undefined
+ Ready State: 0
+ Status Code: 0
+2019-1-31 17:01:43 info: Server started on port: 8882
+2019-1-31 17:01:56 info: Server started on port: 8882
+2019-1-31 17:02:01 info: Server started on port: 8882
+2019-1-31 17:02:04 info: FL: Internet connection is off or server is not responding
+2019-1-31 17:02:04 info: FL: Response Text: undefined
+ Ready State: 0
+ Status Code: 0
+2019-1-31 17:03:59 info: Server started on port: 8882
+2019-1-31 17:04:07 info: Server started on port: 8882
+2019-1-31 17:04:31 info: Server started on port: 8882
+2019-1-31 17:04:37 info: Server started on port: 8882
+2019-1-31 17:04:41 info: Server started on port: 8882
+2019-1-31 17:04:43 info: FL: Internet connection is off or server is not responding
+2019-1-31 17:04:43 info: FL: Response Text: undefined
+ Ready State: 0
+ Status Code: 0
+2019-1-31 17:05:13 info: Server started on port: 8882
+2019-1-31 17:05:25 info: Server started on port: 8882
+2019-1-31 17:06:09 info: Server started on port: 8882
+2019-1-31 17:06:14 info: Server started on port: 8882
+2019-1-31 17:06:18 info: Server started on port: 8882
+2019-1-31 17:06:21 info: Server started on port: 8882
+2019-1-31 17:06:22 info: FL: Internet connection is off or server is not responding
+2019-1-31 17:06:22 info: FL: Response Text: undefined
+ Ready State: 0
+ Status Code: 0
+2019-1-31 17:06:24 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-31 17:06:24 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-31 17:06:31 info: Server started on port: 8882
+2019-1-31 17:06:37 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-31 17:06:37 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-31 17:06:38 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-31 17:06:42 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-31 17:06:44 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-31 17:06:47 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/sign-up:55:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:212:3)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:38:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/main-menu
+------------------------------------------------------------
+2019-1-31 17:06:50 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/sign-up:55:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:212:3)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:38:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/main-menu
+------------------------------------------------------------
+2019-1-31 17:06:50 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/sign-up:55:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:212:3)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:38:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/main-menu
+------------------------------------------------------------
+2019-1-31 17:06:51 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-31 17:06:52 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-31 17:06:54 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-31 17:07:08 info: Server started on port: 8882
+2019-1-31 17:07:15 info: Server started on port: 8882
+2019-1-31 17:08:20 info: Server started on port: 8882
+2019-1-31 17:09:42 info: Server started on port: 8882
+2019-1-31 17:13:26 info: Server started on port: 8882
+2019-1-31 17:14:07 info: Server started on port: 8882
+2019-1-31 17:14:20 info: Server started on port: 8882
+2019-1-31 17:17:17 info: Server started on port: 8882
+2019-1-31 17:17:23 info: Server started on port: 8882
+2019-1-31 17:17:28 info: Server started on port: 8882
+2019-1-31 17:30:20 info: Server started on port: 8882
+2019-1-31 17:31:12 info: Server started on port: 8882
+2019-1-31 17:31:40 info: Server started on port: 8882
+2019-1-31 17:31:51 info: Server started on port: 8882
+2019-1-31 17:32:46 info: Server started on port: 8882
+2019-1-31 17:32:57 info: Server started on port: 8882
+2019-1-31 17:33:03 info: Server started on port: 8882
+2019-1-31 17:33:06 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/main-menu:55:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:212:3)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:38:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/main-menu
+------------------------------------------------------------
+2019-1-31 17:33:07 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-31 17:33:31 info: Server started on port: 8882
+2019-1-31 17:34:37 info: Server started on port: 8882
+2019-1-31 17:34:59 info: Server started on port: 8882
+2019-1-31 17:35:02 info: Server started on port: 8882
+2019-1-31 17:35:53 info: Server started on port: 8882
+2019-1-31 17:36:02 info: Server started on port: 8882
+2019-1-31 17:36:07 info: Server started on port: 8882
+2019-1-31 17:36:11 info: Server started on port: 8882
+2019-1-31 17:36:18 info: Server started on port: 8882
+2019-1-31 17:36:41 info: Server started on port: 8882
+2019-1-31 17:36:44 info: Server started on port: 8882
+2019-1-31 17:36:46 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-31 17:36:48 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-31 17:36:49 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-31 17:36:51 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-31 17:36:51 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-31 17:36:52 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-31 17:36:53 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-31 17:36:53 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-31 17:36:54 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-31 17:36:54 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-31 17:36:55 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-31 17:36:55 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-31 17:36:56 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-31 17:36:59 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-31 17:37:03 info: FL: Screen class: ,anime-cb-screen-sign-up
+2019-1-31 17:37:07 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-31 17:37:08 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-31 17:37:13 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-31 17:37:13 info: FL: Screen class: ,anime-cb-screen-login
+2019-1-31 17:37:15 info: FL: Screen class: ,anime-cb-screen-main-menu
+2019-1-31 17:37:17 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/login:55:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:212:3)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:38:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/main-menu
+------------------------------------------------------------
+2019-1-31 17:37:19 error: FRONTEND ERROR-------------------------------
+ReferenceError: ,screenClass is not defined
+ReferenceError: screenClass is not defined
+    at http://localhost:8882/js/baseController.js:47:26
+URL = http://localhost:8882/login
+------------------------------------------------------------
+2019-1-31 17:37:21 error: FRONTEND ERROR-------------------------------
+ReferenceError: ,screenClass is not defined
+ReferenceError: screenClass is not defined
+    at http://localhost:8882/js/baseController.js:47:26
+URL = http://localhost:8882/main-menu
+------------------------------------------------------------
+2019-1-31 17:38:14 info: Server started on port: 8882
+2019-1-31 17:38:20 info: Server started on port: 8882
+2019-1-31 17:38:30 info: Server started on port: 8882
+2019-1-31 17:39:00 info: Server started on port: 8882
+2019-1-31 17:39:03 info: Server started on port: 8882
+2019-1-31 17:40:44 info: Server started on port: 8882
+2019-1-31 17:41:09 info: Server started on port: 8882
+2019-1-31 17:42:26 info: Server started on port: 8882
+2019-1-31 17:44:24 info: Server started on port: 8882
+2019-1-31 17:45:02 info: Server started on port: 8882
+2019-1-31 17:45:20 info: Server started on port: 8882
+2019-1-31 17:45:27 info: Server started on port: 8882
+2019-1-31 17:46:43 info: Server started on port: 8882
+2019-1-31 17:46:49 info: Server started on port: 8882
+2019-1-31 17:47:01 info: Server started on port: 8882
+2019-1-31 17:47:05 error: FRONTEND ERROR-------------------------------
+Error: ,screenClass must be a valid css selector: anime-cb-screen-main-menu
+Error: screenClass must be a valid css selector: anime-cb-screen-main-menu
+    at assert (http://localhost:8882/main-menu:55:19)
+    at logInSignUpController.baseController.switchToScreen (http://localhost:8882/js/baseController.js:66:2)
+    at logInSignUpController.baseController._initState (http://localhost:8882/js/baseController.js:57:9)
+    at logInSignUpController.processIsUserLoggedInResponse (http://localhost:8882/js/loginSignUpController.js:195:9)
+    at Object.success (http://localhost:8882/js/generalClient.js:69:33)
+    at fire (http://localhost:8882/jquery/dist/jquery.js:3268:31)
+    at Object.fireWith [as resolveWith] (http://localhost:8882/jquery/dist/jquery.js:3398:7)
+    at done (http://localhost:8882/jquery/dist/jquery.js:9305:14)
+    at XMLHttpRequest.<anonymous> (http://localhost:8882/jquery/dist/jquery.js:9548:9)
+URL = http://localhost:8882/main-menu
+------------------------------------------------------------
+2019-1-31 17:47:41 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/:55:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:214:3)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:38:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/main-menu
+------------------------------------------------------------
+2019-1-31 17:47:41 info: FL: Screen class: ,.anime-cb-screen-main-menu
+2019-1-31 17:47:43 info: FL: Screen class: ,.anime-cb-screen-login
+2019-1-31 17:47:48 info: FL: Screen class: ,.anime-cb-screen-sign-up
+2019-1-31 17:47:54 info: FL: Screen class: ,.anime-cb-screen-login
+2019-1-31 17:47:56 info: FL: Screen class: ,.anime-cb-screen-main-menu
+2019-1-31 17:48:05 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/:55:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:214:3)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:38:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/main-menu
+------------------------------------------------------------
+2019-1-31 17:48:05 info: FL: Screen class: ,.anime-cb-screen-main-menu
+2019-1-31 17:48:11 info: FL: Screen class: ,.anime-cb-screen-login
+2019-1-31 17:48:19 info: FL: Screen class: ,.anime-cb-screen-sign-up
+2019-1-31 17:48:37 info: User Data = { username: 'velioo98',
+  email: 'velioocs@gmail.com',
+  password:
+   '0818b5dd8f9bcbf748af4943e5c09c0d1d526f7255b1fa5c9bc5dde8a9c9b46a',
+  salt: '0L9igTGf4f2/XV+NriTvFaxW31BU92vq0hmwCbJUP5c=' }
+2019-1-31 17:48:39 info: userMessageMail = A confirmation email was sent to your email address.
+      Please confirm your account before logging in.
+2019-1-31 17:48:39 info: Confirmation email sent
+2019-1-31 17:48:40 info: FL: Screen class: ,.anime-cb-screen-sign-up-success
+2019-1-31 17:48:55 info: Successfully validated your account
+2019-1-31 17:49:00 info: FL: Screen class: ,.anime-cb-screen-sign-up
+2019-1-31 17:49:03 error: FRONTEND ERROR-------------------------------
+TypeError: ,Cannot read property 'charAt' of undefined
+TypeError: Cannot read property 'charAt' of undefined
+    at logInSignUpController.baseController.switchToScreen (http://localhost:8882/js/baseController.js:66:21)
+    at http://localhost:8882/js/baseController.js:45:11
+URL = http://localhost:8882/confirm_account/TA3LLeNttch71TUyt96Ry5nfqG44Eczi
+------------------------------------------------------------
+2019-1-31 17:49:10 error: FRONTEND ERROR-------------------------------
+TypeError: ,Cannot read property 'charAt' of undefined
+TypeError: Cannot read property 'charAt' of undefined
+    at logInSignUpController.baseController.switchToScreen (http://localhost:8882/js/baseController.js:66:21)
+    at http://localhost:8882/js/baseController.js:45:11
+URL = http://localhost:8882/confirm_account/TA3LLeNttch71TUyt96Ry5nfqG44Eczi
+------------------------------------------------------------
+2019-1-31 17:50:19 error: FRONTEND ERROR-------------------------------
+TypeError: ,Cannot read property 'charAt' of undefined
+TypeError: Cannot read property 'charAt' of undefined
+    at logInSignUpController.baseController.switchToScreen (http://localhost:8882/js/baseController.js:66:21)
+    at http://localhost:8882/js/baseController.js:45:11
+URL = http://localhost:8882/confirm_account/TA3LLeNttch71TUyt96Ry5nfqG44Eczi
+------------------------------------------------------------
+2019-1-31 17:51:28 info: Server started on port: 8882
+2019-1-31 17:51:31 error: FRONTEND ERROR-------------------------------
+TypeError: ,Cannot read property 'charAt' of undefined
+TypeError: Cannot read property 'charAt' of undefined
+    at logInSignUpController.baseController.switchToScreen (http://localhost:8882/js/baseController.js:66:21)
+    at http://localhost:8882/js/baseController.js:45:11
+URL = http://localhost:8882/confirm_account/TA3LLeNttch71TUyt96Ry5nfqG44Eczi
+------------------------------------------------------------
+2019-1-31 17:51:50 info: FL: Screen class: ,.anime-cb-screen-main-menu
+2019-1-31 17:51:54 info: FL: Screen class: ,.anime-cb-screen-main-menu
+2019-1-31 17:51:55 info: FL: Screen class: ,.anime-cb-screen-sign-up
+2019-1-31 17:51:57 info: FL: Screen class: ,.anime-cb-screen-main-menu
+2019-1-31 17:52:07 info: FL: Screen class: ,.anime-cb-screen-sign-up
+2019-1-31 17:52:15 info: User Data = { username: 'velioo98',
+  email: 'velioocs@gmail.com',
+  password:
+   '713355f89990a184fea59521128d51ee2c32a2caf80125b86fb824ce94a1c78e',
+  salt: '1P6B36/5fNJEHsld+s98JyD3cx8/60y4rM0G8pKOxOQ=' }
+2019-1-31 17:52:16 info: userMessageMail = A confirmation email was sent to your email address.
+      Please confirm your account before logging in.
+2019-1-31 17:52:16 info: Confirmation email sent
+2019-1-31 17:52:17 info: FL: Screen class: ,.anime-cb-screen-sign-up-success
+2019-1-31 17:52:27 info: Successfully validated your account
+2019-1-31 17:52:31 info: FL: Screen class: ,.anime-cb-screen-login
+2019-1-31 17:53:38 info: Server started on port: 8882
+2019-1-31 17:54:15 info: Server started on port: 8882
+2019-1-31 17:54:17 info: FL: Screen class: ,.anime-cb-screen-login
+2019-1-31 17:54:19 info: FL: Screen class: ,.anime-cb-screen-main-menu
+2019-1-31 17:54:20 info: FL: Screen class: ,.anime-cb-screen-main-menu
+2019-1-31 17:54:30 info: FL: Screen class: ,.anime-cb-screen-login
+2019-1-31 17:54:32 info: FL: Screen class: ,.anime-cb-screen-sign-up
+2019-1-31 17:54:37 info: User Data = { username: 'velioo98',
+  email: 'velioocs@gmail.com',
+  password:
+   '79a46f6e5d796cd93531ccfe9d8d77d57a568de3bae9650a215eea080c7eadc2',
+  salt: 'FfS4st58xOqK49gSZytxOf30ZS4zoohuu2tpIpWW8qU=' }
+2019-1-31 17:54:38 info: userMessageMail = A confirmation email was sent to your email address.
+      Please confirm your account before logging in.
+2019-1-31 17:54:38 info: Confirmation email sent
+2019-1-31 17:54:39 info: FL: Screen class: ,.anime-cb-screen-sign-up-success
+2019-1-31 17:54:50 info: FL: Screen class: ,.anime-cb-screen-main-menu
+2019-1-31 17:54:54 info: Successfully validated your account
+2019-1-31 17:55:00 info: FL: Screen class: ,.anime-cb-screen-login
+2019-1-31 17:55:17 info: FL: Screen class: ,.anime-cb-screen-login
+2019-1-31 17:55:19 info: FL: Screen class: ,.anime-cb-screen-main-menu
+2019-1-31 17:55:21 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/confirm_account/QKZjmXSVxe1Sjm6cYSw0uDHbdavWW5h9:55:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:215:3)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:38:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/confirm_account/main-menu
+------------------------------------------------------------
+2019-1-31 17:55:23 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/confirm_account/QKZjmXSVxe1Sjm6cYSw0uDHbdavWW5h9:55:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:215:3)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:38:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/confirm_account/main-menu
+------------------------------------------------------------
+2019-1-31 17:55:24 info: FL: Screen class: ,.anime-cb-screen-main-menu
+2019-1-31 17:55:24 info: FL: Screen class: ,.anime-cb-screen-sign-up
+2019-1-31 17:55:33 info: FL: Screen class: ,.anime-cb-screen-main-menu
+2019-1-31 17:55:41 info: Server started on port: 8882
+2019-1-31 17:55:53 info: Server started on port: 8882
+2019-1-31 17:55:53 info: FL: Screen class: ,.anime-cb-screen-login
+2019-1-31 17:55:53 info: FL: Screen class: ,.anime-cb-screen-main-menu
+2019-1-31 17:55:53 info: FL: Screen class: ,.anime-cb-screen-sign-up
+2019-1-31 17:56:09 info: Server started on port: 8882
+2019-1-31 17:56:50 info: Server started on port: 8882
+2019-1-31 17:58:16 info: Server started on port: 8882
+2019-1-31 17:58:18 info: Server started on port: 8882
+2019-1-31 17:58:21 info: Server started on port: 8882
+2019-1-31 17:58:32 info: Server started on port: 8882
+2019-1-31 17:59:29 info: Server started on port: 8882
+2019-1-31 18:00:20 info: Server started on port: 8882
+2019-1-31 18:00:23 info: Server started on port: 8882
+2019-1-31 18:01:12 info: Server started on port: 8882
+2019-1-31 18:01:18 info: Server started on port: 8882
+2019-1-31 18:01:54 info: Server started on port: 8882
+2019-1-31 18:01:59 info: Server started on port: 8882
+2019-1-31 18:02:14 info: FL: Screen class: ,.anime-cb-screen-login
+2019-1-31 18:02:18 info: FL: Screen class: ,.anime-cb-screen-sign-up
+2019-1-31 18:02:18 info: FL: Screen class: ,.anime-cb-screen-login
+2019-1-31 18:02:19 info: FL: Screen class: ,.anime-cb-screen-sign-up
+2019-1-31 18:02:20 info: FL: Screen class: ,.anime-cb-screen-main-menu
+2019-1-31 18:02:21 info: FL: Screen class: ,.anime-cb-screen-sign-up
+2019-1-31 18:02:23 info: FL: Screen class: ,.anime-cb-screen-main-menu
+2019-1-31 18:02:27 info: FL: Screen class: ,.anime-cb-screen-sign-up
+2019-1-31 18:02:28 info: FL: Screen class: ,.anime-cb-screen-main-menu
+2019-1-31 18:02:29 info: FL: Screen class: ,.anime-cb-screen-sign-up
+2019-1-31 18:02:33 info: FL: Screen class: ,.anime-cb-screen-login
+2019-1-31 18:02:37 info: FL: Screen class: ,.anime-cb-screen-main-menu
+2019-1-31 18:02:39 info: FL: Screen class: ,.anime-cb-screen-login
+2019-1-31 18:02:42 info: FL: Screen class: ,.anime-cb-screen-main-menu
+2019-1-31 18:02:43 info: FL: Screen class: ,.anime-cb-screen-login
+2019-1-31 18:02:46 info: FL: Screen class: ,.anime-cb-screen-main-menu
+2019-1-31 18:02:48 info: FL: Screen class: ,.anime-cb-screen-login
+2019-1-31 18:02:52 info: FL: Screen class: ,.anime-cb-screen-main-menu
+2019-1-31 18:02:54 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/sign-up:55:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:215:3)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:38:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/main-menu
+------------------------------------------------------------
+2019-1-31 18:02:56 info: FL: Screen class: ,.anime-cb-screen-main-menu
+2019-1-31 18:02:57 info: FL: Screen class: ,.anime-cb-screen-login
+2019-1-31 18:02:59 info: FL: Screen class: ,.anime-cb-screen-sign-up
+2019-1-31 18:03:03 info: FL: Screen class: ,.anime-cb-screen-login
+2019-1-31 18:03:03 info: FL: Screen class: ,.anime-cb-screen-main-menu
+2019-1-31 18:03:04 info: FL: Screen class: ,.anime-cb-screen-login
+2019-1-31 18:03:06 info: FL: Screen class: ,.anime-cb-screen-sign-up
+2019-1-31 18:03:22 info: FL: Screen class: ,.anime-cb-screen-login
+2019-1-31 18:03:30 info: Server started on port: 8882
+2019-1-31 18:03:48 info: Server started on port: 8882
+2019-1-31 18:04:01 info: Server started on port: 8882
+2019-1-31 18:04:10 info: Server started on port: 8882
+2019-1-31 18:04:23 info: Server started on port: 8882
+2019-1-31 18:09:14 info: Server started on port: 8882
+2019-1-31 18:09:42 info: Server started on port: 8882
+2019-1-31 18:10:06 info: Server started on port: 8882
+2019-1-31 18:16:01 info: Server started on port: 8882
+2019-1-31 18:16:08 info: Server started on port: 8882
+2019-1-31 18:18:32 info: Server started on port: 8882
+2019-1-31 18:19:05 info: Server started on port: 8882
+2019-1-31 18:20:15 info: Server started on port: 8882
+2019-1-31 18:24:18 info: Server started on port: 8882
+2019-1-31 18:24:26 info: Server started on port: 8882
+2019-1-31 18:26:30 info: Server started on port: 8882
+2019-1-31 18:26:37 info: Server started on port: 8882
+2019-1-31 18:27:09 info: Server started on port: 8882
+2019-1-31 18:27:14 info: Server started on port: 8882
+2019-1-31 18:27:35 info: Server started on port: 8882
+2019-1-31 18:27:38 info: Server started on port: 8882
+2019-1-31 18:28:06 info: Server started on port: 8882
+2019-1-31 18:28:23 info: Server started on port: 8882
+2019-1-31 18:28:30 info: Server started on port: 8882
+2019-1-31 18:28:33 info: Server started on port: 8882
+2019-1-31 18:28:36 info: FL: Screen class: ,.anime-cb-screen-login
+2019-1-31 18:28:36 error: FRONTEND ERROR-------------------------------
+TypeError: ,this.isUserLoggedIn is not a function
+TypeError: this.isUserLoggedIn is not a function
+    at logInSignUpController.baseController.switchToScreen (http://localhost:8882/js/baseController.js:92:11)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:257:7)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:57:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/login
+------------------------------------------------------------
+2019-1-31 18:30:15 info: Server started on port: 8882
+2019-1-31 18:30:25 info: Server started on port: 8882
+2019-1-31 18:31:31 info: Server started on port: 8882
+2019-1-31 18:31:34 error: FRONTEND ERROR-------------------------------
+TypeError: ,this.isUserLoggedIn is not a function
+TypeError: this.isUserLoggedIn is not a function
+    at logInSignUpController.baseController.switchToScreen (http://localhost:8882/js/baseController.js:94:11)
+    at logInSignUpController.baseController._initState (http://localhost:8882/js/baseController.js:75:9)
+    at logInSignUpController.processIsUserLoggedInResponse (http://localhost:8882/js/loginSignUpController.js:176:9)
+    at Object.success (http://localhost:8882/js/generalClient.js:69:33)
+    at fire (http://localhost:8882/jquery/dist/jquery.js:3268:31)
+    at Object.fireWith [as resolveWith] (http://localhost:8882/jquery/dist/jquery.js:3398:7)
+    at done (http://localhost:8882/jquery/dist/jquery.js:9305:14)
+    at XMLHttpRequest.<anonymous> (http://localhost:8882/jquery/dist/jquery.js:9548:9)
+URL = http://localhost:8882/login
+------------------------------------------------------------
+2019-1-31 18:33:14 info: Server started on port: 8882
+2019-1-31 18:34:01 info: Server started on port: 8882
+2019-1-31 18:34:29 info: Server started on port: 8882
+2019-1-31 18:34:57 info: Server started on port: 8882
+2019-1-31 18:35:03 info: Server started on port: 8882
+2019-1-31 18:35:41 info: Server started on port: 8882
+2019-1-31 18:36:07 info: Server started on port: 8882
+2019-1-31 18:36:13 info: Server started on port: 8882
+2019-1-31 18:36:28 info: Server started on port: 8882
+2019-1-31 18:36:34 info: Server started on port: 8882
+2019-1-31 18:36:52 info: Server started on port: 8882
+2019-1-31 18:37:04 info: Server started on port: 8882
+2019-1-31 18:37:08 info: Server started on port: 8882
+2019-1-31 18:37:22 info: Server started on port: 8882
+2019-1-31 18:37:32 info: Server started on port: 8882
+2019-1-31 18:37:36 info: Server started on port: 8882
+2019-1-31 18:39:17 info: Server started on port: 8882
+2019-1-31 18:39:20 info: Server started on port: 8882
+2019-1-31 18:39:24 info: Server started on port: 8882
+2019-1-31 18:39:42 info: Server started on port: 8882
+2019-1-31 18:40:01 info: Server started on port: 8882
+2019-1-31 18:40:22 info: Server started on port: 8882
+2019-1-31 18:40:27 info: Server started on port: 8882
+2019-1-31 18:40:29 info: FL: History state: ,[object Object]
+2019-1-31 18:40:29 info: FL: checkIsUserLoggedIn
+2019-1-31 18:40:29 info: FL: checkIfUserIsLoggedIn
+2019-1-31 18:40:29 info: FL: processIsUserLoggedInResponse
+2019-1-31 18:40:29 info: FL: To validate: ,[object Object]
+2019-1-31 18:40:29 info: FL: Data is valid: ,[object Object]
+2019-1-31 18:40:29 info: FL: Switching to screen: ,.anime-cb-screen-login
+2019-1-31 18:40:29 info: FL: false
+2019-1-31 18:40:29 info: FL: Screen class: ,.anime-cb-screen-sign-up
+2019-1-31 18:40:29 info: FL: Switching to screen: ,.anime-cb-screen-sign-up
+2019-1-31 18:40:30 info: FL: false
+2019-1-31 18:40:30 info: FL: Screen class: ,.anime-cb-screen-login
+2019-1-31 18:40:30 info: FL: Switching to screen: ,.anime-cb-screen-login
+2019-1-31 18:40:30 info: FL: false
+2019-1-31 18:40:30 info: FL: Screen class: ,.anime-cb-screen-main-menu
+2019-1-31 18:40:30 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:40:31 info: FL: Switching to screen: ,.anime-cb-screen-login
+2019-1-31 18:40:33 info: FL: History state: ,[object Object]
+2019-1-31 18:40:33 info: FL: checkIsUserLoggedIn
+2019-1-31 18:40:33 info: FL: checkIfUserIsLoggedIn
+2019-1-31 18:40:33 info: FL: Switching to screen: ,.anime-cb-screen-login
+2019-1-31 18:40:33 info: FL: processIsUserLoggedInResponse
+2019-1-31 18:40:33 info: FL: To validate: ,[object Object]
+2019-1-31 18:40:33 info: FL: Data is valid: ,[object Object]
+2019-1-31 18:40:33 info: FL: Switching to screen: ,.anime-cb-screen-login
+2019-1-31 18:40:33 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:40:33 info: FL: Switching to screen: ,.anime-cb-screen-login
+2019-1-31 18:40:33 info: FL: Switching to screen: ,.anime-cb-screen-sign-up
+2019-1-31 18:40:33 info: FL: Switching to screen: ,.anime-cb-screen-login
+2019-1-31 18:40:33 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:40:33 info: FL: Switching to screen: ,.anime-cb-screen-login
+2019-1-31 18:40:34 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:40:34 info: FL: Switching to screen: ,.anime-cb-screen-login
+2019-1-31 18:40:34 info: FL: Switching to screen: ,.anime-cb-screen-sign-up
+2019-1-31 18:40:34 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:40:34 info: FL: Switching to screen: ,.anime-cb-screen-sign-up
+2019-1-31 18:40:34 info: FL: Switching to screen: ,.anime-cb-screen-login
+2019-1-31 18:40:34 info: FL: Switching to screen: ,.anime-cb-screen-sign-up
+2019-1-31 18:40:35 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:40:35 info: FL: Switching to screen: ,.anime-cb-screen-login
+2019-1-31 18:40:35 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:40:35 info: FL: Switching to screen: ,.anime-cb-screen-sign-up-success
+2019-1-31 18:40:35 info: FL: Switching to screen: ,.anime-cb-screen-sign-up
+2019-1-31 18:40:37 info: FL: SignUpInputs: ,[object Object]
+2019-1-31 18:40:37 info: FL: Form signup values: ,[object Object]
+2019-1-31 18:40:37 info: FL: sendSignUpData
+2019-1-31 18:40:37 info: FL: Sending data to signup: ,[object Object]
+2019-1-31 18:40:37 info: FL: processSignUpResponse
+2019-1-31 18:40:37 info: FL: To validate: ,[object Object]
+2019-1-31 18:40:37 info: FL: There are validation errors: ,[object Object],[object Object],[object Object]
+2019-1-31 18:40:37 info: FL: showSignUpErrors
+2019-1-31 18:40:37 info: FL: Data: ,[object Object]
+2019-1-31 18:40:38 info: FL: SignUpInputs: ,[object Object]
+2019-1-31 18:40:38 info: FL: Form signup values: ,[object Object]
+2019-1-31 18:40:38 info: FL: sendSignUpData
+2019-1-31 18:40:38 info: FL: Sending data to signup: ,[object Object]
+2019-1-31 18:40:38 info: FL: processSignUpResponse
+2019-1-31 18:40:38 info: FL: To validate: ,[object Object]
+2019-1-31 18:40:38 info: FL: There are validation errors: ,[object Object],[object Object],[object Object]
+2019-1-31 18:40:38 info: FL: Data: ,[object Object]
+2019-1-31 18:40:38 info: FL: false
+2019-1-31 18:40:38 info: FL: showSignUpErrors
+2019-1-31 18:40:38 info: FL: Screen class: ,.anime-cb-screen-main-menu
+2019-1-31 18:40:38 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:40:39 info: FL: false
+2019-1-31 18:40:39 info: FL: Screen class: ,.anime-cb-screen-login
+2019-1-31 18:40:39 info: FL: Switching to screen: ,.anime-cb-screen-login
+2019-1-31 18:40:40 info: FL: false
+2019-1-31 18:40:40 info: FL: Screen class: ,.anime-cb-screen-sign-up
+2019-1-31 18:40:40 info: FL: Switching to screen: ,.anime-cb-screen-sign-up
+2019-1-31 18:40:41 info: FL: SignUpInputs: ,[object Object]
+2019-1-31 18:40:41 info: FL: Form signup values: ,[object Object]
+2019-1-31 18:40:41 info: FL: sendSignUpData
+2019-1-31 18:40:41 info: FL: Sending data to signup: ,[object Object]
+2019-1-31 18:40:41 info: FL: processSignUpResponse
+2019-1-31 18:40:41 info: FL: To validate: ,[object Object]
+2019-1-31 18:40:41 info: FL: There are validation errors: ,[object Object],[object Object],[object Object]
+2019-1-31 18:40:41 info: FL: showSignUpErrors
+2019-1-31 18:40:41 info: FL: Data: ,[object Object]
+2019-1-31 18:40:41 info: FL: SignUpInputs: ,[object Object]
+2019-1-31 18:40:41 info: FL: Form signup values: ,[object Object]
+2019-1-31 18:40:41 info: FL: sendSignUpData
+2019-1-31 18:40:41 info: FL: Sending data to signup: ,[object Object]
+2019-1-31 18:40:41 info: FL: processSignUpResponse
+2019-1-31 18:40:41 info: FL: To validate: ,[object Object]
+2019-1-31 18:40:41 info: FL: There are validation errors: ,[object Object],[object Object],[object Object],[object Object]
+2019-1-31 18:40:41 info: FL: showSignUpErrors
+2019-1-31 18:40:41 info: FL: Data: ,[object Object]
+2019-1-31 18:40:42 info: FL: SignUpInputs: ,[object Object]
+2019-1-31 18:40:42 info: FL: Form signup values: ,[object Object]
+2019-1-31 18:40:42 info: FL: sendSignUpData
+2019-1-31 18:40:42 info: FL: Sending data to signup: ,[object Object]
+2019-1-31 18:40:42 info: FL: processSignUpResponse
+2019-1-31 18:40:42 info: FL: To validate: ,[object Object]
+2019-1-31 18:40:42 info: FL: There are validation errors: ,[object Object],[object Object],[object Object],[object Object]
+2019-1-31 18:40:42 info: FL: showSignUpErrors
+2019-1-31 18:40:42 info: FL: Data: ,[object Object]
+2019-1-31 18:40:42 info: FL: SignUpInputs: ,[object Object]
+2019-1-31 18:40:42 info: FL: Form signup values: ,[object Object]
+2019-1-31 18:40:42 info: FL: sendSignUpData
+2019-1-31 18:40:42 info: FL: Sending data to signup: ,[object Object]
+2019-1-31 18:40:42 info: FL: processSignUpResponse
+2019-1-31 18:40:42 info: FL: To validate: ,[object Object]
+2019-1-31 18:40:42 info: FL: There are validation errors: ,[object Object],[object Object],[object Object],[object Object]
+2019-1-31 18:40:42 info: FL: showSignUpErrors
+2019-1-31 18:40:42 info: FL: Data: ,[object Object]
+2019-1-31 18:40:42 info: FL: SignUpInputs: ,[object Object]
+2019-1-31 18:40:42 info: FL: Form signup values: ,[object Object]
+2019-1-31 18:40:42 info: FL: sendSignUpData
+2019-1-31 18:40:42 info: FL: Sending data to signup: ,[object Object]
+2019-1-31 18:40:42 info: FL: processSignUpResponse
+2019-1-31 18:40:42 info: FL: To validate: ,[object Object]
+2019-1-31 18:40:42 info: FL: There are validation errors: ,[object Object],[object Object],[object Object],[object Object]
+2019-1-31 18:40:42 info: FL: showSignUpErrors
+2019-1-31 18:40:42 info: FL: Data: ,[object Object]
+2019-1-31 18:40:42 info: FL: SignUpInputs: ,[object Object]
+2019-1-31 18:40:42 info: FL: Form signup values: ,[object Object]
+2019-1-31 18:40:42 info: FL: sendSignUpData
+2019-1-31 18:40:42 info: FL: Sending data to signup: ,[object Object]
+2019-1-31 18:40:42 info: FL: processSignUpResponse
+2019-1-31 18:40:42 info: FL: To validate: ,[object Object]
+2019-1-31 18:40:42 info: FL: There are validation errors: ,[object Object],[object Object],[object Object],[object Object]
+2019-1-31 18:40:42 info: FL: showSignUpErrors
+2019-1-31 18:40:42 info: FL: Data: ,[object Object]
+2019-1-31 18:40:42 info: FL: false
+2019-1-31 18:40:42 info: FL: Screen class: ,.anime-cb-screen-login
+2019-1-31 18:40:42 info: FL: Switching to screen: ,.anime-cb-screen-login
+2019-1-31 18:40:43 info: FL: false
+2019-1-31 18:40:43 info: FL: Screen class: ,.anime-cb-screen-sign-up
+2019-1-31 18:40:43 info: FL: Switching to screen: ,.anime-cb-screen-sign-up
+2019-1-31 18:40:44 info: FL: SignUpInputs: ,[object Object]
+2019-1-31 18:40:44 info: FL: Form signup values: ,[object Object]
+2019-1-31 18:40:44 info: FL: sendSignUpData
+2019-1-31 18:40:44 info: FL: Sending data to signup: ,[object Object]
+2019-1-31 18:40:44 info: FL: processSignUpResponse
+2019-1-31 18:40:44 info: FL: To validate: ,[object Object]
+2019-1-31 18:40:44 info: FL: There are validation errors: ,[object Object],[object Object],[object Object]
+2019-1-31 18:40:44 info: FL: showSignUpErrors
+2019-1-31 18:40:44 info: FL: Data: ,[object Object]
+2019-1-31 18:40:44 info: FL: Switching to screen: ,.anime-cb-screen-login
+2019-1-31 18:40:44 info: FL: Switching to screen: ,.anime-cb-screen-sign-up
+2019-1-31 18:40:44 info: FL: Switching to screen: ,.anime-cb-screen-login
+2019-1-31 18:40:44 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:40:44 info: FL: Switching to screen: ,.anime-cb-screen-sign-up
+2019-1-31 18:40:44 info: FL: Switching to screen: ,.anime-cb-screen-login
+2019-1-31 18:40:45 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:40:45 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:40:45 info: FL: Switching to screen: ,.anime-cb-screen-login
+2019-1-31 18:40:45 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:40:45 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:40:45 info: FL: Switching to screen: ,.anime-cb-screen-login
+2019-1-31 18:40:46 info: FL: Switching to screen: ,.anime-cb-screen-sign-up
+2019-1-31 18:40:46 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:40:46 info: FL: Switching to screen: ,.anime-cb-screen-login
+2019-1-31 18:40:46 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:40:46 info: FL: Switching to screen: ,.anime-cb-screen-login
+2019-1-31 18:40:46 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:40:46 info: FL: Switching to screen: ,.anime-cb-screen-login
+2019-1-31 18:40:46 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:40:46 info: FL: Switching to screen: ,.anime-cb-screen-login
+2019-1-31 18:40:46 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:40:47 info: FL: Switching to screen: ,.anime-cb-screen-sign-up
+2019-1-31 18:40:47 info: FL: Switching to screen: ,.anime-cb-screen-login
+2019-1-31 18:40:47 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:40:47 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:40:47 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:40:47 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:40:47 info: FL: Switching to screen: ,.anime-cb-screen-login
+2019-1-31 18:40:49 info: FL: Form login values: ,[object Object]
+2019-1-31 18:40:49 info: FL: sendLoginData
+2019-1-31 18:40:49 info: FL: Sending data to login: ,[object Object]
+2019-1-31 18:40:49 info: FL: processLoginResponse
+2019-1-31 18:40:49 info: FL: To validate: ,[object Object]
+2019-1-31 18:40:49 info: FL: There are validation errors: ,[object Object]
+2019-1-31 18:40:49 info: FL: showLoginErrors
+2019-1-31 18:40:49 info: FL: Data: ,[object Object]
+2019-1-31 18:40:52 info: FL: Form login values: ,[object Object]
+2019-1-31 18:40:52 info: FL: sendLoginData
+2019-1-31 18:40:52 info: FL: Sending data to login: ,[object Object]
+2019-1-31 18:40:52 info: FL: processLoginResponse
+2019-1-31 18:40:52 info: FL: To validate: ,[object Object]
+2019-1-31 18:40:52 info: FL: Data is valid: ,[object Object]
+2019-1-31 18:40:52 info: FL: showLoginSuccess
+2019-1-31 18:40:52 info: FL: Data: ,[object Object]
+2019-1-31 18:40:52 info: FL: Screen class: ,.anime-cb-screen-main-menu
+2019-1-31 18:40:52 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:40:54 info: FL: true
+2019-1-31 18:40:54 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/sign-up:55:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:235:3)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:58:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/main-menu
+------------------------------------------------------------
+2019-1-31 18:40:55 info: FL: Switching to screen: ,.anime-cb-screen-login
+2019-1-31 18:40:55 info: FL: Switching to screen: ,.anime-cb-screen-sign-up-success
+2019-1-31 18:40:55 info: FL: Switching to screen: ,.anime-cb-screen-sign-up
+2019-1-31 18:40:56 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:40:56 info: FL: Switching to screen: ,.anime-cb-screen-sign-up
+2019-1-31 18:40:56 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:40:56 info: FL: Switching to screen: ,.anime-cb-screen-sign-up-success
+2019-1-31 18:40:56 info: FL: Switching to screen: ,.anime-cb-screen-sign-up
+2019-1-31 18:40:56 info: FL: Switching to screen: ,.anime-cb-screen-login
+2019-1-31 18:40:56 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:40:58 info: FL: History state: ,[object Object]
+2019-1-31 18:40:58 info: FL: checkIsUserLoggedIn
+2019-1-31 18:40:58 info: FL: checkIfUserIsLoggedIn
+2019-1-31 18:40:58 info: FL: processIsUserLoggedInResponse
+2019-1-31 18:40:58 info: FL: To validate: ,[object Object]
+2019-1-31 18:40:58 info: FL: Switching to screen: ,.anime-cb-screen-sign-up-success
+2019-1-31 18:40:58 info: FL: Data is valid: ,[object Object]
+2019-1-31 18:41:03 info: FL: History state: ,[object Object]
+2019-1-31 18:41:03 info: FL: checkIsUserLoggedIn
+2019-1-31 18:41:03 info: FL: checkIfUserIsLoggedIn
+2019-1-31 18:41:03 info: FL: processIsUserLoggedInResponse
+2019-1-31 18:41:03 info: FL: To validate: ,[object Object]
+2019-1-31 18:41:03 info: FL: Data is valid: ,[object Object]
+2019-1-31 18:41:03 info: FL: Switching to screen: ,.anime-cb-screen-sign-up
+2019-1-31 18:41:03 info: FL: true
+2019-1-31 18:41:03 info: FL: Screen class: ,.anime-cb-screen-main-menu
+2019-1-31 18:41:03 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:41:03 info: FL: Trying to logout...
+2019-1-31 18:41:03 info: FL: sendLogOutRequest
+2019-1-31 18:41:03 info: FL: processLogoutResponse
+2019-1-31 18:41:03 info: FL: To validate: ,[object Object]
+2019-1-31 18:41:03 info: FL: Data is valid: ,[object Object]
+2019-1-31 18:41:03 info: FL: showLogOutSuccess
+2019-1-31 18:41:03 info: FL: Data: ,[object Object]
+2019-1-31 18:41:04 info: FL: false
+2019-1-31 18:41:04 info: FL: Screen class: ,.anime-cb-screen-login
+2019-1-31 18:41:04 info: FL: Switching to screen: ,.anime-cb-screen-login
+2019-1-31 18:41:05 info: FL: false
+2019-1-31 18:41:05 info: FL: Screen class: ,.anime-cb-screen-main-menu
+2019-1-31 18:41:05 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:41:07 info: FL: false
+2019-1-31 18:41:07 info: FL: Screen class: ,.anime-cb-screen-login
+2019-1-31 18:41:07 info: FL: Switching to screen: ,.anime-cb-screen-login
+2019-1-31 18:41:07 info: FL: false
+2019-1-31 18:41:07 info: FL: Screen class: ,.anime-cb-screen-sign-up
+2019-1-31 18:41:07 info: FL: Switching to screen: ,.anime-cb-screen-sign-up
+2019-1-31 18:41:14 info: FL: SignUpInputs: ,[object Object]
+2019-1-31 18:41:14 info: FL: Form signup values: ,[object Object]
+2019-1-31 18:41:14 info: FL: sendSignUpData
+2019-1-31 18:41:14 info: FL: Sending data to signup: ,[object Object]
+2019-1-31 18:41:14 info: FL: processSignUpResponse
+2019-1-31 18:41:14 info: FL: To validate: ,[object Object]
+2019-1-31 18:41:14 info: FL: There are validation errors: ,[object Object],[object Object],[object Object]
+2019-1-31 18:41:14 info: FL: showSignUpErrors
+2019-1-31 18:41:14 info: FL: Data: ,[object Object]
+2019-1-31 18:41:18 info: FL: SignUpInputs: ,[object Object]
+2019-1-31 18:41:18 info: FL: Form signup values: ,[object Object]
+2019-1-31 18:41:18 info: FL: sendSignUpData
+2019-1-31 18:41:18 info: FL: Sending data to signup: ,[object Object]
+2019-1-31 18:41:18 info: FL: processSignUpResponse
+2019-1-31 18:41:18 info: FL: To validate: ,[object Object]
+2019-1-31 18:41:18 info: FL: There are validation errors: ,[object Object]
+2019-1-31 18:41:18 info: FL: showSignUpErrors
+2019-1-31 18:41:18 info: FL: Data: ,[object Object]
+2019-1-31 18:41:20 info: User Data = { username: 'velioo98',
+  email: 'velioocs@gmail.com',
+  password:
+   'c7ef6aef389e6486a70cfac95dbe38bdb3c2585489592349ee94d238c6dde47a',
+  salt: 'DXoAGWi6ma72rIpgSZlQZ1cLp6dcm09Xy+MNTh7F0n8=' }
+2019-1-31 18:41:20 info: FL: SignUpInputs: ,[object Object]
+2019-1-31 18:41:20 info: FL: Form signup values: ,[object Object]
+2019-1-31 18:41:20 info: FL: sendSignUpData
+2019-1-31 18:41:20 info: FL: Sending data to signup: ,[object Object]
+2019-1-31 18:41:22 info: userMessageMail = A confirmation email was sent to your email address.
+      Please confirm your account before logging in.
+2019-1-31 18:41:22 info: Confirmation email sent
+2019-1-31 18:41:22 info: FL: processSignUpResponse
+2019-1-31 18:41:22 info: FL: To validate: ,[object Object]
+2019-1-31 18:41:22 info: FL: Data is valid: ,[object Object]
+2019-1-31 18:41:22 info: FL: showSignUpSuccess
+2019-1-31 18:41:22 info: FL: Data: ,[object Object]
+2019-1-31 18:41:22 info: FL: Screen class: ,.anime-cb-screen-sign-up-success
+2019-1-31 18:41:22 info: FL: Switching to screen: ,.anime-cb-screen-sign-up-success
+2019-1-31 18:41:23 info: FL: Switching to screen: ,.anime-cb-screen-sign-up
+2019-1-31 18:41:24 info: FL: Switching to screen: ,.anime-cb-screen-sign-up-success
+2019-1-31 18:41:28 info: FL: Switching to screen: ,.anime-cb-screen-sign-up
+2019-1-31 18:41:29 info: FL: Switching to screen: ,.anime-cb-screen-sign-up-success
+2019-1-31 18:41:35 info: FL: false
+2019-1-31 18:41:35 info: FL: Screen class: ,.anime-cb-screen-main-menu
+2019-1-31 18:41:35 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:41:36 info: FL: Switching to screen: ,.anime-cb-screen-sign-up-success
+2019-1-31 18:41:37 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:41:42 info: Successfully validated your account
+2019-1-31 18:41:43 info: FL: History state: ,
+2019-1-31 18:41:43 info: FL: checkIsUserLoggedIn
+2019-1-31 18:41:43 info: FL: checkIfUserIsLoggedIn
+2019-1-31 18:41:43 info: FL: processIsUserLoggedInResponse
+2019-1-31 18:41:43 info: FL: To validate: ,[object Object]
+2019-1-31 18:41:43 info: FL: Data is valid: ,[object Object]
+2019-1-31 18:41:46 info: FL: false
+2019-1-31 18:41:46 info: FL: Screen class: ,.anime-cb-screen-sign-up
+2019-1-31 18:41:46 info: FL: Switching to screen: ,.anime-cb-screen-sign-up
+2019-1-31 18:41:47 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:41:49 info: FL: Switching to screen: ,.anime-cb-screen-sign-up
+2019-1-31 18:41:50 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:41:52 info: FL: Switching to screen: ,.anime-cb-screen-sign-up
+2019-1-31 18:41:53 info: FL: false
+2019-1-31 18:41:53 info: FL: Screen class: ,.anime-cb-screen-login
+2019-1-31 18:41:53 info: FL: Switching to screen: ,.anime-cb-screen-login
+2019-1-31 18:41:55 info: FL: Form login values: ,[object Object]
+2019-1-31 18:41:55 info: FL: sendLoginData
+2019-1-31 18:41:55 info: FL: Sending data to login: ,[object Object]
+2019-1-31 18:41:55 info: FL: processLoginResponse
+2019-1-31 18:41:55 info: FL: To validate: ,[object Object]
+2019-1-31 18:41:55 info: FL: Data is valid: ,[object Object]
+2019-1-31 18:41:55 info: FL: showLoginSuccess
+2019-1-31 18:41:55 info: FL: Data: ,[object Object]
+2019-1-31 18:41:55 info: FL: Screen class: ,.anime-cb-screen-main-menu
+2019-1-31 18:41:55 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:41:57 info: FL: true
+2019-1-31 18:41:57 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/confirm_account/UrZJlrQiHgqc237MI5zly7CsJVTml8K6:55:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:235:3)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:58:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/confirm_account/main-menu
+------------------------------------------------------------
+2019-1-31 18:41:58 info: FL: true
+2019-1-31 18:41:58 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/confirm_account/UrZJlrQiHgqc237MI5zly7CsJVTml8K6:55:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:235:3)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:58:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/confirm_account/main-menu
+------------------------------------------------------------
+2019-1-31 18:41:59 info: FL: Switching to screen: ,.anime-cb-screen-login
+2019-1-31 18:41:59 info: FL: Switching to screen: ,.anime-cb-screen-sign-up
+2019-1-31 18:41:59 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:42:03 info: FL: History state: ,
+2019-1-31 18:42:03 info: FL: checkIsUserLoggedIn
+2019-1-31 18:42:03 info: FL: checkIfUserIsLoggedIn
+2019-1-31 18:42:03 info: FL: processIsUserLoggedInResponse
+2019-1-31 18:42:03 info: FL: To validate: ,[object Object]
+2019-1-31 18:42:03 info: FL: Data is valid: ,[object Object]
+2019-1-31 18:42:04 info: FL: Switching to screen: ,.anime-cb-screen-sign-up
+2019-1-31 18:42:06 info: FL: History state: ,[object Object]
+2019-1-31 18:42:06 info: FL: checkIsUserLoggedIn
+2019-1-31 18:42:06 info: FL: checkIfUserIsLoggedIn
+2019-1-31 18:42:06 info: FL: processIsUserLoggedInResponse
+2019-1-31 18:42:06 info: FL: To validate: ,[object Object]
+2019-1-31 18:42:06 info: FL: Data is valid: ,[object Object]
+2019-1-31 18:42:06 info: FL: Switching to screen: ,.anime-cb-screen-sign-up
+2019-1-31 18:42:06 info: FL: true
+2019-1-31 18:42:06 info: FL: Screen class: ,.anime-cb-screen-main-menu
+2019-1-31 18:42:06 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:42:06 info: FL: Trying to logout...
+2019-1-31 18:42:06 info: FL: sendLogOutRequest
+2019-1-31 18:42:06 info: FL: processLogoutResponse
+2019-1-31 18:42:06 info: FL: To validate: ,[object Object]
+2019-1-31 18:42:06 info: FL: Data is valid: ,[object Object]
+2019-1-31 18:42:06 info: FL: showLogOutSuccess
+2019-1-31 18:42:06 info: FL: Data: ,[object Object]
+2019-1-31 18:42:07 info: FL: false
+2019-1-31 18:42:07 info: FL: Screen class: ,.anime-cb-screen-login
+2019-1-31 18:42:07 info: FL: Switching to screen: ,.anime-cb-screen-login
+2019-1-31 18:42:09 info: FL: Form login values: ,[object Object]
+2019-1-31 18:42:09 info: FL: sendLoginData
+2019-1-31 18:42:09 info: FL: Sending data to login: ,[object Object]
+2019-1-31 18:42:09 info: FL: processLoginResponse
+2019-1-31 18:42:09 info: FL: To validate: ,[object Object]
+2019-1-31 18:42:09 info: FL: Data is valid: ,[object Object]
+2019-1-31 18:42:09 info: FL: showLoginSuccess
+2019-1-31 18:42:09 info: FL: Data: ,[object Object]
+2019-1-31 18:42:09 info: FL: Screen class: ,.anime-cb-screen-main-menu
+2019-1-31 18:42:09 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:42:11 info: FL: true
+2019-1-31 18:42:11 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/confirm_account/sign-up:55:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:235:3)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:58:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/confirm_account/login
+------------------------------------------------------------
+2019-1-31 18:42:11 info: FL: Switching to screen: ,.anime-cb-screen-login
+2019-1-31 18:42:12 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:42:12 info: FL: Switching to screen: ,.anime-cb-screen-sign-up
+2019-1-31 18:42:12 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:42:14 info: FL: History state: ,
+2019-1-31 18:42:14 info: FL: checkIsUserLoggedIn
+2019-1-31 18:42:14 info: FL: checkIfUserIsLoggedIn
+2019-1-31 18:42:14 info: FL: processIsUserLoggedInResponse
+2019-1-31 18:42:14 info: FL: To validate: ,[object Object]
+2019-1-31 18:42:14 info: FL: Data is valid: ,[object Object]
+2019-1-31 18:42:14 info: FL: Switching to screen: ,.anime-cb-screen-sign-up
+2019-1-31 18:42:14 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:42:14 info: FL: Switching to screen: ,.anime-cb-screen-login
+2019-1-31 18:42:14 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:42:15 info: FL: true
+2019-1-31 18:42:15 info: FL: Screen class: ,.anime-cb-screen-main-menu
+2019-1-31 18:42:15 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:42:15 info: FL: Trying to logout...
+2019-1-31 18:42:15 info: FL: sendLogOutRequest
+2019-1-31 18:42:15 info: FL: processLogoutResponse
+2019-1-31 18:42:15 info: FL: To validate: ,[object Object]
+2019-1-31 18:42:15 info: FL: Data is valid: ,[object Object]
+2019-1-31 18:42:15 info: FL: showLogOutSuccess
+2019-1-31 18:42:15 info: FL: Data: ,[object Object]
+2019-1-31 18:42:17 info: FL: History state: ,[object Object]
+2019-1-31 18:42:17 info: FL: checkIsUserLoggedIn
+2019-1-31 18:42:17 info: FL: checkIfUserIsLoggedIn
+2019-1-31 18:42:17 info: FL: processIsUserLoggedInResponse
+2019-1-31 18:42:17 info: FL: To validate: ,[object Object]
+2019-1-31 18:42:17 info: FL: Data is valid: ,[object Object]
+2019-1-31 18:42:17 info: FL: Switching to screen: ,.anime-cb-screen-sign-up
+2019-1-31 18:42:46 info: Server started on port: 8882
+2019-1-31 18:42:49 info: Server started on port: 8882
+2019-1-31 18:42:54 info: Server started on port: 8882
+2019-1-31 18:44:54 info: Server started on port: 8882
+2019-1-31 18:45:10 info: Server started on port: 8882
+2019-1-31 18:45:12 info: FL: History state: ,[object Object]
+2019-1-31 18:45:12 info: FL: checkIsUserLoggedIn
+2019-1-31 18:45:12 info: FL: checkIfUserIsLoggedIn
+2019-1-31 18:45:12 info: FL: processIsUserLoggedInResponse
+2019-1-31 18:45:12 info: FL: To validate: ,[object Object]
+2019-1-31 18:45:12 info: FL: Data is valid: ,[object Object]
+2019-1-31 18:45:12 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:45:12 info: FL: false
+2019-1-31 18:45:12 info: FL: Screen class: ,.anime-cb-screen-login
+2019-1-31 18:45:12 info: FL: Switching to screen: ,.anime-cb-screen-login
+2019-1-31 18:45:14 info: FL: Form login values: ,[object Object]
+2019-1-31 18:45:14 info: FL: sendLoginData
+2019-1-31 18:45:14 info: FL: Sending data to login: ,[object Object]
+2019-1-31 18:45:14 info: FL: processLoginResponse
+2019-1-31 18:45:14 info: FL: To validate: ,[object Object]
+2019-1-31 18:45:14 info: FL: Data is valid: ,[object Object]
+2019-1-31 18:45:14 info: FL: showLoginSuccess
+2019-1-31 18:45:14 info: FL: Data: ,[object Object]
+2019-1-31 18:45:14 info: FL: Screen class: ,.anime-cb-screen-main-menu
+2019-1-31 18:45:14 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:45:15 info: FL: true
+2019-1-31 18:45:15 info: FL: Screen class: ,.anime-cb-screen-main-menu
+2019-1-31 18:45:15 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:45:15 info: FL: Trying to logout...
+2019-1-31 18:45:15 info: FL: sendLogOutRequest
+2019-1-31 18:45:15 info: FL: processLogoutResponse
+2019-1-31 18:45:15 info: FL: To validate: ,{"errors":[],"isSuccessful":true}
+2019-1-31 18:45:15 info: FL: Data is valid: ,[object Object]
+2019-1-31 18:45:15 info: FL: showLogOutSuccess
+2019-1-31 18:45:15 info: FL: Data: ,[object Object]
+2019-1-31 18:46:08 info: Server started on port: 8882
+2019-1-31 18:46:15 info: Server started on port: 8882
+2019-1-31 18:46:27 info: Server started on port: 8882
+2019-1-31 18:46:36 info: Server started on port: 8882
+2019-1-31 18:47:19 info: Server started on port: 8882
+2019-1-31 18:47:24 info: Server started on port: 8882
+2019-1-31 18:47:33 info: Server started on port: 8882
+2019-1-31 18:47:39 info: Server started on port: 8882
+2019-1-31 18:47:49 info: Server started on port: 8882
+2019-1-31 18:47:54 info: Server started on port: 8882
+2019-1-31 18:48:11 info: Server started on port: 8882
+2019-1-31 18:48:37 info: Server started on port: 8882
+2019-1-31 18:48:54 info: Server started on port: 8882
+2019-1-31 18:49:01 info: Server started on port: 8882
+2019-1-31 18:49:09 info: Server started on port: 8882
+2019-1-31 18:49:16 info: Server started on port: 8882
+2019-1-31 18:49:23 info: Server started on port: 8882
+2019-1-31 18:50:18 info: Server started on port: 8882
+2019-1-31 18:50:57 info: Server started on port: 8882
+2019-1-31 18:51:05 info: Server started on port: 8882
+2019-1-31 18:51:37 info: Server started on port: 8882
+2019-1-31 18:51:38 info: FL: History state: ,[object Object]
+2019-1-31 18:51:38 info: FL: checkIsUserLoggedIn
+2019-1-31 18:51:38 info: FL: checkIfUserIsLoggedIn
+2019-1-31 18:51:38 info: FL: processIsUserLoggedInResponse
+2019-1-31 18:51:38 info: FL: To validate: ,{"isUserLoggedIn":false,"isSuccessful":true}
+2019-1-31 18:51:38 info: FL: Data is valid
+2019-1-31 18:51:38 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:51:38 info: FL: Pushing to history screen class: ,.anime-cb-screen-login
+2019-1-31 18:51:38 info: FL: Switching to screen: ,.anime-cb-screen-login
+2019-1-31 18:51:44 info: FL: History state: ,[object Object]
+2019-1-31 18:51:44 info: FL: checkIsUserLoggedIn
+2019-1-31 18:51:44 info: FL: checkIfUserIsLoggedIn
+2019-1-31 18:51:44 info: FL: processIsUserLoggedInResponse
+2019-1-31 18:51:44 info: FL: To validate: ,{"isUserLoggedIn":false,"isSuccessful":true}
+2019-1-31 18:51:44 info: FL: Data is valid
+2019-1-31 18:51:44 info: FL: Switching to screen: ,.anime-cb-screen-login
+2019-1-31 18:51:45 info: FL: Pushing to history screen class: ,.anime-cb-screen-main-menu
+2019-1-31 18:51:45 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:51:45 info: FL: Pushing to history screen class: ,.anime-cb-screen-login
+2019-1-31 18:51:45 info: FL: Switching to screen: ,.anime-cb-screen-login
+2019-1-31 18:51:47 info: FL: Form login values: ,{"username":"","password":""}
+2019-1-31 18:51:47 info: FL: sendLoginData
+2019-1-31 18:51:47 info: FL: Sending data to login: ,{"username":"","password":""}
+2019-1-31 18:51:47 info: FL: processLoginResponse
+2019-1-31 18:51:47 info: FL: To validate: ,{"errors":[{"dataPath":"/username","message":"Wrong username or password."}],"isSuccessful":false}
+2019-1-31 18:51:47 info: FL: There are validation errors: ,[{"dataPath":"/username","message":"Wrong username or password."}]
+2019-1-31 18:51:47 info: FL: showLoginErrors
+2019-1-31 18:51:47 info: FL: Data: ,{"errors":[{"dataPath":"/username","message":"Wrong username or password."}],"isSuccessful":false}
+2019-1-31 18:51:50 info: FL: Pushing to history screen class: ,.anime-cb-screen-sign-up
+2019-1-31 18:51:50 info: FL: Switching to screen: ,.anime-cb-screen-sign-up
+2019-1-31 18:51:51 info: FL: Form signup values: ,{"username":"","email":"","password":"","conf_password":""}
+2019-1-31 18:51:51 info: FL: sendSignUpData
+2019-1-31 18:51:51 info: FL: Sending data to signup: ,{"username":"","email":"","password":"","conf_password":""}
+2019-1-31 18:51:51 info: FL: processSignUpResponse
+2019-1-31 18:51:51 info: FL: To validate: ,{"errors":[{"keyword":"errorMessage","dataPath":"/username","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/username","schemaPath":"#/properties/username/minLength","params":{"limit":3},"message":"should NOT be shorter than 3 characters"}]},"message":"Username should be between 3 and 20 characters"},{"keyword":"errorMessage","dataPath":"/password","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/password","schemaPath":"#/properties/password/minLength","params":{"limit":8},"message":"should NOT be shorter than 8 characters"}]},"message":"Password should be at least 8 characters long"},{"keyword":"errorMessage","dataPath":"/email","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/email","schemaPath":"#/properties/email/minLength","params":{"limit":5},"message":"should NOT be shorter than 5 characters"},{"keyword":"format","dataPath":"/email","schemaPath":"#/properties/email/format","params":{"format":"email"},"message":"should match format \"email\""}]},"message":"The entered email should be valid and at least 5 characters long"}],"isSuccessful":false}
+2019-1-31 18:51:51 info: FL: There are validation errors: ,[{"keyword":"errorMessage","dataPath":"/username","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/username","schemaPath":"#/properties/username/minLength","params":{"limit":3},"message":"should NOT be shorter than 3 characters"}]},"message":"Username should be between 3 and 20 characters"},{"keyword":"errorMessage","dataPath":"/password","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/password","schemaPath":"#/properties/password/minLength","params":{"limit":8},"message":"should NOT be shorter than 8 characters"}]},"message":"Password should be at least 8 characters long"},{"keyword":"errorMessage","dataPath":"/email","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/email","schemaPath":"#/properties/email/minLength","params":{"limit":5},"message":"should NOT be shorter than 5 characters"},{"keyword":"format","dataPath":"/email","schemaPath":"#/properties/email/format","params":{"format":"email"},"message":"should match format \"email\""}]},"message":"The entered email should be valid and at least 5 characters long"}]
+2019-1-31 18:51:51 info: FL: showSignUpErrors
+2019-1-31 18:51:51 info: FL: Data: ,{"errors":[{"keyword":"errorMessage","dataPath":"/username","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/username","schemaPath":"#/properties/username/minLength","params":{"limit":3},"message":"should NOT be shorter than 3 characters"}]},"message":"Username should be between 3 and 20 characters"},{"keyword":"errorMessage","dataPath":"/password","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/password","schemaPath":"#/properties/password/minLength","params":{"limit":8},"message":"should NOT be shorter than 8 characters"}]},"message":"Password should be at least 8 characters long"},{"keyword":"errorMessage","dataPath":"/email","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/email","schemaPath":"#/properties/email/minLength","params":{"limit":5},"message":"should NOT be shorter than 5 characters"},{"keyword":"format","dataPath":"/email","schemaPath":"#/properties/email/format","params":{"format":"email"},"message":"should match format \"email\""}]},"message":"The entered email should be valid and at least 5 characters long"}],"isSuccessful":false}
+2019-1-31 18:51:53 info: FL: Form signup values: ,{"username":"","email":"","password":"","conf_password":""}
+2019-1-31 18:51:53 info: FL: sendSignUpData
+2019-1-31 18:51:53 info: FL: Sending data to signup: ,{"username":"","email":"","password":"","conf_password":""}
+2019-1-31 18:51:53 info: FL: processSignUpResponse
+2019-1-31 18:51:53 info: FL: To validate: ,{"errors":[{"keyword":"errorMessage","dataPath":"/username","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/username","schemaPath":"#/properties/username/minLength","params":{"limit":3},"message":"should NOT be shorter than 3 characters"}]},"message":"Username should be between 3 and 20 characters"},{"keyword":"errorMessage","dataPath":"/password","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/password","schemaPath":"#/properties/password/minLength","params":{"limit":8},"message":"should NOT be shorter than 8 characters"}]},"message":"Password should be at least 8 characters long"},{"keyword":"errorMessage","dataPath":"/email","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/email","schemaPath":"#/properties/email/minLength","params":{"limit":5},"message":"should NOT be shorter than 5 characters"},{"keyword":"format","dataPath":"/email","schemaPath":"#/properties/email/format","params":{"format":"email"},"message":"should match format \"email\""}]},"message":"The entered email should be valid and at least 5 characters long"}],"isSuccessful":false}
+2019-1-31 18:51:53 info: FL: There are validation errors: ,[{"keyword":"errorMessage","dataPath":"/username","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/username","schemaPath":"#/properties/username/minLength","params":{"limit":3},"message":"should NOT be shorter than 3 characters"}]},"message":"Username should be between 3 and 20 characters"},{"keyword":"errorMessage","dataPath":"/password","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/password","schemaPath":"#/properties/password/minLength","params":{"limit":8},"message":"should NOT be shorter than 8 characters"}]},"message":"Password should be at least 8 characters long"},{"keyword":"errorMessage","dataPath":"/email","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/email","schemaPath":"#/properties/email/minLength","params":{"limit":5},"message":"should NOT be shorter than 5 characters"},{"keyword":"format","dataPath":"/email","schemaPath":"#/properties/email/format","params":{"format":"email"},"message":"should match format \"email\""}]},"message":"The entered email should be valid and at least 5 characters long"}]
+2019-1-31 18:51:53 info: FL: showSignUpErrors
+2019-1-31 18:51:53 info: FL: Data: ,{"errors":[{"keyword":"errorMessage","dataPath":"/username","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/username","schemaPath":"#/properties/username/minLength","params":{"limit":3},"message":"should NOT be shorter than 3 characters"}]},"message":"Username should be between 3 and 20 characters"},{"keyword":"errorMessage","dataPath":"/password","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/password","schemaPath":"#/properties/password/minLength","params":{"limit":8},"message":"should NOT be shorter than 8 characters"}]},"message":"Password should be at least 8 characters long"},{"keyword":"errorMessage","dataPath":"/email","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/email","schemaPath":"#/properties/email/minLength","params":{"limit":5},"message":"should NOT be shorter than 5 characters"},{"keyword":"format","dataPath":"/email","schemaPath":"#/properties/email/format","params":{"format":"email"},"message":"should match format \"email\""}]},"message":"The entered email should be valid and at least 5 characters long"}],"isSuccessful":false}
+2019-1-31 18:51:53 info: FL: Pushing to history screen class: ,.anime-cb-screen-main-menu
+2019-1-31 18:51:53 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:51:55 info: FL: Pushing to history screen class: ,.anime-cb-screen-login
+2019-1-31 18:51:55 info: FL: Switching to screen: ,.anime-cb-screen-login
+2019-1-31 18:51:55 info: FL: Form login values: ,{"username":"","password":""}
+2019-1-31 18:51:55 info: FL: sendLoginData
+2019-1-31 18:51:55 info: FL: Sending data to login: ,{"username":"","password":""}
+2019-1-31 18:51:55 info: FL: processLoginResponse
+2019-1-31 18:51:55 info: FL: To validate: ,{"errors":[{"dataPath":"/username","message":"Wrong username or password."}],"isSuccessful":false}
+2019-1-31 18:51:55 info: FL: There are validation errors: ,[{"dataPath":"/username","message":"Wrong username or password."}]
+2019-1-31 18:51:55 info: FL: showLoginErrors
+2019-1-31 18:51:55 info: FL: Data: ,{"errors":[{"dataPath":"/username","message":"Wrong username or password."}],"isSuccessful":false}
+2019-1-31 18:51:56 info: FL: Form login values: ,{"username":"","password":""}
+2019-1-31 18:51:56 info: FL: sendLoginData
+2019-1-31 18:51:56 info: FL: Sending data to login: ,{"username":"","password":""}
+2019-1-31 18:51:56 info: FL: processLoginResponse
+2019-1-31 18:51:56 info: FL: To validate: ,{"errors":[{"dataPath":"/username","message":"Wrong username or password."}],"isSuccessful":false}
+2019-1-31 18:51:56 info: FL: There are validation errors: ,[{"dataPath":"/username","message":"Wrong username or password."}]
+2019-1-31 18:51:56 info: FL: showLoginErrors
+2019-1-31 18:51:56 info: FL: Data: ,{"errors":[{"dataPath":"/username","message":"Wrong username or password."}],"isSuccessful":false}
+2019-1-31 18:52:34 info: FL: Pushing to history screen class: ,.anime-cb-screen-main-menu
+2019-1-31 18:52:34 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:52:34 info: FL: Pushing to history screen class: ,.anime-cb-screen-sign-up
+2019-1-31 18:52:34 info: FL: Switching to screen: ,.anime-cb-screen-sign-up
+2019-1-31 18:52:35 info: FL: Form signup values: ,{"username":"","email":"","password":"","conf_password":""}
+2019-1-31 18:52:35 info: FL: sendSignUpData
+2019-1-31 18:52:35 info: FL: Sending data to signup: ,{"username":"","email":"","password":"","conf_password":""}
+2019-1-31 18:52:35 info: FL: processSignUpResponse
+2019-1-31 18:52:35 info: FL: To validate: ,{"errors":[{"keyword":"errorMessage","dataPath":"/username","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/username","schemaPath":"#/properties/username/minLength","params":{"limit":3},"message":"should NOT be shorter than 3 characters"}]},"message":"Username should be between 3 and 20 characters"},{"keyword":"errorMessage","dataPath":"/password","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/password","schemaPath":"#/properties/password/minLength","params":{"limit":8},"message":"should NOT be shorter than 8 characters"}]},"message":"Password should be at least 8 characters long"},{"keyword":"errorMessage","dataPath":"/email","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/email","schemaPath":"#/properties/email/minLength","params":{"limit":5},"message":"should NOT be shorter than 5 characters"},{"keyword":"format","dataPath":"/email","schemaPath":"#/properties/email/format","params":{"format":"email"},"message":"should match format \"email\""}]},"message":"The entered email should be valid and at least 5 characters long"}],"isSuccessful":false}
+2019-1-31 18:52:35 info: FL: There are validation errors: ,[{"keyword":"errorMessage","dataPath":"/username","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/username","schemaPath":"#/properties/username/minLength","params":{"limit":3},"message":"should NOT be shorter than 3 characters"}]},"message":"Username should be between 3 and 20 characters"},{"keyword":"errorMessage","dataPath":"/password","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/password","schemaPath":"#/properties/password/minLength","params":{"limit":8},"message":"should NOT be shorter than 8 characters"}]},"message":"Password should be at least 8 characters long"},{"keyword":"errorMessage","dataPath":"/email","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/email","schemaPath":"#/properties/email/minLength","params":{"limit":5},"message":"should NOT be shorter than 5 characters"},{"keyword":"format","dataPath":"/email","schemaPath":"#/properties/email/format","params":{"format":"email"},"message":"should match format \"email\""}]},"message":"The entered email should be valid and at least 5 characters long"}]
+2019-1-31 18:52:35 info: FL: showSignUpErrors
+2019-1-31 18:52:35 info: FL: Data: ,{"errors":[{"keyword":"errorMessage","dataPath":"/username","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/username","schemaPath":"#/properties/username/minLength","params":{"limit":3},"message":"should NOT be shorter than 3 characters"}]},"message":"Username should be between 3 and 20 characters"},{"keyword":"errorMessage","dataPath":"/password","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/password","schemaPath":"#/properties/password/minLength","params":{"limit":8},"message":"should NOT be shorter than 8 characters"}]},"message":"Password should be at least 8 characters long"},{"keyword":"errorMessage","dataPath":"/email","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/email","schemaPath":"#/properties/email/minLength","params":{"limit":5},"message":"should NOT be shorter than 5 characters"},{"keyword":"format","dataPath":"/email","schemaPath":"#/properties/email/format","params":{"format":"email"},"message":"should match format \"email\""}]},"message":"The entered email should be valid and at least 5 characters long"}],"isSuccessful":false}
+2019-1-31 18:55:11 info: Server started on port: 8882
+2019-1-31 18:55:20 info: Server started on port: 8882
+2019-1-31 18:55:20 info: FL: Form signup values: ,{"username":"","email":"","password":"","conf_password":""}
+2019-1-31 18:55:20 info: FL: sendSignUpData
+2019-1-31 18:55:20 info: FL: Sending data to signup: ,{"username":"","email":"","password":"","conf_password":""}
+2019-1-31 18:55:21 info: FL: processSignUpResponse
+2019-1-31 18:55:21 info: FL: To validate: ,{"errors":[{"keyword":"errorMessage","dataPath":"/username","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/username","schemaPath":"#/properties/username/minLength","params":{"limit":3},"message":"should NOT be shorter than 3 characters"}]},"message":"Username should be between 3 and 20 characters"},{"keyword":"errorMessage","dataPath":"/password","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/password","schemaPath":"#/properties/password/minLength","params":{"limit":8},"message":"should NOT be shorter than 8 characters"}]},"message":"Password should be at least 8 characters long"},{"keyword":"errorMessage","dataPath":"/email","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/email","schemaPath":"#/properties/email/minLength","params":{"limit":5},"message":"should NOT be shorter than 5 characters"},{"keyword":"format","dataPath":"/email","schemaPath":"#/properties/email/format","params":{"format":"email"},"message":"should match format \"email\""}]},"message":"The entered email should be valid and at least 5 characters long"}],"isSuccessful":false}
+2019-1-31 18:55:21 info: FL: There are validation errors: ,[{"keyword":"errorMessage","dataPath":"/username","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/username","schemaPath":"#/properties/username/minLength","params":{"limit":3},"message":"should NOT be shorter than 3 characters"}]},"message":"Username should be between 3 and 20 characters"},{"keyword":"errorMessage","dataPath":"/password","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/password","schemaPath":"#/properties/password/minLength","params":{"limit":8},"message":"should NOT be shorter than 8 characters"}]},"message":"Password should be at least 8 characters long"},{"keyword":"errorMessage","dataPath":"/email","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/email","schemaPath":"#/properties/email/minLength","params":{"limit":5},"message":"should NOT be shorter than 5 characters"},{"keyword":"format","dataPath":"/email","schemaPath":"#/properties/email/format","params":{"format":"email"},"message":"should match format \"email\""}]},"message":"The entered email should be valid and at least 5 characters long"}]
+2019-1-31 18:55:21 info: FL: showSignUpErrors
+2019-1-31 18:55:21 info: FL: Data: ,{"errors":[{"keyword":"errorMessage","dataPath":"/username","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/username","schemaPath":"#/properties/username/minLength","params":{"limit":3},"message":"should NOT be shorter than 3 characters"}]},"message":"Username should be between 3 and 20 characters"},{"keyword":"errorMessage","dataPath":"/password","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/password","schemaPath":"#/properties/password/minLength","params":{"limit":8},"message":"should NOT be shorter than 8 characters"}]},"message":"Password should be at least 8 characters long"},{"keyword":"errorMessage","dataPath":"/email","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/email","schemaPath":"#/properties/email/minLength","params":{"limit":5},"message":"should NOT be shorter than 5 characters"},{"keyword":"format","dataPath":"/email","schemaPath":"#/properties/email/format","params":{"format":"email"},"message":"should match format \"email\""}]},"message":"The entered email should be valid and at least 5 characters long"}],"isSuccessful":false}
+2019-1-31 18:55:57 info: Server started on port: 8882
+2019-1-31 18:56:40 info: Server started on port: 8882
+2019-1-31 18:57:18 info: Server started on port: 8882
+2019-1-31 18:57:28 info: Server started on port: 8882
+2019-1-31 18:57:30 info: Server started on port: 8882
+2019-1-31 18:57:34 info: Server started on port: 8882
+2019-1-31 18:57:59 info: Server started on port: 8882
+2019-1-31 18:58:07 info: Server started on port: 8882
+2019-1-31 18:58:14 info: Server started on port: 8882
+2019-1-31 18:58:14 info: FL: Form signup values: ,{"username":"","email":"","password":"","conf_password":""}
+2019-1-31 18:58:14 info: FL: sendSignUpData
+2019-1-31 18:58:14 info: FL: Sending data to signup: ,{"username":"","email":"","password":"","conf_password":""}
+2019-1-31 18:58:14 info: FL: processSignUpResponse
+2019-1-31 18:58:14 info: FL: To validate: ,{"errors":[{"keyword":"errorMessage","dataPath":"/username","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/username","schemaPath":"#/properties/username/minLength","params":{"limit":3},"message":"should NOT be shorter than 3 characters"}]},"message":"Username should be between 3 and 20 characters"},{"keyword":"errorMessage","dataPath":"/password","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/password","schemaPath":"#/properties/password/minLength","params":{"limit":8},"message":"should NOT be shorter than 8 characters"}]},"message":"Password should be at least 8 characters long"},{"keyword":"errorMessage","dataPath":"/email","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/email","schemaPath":"#/properties/email/minLength","params":{"limit":5},"message":"should NOT be shorter than 5 characters"},{"keyword":"format","dataPath":"/email","schemaPath":"#/properties/email/format","params":{"format":"email"},"message":"should match format \"email\""}]},"message":"The entered email should be valid and at least 5 characters long"}],"isSuccessful":false}
+2019-1-31 18:58:14 info: FL: There are validation errors: ,[{"keyword":"errorMessage","dataPath":"/username","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/username","schemaPath":"#/properties/username/minLength","params":{"limit":3},"message":"should NOT be shorter than 3 characters"}]},"message":"Username should be between 3 and 20 characters"},{"keyword":"errorMessage","dataPath":"/password","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/password","schemaPath":"#/properties/password/minLength","params":{"limit":8},"message":"should NOT be shorter than 8 characters"}]},"message":"Password should be at least 8 characters long"},{"keyword":"errorMessage","dataPath":"/email","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/email","schemaPath":"#/properties/email/minLength","params":{"limit":5},"message":"should NOT be shorter than 5 characters"},{"keyword":"format","dataPath":"/email","schemaPath":"#/properties/email/format","params":{"format":"email"},"message":"should match format \"email\""}]},"message":"The entered email should be valid and at least 5 characters long"}]
+2019-1-31 18:58:14 info: FL: showSignUpErrors
+2019-1-31 18:58:14 info: FL: Data: ,{"errors":[{"keyword":"errorMessage","dataPath":"/username","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/username","schemaPath":"#/properties/username/minLength","params":{"limit":3},"message":"should NOT be shorter than 3 characters"}]},"message":"Username should be between 3 and 20 characters"},{"keyword":"errorMessage","dataPath":"/password","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/password","schemaPath":"#/properties/password/minLength","params":{"limit":8},"message":"should NOT be shorter than 8 characters"}]},"message":"Password should be at least 8 characters long"},{"keyword":"errorMessage","dataPath":"/email","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/email","schemaPath":"#/properties/email/minLength","params":{"limit":5},"message":"should NOT be shorter than 5 characters"},{"keyword":"format","dataPath":"/email","schemaPath":"#/properties/email/format","params":{"format":"email"},"message":"should match format \"email\""}]},"message":"The entered email should be valid and at least 5 characters long"}],"isSuccessful":false}
+2019-1-31 18:58:25 info: Server started on port: 8882
+2019-1-31 18:58:32 info: Server started on port: 8882
+2019-1-31 18:58:39 info: Server started on port: 8882
+2019-1-31 18:58:40 info: FL: History state: ,[object Object]
+2019-1-31 18:58:40 info: FL: checkIsUserLoggedIn
+2019-1-31 18:58:40 info: FL: checkIfUserIsLoggedIn
+2019-1-31 18:58:40 info: FL: processIsUserLoggedInResponse
+2019-1-31 18:58:40 info: FL: To validate: ,{"isUserLoggedIn":false,"isSuccessful":true}
+2019-1-31 18:58:40 info: FL: Data is valid
+2019-1-31 18:58:40 info: FL: Switching to screen: ,.anime-cb-screen-sign-up
+2019-1-31 18:58:40 info: FL: Form signup values: ,{"username":"","email":"","password":"","conf_password":""}
+2019-1-31 18:58:40 info: FL: sendSignUpData
+2019-1-31 18:58:40 info: FL: Sending data to signup: ,{"username":"","email":"","password":"","conf_password":""}
+2019-1-31 18:58:40 info: FL: processSignUpResponse
+2019-1-31 18:58:40 info: FL: To validate: ,{"errors":[{"keyword":"errorMessage","dataPath":"/username","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/username","schemaPath":"#/properties/username/minLength","params":{"limit":3},"message":"should NOT be shorter than 3 characters"}]},"message":"Username should be between 3 and 20 characters"},{"keyword":"errorMessage","dataPath":"/password","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/password","schemaPath":"#/properties/password/minLength","params":{"limit":8},"message":"should NOT be shorter than 8 characters"}]},"message":"Password should be at least 8 characters long"},{"keyword":"errorMessage","dataPath":"/email","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/email","schemaPath":"#/properties/email/minLength","params":{"limit":5},"message":"should NOT be shorter than 5 characters"},{"keyword":"format","dataPath":"/email","schemaPath":"#/properties/email/format","params":{"format":"email"},"message":"should match format \"email\""}]},"message":"The entered email should be valid and at least 5 characters long"}],"isSuccessful":false}
+2019-1-31 18:58:40 info: FL: There are validation errors
+2019-1-31 18:58:40 info: FL: renderSignUpErrors
+2019-1-31 18:58:59 info: Server started on port: 8882
+2019-1-31 18:59:05 info: FL: Form signup values: ,{"username":"","email":"","password":"","conf_password":""}
+2019-1-31 18:59:05 info: FL: sendSignUpData
+2019-1-31 18:59:05 info: FL: Sending data to signup: ,{"username":"","email":"","password":"","conf_password":""}
+2019-1-31 18:59:05 info: FL: There are validation errors
+2019-1-31 18:59:05 info: FL: processSignUpResponse
+2019-1-31 18:59:05 info: FL: To validate: ,{"errors":[{"keyword":"errorMessage","dataPath":"/username","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/username","schemaPath":"#/properties/username/minLength","params":{"limit":3},"message":"should NOT be shorter than 3 characters"}]},"message":"Username should be between 3 and 20 characters"},{"keyword":"errorMessage","dataPath":"/password","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/password","schemaPath":"#/properties/password/minLength","params":{"limit":8},"message":"should NOT be shorter than 8 characters"}]},"message":"Password should be at least 8 characters long"},{"keyword":"errorMessage","dataPath":"/email","schemaPath":"#/errorMessage","params":{"errors":[{"keyword":"minLength","dataPath":"/email","schemaPath":"#/properties/email/minLength","params":{"limit":5},"message":"should NOT be shorter than 5 characters"},{"keyword":"format","dataPath":"/email","schemaPath":"#/properties/email/format","params":{"format":"email"},"message":"should match format \"email\""}]},"message":"The entered email should be valid and at least 5 characters long"}],"isSuccessful":false}
+2019-1-31 18:59:05 info: FL: renderSignUpErrors
+2019-1-31 18:59:06 info: FL: Pushing to history screen class: ,.anime-cb-screen-main-menu
+2019-1-31 18:59:06 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:59:07 info: FL: Pushing to history screen class: ,.anime-cb-screen-sign-up
+2019-1-31 18:59:07 info: FL: Switching to screen: ,.anime-cb-screen-sign-up
+2019-1-31 18:59:08 info: FL: Pushing to history screen class: ,.anime-cb-screen-login
+2019-1-31 18:59:08 info: FL: Switching to screen: ,.anime-cb-screen-login
+2019-1-31 18:59:09 info: FL: Form login values: ,{"username":"velioo","password":"12345678"}
+2019-1-31 18:59:09 info: FL: sendLoginData
+2019-1-31 18:59:09 info: FL: Sending data to login: ,{"username":"velioo","password":"12345678"}
+2019-1-31 18:59:09 info: FL: processLoginResponse
+2019-1-31 18:59:09 info: FL: To validate: ,{"errors":[],"isSuccessful":true}
+2019-1-31 18:59:09 info: FL: Data is valid
+2019-1-31 18:59:09 info: FL: showLoginSuccess
+2019-1-31 18:59:09 info: FL: Pushing to history screen class: ,.anime-cb-screen-main-menu
+2019-1-31 18:59:09 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:59:11 error: FRONTEND ERROR-------------------------------
+Error: ,Failed to get base screen class
+Error: Failed to get base screen class
+    at assert (http://localhost:8882/sign-up:52:19)
+    at logInSignUpController.baseController.processChangeScreen (http://localhost:8882/js/baseController.js:234:3)
+    at HTMLButtonElement.<anonymous> (http://localhost:8882/js/baseController.js:57:9)
+    at HTMLButtonElement.dispatch (http://localhost:8882/jquery/dist/jquery.js:5183:27)
+    at HTMLButtonElement.elemData.handle (http://localhost:8882/jquery/dist/jquery.js:4991:28)
+URL = http://localhost:8882/main-menu
+------------------------------------------------------------
+2019-1-31 18:59:11 info: FL: Pushing to history screen class: ,.anime-cb-screen-main-menu
+2019-1-31 18:59:11 info: FL: Switching to screen: ,.anime-cb-screen-main-menu
+2019-1-31 18:59:11 info: FL: Trying to logout...
+2019-1-31 18:59:11 info: FL: sendLogOutRequest
+2019-1-31 18:59:11 info: FL: processLogoutResponse
+2019-1-31 18:59:11 info: FL: To validate: ,{"errors":[],"isSuccessful":true}
+2019-1-31 18:59:11 info: FL: Data is valid
+2019-1-31 18:59:11 info: FL: showLogOutSuccess

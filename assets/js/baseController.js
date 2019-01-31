@@ -1,12 +1,13 @@
 var baseController = function(generalClient) {
 	this.client = generalClient;
+
+	this.isUserLoggedIn = false;
+	this.isStateInited = false;
 	this._initConstants();
 	this._initElements();
 	this._initListeners();
-	this.isStateInited = false;
-	// this._initState();
 
-	console.log('History state: ', history.state);
+	logger.info('History state: ', history.state);
 };
 
 baseController.prototype._initConstants = function() {
@@ -16,14 +17,33 @@ baseController.prototype._initConstants = function() {
 
 	this.CHANGE_SCREEN_BTNS_CLASS = '.anime-cb-button';
 
-	this.SCREEN_CLASS_PREFIX = 'anime-cb-screen-';
+	this.SCREEN_CLASS_PREFIX = '.anime-cb-screen-';
 	this.SCREENS_CLASS = '.anime-cb-screen';
-	this.MAIN_MENU_SCREEN_CLASS = '.anime-cb-screen-main-menu';
 	this.SCREEN_BTN_PREFIX = 'anime-cb-btn-';
+	this.MAIN_MENU_SCREEN_CLASS = '.anime-cb-screen-main-menu';
+	this.LOGIN_SCREEN_CLASS = '.anime-cb-screen-login';
+	this.SIGN_UP_SCREEN_CLASS = '.anime-cb-screen-sign-up';
+	this.SIGN_UP_SUCCESS_SCREEN_CLASS = '.anime-cb-screen-sign-up-success';
 
 	this.USER_MESSAGE_CLASS = '.user-message';
+
 	this.SPINNER_CLASS = '.spinner';
 	this.PRE_SCREEN_SPINNER_CLASS = '.pre-screen-spinner';
+
+	this.INPUT_ERRORS_CLASS = '.errors';
+
+	this.LOGGED_IN_BLACKLISTED_SCREENS = [
+		this.LOGIN_SCREEN_CLASS,
+		this.SIGN_UP_SCREEN_CLASS,
+		this.SIGN_UP_SUCCESS_SCREEN_CLASS,
+	];
+
+	this.LOGGED_OUT_WHITELISTED_SCREENS = [
+		this.MAIN_MENU_SCREEN_CLASS,
+		this.LOGIN_SCREEN_CLASS,
+		this.SIGN_UP_SCREEN_CLASS,
+		this.SIGN_UP_SUCCESS_SCREEN_CLASS,
+	];
 };
 
 baseController.prototype._initElements = function() {
@@ -34,7 +54,6 @@ baseController.prototype._initListeners = function() {
 	var _self = this;
 
 	$(this.CHANGE_SCREEN_BTNS_CLASS).on('click', function(e) {
-		console.log(_self.isUserLoggedIn);
 		_self.processChangeScreen(this);
 	});
 
@@ -42,10 +61,9 @@ baseController.prototype._initListeners = function() {
 	  var stateObj = e.state;
 
 	  if (stateObj === null) {
-	  	_self.switchToMainMenuScreen();
+	  	_self.switchToScreen(_self.MAIN_MENU_SCREEN_CLASS);
 	  } else {
-		  var screenClass = '.' + stateObj.screenClass;
-		  _self.switchToScreen(screenClass);
+		  _self.switchToScreen(stateObj.screenClass);
 		}
 	});
 };
@@ -54,8 +72,7 @@ baseController.prototype._initState = function() {
   var stateObj = history.state;
 
 	if (stateObj !== null) {
-	  var screenClass = '.' + stateObj.screenClass;
-	  this.switchToScreen(screenClass);
+	  this.switchToScreen(stateObj.screenClass);
 	}
 
 	$(this.SUBMAIN_WRAPPER_ID).show();
@@ -64,22 +81,27 @@ baseController.prototype._initState = function() {
 };
 
 baseController.prototype.switchToScreen = function(screenClass) {
+	assert(screenClass.charAt(0) === '.',
+		'screenClass must be a valid css selector: ' + screenClass);
+
+	logger.info('Switching to screen: ', screenClass);
+
   this.hideScreens();
 	this.resetAllScreens();
 
-	if (screenClass === this.LOGIN_SCREEN_CLASS && this.isUserLoggedIn === true) {
-		$(this.MAIN_MENU_SCREEN_CLASS).show();
-	} else if(screenClass === this.SIGN_UP_SCREEN_CLASS && this.isUserLoggedIn === true) {
-		$(this.MAIN_MENU_SCREEN_CLASS).show();
+	if (this.isUserLoggedIn === true) {
+		if (this.LOGGED_IN_BLACKLISTED_SCREENS.includes(screenClass)) {
+			$(this.MAIN_MENU_SCREEN_CLASS).show();
+		} else {
+			$(screenClass).show();
+		}
 	} else {
-		$(screenClass).show();
+		if (this.LOGGED_OUT_WHITELISTED_SCREENS.includes(screenClass)) {
+			$(screenClass).show();
+		} else {
+			$(this.MAIN_MENU_SCREEN_CLASS).show();
+		}
 	}
-};
-
-baseController.prototype.switchToMainMenuScreen = function() {
-	this.hideScreens();
-	this.resetAllScreens();
-	this.showMainMenuScreen();
 };
 
 baseController.prototype.resetAllScreens = function() {
@@ -126,6 +148,18 @@ baseController.prototype.hideAllErrors = function() {
 	this.$allInputs.parent().find('.errors').hide();
 };
 
+baseController.prototype.disableElement = function(el) {
+	$(el).prop('disabled', true);
+};
+
+baseController.prototype.enableElement = function(el) {
+	$(el).prop('disabled', false);
+};
+
+baseController.prototype.enableAllElements = function() {
+	$(this.FORM_CLASS).find('input, button').prop('disabled', false);
+};
+
 baseController.prototype.showAlertError = function(msg) {
 	msg = msg || 'There was a problem while processing your request. Please try again later.';
 	window.alert(msg);
@@ -149,7 +183,6 @@ baseController.prototype.showAlertError = function(msg) {
 
 baseController.prototype.extractBaseScreenClass = function(btn) {
 	var btnScreenClass = null;
-
 	var classes = btn.classList;
 
   for (var i = 0; i < classes.length; i++) {
@@ -164,7 +197,6 @@ baseController.prototype.extractBaseScreenClass = function(btn) {
   }
 
   var splittedClass = btnScreenClass.split(this.SCREEN_BTN_PREFIX);
-
   assert(splittedClass.length > 1, 'Screen btn class name is invalid: ' + splittedClass[0]);
 
   var baseScreenClass = splittedClass[1];
@@ -183,11 +215,11 @@ baseController.prototype.createUrlFromScreenClass = function(screenClass) {
 };
 
 /*
-1) If input is a btn with a class 'anime-cb-btn-main-menu' then 'main-menu' will be
+1) If input is a button with a class 'anime-cb-btn-main-menu' then 'main-menu' will be
 extracted as baseClass and added to SCREEN_CLASS_PREFIX to create the screenClass.
 Then url will be assigned to baseClass.
 
-2) If input is a string 'anime-cb-screen-sign-up' then screenClass will be
+2) If input is a string '.anime-cb-screen-sign-up' then screenClass will be
 assigned to it and 'sign-up' will be assgiend to the url of the page.
 */
 baseController.prototype.processChangeScreen = function(input) {
@@ -203,17 +235,17 @@ baseController.prototype.processChangeScreen = function(input) {
 
 		screenClass = this.SCREEN_CLASS_PREFIX + baseScreenClass;
 	} else if (typeof input === 'string') {
-		// Assuming input is something like '.anime-cb-btn-login'
-		screenClass = input.substring(1);
+		screenClass = input;
 	} else {
 		assert(0, 'Cannot process changeScreen event, bad input: ', input);
 	}
 
-	logger.info('Screen class: ', screenClass);
-	console.log('Screen class: ', screenClass);
+	logger.info('Pushing to history screen class: ', screenClass);
 
 	var url = baseScreenClass !== null ? baseScreenClass : this.createUrlFromScreenClass(screenClass);
 	var stateObj = { screenClass: screenClass };
 
 	history.pushState(stateObj, null, url);
+
+	this.switchToScreen(screenClass);
 };

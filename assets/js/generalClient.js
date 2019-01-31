@@ -34,81 +34,78 @@ generalClient.prototype.clientConnectToServer = function() {
 
 generalClient.prototype.sendSignUpData = function(data) {
 	var _self = this;
-	console.log('sendSignUpData');
-	console.log('Sending data to signup: ', data);
+	logger.info('sendSignUpData');
+	logger.info('Sending data to signup: ', JSON.stringify(data));
 
   $.post('/sign_up', { data: data }, function (data, status) {
     _self.loginSignUpController.processSignUpResponse(data);
-  }).fail(_self.failHandler);
+  }).fail(_self.failHandler.bind(_self));
 };
 
 generalClient.prototype.sendLoginData = function(data) {
 	var _self = this;
-	console.log('sendLoginData');
-	console.log('Sending data to login: ', data);
+	logger.info('sendLoginData');
+	logger.info('Sending data to login: ', JSON.stringify(data));
 
   $.post('/log_in', { data: data }, function (data, status) {
     _self.loginSignUpController.processLoginResponse(data);
-  }).fail(_self.failHandler);
+  }).fail(_self.failHandler.bind(_self));
 };
 
 generalClient.prototype.sendLogOutRequest = function(data) {
 	var _self = this;
-	console.log('sendLogOutRequest');
+	logger.info('sendLogOutRequest');
 
   $.post('/log_out', {}, function (data, status) {
     _self.loginSignUpController.processLogoutResponse(data);
-  }).fail(_self.failHandler);
+  }).fail(_self.failHandler.bind(_self));
 };
 
 generalClient.prototype.checkIfUserIsLoggedIn = function() {
 	var _self = this;
-	console.log('checkIfUserIsLoggedIn');
+	logger.info('checkIfUserIsLoggedIn');
 
   $.post('/is_user_logged_in', {}, function (data, status) {
     _self.loginSignUpController.processIsUserLoggedInResponse(data);
-  }).fail(_self.failHandler);
+  }).fail(_self.failHandler.bind(_self));
 };
 
 generalClient.prototype.processServerSocketError = function(data) {
-	console.log('ServerError err: ', data);
-	window.alert(`There was a problem while processing your request. Please try again later.`);
+	logger.info('ServerError err: ', JSON.stringify(data));
+	window.alert('There was a problem while processing your request. Please try again later.');
 };
 
 generalClient.prototype.failHandler = function (xhr, status, errorThrown) {
-  if (status === `timeout`) {
-    logger.info(`Request timed out`);
+  if (status === 'timeout') {
+    logger.info('Request timed out');
 
-    window.alert(`Request timed out`);
+    window.alert('Request timed out');
   } else {
     if (xhr.readyState === 0) {
-      logger.info(`Internet connection is off or server is not responding`);
+      logger.info('Internet connection is off or server is not responding');
 
-      window.alert(`Internet connection is off or server is not responding`);
+      window.alert('Internet connection is off or server is not responding');
     } else if (xhr.readyState === 1) {
     } else if (xhr.readyState === 2) {
     } else if (xhr.readyState === 3) {
     } else {
       if (xhr.status === 200) {
-        logger.info(`Error parsing JSON data`);
+        logger.info('Error parsing JSON data');
       } else if (xhr.status === 404) {
-        logger.info(`The resource at the requested location
-          could not be found`);
+        logger.info('The resource at the requested location could not be found');
       } else if (xhr.status === 403) {
-        if (xhr.responseText === 'login') {
-          return window.location.href = redirectUrl;
-        }
-        logger.info(`You don\`t have permission to access this data`);
+        logger.info('You don\'t have permission to access this data');
       } else if (xhr.status === 500) {
-        logger.info(`Internal sever error`);
+        logger.info('Internal sever error');
       }
     }
-    window.alert(`There was a problem while processing your request. Please try again later.`);
+    window.alert('There was a problem while processing your request. Please try again later.');
   }
 
-  logger.info(`Response Text: ` +
-    xhr.responseText + `\n Ready State: ` +
-    xhr.readyState + `\n Status Code: ` + xhr.status);
+  this.loginSignUpController.enableAllElements();
+  this.loginSignUpController.hideAllSpinner();
 
-  $(`.spinner`).hide();
+  logger.info('Response Text: ' +
+    xhr.responseText + '\n Ready State: ' +
+    xhr.readyState + '\n Status Code: ' + xhr.status);
 };
