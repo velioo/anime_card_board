@@ -47,7 +47,7 @@ var self = module.exports = {
     const userDbData = Object.keys(userData).map((fieldName) => userData[ fieldName ]);
     const userDbFields = Object.keys(userData).join(', ');
 
-    await pg.pool.query(`BEGIN`);
+    await pg.pool.query('BEGIN');
 
     try {
       const queryStatus = await pg.pool.query(`
@@ -73,10 +73,10 @@ var self = module.exports = {
 
       logger.info('Confirmation email sent');
 
-      await pg.pool.query(`COMMIT`);
+      await pg.pool.query('COMMIT');
     } catch (err) {
       ctx.errors.push({ dataPath: '/username', message: 'There was a problem creating your account. Please try again later.' });
-      await pg.pool.query(`ROLLBACK`);
+      await pg.pool.query('ROLLBACK');
 
       logger.info('Failed to sign up: %o', err);
     }
@@ -99,26 +99,32 @@ var self = module.exports = {
       return self.sendResponse(ctx, next);
     }
 
-    const userData = await pg.pool.query(`
+    try {
+      const userData = await pg.pool.query(`
 
-      SELECT username, password, salt, id, is_confirmed
-      FROM users
-      WHERE
-        username = $1
+        SELECT username, password, salt, id, is_confirmed
+        FROM users
+        WHERE
+          username = $1
 
-    `, [ ctx.request.body.data.username ]);
+      `, [ ctx.request.body.data.username ]);
 
-    assert(userData.rowCount <= 1);
+      assert(userData.rowCount <= 1);
 
-    if (userData.rowCount === 1 && isLoginSuccessfull(ctx.request.body.data.password, userData.rows[0])) {
-      if (isAccountConfirmed(userData.rows[0])) {
-        ctx.session.userData = { userId: userData.rows[0].id, username: userData.rows[0].username };
-        ctx.session.isUserLoggedIn = true;
+      if (userData.rowCount === 1 && isLoginSuccessfull(ctx.request.body.data.password, userData.rows[0])) {
+        if (isAccountConfirmed(userData.rows[0])) {
+          ctx.session.userData = { userId: userData.rows[0].id, username: userData.rows[0].username };
+          ctx.session.isUserLoggedIn = true;
+        } else {
+          ctx.errors.push({ dataPath: '/username', message: 'You must confirm your email before logging in.' });
+        }
       } else {
-        ctx.errors.push({ dataPath: '/username', message: 'You must confirm your email before logging in.' });
+        ctx.errors.push({ dataPath: '/username', message: 'Wrong username or password.' });
       }
-    } else {
-      ctx.errors.push({ dataPath: '/username', message: 'Wrong username or password.' });
+    } catch(err) {
+      ctx.errors.push({ dataPath: '/username', message: 'There was a problem while logging in. Please try again later.' });
+
+      logger.info('Failed to log in: %o', err);
     }
 
     return self.sendResponse(ctx, next);

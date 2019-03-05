@@ -1,13 +1,20 @@
+var _isBaseControllerStateInited = false;
+var _isBaseControllerListenersInited = false;
+var _lastHistoryState = history.state;
+
 var baseController = function(generalClient) {
 	this.client = generalClient;
 
-	this.isUserLoggedIn = false;
-	this.isStateInited = false;
+	this._isUserLoggedIn = false;
 	this._initConstants();
 	this._initElements();
-	this._initListeners();
 
-	logger.info('History state: ', history.state);
+	if (!_isBaseControllerListenersInited) {
+		this._initListeners();
+		_isBaseControllerListenersInited = true;
+	}
+
+	logger.info('History state: ', JSON.stringify(history.state));
 };
 
 baseController.prototype._initConstants = function() {
@@ -24,6 +31,10 @@ baseController.prototype._initConstants = function() {
 	this.LOGIN_SCREEN_CLASS = '.anime-cb-screen-login';
 	this.SIGN_UP_SCREEN_CLASS = '.anime-cb-screen-sign-up';
 	this.SIGN_UP_SUCCESS_SCREEN_CLASS = '.anime-cb-screen-sign-up-success';
+	this.CREATE_ROOM_SCREEN_CLASS = '.anime-cb-screen-create-room';
+	this.BROWSE_ROOMS_SCREEN_CLASS = '.anime-cb-screen-browse-rooms';
+	this.LOBBY_SCREEN_CLASS = '.anime-cb-screen-lobby';
+	this.GAME_SCREEN_CLASS = '.anime-cb-screen-game';
 
 	this.USER_MESSAGE_CLASS = '.user-message';
 
@@ -44,6 +55,10 @@ baseController.prototype._initConstants = function() {
 		this.SIGN_UP_SCREEN_CLASS,
 		this.SIGN_UP_SUCCESS_SCREEN_CLASS,
 	];
+
+	this.IGNORE_SCREENS = [
+		this.LOBBY_SCREEN_CLASS,
+	];
 };
 
 baseController.prototype._initElements = function() {
@@ -60,7 +75,11 @@ baseController.prototype._initListeners = function() {
 	window.addEventListener('popstate', function(e) {
 	  var stateObj = e.state;
 
-	  if (stateObj === null) {
+	  if (history.state) {
+			console.log('History popstate: ', stateObj.screenClass);
+		}
+
+	  if ((stateObj === null) || (_self.IGNORE_SCREENS.includes(stateObj.screenClass))) {
 	  	_self.switchToScreen(_self.MAIN_MENU_SCREEN_CLASS);
 	  } else {
 		  _self.switchToScreen(stateObj.screenClass);
@@ -72,12 +91,14 @@ baseController.prototype._initState = function() {
   var stateObj = history.state;
 
 	if (stateObj !== null) {
-	  this.switchToScreen(stateObj.screenClass);
+		if (!this.IGNORE_SCREENS.includes(stateObj.screenClass)) {
+	  	this.switchToScreen(stateObj.screenClass);
+		}
 	}
 
 	$(this.SUBMAIN_WRAPPER_ID).show();
 
-	this.isStateInited = true;
+	_isBaseControllerStateInited = true;
 };
 
 baseController.prototype.switchToScreen = function(screenClass) {
@@ -86,10 +107,14 @@ baseController.prototype.switchToScreen = function(screenClass) {
 
 	logger.info('Switching to screen: ', screenClass);
 
+	this.preSwitchScreenHook(screenClass);
+
   this.hideScreens();
 	this.resetAllScreens();
 
-	if (this.isUserLoggedIn === true) {
+	console.log('switchToScreen: ', screenClass);
+
+	if (this.client.logInSignUpController.isUserLoggedIn()) {
 		if (this.LOGGED_IN_BLACKLISTED_SCREENS.includes(screenClass)) {
 			$(this.MAIN_MENU_SCREEN_CLASS).show();
 		} else {
@@ -102,6 +127,49 @@ baseController.prototype.switchToScreen = function(screenClass) {
 			$(this.MAIN_MENU_SCREEN_CLASS).show();
 		}
 	}
+
+	this.postSwitchScreenHook(screenClass);
+};
+
+baseController.prototype.preSwitchScreenHook = function(screenClass) {
+	logger.info('preSwitchScreenHook');
+	console.log('preSwitchScreenHook');
+	console.log(_lastHistoryState);
+
+	if(_lastHistoryState && history.state && _lastHistoryState.screenClass !== history.state.screenClass
+		&& _lastHistoryState.screenClass === this.LOBBY_SCREEN_CLASS) {
+		console.log('DESTROY ROOM');
+		this.client.sendDestroyRoomRequest();
+		// window.removeEventListener("beforeunload ", this.beforeUnload, true);
+	}
+};
+
+baseController.prototype.postSwitchScreenHook = function(screenClass) {
+	logger.info('postSwitchScreenHook');
+	console.log('postSwitchScreenHook');
+
+	// if(history.state.screenClass === this.LOBBY_SCREEN_CLASS) {
+	// 	console.log('ADDING LISTENER');
+	// 	window.addEventListener("beforeunload", this.beforeUnload, true);
+	// }
+};
+
+// baseController.prototype.beforeUnload = function(event) {
+//   event.preventDefault();
+//   event.returnValue = 'Data will be lost if you leave the page, are you sure?';
+// };
+
+baseController.prototype.setIsUserLoggedIn = function(flag) {
+	logger.info('setUserLoggedIn');
+
+	assert(typeof flag === 'boolean');
+
+	this._isUserLoggedIn = flag;
+};
+
+baseController.prototype.isUserLoggedIn = function() {
+	logger.info('isUserLoggedIn');
+	return this._isUserLoggedIn === true;
 };
 
 baseController.prototype.resetAllScreens = function() {
@@ -172,8 +240,8 @@ baseController.prototype.showAlertError = function(msg) {
 // 	var classes = el.classList;
 
 //   for (var i = 0; i < classes.length; i++) {
-//   	if (classes[i].startsWith(this.SCREEN_CLASS_PREFIX)) {
-// 			screenClass = classes[i];
+//   	if (classes[i].startsWith(this.SCREEN_CLASS_PREFIX.substr(1))) {
+// 			screenClass = '.' + classes[i];
 // 			break;
 // 		}
 //   }
@@ -245,7 +313,13 @@ baseController.prototype.processChangeScreen = function(input) {
 	var url = baseScreenClass !== null ? baseScreenClass : this.createUrlFromScreenClass(screenClass);
 	var stateObj = { screenClass: screenClass };
 
+	if (history.state) {
+		console.log('History state: ', history.state.screenClass);
+	}
+
 	history.pushState(stateObj, null, url);
+
+	_lastHistoryState = history.state;
 
 	this.switchToScreen(screenClass);
 };

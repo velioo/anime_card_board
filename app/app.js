@@ -15,6 +15,7 @@ const globalErrHandler = require('./middlewares/errorHandler');
 const hbaHelpers = require('./helpers/handlebars/helpers');
 const hbaPartials = require('./helpers/handlebars/partials');
 const socketRouter = require('./socket/socketRouter.js');
+const authenticate = require('./middlewares/authenticate');
 const { routes, allowedMethods } = require('./routes');
 const dirs = {};
 
@@ -79,6 +80,7 @@ app.use(new Views(path.resolve(__dirname, 'render'), {
 
 app.use(routes);
 app.use(allowedMethods);
+app.use(authenticate);
 
 app.use( async (ctx) => {
   if (ctx.status !== 404) {

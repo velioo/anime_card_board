@@ -5,6 +5,8 @@ const {
   MIN_USER_NAME_LEN,
   MAX_USER_NAME_LEN,
   MIN_USER_PASSWORD_LEN,
+  MIN_ROOM_NAME_LEN,
+  MAX_ROOM_NAME_LEN,
 } = require('../constants/constants');
 
 const _SIGN_UP = {
@@ -47,7 +49,24 @@ const _LOGIN = {
   }
 };
 
+const _CREATE_ROOM = {
+  "type": "object",
+  "properties": {
+    "room_name": { "type": "string", "minLength": MIN_ROOM_NAME_LEN, "maxLength": MAX_ROOM_NAME_LEN },
+  },
+  "required": [ "room_name" ],
+  "errorMessage": {
+    "properties" : {
+      "room_name": `Room name should be between ${MIN_USER_NAME_LEN} and ${MAX_USER_NAME_LEN} characters`,
+    },
+    "required": {
+      "room_name": 'You must enter a room name',
+    },
+  }
+};
+
 module.exports = {
   SIGN_UP: _SIGN_UP,
   LOGIN: _LOGIN,
+  CREATE_ROOM: _CREATE_ROOM,
 };

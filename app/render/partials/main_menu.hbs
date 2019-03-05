@@ -8,19 +8,19 @@
 		{{/if}}
 		<div class="btn-group-vertical anime-cb-btn-group">
 		{{#if session.isUserLoggedIn}}
-			<button type="button" class="btn btn-primary anime-cb-button logged-in">Create Room</button>
-		    <button type="button" class="btn btn-primary anime-cb-button logged-in">Browse Rooms</button>
-		    <button type="button" class="btn btn-primary anime-cb-button logged-in">Settings</button>
+			<button type="button" class="btn btn-primary anime-cb-button logged-in anime-cb-btn-create-room">Create Room</button>
+		    <button type="button" class="btn btn-primary anime-cb-button logged-in anime-cb-btn-browse-rooms">Browse Rooms</button>
+		    <!-- <button type="button" class="btn btn-primary anime-cb-button logged-in">Settings</button> -->
 		    <img class="pre-screen-spinner" src="/imgs/spinner.gif">
-		    <button id="anime-cb-logout-btn" type="button" class="btn btn-primary anime-cb-button logged-in anime-cb-btn-main-menu">Log Out</button>
+		    <button id="anime-cb-logout-btn" type="button" class="btn btn-primary anime-cb-button-stateless logged-in">Log Out</button>
 		    <button type="button" class="btn btn-primary anime-cb-button logged-out anime-cb-btn-sign-up" style="display: none;">Sign Up</button>
 		    <button type="button" class="btn btn-primary anime-cb-button logged-out anime-cb-btn-login" style="display: none;">Login</button>
 		{{else}}
-			<button type="button" class="btn btn-primary anime-cb-button logged-in" style="display: none;">Create Room</button>
-		    <button type="button" class="btn btn-primary anime-cb-button logged-in" style="display: none;">Browse Rooms</button>
-		    <button type="button" class="btn btn-primary anime-cb-button logged-in" style="display: none;">Settings</button>
+			<button type="button" class="btn btn-primary anime-cb-button logged-in anime-cb-btn-create-room" style="display: none;">Create Room</button>
+		    <button type="button" class="btn btn-primary anime-cb-button logged-in anime-cb-btn-browse-rooms" style="display: none;">Browse Rooms</button>
+		    <!-- <button type="button" class="btn btn-primary anime-cb-button logged-in" style="display: none;">Settings</button> -->
 		    <img class="pre-screen-spinner" src="/imgs/spinner.gif">
-		   	<button id="anime-cb-logout-btn" type="button" class="btn btn-primary anime-cb-button logged-in anime-cb-btn-main-menu" style="display: none;">Log Out</button>
+		   	<button id="anime-cb-logout-btn" type="button" class="btn btn-primary anime-cb-button-stateless logged-in" style="display: none;">Log Out</button>
 		    <button type="button" class="btn btn-primary anime-cb-button logged-out anime-cb-btn-sign-up">Sign Up</button>
 		    <button type="button" class="btn btn-primary anime-cb-button logged-out anime-cb-btn-login">Login</button>
 		{{/if}}

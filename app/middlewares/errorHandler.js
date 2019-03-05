@@ -10,25 +10,25 @@ module.exports = async (ctx, next) => {
       ctx.set('WWW-Authenticate', 'Basic');
       ctx.body = 'You have no access here';
     } else if (err.status === 403) {
-/*       if (err.userNotLoggedIn) {
-        if (err.ajax) {
-          ctx.body = err.ajax.message;
-        } else {
-          ctx.redirect('/login');
-        }
-      } else if (err.employeeNotLoggedIn) {
-        if (err.ajax) {
-          ctx.body = err.ajax.message;
-        } else {
-          ctx.redirect('/employee_login');
-        }
-      } */
+       if (err.userNotLoggedIn) {
+          assert(err._message, 'Error needs a message');
+          assert(err._code, 'Error needs a code');
+
+          ctx.body = {
+            message: err._message,
+            code: err._code,
+          }
+      }
     } else if (err.status === 200) {
-/*       if (err.userLoggedIn) {
-        ctx.redirect('/');
-      } else if (err.employeeLoggedIn) {
-        ctx.redirect('/employee/dashboard');
-      } */
+      if (err.userLoggedIn) {
+        assert(err._message, 'Error needs a message');
+        assert(err._code, 'Error needs a code');
+
+        ctx.body = {
+          message: err._message,
+          code: err._code,
+        }
+      }
     } else {
       logger.error(`Error while executing code: ${err.stack}`);
     }

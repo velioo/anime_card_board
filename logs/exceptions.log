@@ -2772,3 +2772,163 @@ Error: post `/is_user_logged_in`: `middleware` must be a function, not `undefine
     at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
     at Module.load (internal/modules/cjs/loader.js:599:32)
     at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+2019-2-3 16:36:16 error: uncaughtException: createRoom is not defined
+ReferenceError: createRoom is not defined
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\routes\index.js:32:39)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\app.js:18:36)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+2019-2-3 16:36:25 error: uncaughtException: Identifier 'logIn' has already been declared
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\routes\index.js:13
+	logIn,
+	^
+
+SyntaxError: Identifier 'logIn' has already been declared
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-2-3 16:36:26 error: uncaughtException: Identifier 'logIn' has already been declared
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\routes\index.js:13
+	logIn,
+	^
+
+SyntaxError: Identifier 'logIn' has already been declared
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-2-3 16:36:31 error: uncaughtException: Cannot find module '../controllers/roomController'
+Error: Cannot find module '../controllers/roomController'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\routes\index.js:14:5)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-2-3 16:36:32 error: uncaughtException: Cannot find module '../controllers/roomController'
+Error: Cannot find module '../controllers/roomController'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:581:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:507:25)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\routes\index.js:14:5)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+2019-2-3 16:36:42 error: uncaughtException: post `/create_room`: `middleware` must be a function, not `undefined`
+Error: post `/create_room`: `middleware` must be a function, not `undefined`
+    at Layer.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-router\lib\layer.js:39:13)
+    at Array.forEach (<anonymous>)
+    at new Layer (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-router\lib\layer.js:36:14)
+    at Router.register (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-router\lib\router.js:553:15)
+    at Router.(anonymous function) [as post] (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\node_modules\koa-router\lib\router.js:202:10)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\routes\index.js:35:3)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+2019-2-3 17:22:53 error: uncaughtException: Unexpected token :
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\roomController.js:69
+	 sendResponse: async (ctx, next) => {
+	             ^
+
+SyntaxError: Unexpected token :
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-2-3 17:22:57 error: uncaughtException: Unexpected token :
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\roomController.js:69
+	 sendResponse: async (ctx, next) => {
+	             ^
+
+SyntaxError: Unexpected token :
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-2-3 19:07:41 error: uncaughtException: Unexpected token :
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\roomController.js:98
+	 sendResponse: async (ctx, next) => {
+	             ^
+
+SyntaxError: Unexpected token :
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-2-3 19:08:44 error: uncaughtException: Unexpected token :
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\roomController.js:99
+	 sendResponse: async (ctx, next) => {
+	             ^
+
+SyntaxError: Unexpected token :
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
+2019-2-3 19:08:59 error: uncaughtException: Unexpected token :
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\app\controllers\roomController.js:97
+	 sendResponse: async (ctx, next) => {
+	             ^
+
+SyntaxError: Unexpected token :
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)

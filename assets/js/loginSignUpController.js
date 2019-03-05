@@ -123,7 +123,7 @@ logInSignUpController.prototype.processLoginResponse = function(data) {
 
 	if (data.isSuccessful) {
 		logger.info('Data is valid');
-		this.isUserLoggedIn = true;
+		this.setIsUserLoggedIn(true);
 		this.showLoginSuccess(data);
 	} else {
 		assert(data.errors.length > 0);
@@ -143,7 +143,7 @@ logInSignUpController.prototype.processLogoutResponse = function(data) {
 
 	if (data.isSuccessful) {
 		logger.info('Data is valid');
-		this.isUserLoggedIn = false;
+		this.setIsUserLoggedIn(false);
 		this.showLogOutSuccess(data);
 	} else {
 		assert(data.errors.length > 0);
@@ -162,15 +162,24 @@ logInSignUpController.prototype.processIsUserLoggedInResponse = function(data) {
 	if (data.isSuccessful) {
 		logger.info('Data is valid');
 		if (data.isUserLoggedIn === true) {
-			this.isUserLoggedIn = true;
+			this.setIsUserLoggedIn(true);
 		}
 
-		if (this.isStateInited === false) {
+		if (_isBaseControllerStateInited === false) {
 			this._initState();
 		}
 	} else {
 		assert(0, 'There was a problem with isUserLoggedIn request');
 	}
+};
+
+logInSignUpController.prototype.processSessionExpired = function(data) {
+	logger.info('processSessionExpired');
+	var _self = this;
+
+	this.setIsUserLoggedIn(false);
+	this.showLogOutSuccess();
+	this.processChangeScreen(this.MAIN_MENU_SCREEN_CLASS);
 };
 
 logInSignUpController.prototype.renderSignUpErrors = function(data) {

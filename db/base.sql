@@ -1,7 +1,3 @@
-CREATE DATABASE anime_cb;
-CREATE USER velioo with encrypted password 'Parola42';
-GRANT ALL PRIVILEGES ON DATABASE anime_cb TO velioo;
-
 CREATE TABLE "users" (
   "id" serial NOT NULL,
   "username" character varying(255) NOT NULL,
@@ -31,3 +27,15 @@ CREATE TABLE "temp_codes" (
   "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY ("hash")
 );
+
+CREATE TABLE "rooms" (
+  "id" serial NOT NULL,
+  "name" character varying(20) NOT NULL UNIQUE,
+  "player1_id" int NOT NULL REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE UNIQUE,
+  "player2_id" int REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE UNIQUE,
+  "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "updated_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id)
+);
+
+CREATE TRIGGER update_room_timestamp BEFORE UPDATE ON rooms FOR EACH ROW EXECUTE PROCEDURE update_timestamp();

@@ -12,26 +12,40 @@ const self = module.exports = {
 
 	  console.log('socket id: ' + socket.id);
 
-	  // socket.on('signUp', async (ctx) => {
-	  // 	try {
-		 //  	console.log('Client data: ', ctx.data);
+	  socket.on('disconnect', async (ctx) => {
+	  	try {
+		  	console.log('Client disconnected');
 
-		 //  	await generalServer.signUp(ctx, next);
+		  	await gameServer.processDisconnect(ctx, next);
 
-		 //  	let isSuccessful = ctx.errors.length ? false : true;
+		  	let isSuccessful = ctx.errors.length ? false : true;
 
-		 //  	console.log('Errors: ', ctx.errors);
+		  	console.log('Errors: ', ctx.errors);
+	  	} catch(err) {
+	  		socket.emit('serverError', err);
+	  		logger.error('Error: %o', err);
+	  	}
+	  });
 
-		 //  	socket.emit('signUp', {
-		 //  		errors: ctx.errors,
-		 //  		userMessage: ctx.userMessage,
-		 //  		isSuccessful: isSuccessful
-		 //  	});
-	  // 	} catch(err) {
-	  // 		socket.emit('serverError', err);
-	  // 		logger.error("Error: %o", err);
-	  // 	}
-	  // });
+	  socket.on('destroyRoom', async (ctx) => {
+	  	try {
+		  	console.log('Client sent destroy room event');
+
+		  	await gameServer.destroyRoom(ctx, next);
+
+		  	let isSuccessful = ctx.errors.length ? false : true;
+
+		  	console.log('Errors: ', ctx.errors);
+
+		  	socket.emit('destroyRoom', {
+		  		errors: ctx.errors,
+		  		isSuccessful: isSuccessful
+		  	});
+	  	} catch(err) {
+	  		socket.emit('serverError', err);
+	  		logger.error('Error: %o', err);
+	  	}
+	  });
 
 	  // socket.on('login', async (ctx) => {
 	  // 	try {

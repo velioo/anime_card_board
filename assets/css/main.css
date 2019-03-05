@@ -52,6 +52,15 @@ body {
   border: none;
 }
 
+.anime-cb-button-stateless {
+  font-size: 20px;
+  margin-bottom: 10px;
+  padding: 20px;
+  background-color: #D2691E;
+  outline-style: none;
+  border: none;
+}
+
 .anime-cb-form {
   width: 20%;
   max-width: 20%;
@@ -59,6 +68,9 @@ body {
 
 .anime-cb-screen_footer {
   margin-top: 5%;
+}
+
+.anime-cb-box {
 }
 
 .spinner {
@@ -80,6 +92,11 @@ body {
 }
 
 #anime-cb-form-login .spinner {
+  margin-left: -90px;
+  margin-top: -30px;
+}
+
+#anime-cb-form-create-room .spinner {
   margin-left: -90px;
   margin-top: -30px;
 }
