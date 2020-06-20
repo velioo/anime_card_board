@@ -27,6 +27,11 @@ module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
+      if (ctx.session.userData === undefined)
+      {
+          return;
+      }
+
       const queryStatus = await pg.pool.query(`
 
         DELETE FROM rooms

@@ -39,3 +39,7 @@ CREATE TABLE "rooms" (
 );
 
 CREATE TRIGGER update_room_timestamp BEFORE UPDATE ON rooms FOR EACH ROW EXECUTE PROCEDURE update_timestamp();
+GRANT ALL ON users TO velioo;
+GRANT ALL ON temp_codes TO velioo;
+GRANT ALL ON rooms TO velioo;
+GRANT ALL ON users_id_seq;
