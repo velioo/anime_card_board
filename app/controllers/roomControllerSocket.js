@@ -27,7 +27,7 @@ module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
-      if (ctx.session.userData === undefined)
+      if (ctx.session.userData === undefined || ctx.session.userData === null)
       {
           return;
       }

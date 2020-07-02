@@ -101,6 +101,23 @@ body {
   margin-top: -30px;
 }
 
+.browse-rooms-table {
+  width: 40%;
+  text-align: center;
+  background: rgb(105, 105, 105, 0.5);
+}
+
+.browse-rooms-table, .browse-rooms-table th, .browse-rooms-table tr, .browse-rooms-table td {
+  border-bottom: 1px solid white;
+  text-align: center;
+  padding: 5px;
+  font-size: 14px;
+}
+
+.browse-rooms-table th {
+  font-weight: 800;
+}
+
 .pre-screen-spinner {
   display: none;
   max-width: 100px;

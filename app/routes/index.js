@@ -12,6 +12,7 @@ const {
 const {
 	createRoom,
 	destroyRoom,
+	browseRooms,
 } = require('../controllers/roomController');
 
 const Router = require('koa-router');
@@ -34,6 +35,7 @@ router
 	.post('/log_out', new KoaBody(), logOut)
 	.post('/is_user_logged_in', isUserLoggedIn)
 	.post('/create_room', new KoaBody(), createRoom)
+	.post('/browse-rooms', new KoaBody(), browseRooms)
 	// .post('/destroy_room', new KoaBody(), destroyRoom)
 	.get('/confirm_account/:code', confirmAccount)
 	.post('/frontend_logger', new KoaBody(), frontendLogger);

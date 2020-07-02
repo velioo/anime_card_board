@@ -88,6 +88,15 @@ generalClient.prototype.sendDestroyRoomRequest = function(data) {
 	this.socket.emit('destroyRoom');
 };
 
+generalClient.prototype.getBrowseRoomsData = function() {
+  var _self = this;
+  logger.info('getBrowseRoomsData');
+
+  $.post('/browse-rooms', {}, function (data, status) {
+    _self.roomController.processBrowseRoomsResponse(data);
+  }).fail(_self.failHandler.bind(_self));
+};
+
 generalClient.prototype.processServerSocketError = function(data) {
 	logger.info('ServerError err: ', JSON.stringify(data));
 	window.alert('There was a problem while processing your request. Please try again later.');

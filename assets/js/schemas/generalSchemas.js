@@ -84,3 +84,42 @@ var destroyRoomResponse = {
 	},
 	"required": [ "errors", "isSuccessful" ],
 };
+
+var browseRoomsResponse = {
+	"type": "object",
+	"properties": {
+		"errors" : {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"dataPath": { "type": "string", "pattern": "/.+"  },
+					"message": { "type": "string" },
+				},
+				"required": [ "dataPath", "message" ]
+			}
+		},
+		"isSuccessful": { "type": "boolean" },
+		"isUserLoggedIn": { "type": "boolean" },
+		"result": {
+			"type": "object",
+			"properties": {
+				"roomsData": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"id": { "type": "integer" },
+							"name": { "type": "string" },
+							"player1": { "type": "string" },
+							"player2": { "type": ["string", "null"] }
+						},
+						"required": [ "id", "name", "player1", "player2" ],
+					},
+				},
+			},
+			"required": [ "roomsData" ],
+		},
+	},
+	"required": [ "errors", "isSuccessful", "isUserLoggedIn", "result" ],
+};

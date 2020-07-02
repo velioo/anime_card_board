@@ -79,6 +79,31 @@ var self = module.exports = {
 
 	  return self.sendResponse(ctx, next);
 	},
+  browseRooms: async (ctx, next) => {
+    await next();
+
+    console.log('browseRooms roomController');
+    ctx.errors = [];
+
+    try {
+      let queryStatus = await pg.pool.query(`
+
+        SELECT * FROM rooms
+
+      `);
+
+      console.log('browseRooms status: ', queryStatus.rows.length);
+      ctx.result = {
+        roomsData: queryStatus.rows,
+      };
+    } catch(err) {
+      ctx.errors.push({ dataPath: '/browse-rooms-table', message: 'There was a problem getting rooms data. Please try again later.' });
+
+      logger.info('Failed to get rooms data: %o', err);
+    }
+
+    return self.sendResponse(ctx, next);
+  },
 /*	destroyRoom: async (ctx, next) => {
 		// await next();
 

@@ -2932,3 +2932,43 @@ SyntaxError: Unexpected token :
     at Function.Module._load (internal/modules/cjs/loader.js:530:3)
     at Module.require (internal/modules/cjs/loader.js:637:17)
     at require (internal/modules/cjs/helpers.js:22:18)
+2020-7-2 02:24:52 error: uncaughtException: post `/browse-rooms`: `middleware` must be a function, not `undefined`
+Error: post `/browse-rooms`: `middleware` must be a function, not `undefined`
+    at Layer.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\anime_card_board\node_modules\koa-router\lib\layer.js:39:13)
+    at Array.forEach (<anonymous>)
+    at new Layer (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\anime_card_board\node_modules\koa-router\lib\layer.js:36:14)
+    at Router.register (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\anime_card_board\node_modules\koa-router\lib\router.js:553:15)
+    at Router.(anonymous function) [as post] (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\anime_card_board\node_modules\koa-router\lib\router.js:202:10)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\anime_card_board\app\routes\index.js:38:3)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+2020-7-2 02:27:01 error: uncaughtException: post `/browse-rooms`: `middleware` must be a function, not `undefined`
+Error: post `/browse-rooms`: `middleware` must be a function, not `undefined`
+    at Layer.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\anime_card_board\node_modules\koa-router\lib\layer.js:39:13)
+    at Array.forEach (<anonymous>)
+    at new Layer (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\anime_card_board\node_modules\koa-router\lib\layer.js:36:14)
+    at Router.register (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\anime_card_board\node_modules\koa-router\lib\router.js:553:15)
+    at Router.(anonymous function) [as post] (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\anime_card_board\node_modules\koa-router\lib\router.js:202:10)
+    at Object.<anonymous> (E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\anime_card_board\app\routes\index.js:38:3)
+    at Module._compile (internal/modules/cjs/loader.js:689:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+2020-7-2 02:44:57 error: uncaughtException: Invalid shorthand property initializer
+E:\Darth Velioo\Personal Projects\Anime Card Board Game\anime_card_board\anime_card_board\app\controllers\roomController.js:97
+        roomsData = queryStatus.rows,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+SyntaxError: Invalid shorthand property initializer
+    at new Script (vm.js:79:7)
+    at createScript (vm.js:251:10)
+    at Object.runInThisContext (vm.js:303:10)
+    at Module._compile (internal/modules/cjs/loader.js:657:28)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
+    at Module.load (internal/modules/cjs/loader.js:599:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:530:3)
+    at Module.require (internal/modules/cjs/loader.js:637:17)
+    at require (internal/modules/cjs/helpers.js:22:18)
