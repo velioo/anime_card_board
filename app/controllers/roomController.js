@@ -33,6 +33,7 @@ var self = module.exports = {
     ctx.result = {
     	roomName: ctx.request.body.data.room_name,
     	player1Name: ctx.session.userData.username,
+      roomId: null,
 	  };
 
     if (ctx.errors.length) {
@@ -69,6 +70,8 @@ var self = module.exports = {
 			assert(queryStatus.rows[0].id);
 	    const roomId = queryStatus.rows[0].id;
 
+      ctx.result.roomId = roomId;
+
 	    await pg.pool.query('COMMIT');
 	  } catch(err) {
 	  	ctx.errors.push({ dataPath: '/room_name', message: 'There was a problem creating your room. Please try again later.' });
@@ -92,7 +95,7 @@ var self = module.exports = {
 
       `);
 
-      console.log('browseRooms status: ', queryStatus.rows.length);
+      console.log('browseRooms rows count: ', queryStatus.rows.length);
       ctx.result = {
         roomsData: queryStatus.rows,
       };
@@ -100,6 +103,56 @@ var self = module.exports = {
       ctx.errors.push({ dataPath: '/browse-rooms-table', message: 'There was a problem getting rooms data. Please try again later.' });
 
       logger.info('Failed to get rooms data: %o', err);
+    }
+
+    return self.sendResponse(ctx, next);
+  },
+  getRoomData: async (ctx, next) => {
+    await next();
+
+    console.log('getRoomData roomController');
+    ctx.errors = [];
+
+    ctx.result = {
+      id: null,
+      name: null,
+      player1Name: null,
+      player2Name: null,
+    };
+
+    try {
+      ctx.request.body.data.roomId = parseInt(ctx.request.body.data.roomId);
+
+      const isSchemaValid = ajv.validate(SCHEMAS.GET_ROOM_DATA, ctx.request.body.data);
+      console.log(ctx.request.body.data);
+
+      assert(isSchemaValid, ajv.errors);
+
+      let queryStatus = await pg.pool.query(`
+
+        SELECT
+          R.*, U1.username as player1_name, U2.username as player2_name
+        FROM rooms as R
+        JOIN users as U1 ON U1.id = R.player1_id
+        LEFT JOIN users as U2 ON U2.id = R.player2_id
+        WHERE R.id = $1
+
+      `, [ ctx.request.body.data.roomId ]);
+
+      console.log('getRoomData rows count: ', queryStatus.rows.length);
+
+      if (queryStatus.rows.length > 0) {
+        ctx.result = {
+          id: queryStatus.rows[0].id,
+          name: queryStatus.rows[0].name,
+          player1Name: queryStatus.rows[0].player1_name,
+          player2Name: queryStatus.rows[0].player2_name,
+        };
+      }
+    } catch(err) {
+      ctx.errors.push({ dataPath: '/anime-cb-players-lobby', message: 'There was a problem getting room data. Please try again later.' });
+
+      logger.info('Failed to get room data: %o', err);
     }
 
     return self.sendResponse(ctx, next);

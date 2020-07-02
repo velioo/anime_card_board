@@ -83,6 +83,7 @@ app.use(allowedMethods);
 app.use(authenticate);
 
 app.use( async (ctx) => {
+  console.log('404 middleware...', ctx.status);
   if (ctx.status !== 404) {
     return;
   }
@@ -91,7 +92,11 @@ app.use( async (ctx) => {
     ctx.redirect(ROOT + 'imgs/no_image.png');
   } else {
     ctx.status = 404;
-    await ctx.render('./views/404.hbs');
+    ctx.state = {
+      userMessage: 'ERROR 404! Sorry the server couldn\'t find this resource :)',
+      httpCode: 404,
+    }
+    await ctx.render('./views/400.hbs');
   }
 });
 

@@ -65,8 +65,25 @@ const _CREATE_ROOM = {
   }
 };
 
+const _GET_ROOM_DATA = {
+  "type": "object",
+  "properties": {
+    "roomId": { "type": "integer" },
+  },
+  "required": [ "roomId" ],
+  "errorMessage": {
+    "properties" : {
+      "roomId": `Room id should be an integer`,
+    },
+    "required": {
+      "roomId": 'No roomId is specified',
+    },
+  }
+};
+
 module.exports = {
   SIGN_UP: _SIGN_UP,
   LOGIN: _LOGIN,
   CREATE_ROOM: _CREATE_ROOM,
+  GET_ROOM_DATA: _GET_ROOM_DATA,
 };

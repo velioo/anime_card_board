@@ -24,23 +24,26 @@ roomController.prototype.initConstants = function() {
 	this.JOIN_ROOM_BTN_ID = '#anime-cb-join-room';
 
 	this.LOBBY_ROOM_NAME_CLASS = '.anime-cb-title-lobby';
+	this.LOBBY_ROOM_PLAYERS_CLASS = '.anime-cb-players-lobby';
+	this.LOBBY_ROOM_WAITING_PLAYERS_CLASS = '.anime-cb-waiting-players-lobby';
 	this.BROWSE_ROOMS_TABLE_CLASS = '.browse-rooms-table';
 };
 
 roomController.prototype.initElements = function() {
 	this.$createRoomInputs = $(this.CREATE_ROOM_FORM_ID).find('input');
+	this._roomId = null;
 };
 
 roomController.prototype.initListeners = function() {
 	var _self = this;
 
-	$(this.DESTROY_ROOM_BTN_ID).on('click', function(e) {
+	$(_self.DESTROY_ROOM_BTN_ID).on('click', function(e) {
 			logger.info('Destroying room...');
 
 			_self.client.sendDestroyRoomRequest();
 	});
 
-	$(this.CREATE_ROOM_SUBMIT_BTN_ID).on('click', function(e) {
+	$(_self.CREATE_ROOM_SUBMIT_BTN_ID).on('click', function(e) {
 		e.preventDefault();
 
 	  var values = {};
@@ -56,7 +59,7 @@ roomController.prototype.initListeners = function() {
 	  _self.client.sendCreateRoomData(values);
 	});
 
-	$(this.RESET_CREATE_ROOM_BTN_ID).on('click', function(e) {
+	$(_self.RESET_CREATE_ROOM_BTN_ID).on('click', function(e) {
 		e.preventDefault();
 	  _self.clearCreateRoomInputs();
 	  _self.clearCreateRoomErrors();
@@ -74,39 +77,66 @@ roomController.prototype.initIntervals = function() {
 			_self.showBrowseRoomSpinner();
 		}
 		if ($(_self.BROWSE_ROOMS_SCREEN_CLASS).is(':visible')) {
-			console.log('browse rooms is visible');
-
 			_self.client.getBrowseRoomsData();
 		}
-	}, 1000);
+	}, 3000);
+
+	setInterval(function() {
+		if (_self._roomId !== null && _self._roomId !== undefined) {
+			_self.client.getCurrentRoomData({ roomId: _self._roomId });
+		}
+	}, 3000);
 };
 
-roomController.prototype.processBrowseRoomsResponse = function(data) {
-	logger.info('populateBrowseRooms');
-	logger.info('Rooms data: ', data);
+roomController.prototype.processGetCurrentRoomDataResponse = function (data) {
+	logger.info('processGetCurrentRoomDataResponse');
+	console.log('Room data: ', data);
 
 	var _self = this;
 
+	assert(ajv.validate(getCurrentRoomDataResponse, data), 'getCurrentRoomDataResponse is invalid' +
+  	JSON.stringify(ajv.errors, null, 2));
+
 	if (data.isSuccessful) {
-		logger.info('Data is valid');
+		// TODO: go back to main menu, cuz room is destroyed
+		//assert(data.result.id && data.result.name && data.result.player1Name, 'Invalid room data');
 
 		if (data.isUserLoggedIn === true) {
-			_self.populateBrowseRoomsData(data);
+			_self.updateRoomState(data);
 		} else {
-			this.client.logInSignUpController.processSessionExpired();
+			_self.client.logInSignUpController.processSessionExpired();
 		}
 	} else {
 		assert(data.errors.length > 0);
-		logger.info('There are validation errors');
-		this.renderBrowseRoomsErrors(data);
+		logger.info('Server returned errors');
+		_self.renderCurrentRoomErrors(data);
+	}
+
+	_self.hideAllSpinner();
+};
+
+roomController.prototype.processBrowseRoomsResponse = function(data) {
+	var _self = this;
+
+	assert(ajv.validate(browseRoomsResponse, data), 'browseRoomsResponse is invalid' +
+  	JSON.stringify(ajv.errors, null, 2));
+
+	if (data.isSuccessful) {
+		if (data.isUserLoggedIn === true) {
+			_self.populateBrowseRoomsData(data);
+		} else {
+			_self.client.logInSignUpController.processSessionExpired();
+		}
+	} else {
+		assert(data.errors.length > 0);
+		logger.info('Server returned errors');
+		_self.renderBrowseRoomsErrors(data);
 	}
 
 	_self.hideAllSpinner();
 };
 
 roomController.prototype.populateBrowseRoomsData = function(data) {
-	logger.info('populateBrowseRoomsData');
-
 	var _self = this;
 
 	_self.clearBrowseRoomsTable();
@@ -116,7 +146,7 @@ roomController.prototype.populateBrowseRoomsData = function(data) {
 	data.result.roomsData.forEach(function (el) {
 		let playersCount = el.player2_id ? 2 : 1;
 		$(_self.BROWSE_ROOMS_TABLE_CLASS).append('<tr><td>' + el.name + '</td><td>' + playersCount
-			+ '/2</td><td><button id="' + _self.JOIN_ROOM_BTN_ID + '" class="btn btn-default">Join</button></td></tr>');
+			+ '/2</td><td><button id="anime-cb-join-room" class="btn btn-default">Join</button></td></tr>');
 
 		if (playersCount >= 2) {
 			_self.disableElement(_self.JOIN_ROOM_BTN_ID);
@@ -124,9 +154,20 @@ roomController.prototype.populateBrowseRoomsData = function(data) {
 	});
 };
 
+roomController.prototype.updateRoomState = function(data) {
+	logger.info('updateRoomState');
+
+	var _self = this;
+	var players = data.result.player2Name ? data.result.player1Name + ', ' + data.result.player2Name : data.result.player1Name;
+
+	$(_self.LOBBY_ROOM_PLAYERS_CLASS).text('Players: ' + players);
+};
+
 roomController.prototype.processCreateRoomResponse = function(data) {
 	logger.info('processCreateRoomResponse');
 	logger.info('To validate: ', JSON.stringify(data));
+
+	var _self = this;
 
   assert(ajv.validate(createRoomResponse, data), 'createRoomResponse is invalid' +
   	JSON.stringify(ajv.errors, null, 2));
@@ -135,17 +176,18 @@ roomController.prototype.processCreateRoomResponse = function(data) {
 		logger.info('Data is valid');
 
 		if (data.isUserLoggedIn === true) {
-			this.showCreateRoomSuccess(data);
+			_self._roomId = data.result.roomId;
+			_self.showCreateRoomSuccess(data);
 		}  else {
-			this.client.logInSignUpController.processSessionExpired();
+			_self.client.logInSignUpController.processSessionExpired();
 		}
 	} else {
 		assert(data.errors.length > 0);
 		logger.info('There are validation errors');
-		this.renderCreateRoomErrors(data);
+		_self.renderCreateRoomErrors(data);
 	}
 
-	this.enableElement(this.CREATE_ROOM_SUBMIT_BTN_ID);
+	_self.enableElement(_self.CREATE_ROOM_SUBMIT_BTN_ID);
 };
 
 roomController.prototype.processDestroyRoomResponse = function(data) {
@@ -168,10 +210,10 @@ roomController.prototype.renderCreateRoomErrors = function(data) {
 	logger.info('renderCreateRoomErrors');
 	var _self = this;
 
-	this.clearCreateRoomErrors();
-	this.hideCreateRoomErrors();
+	_self.clearCreateRoomErrors();
+	_self.hideCreateRoomErrors();
 
-	this.$createRoomInputs.each(function(idx, input) {
+	_self.$createRoomInputs.each(function(idx, input) {
 		data.errors.forEach(function (el) {
 			var elName = el.dataPath.split('/')[1];
 
@@ -182,25 +224,43 @@ roomController.prototype.renderCreateRoomErrors = function(data) {
 		});
 	 });
 
-	this.hideAllSpinner();
+	_self.hideAllSpinner();
 };
 
 roomController.prototype.renderBrowseRoomsErrors = function(data) {
 	logger.info('renderBrowseRoomsErrors');
 	var _self = this;
 
-	this.clearBrowseRoomsErrors();
-	this.hideBrowseRoomsErrors();
+	_self.clearBrowseRoomsErrors();
+	_self.hideBrowseRoomsErrors();
 
 	data.errors.forEach(function (el) {
-		$(this.BROWSE_ROOMS_SCREEN_CLASS).find(this.INPUT_ERRORS_CLASS).append('<span>' + el.message + '</span>');
+		$(_self.BROWSE_ROOMS_SCREEN_CLASS).find(_self.INPUT_ERRORS_CLASS).append('<span>' + el.message + '</span>');
 	});
+
+	$(_self.BROWSE_ROOMS_SCREEN_CLASS).find(_self.INPUT_ERRORS_CLASS).show();
+};
+
+roomController.prototype.renderCurrentRoomErrors = function(data) {
+	logger.info('renderCurrentRoomErrors');
+	var _self = this;
+
+	_self.clearCurrentRoomErrors();
+	_self.hideCurrentRoomErrors();
+
+	data.errors.forEach(function (el) {
+		$(_self.LOBBY_SCREEN_CLASS).find(_self.INPUT_ERRORS_CLASS).append('<span>' + el.message + '</span>');
+	});
+
+	$(_self.LOBBY_SCREEN_CLASS).find(_self.INPUT_ERRORS_CLASS).show();
 };
 
 roomController.prototype.showCreateRoomSuccess = function(data) {
 	logger.info('showCreateRoomSuccess');
 
-	$(this.LOBBY_ROOM_NAME_CLASS).text(data.result.roomName);
+	$(this.LOBBY_ROOM_NAME_CLASS).text('Room: ' + data.result.roomName);
+	$(this.LOBBY_ROOM_PLAYERS_CLASS).text('Players: ' + data.result.player1Name);
+
 	this.processChangeScreen(this.LOBBY_SCREEN_CLASS);
 };
 
@@ -234,4 +294,12 @@ roomController.prototype.hideBrowseRoomsErrors = function() {
 
 roomController.prototype.clearBrowseRoomsTable = function() {
 	$(this.BROWSE_ROOMS_TABLE_CLASS).html('');
+};
+
+roomController.prototype.hideCurrentRoomErrors = function() {
+	$(this.LOBBY_SCREEN_CLASS).find(this.INPUT_ERRORS_CLASS).hide();
+};
+
+roomController.prototype.clearCurrentRoomErrors = function() {
+	$(this.LOBBY_SCREEN_CLASS).find(this.INPUT_ERRORS_CLASS).html('');
 };

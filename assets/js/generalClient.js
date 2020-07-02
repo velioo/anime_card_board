@@ -85,6 +85,7 @@ generalClient.prototype.sendDestroyRoomRequest = function(data) {
 	var _self = this;
 	logger.info('sendDestroyRoomRequest');
 
+  _self.roomController._roomId = null;
 	this.socket.emit('destroyRoom');
 };
 
@@ -92,8 +93,17 @@ generalClient.prototype.getBrowseRoomsData = function() {
   var _self = this;
   logger.info('getBrowseRoomsData');
 
-  $.post('/browse-rooms', {}, function (data, status) {
+  $.post('/browse_rooms', {}, function (data, status) {
     _self.roomController.processBrowseRoomsResponse(data);
+  }).fail(_self.failHandler.bind(_self));
+};
+
+generalClient.prototype.getCurrentRoomData = function(data) {
+  var _self = this;
+  logger.info('getCurrentRoomData');
+
+  $.post('/room_data', { data: data }, function (data, status) {
+    _self.roomController.processGetCurrentRoomDataResponse(data);
   }).fail(_self.failHandler.bind(_self));
 };
 
