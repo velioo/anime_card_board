@@ -20,7 +20,7 @@ generalClient.prototype.clientConnectToServer = function() {
 
   //Sent when we are disconnected (network, server down, etc)
   this.socket.on('disconnect', this.processDisconnect.bind(this));
-  this.socket.on('destroyRoom', this.processDestroyRoom.bind(this));
+  this.socket.on('leaveRoom', this.processLeaveRoom.bind(this));
       //Sent each tick of the server simulation. This is our authoritive update
   // this.socket.on('onserverupdate', this.client_onserverupdate_recieved.bind(this));
       //Handle when we connect to the server, showing state and storing id's.
@@ -81,12 +81,12 @@ generalClient.prototype.sendCreateRoomData = function(data) {
   }).fail(_self.failHandler.bind(_self));
 };
 
-generalClient.prototype.sendDestroyRoomRequest = function(data) {
+generalClient.prototype.sendLeaveRoomRequest = function(data) {
 	var _self = this;
-	logger.info('sendDestroyRoomRequest');
+	logger.info('sendLeaveRoomRequest');
 
   _self.roomController._roomId = null;
-	this.socket.emit('destroyRoom');
+	this.socket.emit('leaveRoom');
 };
 
 generalClient.prototype.getBrowseRoomsData = function() {
@@ -107,6 +107,15 @@ generalClient.prototype.getCurrentRoomData = function(data) {
   }).fail(_self.failHandler.bind(_self));
 };
 
+generalClient.prototype.joinRoom = function(data) {
+  var _self = this;
+  logger.info('joinRoom');
+
+  $.post('/join_room', { data: data }, function (data, status) {
+    _self.roomController.processJoinRoomResponse(data);
+  }).fail(_self.failHandler.bind(_self));
+};
+
 generalClient.prototype.processServerSocketError = function(data) {
 	logger.info('ServerError err: ', JSON.stringify(data));
 	window.alert('There was a problem while processing your request. Please try again later.');
@@ -117,11 +126,11 @@ generalClient.prototype.processDisconnect = function(data) {
 	logger.info('processDisconnect');
 };
 
-generalClient.prototype.processDestroyRoom = function(data) {
+generalClient.prototype.processLeaveRoom = function(data) {
 	var _self = this;
-	logger.info('processDestroyRoom');
+	logger.info('processLeaveRoom');
 
-	 _self.roomController.processDestroyRoomResponse(data);
+	 _self.roomController.processLeaveRoomResponse(data);
 };
 
 generalClient.prototype.failHandler = function (xhr, status, errorThrown) {

@@ -81,9 +81,12 @@ const _GET_ROOM_DATA = {
   }
 };
 
+const _JOIN_ROOM_DATA = _GET_ROOM_DATA;
+
 module.exports = {
   SIGN_UP: _SIGN_UP,
   LOGIN: _LOGIN,
   CREATE_ROOM: _CREATE_ROOM,
   GET_ROOM_DATA: _GET_ROOM_DATA,
+  JOIN_ROOM_DATA: _JOIN_ROOM_DATA,
 };

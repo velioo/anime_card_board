@@ -11,6 +11,7 @@ module.exports = async (ctx, next) => {
     '/create_room',
     '/browse_rooms',
     '/room_data',
+    '/join_room',
   ];
 
   if (userServiceUrls.some((url) => requestUrl.startsWith(url) ||

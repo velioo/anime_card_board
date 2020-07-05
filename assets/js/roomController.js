@@ -20,27 +20,28 @@ roomController.prototype.initConstants = function() {
 
 	this.CREATE_ROOM_SUBMIT_BTN_ID = '#anime-cb-submit-create-room';
 	this.RESET_CREATE_ROOM_BTN_ID = '#anime-cb-reset-create-room';
-	this.DESTROY_ROOM_BTN_ID = '#anime-cb-destroy-room';
-	this.JOIN_ROOM_BTN_ID = '#anime-cb-join-room';
+	this.LEAVE_ROOM_BTN_ID = '#anime-cb-leave-room';
 
 	this.LOBBY_ROOM_NAME_CLASS = '.anime-cb-title-lobby';
 	this.LOBBY_ROOM_PLAYERS_CLASS = '.anime-cb-players-lobby';
 	this.LOBBY_ROOM_WAITING_PLAYERS_CLASS = '.anime-cb-waiting-players-lobby';
 	this.BROWSE_ROOMS_TABLE_CLASS = '.browse-rooms-table';
+	this.JOIN_ROOM_BTN_CLASS = '.anime-cb-join-room';
 };
 
 roomController.prototype.initElements = function() {
 	this.$createRoomInputs = $(this.CREATE_ROOM_FORM_ID).find('input');
 	this._roomId = null;
+	this.connectingToRoom = false;
 };
 
 roomController.prototype.initListeners = function() {
 	var _self = this;
 
-	$(_self.DESTROY_ROOM_BTN_ID).on('click', function(e) {
-			logger.info('Destroying room...');
+	$(_self.LEAVE_ROOM_BTN_ID).on('click', function(e) {
+			logger.info('Leaving room...');
 
-			_self.client.sendDestroyRoomRequest();
+			_self.client.sendLeaveRoomRequest();
 	});
 
 	$(_self.CREATE_ROOM_SUBMIT_BTN_ID).on('click', function(e) {
@@ -59,6 +60,17 @@ roomController.prototype.initListeners = function() {
 	  _self.client.sendCreateRoomData(values);
 	});
 
+	$(_self.BROWSE_ROOMS_TABLE_CLASS).on('click', _self.JOIN_ROOM_BTN_CLASS, function() {
+		logger.info('Joining room...');
+
+		_self.connectingToRoom = true;
+		_self.disableElement(_self.JOIN_ROOM_BTN_CLASS);
+		_self.showElement($(this).parent().find('.spinner'));
+		var _roomId = $(this).attr('data-room-id');
+
+		_self.client.joinRoom({ roomId: _roomId });
+	});
+
 	$(_self.RESET_CREATE_ROOM_BTN_ID).on('click', function(e) {
 		e.preventDefault();
 	  _self.clearCreateRoomInputs();
@@ -74,9 +86,9 @@ roomController.prototype.initIntervals = function() {
 
 	setInterval(function() {
 		if ($(_self.BROWSE_ROOMS_SCREEN_CLASS).find('tr').length == 0) {
-			_self.showBrowseRoomSpinner();
+			_self.showBrowseRoomsSpinner();
 		}
-		if ($(_self.BROWSE_ROOMS_SCREEN_CLASS).is(':visible')) {
+		if ($(_self.BROWSE_ROOMS_SCREEN_CLASS).is(':visible') && !_self.connectingToRoom) {
 			_self.client.getBrowseRoomsData();
 		}
 	}, 3000);
@@ -98,8 +110,11 @@ roomController.prototype.processGetCurrentRoomDataResponse = function (data) {
   	JSON.stringify(ajv.errors, null, 2));
 
 	if (data.isSuccessful) {
-		// TODO: go back to main menu, cuz room is destroyed
-		//assert(data.result.id && data.result.name && data.result.player1Name, 'Invalid room data');
+		if (!data.result.id) {
+			_self._roomId = null;
+			window.alert("This room has been destroyed, you will be returned to the Main Menu.");
+			_self.processChangeScreen(this.MAIN_MENU_SCREEN_CLASS);
+		}
 
 		if (data.isUserLoggedIn === true) {
 			_self.updateRoomState(data);
@@ -133,7 +148,7 @@ roomController.prototype.processBrowseRoomsResponse = function(data) {
 		_self.renderBrowseRoomsErrors(data);
 	}
 
-	_self.hideAllSpinner();
+	_self.hideBrowseRoomsSpinner();
 };
 
 roomController.prototype.populateBrowseRoomsData = function(data) {
@@ -146,10 +161,15 @@ roomController.prototype.populateBrowseRoomsData = function(data) {
 	data.result.roomsData.forEach(function (el) {
 		let playersCount = el.player2_id ? 2 : 1;
 		$(_self.BROWSE_ROOMS_TABLE_CLASS).append('<tr><td>' + el.name + '</td><td>' + playersCount
-			+ '/2</td><td><button id="anime-cb-join-room" class="btn btn-default">Join</button></td></tr>');
+			+ '/2</td><td><button id=anime-cb-join-room-btn-id-' + el.id + ' data-room-id="' + el.id
+			+ '" class="anime-cb-join-room" class="btn btn-default">Join</button><img class="spinner" src="/imgs/spinner.gif"></td></tr>');
+
+		var joinRoomBtnIdSelector = '#anime-cb-join-room-btn-id-' + el.id;
 
 		if (playersCount >= 2) {
-			_self.disableElement(_self.JOIN_ROOM_BTN_ID);
+			_self.disableElement(joinRoomBtnIdSelector);
+		} else {
+			_self.enableElement(joinRoomBtnIdSelector);
 		}
 	});
 };
@@ -190,11 +210,11 @@ roomController.prototype.processCreateRoomResponse = function(data) {
 	_self.enableElement(_self.CREATE_ROOM_SUBMIT_BTN_ID);
 };
 
-roomController.prototype.processDestroyRoomResponse = function(data) {
-	logger.info('processDestroyRoomResponse');
+roomController.prototype.processLeaveRoomResponse = function(data) {
+	logger.info('processLeaveRoomResponse');
 	logger.info('To validate: ', JSON.stringify(data));
 
-  assert(ajv.validate(destroyRoomResponse, data), 'destroyRoomResponse is invalid' +
+  assert(ajv.validate(leaveRoomResponse, data), 'leaveRoomResponse is invalid' +
   	JSON.stringify(ajv.errors, null, 2));
 
 	if (!data.isSuccessful) {
@@ -204,6 +224,37 @@ roomController.prototype.processDestroyRoomResponse = function(data) {
 
 		this.showAlertError(data.errors[0].message);
 	}
+};
+
+roomController.prototype.processJoinRoomResponse = function(data) {
+	logger.info('processJoinRoomResponse');
+	logger.info('To validate: ', JSON.stringify(data));
+
+	var _self = this;
+	_self.connectingToRoom = false;
+
+	assert(ajv.validate(joinRoomResponse, data), 'joinRoomResponse is invalid' +
+  	JSON.stringify(ajv.errors, null, 2));
+
+	if (data.isSuccessful) {
+		if (!data.result.id) {
+			window.alert("This room no longer exists, you will be returned to the Main Menu.");
+			_self.processChangeScreen(this.MAIN_MENU_SCREEN_CLASS);
+		}
+
+		if (data.isUserLoggedIn === true) {
+			_self._roomId = data.result.id;
+			_self.showJoinRoomSuccess(data);
+		}  else {
+			_self.client.logInSignUpController.processSessionExpired();
+		}
+	} else {
+		assert(data.errors.length > 0);
+		logger.info('There are validation errors');
+		_self.renderBrowseRoomsErrors(data);
+	}
+
+	_self.enableElement(_self.JOIN_ROOM_BTN_CLASS);
 };
 
 roomController.prototype.renderCreateRoomErrors = function(data) {
@@ -264,6 +315,39 @@ roomController.prototype.showCreateRoomSuccess = function(data) {
 	this.processChangeScreen(this.LOBBY_SCREEN_CLASS);
 };
 
+roomController.prototype.showJoinRoomSuccess = function(data) {
+	logger.info('showJoinRoomSuccess');
+
+	$(this.LOBBY_ROOM_NAME_CLASS).text('Room: ' + data.result.name);
+	$(this.LOBBY_ROOM_PLAYERS_CLASS).text('Players: ' + data.result.player1Name + ', ' + data.result.player2Name);
+
+	this.processChangeScreen(this.LOBBY_SCREEN_CLASS);
+};
+
+roomController.prototype.preSwitchScreenHook = function (screenClass) {
+	var _self = this;
+
+	if(_lastHistoryState && history.state && _lastHistoryState.screenClass !== history.state.screenClass
+		&& _lastHistoryState.screenClass === _self.LOBBY_SCREEN_CLASS) {
+		console.log('LEAVE ROOM');
+		_self.client.sendLeaveRoomRequest();
+	}
+
+	if (screenClass === _self.BROWSE_ROOMS_SCREEN_CLASS) {
+		_self.clearBrowseRoomsTable();
+		_self.showBrowseRoomsSpinner();
+		_self.client.getBrowseRoomsData();
+	}
+};
+
+roomController.prototype.postSwitchScreenHook = function (screenClass) {
+	var _self = this;
+
+	if (screenClass !== _self.BROWSE_ROOMS_SCREEN_CLASS) {
+		_self.connectingToRoom = false;
+	}
+};
+
 roomController.prototype.clearCreateRoomInputs = function() {
 	this.$createRoomInputs.val('');
 };
@@ -280,8 +364,12 @@ roomController.prototype.showCreateRoomSpinner = function() {
 	$(this.CREATE_ROOM_FORM_ID).find(this.SPINNER_CLASS).show();
 };
 
-roomController.prototype.showBrowseRoomSpinner = function() {
-	$(this.BROWSE_ROOMS_SCREEN_CLASS).find(this.SPINNER_CLASS).show();
+roomController.prototype.showBrowseRoomsSpinner = function() {
+	$(this.BROWSE_ROOMS_SCREEN_CLASS).find(this.MAIN_SPINNER_CLASS).show();
+};
+
+roomController.prototype.hideBrowseRoomsSpinner = function() {
+	$(this.BROWSE_ROOMS_SCREEN_CLASS).find(this.MAIN_SPINNER_CLASS).hide();
 };
 
 roomController.prototype.clearBrowseRoomsErrors = function() {

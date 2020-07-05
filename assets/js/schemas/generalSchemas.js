@@ -67,7 +67,7 @@ var createRoomResponse = {
 	"required": [ "errors", "isSuccessful", "isUserLoggedIn", "result" ],
 };
 
-var destroyRoomResponse = {
+var leaveRoomResponse = {
 	"type": "object",
 	"properties": {
 		"errors" : {
@@ -147,10 +147,14 @@ var getCurrentRoomDataResponse = {
 				"id": { "type": ["integer", "null"] },
 				"name": { "type": ["string", "null"] },
 				"player1Name": { "type": ["string", "null"] },
-				"player2Name": { "type": ["string", "null"] }
+				"player2Name": { "type": ["string", "null"] },
+				"player1Id": { "type": ["integer", "null"] },
+				"player2Id": { "type": ["integer", "null"] },
 			},
-			"required": [ "id", "name", "player1Name", "player2Name" ],
+			"required": [ "id", "name", "player1Name", "player2Name", "player1Id", "player2Id" ],
 		},
 	},
 	"required": [ "errors", "isSuccessful", "isUserLoggedIn", "result" ],
 };
+
+var joinRoomResponse = getCurrentRoomDataResponse;

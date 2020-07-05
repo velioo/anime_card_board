@@ -101,6 +101,10 @@ body {
   margin-top: -30px;
 }
 
+.anime-cb-screen-browse-rooms .main.spinner {
+  margin-top: 100px;
+}
+
 .browse-rooms-table {
   width: 40%;
   text-align: center;
@@ -116,6 +120,13 @@ body {
 
 .browse-rooms-table th {
   font-weight: 800;
+}
+
+.browse-rooms-table .spinner {
+  margin-top: -27px;
+  margin-left: -19px;
+  max-width: 80px;
+  max-height: 80px;
 }
 
 .pre-screen-spinner {
@@ -178,4 +189,8 @@ body {
 .anime-cb-waiting-players-lobby .dots span:first-child + span + span {
     animation-name: dots-3;
     -webkit-animation-name: dots-3;
+}
+
+.anime-cb-join-room {
+  color: black;
 }

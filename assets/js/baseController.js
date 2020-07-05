@@ -39,6 +39,7 @@ baseController.prototype._initConstants = function() {
 	this.USER_MESSAGE_CLASS = '.user-message';
 
 	this.SPINNER_CLASS = '.spinner';
+	this.MAIN_SPINNER_CLASS = '.main.spinner';
 	this.PRE_SCREEN_SPINNER_CLASS = '.pre-screen-spinner';
 
 	this.INPUT_ERRORS_CLASS = '.errors';
@@ -85,6 +86,8 @@ baseController.prototype._initListeners = function() {
 		  _self.switchToScreen(stateObj.screenClass);
 		}
 	});
+
+	window.addEventListener("beforeunload", this.beforeUnload, true);
 };
 
 baseController.prototype._initState = function() {
@@ -136,11 +139,8 @@ baseController.prototype.preSwitchScreenHook = function(screenClass) {
 	console.log('preSwitchScreenHook');
 	console.log(_lastHistoryState);
 
-	if(_lastHistoryState && history.state && _lastHistoryState.screenClass !== history.state.screenClass
-		&& _lastHistoryState.screenClass === this.LOBBY_SCREEN_CLASS) {
-		console.log('DESTROY ROOM');
-		this.client.sendDestroyRoomRequest();
-		// window.removeEventListener("beforeunload ", this.beforeUnload, true);
+	if (typeof this.client.roomController.preSwitchScreenHook === "function") {
+		this.client.roomController.preSwitchScreenHook(screenClass);
 	}
 };
 
@@ -148,16 +148,15 @@ baseController.prototype.postSwitchScreenHook = function(screenClass) {
 	logger.info('postSwitchScreenHook');
 	console.log('postSwitchScreenHook');
 
-	// if(history.state.screenClass === this.LOBBY_SCREEN_CLASS) {
-	// 	console.log('ADDING LISTENER');
-	// 	window.addEventListener("beforeunload", this.beforeUnload, true);
-	// }
+	if (typeof this.client.roomController.postSwitchScreenHook === "function") {
+		this.client.roomController.postSwitchScreenHook(screenClass);
+	}
 };
 
-// baseController.prototype.beforeUnload = function(event) {
-//   event.preventDefault();
-//   event.returnValue = 'Data will be lost if you leave the page, are you sure?';
-// };
+baseController.prototype.beforeUnload = function(event) {
+	event.preventDefault();
+	event.returnValue = 'Data will be lost if you leave the page, are you sure?';
+};
 
 baseController.prototype.setIsUserLoggedIn = function(flag) {
 	logger.info('setUserLoggedIn');
@@ -216,12 +215,12 @@ baseController.prototype.hideAllErrors = function() {
 	this.$allInputs.parent().find('.errors').hide();
 };
 
-baseController.prototype.disableElement = function(el) {
-	$(el).prop('disabled', true);
+baseController.prototype.disableElement = function(elSelector) {
+	$(elSelector).prop('disabled', true);
 };
 
-baseController.prototype.enableElement = function(el) {
-	$(el).prop('disabled', false);
+baseController.prototype.enableElement = function(elSelector) {
+	$(elSelector).prop('disabled', false);
 };
 
 baseController.prototype.enableAllElements = function() {
@@ -233,6 +232,14 @@ baseController.prototype.showAlertError = function(msg) {
 	window.alert(msg);
 };
 
+baseController.prototype.showElement = function (el) {
+	console.log('show elements: ', el);
+	$(el).show();
+};
+
+baseController.prototype.hideElement = function (el) {
+	$(el).hide();
+};
 // Gets the closest screen class relatively from an element 'el' beneath it
 // baseController.prototype.extractScreenClass = function(el) {
 // 	var screenClass = null;

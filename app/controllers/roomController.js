@@ -118,6 +118,8 @@ var self = module.exports = {
       name: null,
       player1Name: null,
       player2Name: null,
+      player1Id: null,
+      player2Id: null,
     };
 
     try {
@@ -126,7 +128,7 @@ var self = module.exports = {
       const isSchemaValid = ajv.validate(SCHEMAS.GET_ROOM_DATA, ctx.request.body.data);
       console.log(ctx.request.body.data);
 
-      assert(isSchemaValid, ajv.errors);
+      assert(isSchemaValid);
 
       let queryStatus = await pg.pool.query(`
 
@@ -147,10 +149,88 @@ var self = module.exports = {
           name: queryStatus.rows[0].name,
           player1Name: queryStatus.rows[0].player1_name,
           player2Name: queryStatus.rows[0].player2_name,
+          player1Id: queryStatus.rows[0].player1_id,
+          player2Id: queryStatus.rows[0].player2_id,
         };
       }
     } catch(err) {
       ctx.errors.push({ dataPath: '/anime-cb-players-lobby', message: 'There was a problem getting room data. Please try again later.' });
+
+      logger.info('Failed to get room data: %o', err);
+    }
+
+    return self.sendResponse(ctx, next);
+  },
+  joinRoom: async (ctx, next) => {
+    await next();
+
+    console.log('joinRoom roomController');
+    ctx.errors = [];
+
+    ctx.result = {
+      id: null,
+      name: null,
+      player1Name: null,
+      player2Name: null,
+      player1Id: null,
+      player2Id: null,
+    };
+
+    await pg.pool.query('BEGIN');
+
+    try {
+      ctx.request.body.data.roomId = parseInt(ctx.request.body.data.roomId);
+
+      const isSchemaValid = ajv.validate(SCHEMAS.JOIN_ROOM_DATA, ctx.request.body.data);
+      console.log(ctx.request.body.data);
+      console.log(ajv.errors);
+
+      assert(isSchemaValid);
+
+      let queryStatus = await pg.pool.query(`
+
+        UPDATE rooms
+        SET player2_id = $1
+        WHERE rooms.id = $2
+        RETURNING id
+
+      `, [ ctx.session.userData.userId, ctx.request.body.data.roomId ]);
+
+      console.log('joinRoom rows count: ', queryStatus.rows.length);
+
+      if (queryStatus.rows.length <= 0) {
+        logger.info('Could not find room to update, request body: %o', ctx.request.body.data);
+
+        await pg.pool.query('ROLLBACK');
+        return self.sendResponse(ctx, next);
+      }
+
+      queryStatus = await pg.pool.query(`
+
+        SELECT
+          R.*, U1.username as player1_name, U2.username as player2_name
+        FROM rooms as R
+        JOIN users as U1 ON U1.id = R.player1_id
+        LEFT JOIN users as U2 ON U2.id = R.player2_id
+        WHERE R.id = $1
+
+      `, [ ctx.request.body.data.roomId ]);
+
+      assert(queryStatus.rows.length === 1);
+
+      ctx.result = {
+        id: queryStatus.rows[0].id,
+        name: queryStatus.rows[0].name,
+        player1Name: queryStatus.rows[0].player1_name,
+        player2Name: queryStatus.rows[0].player2_name,
+        player1Id: queryStatus.rows[0].player1_id,
+        player2Id: queryStatus.rows[0].player2_id,
+      };
+
+      await pg.pool.query('COMMIT');
+    } catch(err) {
+      ctx.errors.push({ dataPath: '/browse-rooms-table', message: 'There was a problem while joining the room. Please try again later.' });
+      await pg.pool.query('ROLLBACK');
 
       logger.info('Failed to get room data: %o', err);
     }

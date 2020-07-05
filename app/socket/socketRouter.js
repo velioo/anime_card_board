@@ -27,17 +27,17 @@ const self = module.exports = {
 	  	}
 	  });
 
-	  socket.on('destroyRoom', async (ctx) => {
+	  socket.on('leaveRoom', async (ctx) => {
 	  	try {
-		  	console.log('Client sent destroy room event');
+		  	console.log('Client sent leave room event');
 
-		  	await gameServer.destroyRoom(ctx, next);
+		  	await gameServer.leaveRoom(ctx, next);
 
 		  	let isSuccessful = ctx.errors.length ? false : true;
 
 		  	console.log('Errors: ', ctx.errors);
 
-		  	socket.emit('destroyRoom', {
+		  	socket.emit('leaveRoom', {
 		  		errors: ctx.errors,
 		  		isSuccessful: isSuccessful
 		  	});

@@ -20,8 +20,8 @@ const ajv = new Ajv({ allErrors: true, $data: true, jsonPointers: true });
 const ajvErrors = require('ajv-errors')(ajv);
 
 module.exports = {
-  destroyRoom: async (ctx, next) => {
-    console.log('destroyRoom roomController');
+  leaveRoom: async (ctx, next) => {
+    console.log('leaveRoom roomController');
     ctx.errors = [];
 
     await pg.pool.query('BEGIN');
@@ -32,22 +32,46 @@ module.exports = {
           return;
       }
 
-      const queryStatus = await pg.pool.query(`
+      let queryStatus = await pg.pool.query(`
+
+        SELECT * FROM rooms
+        WHERE player1_id = $1 OR player2_id = $2
+
+      `, [ ctx.session.userData.userId,
+          ctx.session.userData.userId ]);
+
+      if (queryStatus.rows.length <= 0) {
+        return;
+      }
+
+      assert(queryStatus.rows.length === 1);
+
+      if (queryStatus.rows[0].player1_id === ctx.session.userData.userId) {
+        queryStatus = await pg.pool.query(`
 
         DELETE FROM rooms
         WHERE player1_id = $1
 
-      `, [ ctx.session.userData.userId ]);
+        `, [ ctx.session.userData.userId ]);
+      } else {
+        queryStatus = await pg.pool.query(`
+
+          UPDATE rooms
+          SET player2_id = null
+          WHERE id = $1
+
+        `, [ queryStatus.rows[0].id ]);
+      }
 
       console.log('queryStatus: ', queryStatus);
 
       await pg.pool.query('COMMIT');
     } catch(err) {
-      ctx.errors.push({ dataPath: '/room_name', message: 'There was a problem destroying the room. Please try again later.' });
+      ctx.errors.push({ dataPath: '/room_name', message: 'There was a problem leaving the room. Please try again later.' });
 
       await pg.pool.query('ROLLBACK');
 
-      logger.info('Failed to destroy room: %o', err);
+      logger.info('Failed to leave room: %o', err);
     }
   },
 };
