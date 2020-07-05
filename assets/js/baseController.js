@@ -5,7 +5,6 @@ var _lastHistoryState = history.state;
 var baseController = function(generalClient) {
 	this.client = generalClient;
 
-	this._isUserLoggedIn = false;
 	this._initConstants();
 	this._initElements();
 
@@ -41,6 +40,7 @@ baseController.prototype._initConstants = function() {
 	this.SPINNER_CLASS = '.spinner';
 	this.MAIN_SPINNER_CLASS = '.main.spinner';
 	this.PRE_SCREEN_SPINNER_CLASS = '.pre-screen-spinner';
+	this.SCREEN_FOOTER_CLASS = '.anime-cb-screen_footer';
 
 	this.INPUT_ERRORS_CLASS = '.errors';
 
@@ -59,6 +59,7 @@ baseController.prototype._initConstants = function() {
 
 	this.IGNORE_SCREENS = [
 		this.LOBBY_SCREEN_CLASS,
+		this.GAME_SCREEN_CLASS,
 	];
 };
 
@@ -69,7 +70,7 @@ baseController.prototype._initElements = function() {
 baseController.prototype._initListeners = function() {
 	var _self = this;
 
-	$(this.CHANGE_SCREEN_BTNS_CLASS).on('click', function(e) {
+	$(_self.SCREENS_CLASS).on('click', _self.CHANGE_SCREEN_BTNS_CLASS , function(e) {
 		_self.processChangeScreen(this);
 	});
 
@@ -156,19 +157,6 @@ baseController.prototype.postSwitchScreenHook = function(screenClass) {
 baseController.prototype.beforeUnload = function(event) {
 	event.preventDefault();
 	event.returnValue = 'Data will be lost if you leave the page, are you sure?';
-};
-
-baseController.prototype.setIsUserLoggedIn = function(flag) {
-	logger.info('setUserLoggedIn');
-
-	assert(typeof flag === 'boolean');
-
-	this._isUserLoggedIn = flag;
-};
-
-baseController.prototype.isUserLoggedIn = function() {
-	logger.info('isUserLoggedIn');
-	return this._isUserLoggedIn === true;
 };
 
 baseController.prototype.resetAllScreens = function() {

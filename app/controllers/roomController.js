@@ -189,6 +189,21 @@ var self = module.exports = {
 
       let queryStatus = await pg.pool.query(`
 
+        DELETE FROM rooms
+        WHERE player1_id = $1
+
+      `, [ ctx.session.userData.userId ]);
+
+      queryStatus = await pg.pool.query(`
+
+        UPDATE rooms
+        SET player2_id = null
+        WHERE player2_id = $1
+
+      `, [ ctx.session.userData.userId ]);
+
+      queryStatus = await pg.pool.query(`
+
         UPDATE rooms
         SET player2_id = $1
         WHERE rooms.id = $2

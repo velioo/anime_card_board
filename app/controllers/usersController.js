@@ -132,6 +132,7 @@ var self = module.exports = {
   isUserLoggedIn: async (ctx, next) => {
     ctx.body = {
       isUserLoggedIn: ctx.session.isUserLoggedIn,
+      userId: ctx.session.userData ? ctx.session.userData.userId : null,
       isSuccessful: true,
     };
   },
@@ -144,6 +145,8 @@ var self = module.exports = {
     if (ctx.userMessage) {
       ctx.body.userMessage = ctx.userMessage;
     }
+
+    ctx.body.userId = ctx.session.userData ? ctx.session.userData.userId : null;
   },
   logOut: async (ctx, next) => {
     console.log('logOut usersController');

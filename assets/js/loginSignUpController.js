@@ -1,6 +1,7 @@
 var logInSignUpController = function(generalClient) {
 	baseController.call(this, generalClient);
 
+	this._isUserLoggedIn = false;
 	this.initConstants();
 	this.initElements();
 	this.initListeners();
@@ -29,12 +30,13 @@ logInSignUpController.prototype.initConstants = function() {
 logInSignUpController.prototype.initElements = function() {
 	this.$signUpInputs = $(this.SIGN_UP_FORM_ID).find('input');
 	this.$loginInputs = $(this.LOGIN_FORM_ID).find('input');
+	this._userId = null;
 };
 
 logInSignUpController.prototype.initListeners = function() {
 	var _self = this;
 
-	$(this.SIGN_OUT_BTN_ID).on('click', function(e) {
+	$(_self.SIGN_OUT_BTN_ID).on('click', function(e) {
 		logger.info('Trying to logout...');
 
 	  _self.showLogOutSpinner();
@@ -42,7 +44,7 @@ logInSignUpController.prototype.initListeners = function() {
 	  _self.client.sendLogOutRequest();
 	});
 
-	$(this.SIGN_UP_SUBMIT_BTN_ID).on('click', function(e) {
+	$(_self.SIGN_UP_SUBMIT_BTN_ID).on('click', function(e) {
 		e.preventDefault();
 
 	  var values = {};
@@ -58,7 +60,7 @@ logInSignUpController.prototype.initListeners = function() {
 	  _self.client.sendSignUpData(values);
 	});
 
-	$(this.LOGIN_SUBMIT_BTN_ID).on('click', function(e) {
+	$(_self.LOGIN_SUBMIT_BTN_ID).on('click', function(e) {
 		e.preventDefault();
 
 	  var values = {};
@@ -74,14 +76,14 @@ logInSignUpController.prototype.initListeners = function() {
 	  _self.client.sendLoginData(values);
 	});
 
-	$(this.RESET_SIGN_UP_BTN_ID).on('click', function(e) {
+	$(_self.RESET_SIGN_UP_BTN_ID).on('click', function(e) {
 		e.preventDefault();
 	  _self.clearSignUpInputs();
 	  _self.clearSignUpErrors();
 	  _self.hideSignUpErrors();
 	});
 
-	$(this.RESET_LOGIN_BTN_ID).on('click', function(e) {
+	$(_self.RESET_LOGIN_BTN_ID).on('click', function(e) {
 		e.preventDefault();
 		_self.clearLoginInputs();
 	  _self.clearLoginErrors();
@@ -94,9 +96,24 @@ logInSignUpController.prototype.checkIsUserLoggedIn = function() {
 	this.client.checkIfUserIsLoggedIn();
 };
 
+logInSignUpController.prototype.setIsUserLoggedIn = function(flag) {
+	logger.info('setUserLoggedIn');
+
+	assert(typeof flag === 'boolean');
+
+	this._isUserLoggedIn = flag;
+};
+
+logInSignUpController.prototype.isUserLoggedIn = function() {
+	logger.info('isUserLoggedIn');
+	return this._isUserLoggedIn === true;
+};
+
 logInSignUpController.prototype.processSignUpResponse = function(data) {
 	logger.info('processSignUpResponse');
 	logger.info('To validate: ', JSON.stringify(data));
+
+	var _self = this;
 
   assert(ajv.validate(signUpResponse, data), 'SignUpResponse is invalid' +
   	JSON.stringify(ajv.errors, null, 2));
@@ -104,51 +121,56 @@ logInSignUpController.prototype.processSignUpResponse = function(data) {
 	if (data.isSuccessful) {
 		logger.info('Data is valid');
 		assert(typeof data.userMessage !== 'undefined');
-		this.showSignUpSuccess(data);
+		_self.showSignUpSuccess(data);
 	} else {
 		assert(data.errors.length > 0);
 		logger.info('There are validation errors');
-		this.renderSignUpErrors(data);
+		_self.renderSignUpErrors(data);
 	}
 
-	this.enableElement(this.SIGN_UP_SUBMIT_BTN_ID);
+	_self.enableElement(_self.SIGN_UP_SUBMIT_BTN_ID);
 };
 
 logInSignUpController.prototype.processLoginResponse = function(data) {
 	logger.info('processLoginResponse');
 	logger.info('To validate: ', JSON.stringify(data));
 
+	var _self = this;
+
   assert(ajv.validate(logInResponse, data), 'LogInResponse is invalid' +
   	JSON.stringify(ajv.errors, null, 2));
 
 	if (data.isSuccessful) {
 		logger.info('Data is valid');
-		this.setIsUserLoggedIn(true);
-		this.showLoginSuccess(data);
+		_self.setIsUserLoggedIn(true);
+		_self._userId = data.userId;
+		_self.showLoginSuccess(data);
 	} else {
 		assert(data.errors.length > 0);
 		logger.info('There are validation errors');
-		this.renderLoginErrors(data);
+		_self.renderLoginErrors(data);
 	}
 
-	this.enableElement(this.LOGIN_SUBMIT_BTN_ID);
+	_self.enableElement(_self.LOGIN_SUBMIT_BTN_ID);
 };
 
 logInSignUpController.prototype.processLogoutResponse = function(data) {
 	logger.info('processLogoutResponse');
 	logger.info('To validate: ', JSON.stringify(data));
 
+	var _self = this;
+
   assert(ajv.validate(logOutResponse, data), 'LogOutResponse is invalid' +
   	JSON.stringify(ajv.errors, null, 2));
 
 	if (data.isSuccessful) {
 		logger.info('Data is valid');
-		this.setIsUserLoggedIn(false);
-		this.showLogOutSuccess(data);
+		_self.setIsUserLoggedIn(false);
+		_self.showLogOutSuccess(data);
 	} else {
 		assert(data.errors.length > 0);
 		logger.info('There are validation errors');
-		this.showAlertError();
+		_self.showAlertError();
 	}
 };
 
@@ -156,17 +178,20 @@ logInSignUpController.prototype.processIsUserLoggedInResponse = function(data) {
 	logger.info('processIsUserLoggedInResponse');
 	logger.info('To validate: ', JSON.stringify(data));
 
+	var _self = this;
+
   assert(ajv.validate(isUserLoggedInResponse, data), 'isUserLoggedInResponse is invalid' +
   	JSON.stringify(ajv.errors, null, 2));
 
 	if (data.isSuccessful) {
 		logger.info('Data is valid');
 		if (data.isUserLoggedIn === true) {
-			this.setIsUserLoggedIn(true);
+			_self.setIsUserLoggedIn(true);
+			_self._userId = data.userId;
 		}
 
 		if (_isBaseControllerStateInited === false) {
-			this._initState();
+			_self._initState();
 		}
 	} else {
 		assert(0, 'There was a problem with isUserLoggedIn request');
