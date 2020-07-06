@@ -34,34 +34,18 @@ module.exports = {
 
       let queryStatus = await pg.pool.query(`
 
-        SELECT * FROM rooms
-        WHERE player1_id = $1 OR player2_id = $2
-
-      `, [ ctx.session.userData.userId,
-          ctx.session.userData.userId ]);
-
-      if (queryStatus.rows.length <= 0) {
-        return;
-      }
-
-      assert(queryStatus.rows.length === 1);
-
-      if (queryStatus.rows[0].player1_id === ctx.session.userData.userId) {
-        queryStatus = await pg.pool.query(`
-
         DELETE FROM rooms
         WHERE player1_id = $1
 
-        `, [ ctx.session.userData.userId ]);
-      } else {
-        queryStatus = await pg.pool.query(`
+      `, [ ctx.session.userData.userId ]);
 
-          UPDATE rooms
-          SET player2_id = null
-          WHERE id = $1
+      queryStatus = await pg.pool.query(`
 
-        `, [ queryStatus.rows[0].id ]);
-      }
+        UPDATE rooms
+        SET player2_id = null
+        WHERE player2_id = $1
+
+      `, [ ctx.session.userData.userId ]);
 
       console.log('queryStatus: ', queryStatus);
 

@@ -57,7 +57,17 @@ var self = module.exports = {
 
       `, [ ctx.session.userData.userId ]);
 
-      console.log('destroyRoom status: ', queryStatus);
+      console.log('destroyRoom status 1: ', queryStatus);
+
+      queryStatus = await pg.pool.query(`
+
+        UPDATE rooms
+        SET player2_id = null
+        WHERE player2_id = $1
+
+      `, [ ctx.session.userData.userId ]);
+
+      console.log('destroyRoom status 2: ', queryStatus);
 
 	    queryStatus = await pg.pool.query(`
 

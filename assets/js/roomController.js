@@ -41,12 +41,6 @@ roomController.prototype.initElements = function() {
 roomController.prototype.initListeners = function() {
 	var _self = this;
 
-	$(_self.LOBBY_SCREEN_CLASS).on('click', _self.LEAVE_ROOM_BTN_ID, function(e) {
-		logger.info('Leaving room...');
-
-		_self.client.sendLeaveRoomRequest();
-	});
-
 	$(_self.LOBBY_SCREEN_CLASS).on('click', _self.START_GAME_BTN_ID, function(e) {
 		logger.info('Staring game...');
 	});
@@ -55,7 +49,7 @@ roomController.prototype.initListeners = function() {
 		logger.info('Surrendering...');
 		console.log('LEAVE ROOM SURRENDER');
 		// Other things ...
-		_self.client.sendLeaveRoomRequest();
+		//_self.client.sendLeaveRoomRequest();
 	});
 
 	$(_self.CREATE_ROOM_SUBMIT_BTN_ID).on('click', function(e) {
@@ -371,10 +365,14 @@ roomController.prototype.preSwitchScreenHook = function (screenClass) {
 	console.log('history.state: ', history.state);
 	console.log('screenClass: ', screenClass);
 
-	if(_lastHistoryState && history.state && _lastHistoryState.screenClass !== history.state.screenClass
-		&& (_lastHistoryState.screenClass === _self.LOBBY_SCREEN_CLASS || _lastHistoryState.screenClass === _self.GAME_SCREEN_CLASS)
-		&& screenClass !== _self.GAME_SCREEN_CLASS) {
-		console.log('LEAVE ROOM');
+	//if(_lastHistoryState && history.state && _lastHistoryState.screenClass !== history.state.screenClass
+	//	&& (_lastHistoryState.screenClass === _self.LOBBY_SCREEN_CLASS || _lastHistoryState.screenClass === _self.GAME_SCREEN_CLASS)
+	//	&& screenClass !== _self.GAME_SCREEN_CLASS) {
+	//	console.log('LEAVE ROOM');
+	//	_self.client.sendLeaveRoomRequest();
+	//}
+	if (screenClass !== _self.LOBBY_SCREEN_CLASS && screenClass !== _self.GAME_SCREEN_CLASS && _self._roomId) {
+		console.log('Leave Room');
 		_self.client.sendLeaveRoomRequest();
 	}
 
