@@ -98,15 +98,12 @@ logInSignUpController.prototype.checkIsUserLoggedIn = function() {
 
 logInSignUpController.prototype.setIsUserLoggedIn = function(flag) {
 	logger.info('setUserLoggedIn');
-
-	assert(typeof flag === 'boolean');
-
 	this._isUserLoggedIn = flag;
 };
 
 logInSignUpController.prototype.isUserLoggedIn = function() {
 	logger.info('isUserLoggedIn');
-	return this._isUserLoggedIn === true;
+	return this._isUserLoggedIn;
 };
 
 logInSignUpController.prototype.processSignUpResponse = function(data) {

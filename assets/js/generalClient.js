@@ -138,6 +138,8 @@ generalClient.prototype.failHandler = function (xhr, status, errorThrown) {
 	console.log('STATUS: ', status);
 	console.log('ERROR_THROWN: ', errorThrown);
 
+  var _self = this;
+
   if (status === 'timeout') {
     logger.info('Request timed out');
 
@@ -167,11 +169,13 @@ generalClient.prototype.failHandler = function (xhr, status, errorThrown) {
         logger.info('Internal sever error');
       }
     }
+
+    _self.roomController.processChangeScreen(_self.roomController.MAIN_MENU_SCREEN_CLASS);
     window.alert('There was a problem while processing your request. Please try again later.');
   }
 
-  this.logInSignUpController.enableAllElements();
-  this.logInSignUpController.hideAllSpinner();
+  _self.logInSignUpController.enableAllElements();
+  _self.logInSignUpController.hideAllSpinner();
 
   logger.info('Response Text: ' +
     xhr.responseText + '\n Ready State: ' +

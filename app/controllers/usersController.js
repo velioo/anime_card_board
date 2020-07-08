@@ -1,6 +1,7 @@
 const logger = require('../helpers/logger');
 const pg = require('../db/pg');
 const utils = require('../helpers/utils');
+const gameServer = require('../socket/gameServer.js');
 
 const {
   ROOT,
@@ -151,6 +152,8 @@ var self = module.exports = {
   logOut: async (ctx, next) => {
     console.log('logOut usersController');
     ctx.errors = [];
+
+    await gameServer.leaveRoom(ctx, next);
 
     if (ctx.session.isUserLoggedIn) {
       ctx.session.userData = null;

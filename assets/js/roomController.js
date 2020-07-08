@@ -105,8 +105,7 @@ roomController.prototype.initIntervals = function() {
 			_self.client.getCurrentRoomData({ roomId: _self._roomId });
 		}
 
-		if (_self._roomId !== null && _self._roomId !== undefined &&
-			!$(_self.LOBBY_SCREEN_CLASS).is(':visible') && !_self._inGame) {
+		if (!$(_self.LOBBY_SCREEN_CLASS).is(':visible') && !_self._inGame) {
 			_self.client.sendLeaveRoomRequest();
 		}
 	}, 3000);
@@ -126,6 +125,7 @@ roomController.prototype.processGetCurrentRoomDataResponse = function (data) {
 			_self._roomId = null;
 			window.alert("The host has left the room.");
 			_self.processChangeScreen(this.MAIN_MENU_SCREEN_CLASS);
+			return;
 		}
 
 		if (data.isUserLoggedIn === true) {
@@ -263,8 +263,9 @@ roomController.prototype.processJoinRoomResponse = function(data) {
 
 	if (data.isSuccessful) {
 		if (!data.result.id) {
-			window.alert("This room no longer exists, you will be returned to the Main Menu.");
+			window.alert("This room no longer exists, you will be returned to the Main Menu.......");
 			_self.processChangeScreen(this.MAIN_MENU_SCREEN_CLASS);
+			return;
 		}
 
 		if (data.isUserLoggedIn === true) {
@@ -371,7 +372,7 @@ roomController.prototype.preSwitchScreenHook = function (screenClass) {
 	//	console.log('LEAVE ROOM');
 	//	_self.client.sendLeaveRoomRequest();
 	//}
-	if (screenClass !== _self.LOBBY_SCREEN_CLASS && screenClass !== _self.GAME_SCREEN_CLASS && _self._roomId) {
+	if (screenClass !== _self.LOBBY_SCREEN_CLASS && screenClass !== _self.GAME_SCREEN_CLASS) {
 		console.log('Leave Room');
 		_self.client.sendLeaveRoomRequest();
 	}

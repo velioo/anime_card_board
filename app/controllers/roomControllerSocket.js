@@ -29,6 +29,7 @@ module.exports = {
     try {
       if (ctx.session.userData === undefined || ctx.session.userData === null)
       {
+          console.log('NO DATA');
           return;
       }
 

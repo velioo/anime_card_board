@@ -226,7 +226,7 @@ var self = module.exports = {
       if (queryStatus.rows.length <= 0) {
         logger.info('Could not find room to update, request body: %o', ctx.request.body.data);
 
-        await pg.pool.query('ROLLBACK');
+        await pg.pool.query('COMMIT');
         return self.sendResponse(ctx, next);
       }
 
