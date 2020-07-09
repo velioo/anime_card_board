@@ -2,8 +2,8 @@ var _isBaseControllerStateInited = false;
 var _isBaseControllerListenersInited = false;
 var _lastHistoryState = history.state;
 
-var baseController = function(generalClient) {
-	this.client = generalClient;
+var baseController = function(client) {
+	this.client = client;
 
 	this._initConstants();
 	this._initElements();
@@ -176,7 +176,8 @@ baseController.prototype.clearAllInputs = function() {
 };
 
 baseController.prototype.clearAllErrors = function() {
-	this.$allInputs.parent().find('.errors').html('');
+	this.$allInputs.parent().find(this.INPUT_ERRORS_CLASS).html('');
+	$(this.SCREENS_CLASS).find('.errors').html('');
 };
 
 baseController.prototype.showMainMenuScreen = function() {
@@ -200,7 +201,7 @@ baseController.prototype.hideAllPreSpinner = function() {
 };
 
 baseController.prototype.hideAllErrors = function() {
-	this.$allInputs.parent().find('.errors').hide();
+	this.$allInputs.parent().find(this.INPUT_ERRORS_CLASS).hide();
 };
 
 baseController.prototype.disableElement = function(elSelector) {

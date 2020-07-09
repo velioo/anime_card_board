@@ -35,8 +35,9 @@ var logInResponse = {
 		"isSuccessful": { "type": "boolean" },
 		"userMessage": { "type": "string" },
 		"userId": { "type": ["integer", "null"] },
+		"username": { "type": ["string", "null"] },
 	},
-	"required": [ "errors", "isSuccessful", "userId" ],
+	"required": [ "errors", "isSuccessful", "userId", "username" ],
 };
 
 var logOutResponse = {
@@ -54,8 +55,9 @@ var isUserLoggedInResponse = {
 		"isSuccessful": { "type": "boolean" },
 		"isUserLoggedIn": { "type": "boolean" },
 		"userId": { "type": ["integer", "null"] },
+		"username": { "type": ["string", "null"] },
 	},
-	"required": [ "isSuccessful", "isUserLoggedIn", "userId" ],
+	"required": [ "isSuccessful", "isUserLoggedIn", "userId", "username" ],
 };
 
 var createRoomResponse = {
@@ -173,6 +175,7 @@ var getCurrentRoomDataResponse = {
 			},
 			"required": [ "id", "name", "player1Name", "player2Name", "player1Id", "player2Id" ],
 		},
+		"userMessage": { "type": "string" },
 	},
 	"required": [ "errors", "isSuccessful", "isUserLoggedIn", "result" ],
 };

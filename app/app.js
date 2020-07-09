@@ -108,6 +108,7 @@ app.use( async (ctx) => {
 
 io.on('connect', async (ctx, next) => {
   try {
+    ctx.io = io;
     await socketRouter.routeRequest(ctx, next);
   } catch (err) {
     logger.error('IO Errors: %o', err);

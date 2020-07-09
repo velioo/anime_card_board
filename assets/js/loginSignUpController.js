@@ -31,6 +31,7 @@ logInSignUpController.prototype.initElements = function() {
 	this.$signUpInputs = $(this.SIGN_UP_FORM_ID).find('input');
 	this.$loginInputs = $(this.LOGIN_FORM_ID).find('input');
 	this._userId = null;
+	this._username = null;
 };
 
 logInSignUpController.prototype.initListeners = function() {
@@ -92,17 +93,14 @@ logInSignUpController.prototype.initListeners = function() {
 };
 
 logInSignUpController.prototype.checkIsUserLoggedIn = function() {
-	logger.info('checkIsUserLoggedIn');
 	this.client.checkIfUserIsLoggedIn();
 };
 
 logInSignUpController.prototype.setIsUserLoggedIn = function(flag) {
-	logger.info('setUserLoggedIn');
 	this._isUserLoggedIn = flag;
 };
 
 logInSignUpController.prototype.isUserLoggedIn = function() {
-	logger.info('isUserLoggedIn');
 	return this._isUserLoggedIn;
 };
 
@@ -116,12 +114,10 @@ logInSignUpController.prototype.processSignUpResponse = function(data) {
   	JSON.stringify(ajv.errors, null, 2));
 
 	if (data.isSuccessful) {
-		logger.info('Data is valid');
 		assert(typeof data.userMessage !== 'undefined');
 		_self.showSignUpSuccess(data);
 	} else {
 		assert(data.errors.length > 0);
-		logger.info('There are validation errors');
 		_self.renderSignUpErrors(data);
 	}
 
@@ -141,6 +137,7 @@ logInSignUpController.prototype.processLoginResponse = function(data) {
 		logger.info('Data is valid');
 		_self.setIsUserLoggedIn(true);
 		_self._userId = data.userId;
+		_self._username = data.username;
 		_self.showLoginSuccess(data);
 	} else {
 		assert(data.errors.length > 0);
@@ -181,10 +178,10 @@ logInSignUpController.prototype.processIsUserLoggedInResponse = function(data) {
   	JSON.stringify(ajv.errors, null, 2));
 
 	if (data.isSuccessful) {
-		logger.info('Data is valid');
 		if (data.isUserLoggedIn === true) {
 			_self.setIsUserLoggedIn(true);
 			_self._userId = data.userId;
+			_self._username = data.username;
 		}
 
 		if (_isBaseControllerStateInited === false) {

@@ -21,6 +21,7 @@ generalClient.prototype.clientConnectToServer = function() {
   //Sent when we are disconnected (network, server down, etc)
   this.socket.on('disconnect', this.processDisconnect.bind(this));
   this.socket.on('leaveRoom', this.processLeaveRoom.bind(this));
+  this.socket.on('joinRoom', this.processJoinRoom.bind(this));
       //Sent each tick of the server simulation. This is our authoritive update
   // this.socket.on('onserverupdate', this.client_onserverupdate_recieved.bind(this));
       //Handle when we connect to the server, showing state and storing id's.
@@ -34,29 +35,32 @@ generalClient.prototype.clientConnectToServer = function() {
 	// this.socket.emit('signUp', { username: "velioo", password: "12345678", email: "velioocs@mail.bg", conf_password: "12345678" });
 };
 
-generalClient.prototype.sendSignUpData = function(data) {
-	var _self = this;
+generalClient.prototype.sendSignUpData = function(_data) {
 	logger.info('sendSignUpData');
-	logger.info('Sending data to signup: ', JSON.stringify(data));
+	logger.info('Sending data to signup: ', JSON.stringify(_data));
 
-  $.post('/sign_up', { data: data }, function (data, status) {
+	var _self = this;
+
+  $.post('/sign_up', { data: _data }, function (data, status) {
     _self.logInSignUpController.processSignUpResponse(data);
   }).fail(_self.failHandler.bind(_self));
 };
 
-generalClient.prototype.sendLoginData = function(data) {
-	var _self = this;
+generalClient.prototype.sendLoginData = function(_data) {
 	logger.info('sendLoginData');
-	logger.info('Sending data to login: ', JSON.stringify(data));
+	logger.info('Sending data to login: ', JSON.stringify(_data));
 
-  $.post('/log_in', { data: data }, function (data, status) {
+	var _self = this;
+
+  $.post('/log_in', { data: _data }, function (data, status) {
     _self.logInSignUpController.processLoginResponse(data);
   }).fail(_self.failHandler.bind(_self));
 };
 
 generalClient.prototype.sendLogOutRequest = function() {
-	var _self = this;
 	logger.info('sendLogOutRequest');
+
+	var _self = this;
 
   $.post('/log_out', {}, function (data, status) {
     _self.logInSignUpController.processLogoutResponse(data);
@@ -64,73 +68,99 @@ generalClient.prototype.sendLogOutRequest = function() {
 };
 
 generalClient.prototype.checkIfUserIsLoggedIn = function() {
-	var _self = this;
 	logger.info('checkIfUserIsLoggedIn');
+
+	var _self = this;
 
   $.post('/is_user_logged_in', {}, function (data, status) {
     _self.logInSignUpController.processIsUserLoggedInResponse(data);
   }).fail(_self.failHandler.bind(_self));
 };
 
-generalClient.prototype.sendCreateRoomData = function(data) {
-	var _self = this;
+generalClient.prototype.sendCreateRoomData = function(_data) {
 	logger.info('sendCreateRoomData');
 
-  $.post('/create_room', { data: data }, function (data, status) {
+	var _self = this;
+
+  $.post('/create_room', { data: _data }, function (data, status) {
     _self.roomController.processCreateRoomResponse(data);
   }).fail(_self.failHandler.bind(_self));
 };
 
-generalClient.prototype.sendLeaveRoomRequest = function(data) {
-	var _self = this;
+generalClient.prototype.sendLeaveRoomRequest = function(_data) {
 	logger.info('sendLeaveRoomRequest');
 
+	var _self = this;
+
   _self.roomController._roomId = null;
-	this.socket.emit('leaveRoom');
+  _self.roomController._user2Id = null;
+  _self.roomController._inGame = false;
+
+	this.socket.emit('leaveRoom', _data);
 };
 
 generalClient.prototype.getBrowseRoomsData = function() {
-  var _self = this;
   logger.info('getBrowseRoomsData');
+
+  var _self = this;
 
   $.post('/browse_rooms', {}, function (data, status) {
     _self.roomController.processBrowseRoomsResponse(data);
   }).fail(_self.failHandler.bind(_self));
 };
 
-generalClient.prototype.getCurrentRoomData = function(data) {
-  var _self = this;
+generalClient.prototype.getCurrentRoomData = function(_data) {
   logger.info('getCurrentRoomData');
 
-  $.post('/room_data', { data: data }, function (data, status) {
+  var _self = this;
+
+  $.post('/room_data', { data: _data }, function (data, status) {
     _self.roomController.processGetCurrentRoomDataResponse(data);
   }).fail(_self.failHandler.bind(_self));
 };
 
-generalClient.prototype.joinRoom = function(data) {
-  var _self = this;
+generalClient.prototype.joinRoom = function(_data) {
   logger.info('joinRoom');
 
-  $.post('/join_room', { data: data }, function (data, status) {
-    _self.roomController.processJoinRoomResponse(data);
+  var _self = this;
+
+  $.post('/join_room', { data: _data }, function (data, status) {
+    var successfullyJoinedRoom = _self.roomController.processJoinRoomResponse(data);
+
+    if (successfullyJoinedRoom) {
+      _self.socket.emit('joinRoom', data);
+    }
   }).fail(_self.failHandler.bind(_self));
 };
 
-generalClient.prototype.processServerSocketError = function(data) {
-	logger.info('ServerError err: ', JSON.stringify(data));
+generalClient.prototype.processJoinRoom = function (_data) {
+  logger.info('processJoinRoom');
+
+  var _self = this;
+
+  if (_data.result.id && _self.roomController._roomId
+    && _data.result.id == _self.roomController._roomId) {
+    _self.roomController.processGetCurrentRoomDataResponse(_data);
+  }
+}
+
+generalClient.prototype.processServerSocketError = function(_data) {
+	logger.info('ServerError err: ', JSON.stringify(_data));
 	window.alert('There was a problem while processing your request. Please try again later.');
 };
 
-generalClient.prototype.processDisconnect = function(data) {
-	var _self = this;
+generalClient.prototype.processDisconnect = function(_data) {
 	logger.info('processDisconnect');
+
+	var _self = this;
 };
 
-generalClient.prototype.processLeaveRoom = function(data) {
-	var _self = this;
+generalClient.prototype.processLeaveRoom = function(_data) {
 	logger.info('processLeaveRoom');
 
-	 _self.roomController.processLeaveRoomResponse(data);
+	var _self = this;
+
+	 _self.roomController.processLeaveRoomResponse(_data);
 };
 
 generalClient.prototype.failHandler = function (xhr, status, errorThrown) {

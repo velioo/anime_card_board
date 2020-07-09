@@ -214,6 +214,29 @@ var self = module.exports = {
 
       queryStatus = await pg.pool.query(`
 
+        SELECT * FROM rooms
+        WHERE id = $1
+
+      `, [ ctx.request.body.data.roomId ]);
+
+      if (queryStatus.rows.length <= 0) {
+        logger.info('Room no longer exists, request body: %o', ctx.request.body.data);
+
+        ctx.errors.push({ dataPath: '/browse-rooms-table', message: 'Room no longer exists.' });
+        await pg.pool.query('COMMIT');
+        return self.sendResponse(ctx, next);
+      }
+
+      if (queryStatus.rows[0].player2_id) {
+        logger.info('Room is full');
+
+        ctx.errors.push({ dataPath: '/browse-rooms-table', message: 'Room is full.' });
+        await pg.pool.query('COMMIT');
+        return self.sendResponse(ctx, next);
+      }
+
+      queryStatus = await pg.pool.query(`
+
         UPDATE rooms
         SET player2_id = $1
         WHERE rooms.id = $2

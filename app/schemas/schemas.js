@@ -83,10 +83,86 @@ const _GET_ROOM_DATA = {
 
 const _JOIN_ROOM_DATA = _GET_ROOM_DATA;
 
+const _WIN_GAME_FORMALLY = {
+  "type": "object",
+  "properties": {
+    "roomId": { "type": "integer" },
+    "userId": { "type": "integer" },
+  },
+  "required": [ "roomId", "userId" ],
+  "errorMessage": {
+    "properties" : {
+      "roomId": `Room id should be an integer`,
+      "userId": `User id should be an integer`,
+    },
+    "required": {
+      "roomId": 'No roomId is specified',
+      "userId": 'No userId is specified',
+    },
+  }
+};
+
+const _START_GAME = {
+  "type": "object",
+  "properties": {
+    "roomId": { "type": "integer" },
+    "player1Id": { "type": "integer" },
+    "player2Id": { "type": "integer" },
+  },
+  "required": [ "roomId", "player1Id", "player2Id" ],
+  "errorMessage": {
+    "properties" : {
+      "roomId": `Room id should be an integer`,
+      "player1Id": `Player 1 id should be an integer`,
+      "player2Id": `Player 2 id should be an integer`,
+    },
+    "required": {
+      "roomId": 'No roomId is specified',
+      "player1Id": 'No player1Id is specified',
+      "player2Id": 'No player2Id is specified',
+    },
+  }
+};
+
+const _JOIN_ROOM_EVENT = {
+  "type": "object",
+  "properties": {
+    "errors" : {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "dataPath": { "type": "string", "pattern": "/.+"  },
+          "message": { "type": "string" },
+        },
+        "required": [ "dataPath", "message" ]
+      }
+    },
+    "isSuccessful": { "type": "boolean" },
+    "isUserLoggedIn": { "type": "boolean" },
+    "result": {
+      "type": "object",
+      "properties": {
+        "id": { "type": ["integer", "null"] },
+        "name": { "type": ["string", "null"] },
+        "player1Name": { "type": ["string", "null"] },
+        "player2Name": { "type": ["string", "null"] },
+        "player1Id": { "type": ["integer", "null"] },
+        "player2Id": { "type": ["integer", "null"] },
+      },
+      "required": [ "id", "name", "player1Name", "player2Name", "player1Id", "player2Id" ],
+    },
+  },
+  "required": [ "errors", "isSuccessful", "isUserLoggedIn", "result" ],
+};
+
 module.exports = {
   SIGN_UP: _SIGN_UP,
   LOGIN: _LOGIN,
   CREATE_ROOM: _CREATE_ROOM,
   GET_ROOM_DATA: _GET_ROOM_DATA,
   JOIN_ROOM_DATA: _JOIN_ROOM_DATA,
+  WIN_GAME_FORMALLY: _WIN_GAME_FORMALLY,
+  START_GAME: _START_GAME,
+  JOIN_ROOM_EVENT: _JOIN_ROOM_EVENT,
 };

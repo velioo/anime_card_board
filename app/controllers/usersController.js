@@ -40,9 +40,6 @@ var self = module.exports = {
     }
 
     const userData = getUserData(ctx);
-
-    logger.info('User Data = %o', userData);
-
     const tempCode = utils.generateUniqueId(32);
 
     const userDbData = Object.keys(userData).map((fieldName) => userData[ fieldName ]);
@@ -134,6 +131,7 @@ var self = module.exports = {
     ctx.body = {
       isUserLoggedIn: ctx.session.isUserLoggedIn,
       userId: ctx.session.userData ? ctx.session.userData.userId : null,
+      username: ctx.session.userData ? ctx.session.userData.username : null,
       isSuccessful: true,
     };
   },
@@ -148,6 +146,7 @@ var self = module.exports = {
     }
 
     ctx.body.userId = ctx.session.userData ? ctx.session.userData.userId : null;
+    ctx.body.username = ctx.session.userData ? ctx.session.userData.username : null;
   },
   logOut: async (ctx, next) => {
     console.log('logOut usersController');

@@ -27,18 +27,23 @@ module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
-      if (ctx.session.userData === undefined || ctx.session.userData === null)
+      let userId = null;
+      if (!ctx.session.userData && !ctx.data.userId)
       {
           console.log('NO DATA');
           return;
       }
+
+      userId = ctx.session.userData ? ctx.session.userData.userId : ctx.data.userId;
+
+      assert(userId);
 
       let queryStatus = await pg.pool.query(`
 
         DELETE FROM rooms
         WHERE player1_id = $1
 
-      `, [ ctx.session.userData.userId ]);
+      `, [ userId ]);
 
       queryStatus = await pg.pool.query(`
 
@@ -46,7 +51,7 @@ module.exports = {
         SET player2_id = null
         WHERE player2_id = $1
 
-      `, [ ctx.session.userData.userId ]);
+      `, [ userId ]);
 
       console.log('queryStatus: ', queryStatus);
 

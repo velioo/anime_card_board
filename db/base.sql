@@ -1,5 +1,5 @@
 CREATE TABLE "users" (
-  "id" serial NOT NULL,
+  "id" bigserial NOT NULL,
   "username" character varying(255) NOT NULL,
   "password" text NOT NULL,
   "salt" text NOT NULL,
@@ -21,7 +21,7 @@ END ;$$
 CREATE TRIGGER update_user_timestamp BEFORE UPDATE ON users FOR EACH ROW EXECUTE PROCEDURE update_timestamp();
 
 CREATE TABLE "temp_codes" (
-  "user_id" int NOT NULL REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  "user_id" bigint NOT NULL REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
   "hash" character varying(255) NOT NULL,
   "type" character varying(255) NOT NULL,
   "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -29,10 +29,10 @@ CREATE TABLE "temp_codes" (
 );
 
 CREATE TABLE "rooms" (
-  "id" serial NOT NULL,
+  "id" bigserial NOT NULL,
   "name" character varying(20) NOT NULL UNIQUE,
-  "player1_id" int NOT NULL REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE UNIQUE,
-  "player2_id" int REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE UNIQUE,
+  "player1_id" bigint NOT NULL REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE UNIQUE,
+  "player2_id" bigint REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE UNIQUE,
   "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updated_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id)
@@ -43,3 +43,29 @@ GRANT ALL ON users TO velioo;
 GRANT ALL ON temp_codes TO velioo;
 GRANT ALL ON rooms TO velioo;
 GRANT ALL ON users_id_seq;
+
+CREATE TABLE "gameplay_statuses" (
+  "id" bigint NOT NULL,
+  "name" TEXT NOT NULL,
+  PRIMARY KEY (id)
+);
+
+INSERT INTO gameplay_statuses (id, name) VALUES (1, 'In progress'), (2, 'Finished');
+
+CREATE TABLE "games" (
+  "id" bigserial NOT NULL,
+  "room_id" bigint UNIQUE,
+  "player1_id" bigint NOT NULL REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  "player2_id" bigint NOT NULL REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  "data_json" text NOT NULL,
+  "status_id" bigint NOT NULL REFERENCES gameplay_statuses(id) ON UPDATE CASCADE,
+  "winning_player_id" bigint REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "updated_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "finished_at" timestamp,
+  PRIMARY KEY (id)
+);
+
+GRANT ALL ON gameplay_statuses TO velioo;
+GRANT ALL ON games TO velioo;
+GRANT ALL ON games_id_seq TO velioo;
