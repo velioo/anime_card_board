@@ -52,6 +52,22 @@ CREATE TABLE "gameplay_statuses" (
 
 INSERT INTO gameplay_statuses (id, name) VALUES (1, 'In progress'), (2, 'Finished');
 
+CREATE TABLE "borders" (
+  "id" bigserial NOT NULL,
+  "border_matrix_json" text NOT NULL,
+  "border_data_json" text NOT NULL,
+  "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "updated_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id)
+);
+
+INSERT INTO borders (id, border_matrix_json, border_data_json) VALUES (1,
+'[[0,0,0,0,0,1,0,0,0,0,0],[0,0,0,0,0,1,0,0,0,0,0],[0,0,0,0,0,1,0,0,0,0,0],[0,0,0,0,0,1,0,0,0,0,0],[0,0,0,0,0,1,0,0,0,0,0],[0,0,0,0,0,1,0,0,0,0,0],[0,0,0,0,0,1,0,0,0,0,0],[0,0,0,0,0,1,0,0,0,0,0],[0,0,0,0,0,1,0,0,0,0,0],[0,0,0,0,0,1,0,0,0,0,0]]',
+'{"player1StartIndexRow":9,"player1StartIndexColumn":5,"player2StartIndexRow":0,"player2StartIndexColumn":5}');
+
+GRANT ALL ON borders TO velioo;
+GRANT ALL ON borders_id_seq TO velioo;
+
 CREATE TABLE "games" (
   "id" bigserial NOT NULL,
   "room_id" bigint UNIQUE,
@@ -60,6 +76,7 @@ CREATE TABLE "games" (
   "data_json" text NOT NULL,
   "status_id" bigint NOT NULL REFERENCES gameplay_statuses(id) ON UPDATE CASCADE,
   "winning_player_id" bigint REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  "border_id" bigint NOT NULL REFERENCES borders(id) ON UPDATE CASCADE,
   "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updated_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "finished_at" timestamp,

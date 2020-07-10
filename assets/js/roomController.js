@@ -36,7 +36,7 @@ roomController.prototype.initElements = function() {
 	this._roomId = null;
 	this._connectingToRoom = false;
 	this._inGame = false;
-	this._user2Id = false;
+	this._user2Id = null;
 };
 
 roomController.prototype.initListeners = function() {
@@ -80,17 +80,16 @@ roomController.prototype.initListeners = function() {
 roomController.prototype.initIntervals = function() {
 	var _self = this;
 
-	logger.info('Settings browse rooms interval...');
-
-	_self.mainInterval = setInterval(_self.mainIntervalFunc.bind(_self), 3000);
+	_self.roomsInterval = setInterval(_self.roomsIntervalFunc.bind(_self), 3000);
 };
 
-roomController.prototype.mainIntervalFunc = function() {
+roomController.prototype.roomsIntervalFunc = function() {
 	var _self = this;
 
 	if ($(_self.BROWSE_ROOMS_SCREEN_CLASS).find('tr').length == 0) {
 		_self.showBrowseRoomsSpinner();
 	}
+
 	if ($(_self.BROWSE_ROOMS_SCREEN_CLASS).is(':visible') && !_self._connectingToRoom) {
 		_self.client.getBrowseRoomsData();
 	}
@@ -101,7 +100,7 @@ roomController.prototype.mainIntervalFunc = function() {
 	}
 
 	if (!$(_self.LOBBY_SCREEN_CLASS).is(':visible') && !_self._inGame) {
-		_self.client.sendLeaveRoomRequest({ roomId: _self._roomId });
+		_self.client.sendLeaveRoomRequest({ roomId: _self._roomId, userId: _self.client.logInSignUpController._userId });
 	}
 };
 
@@ -119,7 +118,7 @@ roomController.prototype.processGetCurrentRoomDataResponse = function (data) {
 		if (!data.result.id) {
 			if (_self._inGame) {
 				_self._inGame = false;
-				window.alert("The host has left the room. You win, congratulations !");
+				window.alert("The host has surrendered or left the room. You win, congratulations !");
 				_self.client.gameClient.winGameFormally({ roomId: _self._roomId, userId: _self.client.logInSignUpController._userId });
 			} else if ($(_self.LOBBY_SCREEN_CLASS).is(':visible')) {
 				window.alert("The host has left the room.");
@@ -140,10 +139,13 @@ roomController.prototype.processGetCurrentRoomDataResponse = function (data) {
 		if (data.result.player1Id == _self.client.logInSignUpController._userId
 			&& !data.result.player2Id && _self._inGame) {
 			_self._inGame = false;
-			window.alert("Player 2 has left the room. You win, congratulations !");
+			window.alert("Player 2 has surrendered or left the room. You win, congratulations !");
 			_self.client.gameClient.winGameFormally({ roomId: _self._roomId, userId: _self.client.logInSignUpController._userId });
 			return;
 		}
+
+		_self._roomId = data.result.id;
+		_self._user2Id = data.result.player2Id;
 
 		if (data.isUserLoggedIn === true) {
 			if (!_self._inGame && $(_self.LOBBY_SCREEN_CLASS).is(':visible')) {
@@ -213,8 +215,6 @@ roomController.prototype.updateRoomState = function(data) {
 	console.log('data: ', data);
 	console.log('userId: ', _self.client.logInSignUpController._userId);
 
-	_self._user2Id = data.result.player2Id;
-
 	if (data.result.player1Id === _self.client.logInSignUpController._userId) {
 		if (data.result.player1Id && data.result.player2Id) {
 			_self.enableElement(_self.START_GAME_BTN_ID);
@@ -224,6 +224,15 @@ roomController.prototype.updateRoomState = function(data) {
 			$(_self.LOBBY_ROOM_WAITING_PLAYERS_CLASS).show();
 		}
 	}
+};
+
+roomController.prototype.resetRoomState = function () {
+	var _self = this;
+
+	_self._roomId = null;
+	_self._connectingToRoom = false;
+	_self._inGame = false;
+	_self._user2Id = null;
 };
 
 roomController.prototype.processCreateRoomResponse = function(data) {
@@ -260,9 +269,9 @@ roomController.prototype.processLeaveRoomResponse = function(data) {
   	JSON.stringify(ajv.errors, null, 2));
 
   if (_self._roomId && _self._roomId == data.roomId) {
-  	clearInterval(_self.mainInterval);
+  	clearInterval(_self.roomsInterval);
   	_self.client.getCurrentRoomData({ roomId: _self._roomId });
-  	_self.mainInterval = setInterval(_self.mainIntervalFunc.bind(_self), 3000);
+  	_self.roomsInterval = setInterval(_self.roomsIntervalFunc.bind(_self), 3000);
   }
 
 	if (!data.isSuccessful) {
@@ -393,7 +402,7 @@ roomController.prototype.preSwitchScreenHook = function (screenClass) {
 
 	if (screenClass !== _self.LOBBY_SCREEN_CLASS && screenClass !== _self.GAME_SCREEN_CLASS) {
 		console.log('Leave Room');
-		_self.client.sendLeaveRoomRequest({ roomId: _self._roomId });
+		_self.client.sendLeaveRoomRequest({ roomId: _self._roomId, userId: _self.client.logInSignUpController._userId });
 	}
 
 	if (screenClass === _self.BROWSE_ROOMS_SCREEN_CLASS) {

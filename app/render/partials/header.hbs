@@ -27,7 +27,8 @@
       } else {
         logger.error(msg + ': ' + url + ': ' + lineNo + ': ' + columnNo + '\n');
       }
-      return true;
+      // make return true in production environment, returning true prevents the firing of the default event handler.
+      return false;
     };
 
     const logger = log4javascript.getLogger();

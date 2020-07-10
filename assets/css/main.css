@@ -195,3 +195,219 @@ body {
 .anime-cb-join-room {
   color: black;
 }
+
+.anime-cb-title-page-game {
+  position: absolute;
+  margin: 10px;
+  font-size: 25px;
+  color: white;
+  margin-left: 25px;
+}
+
+.anime-cb-screen_footer-game {
+  position: absolute;
+  margin-top: -100px;
+  margin-left: 20px;
+}
+
+#anime-cb-board-wrapper {
+  /*background-color: rgba(0, 0, 0, 0.3);*/
+  text-align: center;
+  display: flex;
+  justify-content: center;
+}
+
+#anime-cb-board {
+  align-self: center;
+}
+
+.anime-cb-column {
+  background-color: #BA7A3A;
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  border: 2px solid white;
+}
+
+.anime-cb-column.blank {
+  border: 1px solid red;
+ display: none;
+}
+
+.anime-cb-player1-position {
+  width: inherit;
+  height: inherit;
+  background-image: url("../imgs/player_pieces/Lelouch.jpg");
+  background-size: contain;
+  border: 1px solid white;
+  border-radius: 50px;
+  display: inline-block;
+}
+
+.anime-cb-player2-position {
+  width: inherit;
+  height: inherit;
+  background-image: url("../imgs/player_pieces/CC.jpg");
+  background-size:contain;
+  border: 1px solid white;
+  border-radius: 50px;
+  display: inline-block;
+}
+
+.anime-cb-board-player-label {
+  margin: 10px;
+  font-size: 20px;
+  vertical-align: middle;
+}
+
+.anime-cb-cards-in-hand-wrapper {
+  max-width: 80%;
+  /*overflow:hidden;*/
+  position: absolute;
+  left: 50%;
+}
+
+.anime-cb-cards-in-hand {
+  position: relative;
+  left: -50%;
+}
+
+.anime-cb-card {
+  width: 150px;
+  height: 220px;
+  display: inline-block;
+  position: relative;
+  border-radius: 3px;
+  transition: box-shadow 0.1s, transform 0.1s;
+}
+
+.anime-cb-card.player1 {
+  border: 1px solid white;
+}
+
+.anime-cb-card + .anime-cb-card {
+  margin-left: -50px;
+}
+
+.anime-cb-card:hover {
+  z-index: 9999;
+  border: 1px solid white;
+  cursor: pointer;
+  transform: scale(1.1);
+  transform-origin: center;
+  box-shadow: 0px 0px 30px rgba(0,0,0, 0.6);
+}
+
+.anime-cb-cards-in-hand-wrapper.player2 {
+  margin-top: 25px;
+}
+
+.anime-cb-cards-in-hand-wrapper.player1 {
+  margin-top: -240px;
+}
+
+#anime-cb-card-info-wrapper {
+  position: absolute;
+  margin-top: 200px;
+  margin-left: 20px;
+  width: 300px;
+  height: 440px;
+  color: white;
+  text-align: center;
+  font-size: 16pt;
+}
+
+#anime-cb-card-info-card {
+  width: 300px;
+  height: 440px;
+  border-radius: 10px;
+}
+
+#anime-cb-card-info-text {
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 10px;
+  color: white;
+  font-size: 13pt;
+}
+
+.anime-cb-card-graveyard-wrapper {
+  position: absolute;
+  width: 150px;
+  height: 220px;
+  text-align: center;
+  color: white;
+}
+
+.anime-cb-card-graveyard-wrapper.player2 {
+  position: absolute;
+  top:0;
+  right:0;
+  margin-top: 20px;
+  margin-right: 20px;
+}
+
+.anime-cb-card-graveyard-wrapper.player1 {
+  position: absolute;
+  bottom:0;
+  right:0;
+  margin-bottom: 50px;
+  margin-right: 20px;
+}
+
+.anime-cb-card-graveyard-deck {
+  width: 150px;
+  height: 220px;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: box-shadow 0.1s, transform 0.1s;
+}
+
+.anime-cb-card-graveyard-deck:hover {
+  z-index: 9999;
+  border: 1px solid white;
+  cursor: pointer;
+  transform: scale(1.1);
+  transform-origin: center;
+  box-shadow: 0px 0px 30px rgba(0,0,0, 0.6);
+}
+
+.anime-cb-card-field {
+  border: 1px solid white;
+  width: 400px;
+  height: 120px;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.anime-cb-card-field td {
+  border: 1px solid white;
+  text-align: center;
+  width: 80px;
+  height: 120px;
+}
+
+.anime-cb-card-field.player1 {
+  margin-top: 10px;
+}
+
+.anime-cb-card-field.player2 {
+  margin-bottom: 10px;
+}
+
+.anime-cb-card-onfield {
+  width: 72px;
+  height: 106px;
+  border-radius: 3px;
+  transition: box-shadow 0.1s, transform 0.1s;
+  vertical-align: middle;
+}
+
+.anime-cb-card-onfield:hover {
+  z-index: 9999;
+  border: 1px solid white;
+  cursor: pointer;
+  transform: scale(1.5);
+  transform-origin: center;
+  box-shadow: 0px 0px 30px rgba(0,0,0, 0.6);
+}

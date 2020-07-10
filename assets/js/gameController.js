@@ -22,22 +22,15 @@ gameController.prototype.initConstants = function() {
 };
 
 gameController.prototype.initElements = function() {
-	this._userId = null;
-	this._user2Id = null;
-	this._roomId = null;
+	this._gameData = null;
 };
 
 gameController.prototype.initListeners = function() {
 	var _self = this;
 
 	$(_self.LOBBY_SCREEN_CLASS).on('click', _self.START_GAME_BTN_ID, function(e) {
-		console.log(this);
 		logger.info('Starting game...');
 		console.log('START GAME BTN CLICK');
-
-		_self._userId = _self.client.generalClient.logInSignUpController._userId;
-		_self._user2Id = _self.client.generalClient.roomController._user2Id;
-		_self._roomId = _self.client.generalClient.roomController._roomId;
 
 		_self.showStartGameSpinner();
 		_self.startGame();
@@ -55,6 +48,12 @@ gameController.prototype.initListeners = function() {
 
 gameController.prototype.initIntervals = function() {
 
+};
+
+gameController.prototype.resetGameState = function () {
+	var _self = this;
+
+	_self._gameData = null;
 };
 
 gameController.prototype.showStartGameSpinner = function () {
@@ -79,11 +78,8 @@ gameController.prototype.processStartGameResponse = function (data) {
 		return;
 	}
 
-	_self._player1Id = data.roomData.player1Id;
-	_self._player2Id = data.roomData.player2Id;
-	_self._roomId = data.roomData.id;
-
-	_self.initGameData(data.gameplayData);
+	_self.initGameData(data);
+	_self.renderBoard();
 	_self.processChangeScreen(_self.GAME_SCREEN_CLASS);
 	_self.hideAllSpinner();
 };
@@ -92,6 +88,27 @@ gameController.prototype.initGameData = function (data) {
 	logger.info('initGameData');
 	console.log('initGameData');
 	console.log('Data: ', data);
+
+	var _self = this;
+
+	_self._gameplayData = data.gameplayData;
+	_self._roomData = data.roomData;
+
+	_self.validatePlayers();
+};
+
+gameController.prototype.validatePlayers = function () {
+	var _self = this;
+
+	assert(_self.client.generalClient.roomController._roomId == _self._roomData.id);
+	assert(_self.client.generalClient.logInSignUpController._userId == _self._roomData.player1Id
+		|| _self.client.generalClient.logInSignUpController._userId == _self._roomData.player2Id);
+};
+
+gameController.prototype.renderBoard = function () {
+	logger.info('renderBoard');
+
+	var _self = this;
 };
 
 gameController.prototype.processWinGameFormallyResponse = function (data) {
@@ -113,15 +130,15 @@ gameController.prototype.processWinGameFormallyResponse = function (data) {
 gameController.prototype.startGame = function () {
 	var _self = this;
 
-	console.log('Starting game, userId: ', _self._userId, ', user2Id: ', _self._user2Id, ' roomId: ', _self._roomId);
-
-	assert(_self._userId && _self._user2Id && _self._roomId);
-
 	var data = {
-		player1Id: _self._userId,
-		player2Id: _self._user2Id,
-		roomId: _self._roomId,
+		player1Id: _self.client.generalClient.logInSignUpController._userId,
+		player2Id: _self.client.generalClient.roomController._user2Id,
+		roomId: _self.client.generalClient.roomController._roomId,
 	};
+
+	console.log('Starting game, player1Id: ', data.player1Id, ', player2Id: ', data.player2Id, ' roomId: ', data.roomId);
+
+	assert(data.player1Id && data.player2Id && data.roomId);
 
 	_self.client.startGame(data);
 };

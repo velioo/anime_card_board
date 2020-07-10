@@ -5,6 +5,7 @@ var logInSignUpController = function(generalClient) {
 	this.initConstants();
 	this.initElements();
 	this.initListeners();
+	this.initIntervals();
 	this.checkIsUserLoggedIn();
 };
 
@@ -92,6 +93,18 @@ logInSignUpController.prototype.initListeners = function() {
 	});
 };
 
+logInSignUpController.prototype.initIntervals = function() {
+	var _self = this;
+
+	_self.logInInterval = setInterval(_self.logInIntervalFunc.bind(_self), 3000);
+};
+
+logInSignUpController.prototype.logInIntervalFunc = function() {
+	var _self = this;
+
+	_self.checkIsUserLoggedIn();
+};
+
 logInSignUpController.prototype.checkIsUserLoggedIn = function() {
 	this.client.checkIfUserIsLoggedIn();
 };
@@ -159,7 +172,7 @@ logInSignUpController.prototype.processLogoutResponse = function(data) {
 
 	if (data.isSuccessful) {
 		logger.info('Data is valid');
-		_self.setIsUserLoggedIn(false);
+		_self.resetSessionState();
 		_self.showLogOutSuccess(data);
 	} else {
 		assert(data.errors.length > 0);
@@ -170,7 +183,6 @@ logInSignUpController.prototype.processLogoutResponse = function(data) {
 
 logInSignUpController.prototype.processIsUserLoggedInResponse = function(data) {
 	logger.info('processIsUserLoggedInResponse');
-	logger.info('To validate: ', JSON.stringify(data));
 
 	var _self = this;
 
@@ -194,21 +206,44 @@ logInSignUpController.prototype.processIsUserLoggedInResponse = function(data) {
 
 logInSignUpController.prototype.processSessionExpired = function(data) {
 	logger.info('processSessionExpired');
+	console.log('processSessionExpired');
 	var _self = this;
 
-	this.setIsUserLoggedIn(false);
-	this.showLogOutSuccess();
-	this.processChangeScreen(this.MAIN_MENU_SCREEN_CLASS);
+	_self.showLogOutSuccess();
+	_self.resetSessionState();
+	_self.processChangeScreen(_self.MAIN_MENU_SCREEN_CLASS);
+};
+
+logInSignUpController.prototype.resetSessionState = function () {
+	var _self = this;
+
+	_self.resetUserState();
+
+	if (typeof _self.client.roomController.resetRoomState === "function") {
+		_self.client.roomController.resetRoomState();
+	}
+
+	if (typeof _self.client.gameController.resetGameState === "function") {
+		_self.client.gameController.resetGameState();
+	}
+};
+
+logInSignUpController.prototype.resetUserState = function () {
+	var _self = this;
+
+	_self.setIsUserLoggedIn(false);
+	_self._userId = null;
+	_self._username = null;
 };
 
 logInSignUpController.prototype.renderSignUpErrors = function(data) {
 	logger.info('renderSignUpErrors');
 	var _self = this;
 
-	this.clearSignUpErrors();
-	this.hideSignUpErrors();
+	_self.clearSignUpErrors();
+	_self.hideSignUpErrors();
 
-	this.$signUpInputs.each(function(idx, input) {
+	_self.$signUpInputs.each(function(idx, input) {
 		data.errors.forEach(function (el) {
 			var elName = el.dataPath.split('/')[1];
 
@@ -219,17 +254,17 @@ logInSignUpController.prototype.renderSignUpErrors = function(data) {
 		});
 	 });
 
-	this.hideAllSpinner();
+	_self.hideAllSpinner();
 };
 
 logInSignUpController.prototype.renderLoginErrors = function(data) {
 	logger.info('renderLoginErrors');
 	var _self = this;
 
-	this.clearLoginErrors();
-	this.hideLoginErrors();
+	_self.clearLoginErrors();
+	_self.hideLoginErrors();
 
-	this.$loginInputs.each(function(idx, input) {
+	_self.$loginInputs.each(function(idx, input) {
 		data.errors.forEach(function (el) {
 			var elName = el.dataPath.split('/')[1];
 
@@ -240,7 +275,7 @@ logInSignUpController.prototype.renderLoginErrors = function(data) {
 		});
 	 });
 
-	this.hideAllSpinner();
+	_self.hideAllSpinner();
 };
 
 logInSignUpController.prototype.showSignUpSuccess = function(data) {

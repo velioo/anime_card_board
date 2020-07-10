@@ -35,10 +35,8 @@ module.exports = {
 
       assert(isSchemaValid);
 
-      if (ctx.session.userData && ctx.session.userData.userId)
-      {
-          assert(ctx.session.userData.userId == ctx.data.player1Id);
-      }
+      assert(ctx.session.userData && ctx.session.userData.userId
+        && ctx.session.userData.userId == ctx.data.player1Id);
 
       let queryStatus = await pg.pool.query(`
 
@@ -51,7 +49,7 @@ module.exports = {
 
       `, [ ctx.data.roomId ]);
 
-      assert(queryStatus.rows.length === 1);
+      assert(queryStatus.rows.length == 1);
       assert(queryStatus.rows[0].player1_id && queryStatus.rows[0].player1_id == ctx.data.player1Id);
       assert(queryStatus.rows[0].player2_id && queryStatus.rows[0].player2_id == ctx.data.player2Id);
 
@@ -64,20 +62,46 @@ module.exports = {
         player2Id: queryStatus.rows[0].player2_id,
       };
 
+      let queryStatusBorders = await pg.pool.query(`
+
+        SELECT * FROM borders
+        WHERE id = $1
+
+      `, [ ctx.data.borderId || 1 ]);
+
+      assert(queryStatusBorders.rows.length == 1);
+
+      ctx.gameplayData = {
+        gameState: {
+          startPlayerId: ctx.data.player1Id,
+          roomId: ctx.roomData.id,
+          borderData: {
+            id: queryStatusBorders.rows[0].border_id,
+            borderMatrix: JSON.parse(queryStatusBorders.rows[0].border_matrix_json),
+            borderData: JSON.parse(queryStatusBorders.rows[0].border_data_json),
+          },
+        },
+        player1State: {
+          id: ctx.roomData.player1_id,
+          name: ctx.roomData.player1Name,
+        },
+        player2State: {
+          id: ctx.roomData.player2_id,
+          name: ctx.roomData.player2Name,
+        },
+      };
+
       queryStatus = await pg.pool.query(`
 
-        INSERT INTO games (room_id, player1_id, player2_id, data_json, status_id)
-        VALUES ($1, $2, $3, $4, 1)
-        RETURNING id
+        INSERT INTO games (room_id, player1_id, player2_id, data_json, status_id, border_id)
+        VALUES ($1, $2, $3, $4, 1, $5)
+        RETURNING *
 
-      `, [ ctx.data.roomId, ctx.data.player1Id, ctx.data.player2Id, '{}' ]);
+      `, [ ctx.data.roomId, ctx.data.player1Id, ctx.data.player2Id, JSON.stringify(ctx.gameplayData), queryStatusBorders.rows[0].id ]);
 
       assert(queryStatus.rows[0].id);
 
-      ctx.gameplay = {};
-      ctx.gameplay.data = {
-        firstPlayerId: ctx.data.player1Id,
-      };
+      ctx.gameplayData.gameState.gameId = queryStatus.rows[0].id;
 
       await pg.pool.query('COMMIT');
     } catch (err) {
@@ -102,10 +126,8 @@ module.exports = {
 
       assert(isSchemaValid);
 
-      if (ctx.session.userData && ctx.session.userData.userId)
-      {
-          assert(ctx.session.userData.userId == ctx.data.userId);
-      }
+      assert(ctx.session.userData && ctx.session.userData.userId
+        && ctx.session.userData.userId == ctx.data.userId);
 
       let player2LeftTheRoom = false;
 

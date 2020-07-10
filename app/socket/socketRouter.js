@@ -88,7 +88,7 @@ const self = module.exports = {
 		  	ctx.io.emit('startGame', {
 			  	errors: ctx.errors,
 			  	isSuccessful: isSuccessful,
-			  	gameplayData: ctx.gameplay.data,
+			  	gameplayData: ctx.gameplayData,
 			  	roomData: ctx.roomData,
 			  });
 	  	} catch (err) {
