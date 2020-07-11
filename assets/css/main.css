@@ -197,17 +197,16 @@ body {
 }
 
 .anime-cb-title-page-game {
-  position: absolute;
+  position: sticky;
+  top: 0;
   margin: 10px;
   font-size: 25px;
   color: white;
   margin-left: 25px;
-}
-
-.anime-cb-screen_footer-game {
-  position: absolute;
-  margin-top: -100px;
-  margin-left: 20px;
+  margin-top: -10px;
+  display: inline-block;
+  float: left;
+  z-index: 2;
 }
 
 #anime-cb-board-wrapper {
@@ -231,10 +230,10 @@ body {
 
 .anime-cb-column.blank {
   border: 1px solid red;
- display: none;
+
 }
 
-.anime-cb-player1-position {
+.anime-cb-player-you-position {
   width: inherit;
   height: inherit;
   background-image: url("../imgs/player_pieces/Lelouch.jpg");
@@ -244,7 +243,7 @@ body {
   display: inline-block;
 }
 
-.anime-cb-player2-position {
+.anime-cb-player-enemy-position {
   width: inherit;
   height: inherit;
   background-image: url("../imgs/player_pieces/CC.jpg");
@@ -263,13 +262,23 @@ body {
 .anime-cb-cards-in-hand-wrapper {
   max-width: 80%;
   /*overflow:hidden;*/
-  position: absolute;
+  position: sticky;
   left: 50%;
 }
 
 .anime-cb-cards-in-hand {
   position: relative;
   left: -50%;
+}
+
+.anime-cb-cards-in-hand.player-you {
+  /*margin-bottom: 10px;*/
+  margin-bottom: -50px;
+  overflow: hidden;
+}
+
+.anime-cb-cards-in-hand.player-enemy {
+  margin-top: -50px;
 }
 
 .anime-cb-card {
@@ -281,7 +290,7 @@ body {
   transition: box-shadow 0.1s, transform 0.1s;
 }
 
-.anime-cb-card.player1 {
+.anime-cb-card.player-you {
   border: 1px solid white;
 }
 
@@ -293,25 +302,26 @@ body {
   z-index: 9999;
   border: 1px solid white;
   cursor: pointer;
-  transform: scale(1.1);
+  transform: scale(1.2);
   transform-origin: center;
   box-shadow: 0px 0px 30px rgba(0,0,0, 0.6);
 }
 
-.anime-cb-cards-in-hand-wrapper.player2 {
-  margin-top: 25px;
+.anime-cb-cards-in-hand-wrapper.player-enemy {
+  top: 0;
 }
 
-.anime-cb-cards-in-hand-wrapper.player1 {
-  margin-top: -240px;
+.anime-cb-cards-in-hand-wrapper.player-you {
+  bottom: 0;
 }
 
 #anime-cb-card-info-wrapper {
-  position: absolute;
-  margin-top: 200px;
+  position: sticky;
+  top: 0;
   margin-left: 20px;
   width: 300px;
   height: 440px;
+  margin-top: -440px;
   color: white;
   text-align: center;
   font-size: 16pt;
@@ -321,6 +331,11 @@ body {
   width: 300px;
   height: 440px;
   border-radius: 10px;
+}
+
+#anime-cb-card-info-subwrapper {
+  display: inline-block;
+  margin-top: 100px;
 }
 
 #anime-cb-card-info-text {
@@ -333,27 +348,48 @@ body {
 }
 
 .anime-cb-card-graveyard-wrapper {
-  position: absolute;
-  width: 150px;
-  height: 220px;
-  text-align: center;
+  position: sticky;
+  text-align: right;
   color: white;
 }
 
-.anime-cb-card-graveyard-wrapper.player2 {
-  position: absolute;
-  top:0;
-  right:0;
-  margin-top: 20px;
+.anime-cb-screen_footer-game {
+  position: sticky;
+  bottom: 0;
+  text-align: left;
+  margin-left: 20px;
+  margin-top: -78px;
+  display: inline-block;
+}
+
+.anime-cb-card-graveyard-text.player-you {
+  margin-right: 25px;
+}
+
+.anime-cb-card-graveyard-text.player-enemy {
   margin-right: 20px;
 }
 
-.anime-cb-card-graveyard-wrapper.player1 {
-  position: absolute;
+.anime-cb-card-graveyard-wrapper.player-enemy {
+  position: sticky;
+  top:0;
+  right:0;
+  margin-right: 20px;
+  margin-top: -330px;
+  display: inline-block;
+  float: right;
+  z-index: 2;
+}
+
+.anime-cb-card-graveyard-wrapper.player-you {
+  position: sticky;
   bottom:0;
   right:0;
-  margin-bottom: 50px;
   margin-right: 20px;
+  margin-top: -300px;
+  display: inline-block;
+  float: right;
+  z-index: 2;
 }
 
 .anime-cb-card-graveyard-deck {
@@ -362,6 +398,10 @@ body {
   cursor: pointer;
   border-radius: 3px;
   transition: box-shadow 0.1s, transform 0.1s;
+}
+
+.anime-cb-card-graveyard-deck.player-you {
+  margin-bottom: 10px;
 }
 
 .anime-cb-card-graveyard-deck:hover {
@@ -387,11 +427,11 @@ body {
   height: 120px;
 }
 
-.anime-cb-card-field.player1 {
+.anime-cb-card-field.player-you {
   margin-top: 10px;
 }
 
-.anime-cb-card-field.player2 {
+.anime-cb-card-field.player-enemy {
   margin-bottom: 10px;
 }
 
