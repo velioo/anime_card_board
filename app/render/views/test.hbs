@@ -339,17 +339,13 @@
 
 <script type="text/javascript">
 
-$('.anime-cb-screen-game').on('mousemove', '.anime-cb-card-onfield', function(e) {
+
+// mouse hover effects on cards in hand and on field----------------------
+$('.anime-cb-screen-game').on('mousemove mouseover', '.anime-cb-card-onfield', function(e) {
 	$('#anime-cb-card-info-card').attr("src", $(this).attr("src"));
 	$('#anime-cb-card-info-card').css("border", "1px solid white");
 	$('#anime-cb-card-info-text').text($(this).data("cardText") || "");
 });
-
-// $('.anime-cb-card-onfield').mouseout(function(e) {
-// 	$('#anime-cb-card-info-card').attr("src", "imgs/player_cards/card_back.png");
-// 	$('#anime-cb-card-info-card').css("border", "");
-// 	$('#anime-cb-card-info-text').text("");
-// });
 
 function fillInfoCard (cardEl) {
   $('#anime-cb-card-info-card').attr("src", $(cardEl).attr("src"));
@@ -379,10 +375,7 @@ function handleMove(e) {
 
 $('.anime-cb-screen-game').on('mouseout', '.anime-cb-card', function() {
   $(this).css("transform", "perspective(500px) scale(1) rotateX(0) rotateY(0) translateZ(0)");
-  	//$('#anime-cb-card-info-card').attr("src", "imgs/player_cards/card_back.png");
-	//$('#anime-cb-card-info-card').css("border", "");
-	//$('#anime-cb-card-info-text').text("");
-	$('.anime-cb-cards-in-hand').css("overflow", "hidden");
+  $('.anime-cb-cards-in-hand').css("overflow", "hidden");
 });
 
 $('.anime-cb-screen-game').on('mousedown', '.anime-cb-card', function() {
@@ -420,6 +413,10 @@ $('.anime-cb-cards-in-hand').on('DOMMouseScroll mousewheel', function(e) {
     }
 });
 
+// ----------------------
+
+
+// Move characters throughout the board ------------------------
 var boardPath = [[4, 0], [4, 1], [4, 2], [3, 2], [3, 3], [3, 4], [4, 4], [5, 4], [5, 5], [5, 6], [4, 6], [4, 7], [4, 8], [4, 9], [4, 10],
   	  [4, 11], [4, 12], [4, 13], [4, 14], [4, 15], [4, 16], [4, 17], [4, 18], [4, 19]];
 var boardMatrix = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[1,1,1,0,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]];
@@ -546,6 +543,10 @@ function moveEnemyCharacter(res) {
   }, 2000);
 }
 
+// ------------------------
+
+
+// roll Dice ------------
 function rollDiceWithValues() {
   var element = document.getElementById('anime-cb-dice-wrapper-player1');
   var numberOfDice = 1;
@@ -561,6 +562,10 @@ function rollDiceWithValues() {
 
 $('#anime-cb-phase-roll').one('click', rollDiceWithValues);
 
+// ------------
+
+
+// Summon cards on field---------------------
 $('.anime-cb-cards-in-hand-wrapper.player-you').on('click', '.anime-cb-card', function(e) {
 	var cardSrc = $(this).attr("src");
 	var cardText = $(this).data("cardText")
@@ -587,14 +592,13 @@ $('.anime-cb-cards-in-hand-wrapper.player-you').on('click', '.anime-cb-card', fu
 // This will not be on click but just for test
 $('.anime-cb-cards-in-hand-wrapper.player-enemy').on('click', '.anime-cb-card', function(e) {
 	var cardSrc = $(this).attr("src");
-	var cardText = $(this).data("cardText")
 	var card = this;
 
 	$('.anime-cb-card-field.player-enemy td').each(function(idx) {
 		if (!$(this).find('img').length) {
 			$(this).css("-webkit-animation", "roll-in-top 0.6s ease-out both");
 			$(this).css("animation", "roll-in-top 0.6s ease-out both");
-			$(this).html('<img class="anime-cb-card-onfield player-enemy" data-card-text="' + cardText + '" src="' + cardSrc + '">');
+			$(this).html('<img class="anime-cb-card-onfield player-enemy" src="' + cardSrc + '">');
 			$('.anime-cb-cards-in-hand').css("overflow", "hidden");
 			$(card).remove();
 
@@ -607,4 +611,6 @@ $('.anime-cb-cards-in-hand-wrapper.player-enemy').on('click', '.anime-cb-card', 
 		}
 	});
 });
+
+// --------------------
 </script>
