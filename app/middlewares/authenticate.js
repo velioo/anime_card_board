@@ -8,10 +8,10 @@ module.exports = async (ctx, next) => {
     '/create_room/',
     '/log_out/',
     '/destroy_room/',
-    '/create_room',
-    '/browse_rooms',
-    '/room_data',
-    '/join_room',
+    '/create_room/',
+    '/browse_rooms/',
+    '/room_data/',
+    '/join_room/',
   ];
 
   if (userServiceUrls.some((url) => requestUrl.startsWith(url) ||

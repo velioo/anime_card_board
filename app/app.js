@@ -83,7 +83,6 @@ app.use(allowedMethods);
 app.use(authenticate);
 
 app.use( async (ctx) => {
-  console.log('404 middleware...', ctx.status);
   if (ctx.status !== 404) {
     return;
   }

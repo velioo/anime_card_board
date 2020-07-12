@@ -7,9 +7,12 @@ const assert = require('assert');
 const _ = require('lodash/lang');
 
 var self = module.exports = {
-	renderHomeScreen: async (ctx, next) => {
+	renderHomeScreen: async (ctx) => {
 		await ctx.render('./views/home.hbs');
 	},
+  renderTestGame: async (ctx,) => {
+    await ctx.render('./views/test.hbs');
+  },
   confirmAccount: async (ctx, next) => {
     const userTempData = await pg.pool.query(`
 

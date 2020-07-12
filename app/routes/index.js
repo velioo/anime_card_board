@@ -1,5 +1,6 @@
 const {
   renderHomeScreen,
+  renderTestGame,
   confirmAccount,
   frontendLogger,
 } = require('../controllers/indexController');
@@ -24,6 +25,7 @@ const router = new Router();
 
 router
 	.get('/', renderHomeScreen)
+	.get('/test-game', renderTestGame)
 	.get('/main-menu', renderHomeScreen)
 	.get('/login', renderHomeScreen)
 	.get('/sign-up', renderHomeScreen)
