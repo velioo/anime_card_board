@@ -283,6 +283,7 @@ body {
 .anime-cb-cards-in-hand {
 /*  position: relative;
   left: -50%;*/
+  height: 220px;
 }
 
 .anime-cb-cards-in-hand.player-you {
@@ -310,7 +311,7 @@ body {
 }
 
 .anime-cb-card + .anime-cb-card {
-  margin-left: -50px;
+  /*margin-left: -50px;*/
 }
 
 .anime-cb-card:hover {
@@ -415,7 +416,7 @@ body {
   display: inline-block;
   color: white;
   text-align: center;
-  z-index: 2;
+  z-index: 10;
 }
 
 #anime-cb-card-global-deck {
@@ -467,8 +468,8 @@ body {
 
 .anime-cb-phase-column.active {
   background-color: rgba(34, 139, 34, 1);
-  -webkit-animation: blink-2 2s infinite ;
-  animation: blink-2 2s infinite ;
+  -webkit-animation: active-phase-blink 2s infinite ;
+  animation: active-phase-blink 2s infinite ;
 }
 
 .anime-cb-phase-column.ended {
@@ -668,8 +669,8 @@ body {
   background-color: rgba(0, 0, 0, 0.6);
   padding: 20px;
   border-radius: 20px;
-  -webkit-animation: slide-in-right 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
-  animation: slide-in-right 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+  -webkit-animation: show-event-popup-slide-right 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+  animation: show-event-popup-slide-right 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
 }
 
 .anime-cb-turn-timer.player-enemy {
@@ -714,7 +715,7 @@ body {
  * animation roll-in-bottom
  * ----------------------------------------
  */
-@-webkit-keyframes roll-in-bottom {
+@-webkit-keyframes summon-your-card {
   0% {
     -webkit-transform: translateY(200px) rotate(540deg);
     transform: translateY(200px) rotate(540deg);
@@ -726,7 +727,7 @@ body {
     opacity: 1;
   }
 }
-@keyframes roll-in-bottom {
+@keyframes summon-your-card {
   0% {
     -webkit-transform: translateY(200px) rotate(540deg);
     transform: translateY(200px) rotate(540deg);
@@ -752,7 +753,7 @@ body {
  * animation roll-in-top
  * ----------------------------------------
  */
-@-webkit-keyframes roll-in-top {
+@-webkit-keyframes summon-enemy-card {
   0% {
     -webkit-transform: translateY(-200px) rotate(-540deg);
             transform: translateY(-200px) rotate(-540deg);
@@ -764,7 +765,7 @@ body {
     opacity: 1;
   }
 }
-@keyframes roll-in-top {
+@keyframes summon-enemy-card {
   0% {
     -webkit-transform: translateY(-200px) rotate(-540deg);
             transform: translateY(-200px) rotate(-540deg);
@@ -790,7 +791,7 @@ body {
  * animation blink-2
  * ----------------------------------------
  */
-@-webkit-keyframes blink-2 {
+@-webkit-keyframes active-phase-blink {
   0% {
     background-color: rgba(34, 139 ,34, 1);
   }
@@ -801,7 +802,7 @@ body {
     background-color: rgba(34, 139, 34, 1);
   }
 }
-@keyframes blink-2 {
+@keyframes active-phase-blink {
   0% {
     background-color: rgba(34, 139 ,34, 1);
   }
@@ -826,7 +827,7 @@ body {
  * animation slide-in-right
  * ----------------------------------------
  */
-@-webkit-keyframes slide-in-right {
+@-webkit-keyframes show-event-popup-slide-right {
   0% {
     -webkit-transform: translateX(700px);
             transform: translateX(700px);
@@ -839,7 +840,7 @@ body {
     transform: translate(-50%, -50%);
   }
 }
-@keyframes slide-in-right {
+@keyframes show-event-popup-slide-right {
   0% {
     -webkit-transform: translateX(700px);
             transform: translateX(700px);
@@ -865,7 +866,7 @@ body {
  * animation puff-out-center
  * ----------------------------------------
  */
-@-webkit-keyframes puff-out-center {
+@-webkit-keyframes hide-event-popup {
   0% {
     -webkit-transform: scale(1);
             transform: scale(1);
@@ -883,7 +884,7 @@ body {
     transform: translate(-50%, -50%);
   }
 }
-@keyframes puff-out-center {
+@keyframes hide-event-popup {
   0% {
     -webkit-transform: scale(1);
             transform: scale(1);
@@ -914,27 +915,464 @@ body {
  * animation slide-in-tr
  * ----------------------------------------
  */
-@-webkit-keyframes slide-in-tr {
+@-webkit-keyframes draw-from-deck-you-1 {
   0% {
-    -webkit-transform: translateY(-500px) translateX(500px);
-            transform: translateY(-500px) translateX(500px);
-    opacity: 0;
+    -webkit-transform: translateY(-500px) translateX(900px);
+            transform: translateY(-500px) translateX(900px);
   }
   100% {
     -webkit-transform: translateY(0) translateX(0);
             transform: translateY(0) translateX(0);
-    opacity: 1;
   }
 }
-@keyframes slide-in-tr {
+@keyframes draw-from-deck-you-1 {
   0% {
-    -webkit-transform: translateY(-500px) translateX(500px);
-            transform: translateY(-500px) translateX(500px);
-    opacity: 0;
+    -webkit-transform: translateY(-500px) translateX(900px);
+            transform: translateY(-500px) translateX(900px);
   }
   100% {
     -webkit-transform: translateY(0) translateX(0);
             transform: translateY(0) translateX(0);
-    opacity: 1;
+  }
+}
+
+@-webkit-keyframes draw-from-deck-you-2 {
+  0% {
+    -webkit-transform: translateY(-500px) translateX(800px);
+            transform: translateY(-500px) translateX(800px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-deck-you-2 {
+  0% {
+    -webkit-transform: translateY(-500px) translateX(800px);
+            transform: translateY(-500px) translateX(800px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-deck-you-3 {
+  0% {
+    -webkit-transform: translateY(-500px) translateX(730px);
+            transform: translateY(-500px) translateX(730px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-deck-you-3 {
+  0% {
+    -webkit-transform: translateY(-500px) translateX(730px);
+            transform: translateY(-500px) translateX(730px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-deck-you-4 {
+  0% {
+    -webkit-transform: translateY(-500px) translateX(650px);
+            transform: translateY(-500px) translateX(650px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-deck-you-4 {
+  0% {
+    -webkit-transform: translateY(-500px) translateX(650px);
+            transform: translateY(-500px) translateX(650px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-deck-you-5 {
+  0% {
+    -webkit-transform: translateY(-500px) translateX(610px);
+            transform: translateY(-500px) translateX(610px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-deck-you-5 {
+  0% {
+    -webkit-transform: translateY(-500px) translateX(610px);
+            transform: translateY(-500px) translateX(610px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-deck-you-6 {
+  0% {
+    -webkit-transform: translateY(-500px) translateX(570px);
+            transform: translateY(-500px) translateX(570px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-deck-you-6 {
+  0% {
+    -webkit-transform: translateY(-500px) translateX(570px);
+            transform: translateY(-500px) translateX(570px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-deck-you-7 {
+  0% {
+    -webkit-transform: translateY(-500px) translateX(530px);
+            transform: translateY(-500px) translateX(530px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-deck-you-7 {
+  0% {
+    -webkit-transform: translateY(-500px) translateX(530px);
+            transform: translateY(-500px) translateX(530px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-deck-you-8 {
+  0% {
+    -webkit-transform: translateY(-500px) translateX(520px);
+            transform: translateY(-500px) translateX(520px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-deck-you-8 {
+  0% {
+    -webkit-transform: translateY(-500px) translateX(520px);
+            transform: translateY(-500px) translateX(520px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-deck-you-9 {
+  0% {
+    -webkit-transform: translateY(-500px) translateX(500px);
+            transform: translateY(-500px) translateX(500px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-deck-you-9 {
+  0% {
+    -webkit-transform: translateY(-500px) translateX(500px);
+            transform: translateY(-500px) translateX(500px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-deck-you-10 {
+  0% {
+    -webkit-transform: translateY(-500px) translateX(490px);
+            transform: translateY(-500px) translateX(490px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-deck-you-10 {
+  0% {
+    -webkit-transform: translateY(-500px) translateX(490px);
+            transform: translateY(-500px) translateX(490px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-deck-you-11 {
+  0% {
+    -webkit-transform: translateY(-500px) translateX(450px);
+            transform: translateY(-500px) translateX(450px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-deck-you-11 {
+  0% {
+    -webkit-transform: translateY(-500px) translateX(450px);
+            transform: translateY(-500px) translateX(450px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-deck-enemy-1 {
+  0% {
+    -webkit-transform: translateY(500px) translateX(850px);
+            transform: translateY(500px) translateX(850px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-deck-enemy-1 {
+  0% {
+    -webkit-transform: translateY(500px) translateX(850px);
+            transform: translateY(500px) translateX(850px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-deck-enemy-2 {
+  0% {
+    -webkit-transform: translateY(500px) translateX(800px);
+            transform: translateY(500px) translateX(800px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-deck-enemy-2 {
+  0% {
+    -webkit-transform: translateY(500px) translateX(800px);
+            transform: translateY(500px) translateX(800px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-deck-enemy-3 {
+  0% {
+    -webkit-transform: translateY(500px) translateX(730px);
+            transform: translateY(500px) translateX(730px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-deck-enemy-3 {
+  0% {
+    -webkit-transform: translateY(500px) translateX(730px);
+            transform: translateY(500px) translateX(730px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-deck-enemy-4 {
+  0% {
+    -webkit-transform: translateY(500px) translateX(650px);
+            transform: translateY(500px) translateX(650px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-deck-enemy-4 {
+  0% {
+    -webkit-transform: translateY(500px) translateX(650px);
+            transform: translateY(500px) translateX(650px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-deck-enemy-5 {
+  0% {
+    -webkit-transform: translateY(500px) translateX(610px);
+            transform: translateY(500px) translateX(610px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-deck-enemy-5 {
+  0% {
+    -webkit-transform: translateY(500px) translateX(610px);
+            transform: translateY(500px) translateX(610px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-deck-enemy-6 {
+  0% {
+    -webkit-transform: translateY(500px) translateX(570px);
+            transform: translateY(500px) translateX(570px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-deck-enemy-6 {
+  0% {
+    -webkit-transform: translateY(500px) translateX(570px);
+            transform: translateY(500px) translateX(570px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-deck-enemy-7 {
+  0% {
+    -webkit-transform: translateY(500px) translateX(530px);
+            transform: translateY(500px) translateX(530px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-deck-enemy-7 {
+  0% {
+    -webkit-transform: translateY(500px) translateX(530px);
+            transform: translateY(500px) translateX(530px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-deck-enemy-8 {
+  0% {
+    -webkit-transform: translateY(500px) translateX(520px);
+            transform: translateY(500px) translateX(520px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-deck-enemy-8 {
+  0% {
+    -webkit-transform: translateY(500px) translateX(520px);
+            transform: translateY(500px) translateX(520px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-deck-enemy-9 {
+  0% {
+    -webkit-transform: translateY(500px) translateX(500px);
+            transform: translateY(500px) translateX(500px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-deck-enemy-9 {
+  0% {
+    -webkit-transform: translateY(500px) translateX(500px);
+            transform: translateY(500px) translateX(500px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-deck-enemy-10 {
+  0% {
+    -webkit-transform: translateY(500px) translateX(490px);
+            transform: translateY(500px) translateX(490px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-deck-enemy-10 {
+  0% {
+    -webkit-transform: translateY(500px) translateX(490px);
+            transform: translateY(500px) translateX(490px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-deck-enemy-11 {
+  0% {
+    -webkit-transform: translateY(500px) translateX(450px);
+            transform: translateY(500px) translateX(450px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-deck-enemy-11 {
+  0% {
+    -webkit-transform: translateY(500px) translateX(450px);
+            transform: translateY(500px) translateX(450px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
   }
 }
