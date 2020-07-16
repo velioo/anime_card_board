@@ -182,7 +182,7 @@ logInSignUpController.prototype.processLogoutResponse = function(data) {
 };
 
 logInSignUpController.prototype.processIsUserLoggedInResponse = function(data) {
-	logger.info('processIsUserLoggedInResponse');
+	//logger.info('processIsUserLoggedInResponse');
 
 	var _self = this;
 

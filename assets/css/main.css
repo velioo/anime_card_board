@@ -643,7 +643,7 @@ body {
   box-shadow: 0px 0px 30px rgba(0,0,0, 0.6);
 }
 
-#anime-cb-dice-wrapper-player1 {
+#anime-cb-dice-wrapper-player-you {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -651,7 +651,7 @@ body {
   margin-left: -100px;
 }
 
-#anime-cb-dice-wrapper-player2 {
+#anime-cb-dice-wrapper-player-enemy {
   position: fixed;
   top: 50%;
   left: 50%;

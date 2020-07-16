@@ -62,42 +62,49 @@ module.exports = {
         player2Id: queryStatus.rows[0].player2_id,
       };
 
-      let queryStatusBorders = await pg.pool.query(`
+      let queryStatusBoards = await pg.pool.query(`
 
-        SELECT * FROM borders
+        SELECT * FROM boards
         WHERE id = $1
 
-      `, [ ctx.data.borderId || 1 ]);
+      `, [ ctx.data.boardId || 1 ]);
 
-      assert(queryStatusBorders.rows.length == 1);
+      assert(queryStatusBoards.rows.length == 1);
+
+      let boardDataPlayers = JSON.parse(queryStatusBoards.rows[0].board_data_json);
 
       ctx.gameplayData = {
         gameState: {
           startPlayerId: ctx.data.player1Id,
           roomId: ctx.roomData.id,
-          borderData: {
-            id: queryStatusBorders.rows[0].border_id,
-            borderMatrix: JSON.parse(queryStatusBorders.rows[0].border_matrix_json),
-            borderData: JSON.parse(queryStatusBorders.rows[0].border_data_json),
+          boardData: {
+            id: queryStatusBoards.rows[0].board_id,
+            boardMatrix: JSON.parse(queryStatusBoards.rows[0].board_matrix_json),
+            boardDataPlayers: boardDataPlayers,
           },
-        },
-        player1State: {
-          id: ctx.roomData.player1_id,
-          name: ctx.roomData.player1Name,
-        },
-        player2State: {
-          id: ctx.roomData.player2_id,
-          name: ctx.roomData.player2Name,
+          timerSeconds: 120,
+          playersState: {
+            [ctx.roomData.player1Id]: {
+              name: ctx.roomData.player1Name,
+              currBoardRow: boardDataPlayers.player1StartIndexRow,
+              currBoardColumn: boardDataPlayers.player1StartIndexColumn,
+            },
+            [ctx.roomData.player2Id]: {
+              name: ctx.roomData.player2Name,
+              currBoardRow: boardDataPlayers.player2StartIndexRow,
+              currBoardColumn: boardDataPlayers.player2StartIndexColumn,
+            },
+          },
         },
       };
 
       queryStatus = await pg.pool.query(`
 
-        INSERT INTO games (room_id, player1_id, player2_id, data_json, status_id, border_id)
+        INSERT INTO games (room_id, player1_id, player2_id, data_json, status_id, board_id)
         VALUES ($1, $2, $3, $4, 1, $5)
         RETURNING *
 
-      `, [ ctx.data.roomId, ctx.data.player1Id, ctx.data.player2Id, JSON.stringify(ctx.gameplayData), queryStatusBorders.rows[0].id ]);
+      `, [ ctx.data.roomId, ctx.data.player1Id, ctx.data.player2Id, JSON.stringify(ctx.gameplayData), queryStatusBoards.rows[0].id ]);
 
       assert(queryStatus.rows[0].id);
 

@@ -117,11 +117,10 @@
 	<div class="anime-cb-screen_footer-game">
 		<button id="anime-cb-surrender" type="button" class="btn btn-primary anime-cb-button-stateless anime-cb-btn-main-menu">Surrender</button>
 	</div>
-	<div id="anime-cb-dice-wrapper-player1">
+	<div id="anime-cb-dice-wrapper-player-you">
 	</div>
-	<div id="anime-cb-dice-wrapper-player2">
+	<div id="anime-cb-dice-wrapper-player-enemy">
 	</div>
-
 	<div class="modal graveyard-modal player-you">
 	  <div class="modal-content">
 	    <div class="modal-header player-you">
@@ -223,7 +222,6 @@
 	    </div>
 	  </div>
 	</div>
-
 </div>
 </div>
 </div>
@@ -362,7 +360,6 @@ function moveYourCharacter(res) {
   		currBoardIndex = k;
 
   		if (boardPath[currBoardIndex + diceRoll] === undefined) {
-  			//$('#anime-cb-phase-roll').one('click', rollDiceWithValues);
   			return;
   		}
 
@@ -475,7 +472,7 @@ function moveEnemyCharacter(res) {
 
 // roll Dice ------------
 function rollDiceWithValues() {
-  var element = document.getElementById('anime-cb-dice-wrapper-player1');
+  var element = document.getElementById('anime-cb-dice-wrapper-player-you');
   var numberOfDice = 1;
   var options = {
     element,
@@ -545,11 +542,13 @@ $('.anime-cb-cards-in-hand-wrapper.player-enemy').on('click', '.anime-cb-card', 
 // --------------------
 
 // Test phases switch, in real game the animations will triger when there is server response (draw phase, standby phase, main phase) or the player clicked on roll phase or end phase
+// TODO TODO TODO
 setTimeout(function() {
   $('#anime-cb-game-events-info').css("-webkit-animation", "hide-event-popup 1s cubic-bezier(0.165, 0.840, 0.440, 1.000) both");
   $('#anime-cb-game-events-info').css("animation", "hide-event-popup 1s cubic-bezier(0.165, 0.840, 0.440, 1.000) both");
 }, 2000);
 
+// TODO TODO TODO
 setTimeout(function() {
   // $('#anime-cb-phase-roll').css("cursor", "pointer");
   // $('#anime-cb-phase-end').css("cursor", "pointer");
@@ -715,7 +714,7 @@ function decreaseEnemyCardsInHandDensity() {
 };
 // -------------------------------
 
-
+// TODO TODO TODO
 // Remove card from field animation
 $('.anime-cb-screen-game').on('click', '.anime-cb-card-onfield.player-you', function(e) {
   $(this).css("animation", "fade-out 1.5s ease-in both");

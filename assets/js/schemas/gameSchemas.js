@@ -28,31 +28,36 @@ var startGameResponse = {
 		"gameplayData": {
 			"type": "object",
 			"properties": {
-					"gameState": {
-						"type": "object",
-						"properties": {
-							"startPlayerId": { "type": "integer" },
-							"roomId": { "type": "integer" },
-							"borderData": {
-								"type": "object",
-								"properties": {
-									"id": { "type": "integer" },
-									"borderMatrix": { "type": "array" },
-									"borderData": { "type": "object" },
-								},
+				"gameState": {
+					"type": "object",
+					"properties": {
+						"startPlayerId": { "type": "integer" },
+						"roomId": { "type": "integer" },
+						"boardData": {
+							"type": "object",
+							"properties": {
+								"id": { "type": "integer" },
+								"boardMatrix": { "type": "array" },
+								"boardDataPlayers": { "type": "object" },
 							},
 						},
-					},
-					"player1State": {
-						"type": "object",
-						"properties": {
-							"id": { "type": "integer" },
-							"name": { "type": "string" },
+						"timerSeconds": { "type": "integer" },
+						"playersState": {
+							"type": "object",
+							"patternProperties": {
+								"^[1-9]\d*$": {
+									"name": { "type": "string" },
+									"currBoardRow": { "type": "integer" },
+									"currBoardColumn": { "type": "integer" },
+								},
+							},
+							"additionalProperties": false,
 						},
 					},
-					"player2State": { "$ref": "#/properties/gameplayData/properties/player1State" },
+					"required": [ "startPlayerId", "roomId", "boardData", "timerSeconds", "playersState" ],
+				},
 			},
-			"required": [ "gameState", "player1State", "player2State" ],
+			"required": [ "gameState" ],
 		},
 	},
 	"required": [ "errors", "isSuccessful", "gameplayData", "roomData" ],

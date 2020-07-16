@@ -16,15 +16,6 @@ gameClient.prototype.initGameSocket = function(socket) {
 	socket.on('winGameFormally', this.processWinGameFormally.bind(this));
 };
 
-gameClient.prototype.startGame = function(_data) {
-	logger.info('startGame');
-	console.log('START GAME');
-
-	var _self = this;
-
-	_self.socket.emit('startGame', _data);
-};
-
 gameClient.prototype.processStartGame = function(_data) {
 	logger.info('processStartGame');
 	console.log('START DATA: ', _data);

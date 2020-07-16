@@ -42,6 +42,14 @@ roomController.prototype.initElements = function() {
 roomController.prototype.initListeners = function() {
 	var _self = this;
 
+	$(_self.LOBBY_SCREEN_CLASS).on('click', _self.START_GAME_BTN_ID, function(e) {
+		logger.info('Starting game...');
+		console.log('START GAME BTN CLICK');
+
+		_self.showStartGameSpinner();
+		_self.startGame();
+	});
+
 	$(_self.CREATE_ROOM_SUBMIT_BTN_ID).on('click', function(e) {
 		e.preventDefault();
 
@@ -80,15 +88,15 @@ roomController.prototype.initListeners = function() {
 roomController.prototype.initIntervals = function() {
 	var _self = this;
 
+	if ($(_self.BROWSE_ROOMS_SCREEN_CLASS).find('tr').length == 0) {
+		_self.showBrowseRoomsSpinner();
+	}
+
 	_self.roomsInterval = setInterval(_self.roomsIntervalFunc.bind(_self), 3000);
 };
 
 roomController.prototype.roomsIntervalFunc = function() {
 	var _self = this;
-
-	if ($(_self.BROWSE_ROOMS_SCREEN_CLASS).find('tr').length == 0) {
-		_self.showBrowseRoomsSpinner();
-	}
 
 	if ($(_self.BROWSE_ROOMS_SCREEN_CLASS).is(':visible') && !_self._connectingToRoom) {
 		_self.client.getBrowseRoomsData();
@@ -105,8 +113,8 @@ roomController.prototype.roomsIntervalFunc = function() {
 };
 
 roomController.prototype.processGetCurrentRoomDataResponse = function (data) {
-	logger.info('processGetCurrentRoomDataResponse');
-	console.log('Room data: ', data);
+	//logger.info('processGetCurrentRoomDataResponse');
+	//console.log('Room data: ', data);
 
 	var _self = this;
 
@@ -118,7 +126,6 @@ roomController.prototype.processGetCurrentRoomDataResponse = function (data) {
 		if (!data.result.id) {
 			if (_self._inGame) {
 				_self._inGame = false;
-				window.alert("The host has surrendered or left the room. You win, congratulations !");
 				_self.client.gameClient.winGameFormally({ roomId: _self._roomId, userId: _self.client.logInSignUpController._userId });
 			} else if ($(_self.LOBBY_SCREEN_CLASS).is(':visible')) {
 				window.alert("The host has left the room.");
@@ -139,7 +146,6 @@ roomController.prototype.processGetCurrentRoomDataResponse = function (data) {
 		if (data.result.player1Id == _self.client.logInSignUpController._userId
 			&& !data.result.player2Id && _self._inGame) {
 			_self._inGame = false;
-			window.alert("Player 2 has surrendered or left the room. You win, congratulations !");
 			_self.client.gameClient.winGameFormally({ roomId: _self._roomId, userId: _self.client.logInSignUpController._userId });
 			return;
 		}
@@ -212,8 +218,8 @@ roomController.prototype.updateRoomState = function(data) {
 
 	$(_self.LOBBY_ROOM_PLAYERS_CLASS).text('Players: ' + players);
 
-	console.log('data: ', data);
-	console.log('userId: ', _self.client.logInSignUpController._userId);
+	//console.log('data: ', data);
+	//console.log('userId: ', _self.client.logInSignUpController._userId);
 
 	if (data.result.player1Id === _self.client.logInSignUpController._userId) {
 		if (data.result.player1Id && data.result.player2Id) {
@@ -317,6 +323,22 @@ roomController.prototype.processJoinRoomResponse = function(data) {
 	return true;
 };
 
+roomController.prototype.startGame = function () {
+	var _self = this;
+
+	var data = {
+		player1Id: _self.client.logInSignUpController._userId,
+		player2Id: _self.client.roomController._user2Id,
+		roomId: _self.client.roomController._roomId,
+	};
+
+	console.log('Starting game, player1Id: ', data.player1Id, ', player2Id: ', data.player2Id, ' roomId: ', data.roomId);
+
+	assert(data.player1Id && data.player2Id && data.roomId);
+
+	_self.client.startGame(data);
+};
+
 roomController.prototype.renderCreateRoomErrors = function(data) {
 	logger.info('renderCreateRoomErrors');
 	var _self = this;
@@ -396,9 +418,9 @@ roomController.prototype.showJoinRoomSuccess = function(data) {
 roomController.prototype.preSwitchScreenHook = function (screenClass) {
 	var _self = this;
 
-	console.log('_lastHistoryState: ', _lastHistoryState);
-	console.log('history.state: ', history.state);
-	console.log('screenClass: ', screenClass);
+	//console.log('_lastHistoryState: ', _lastHistoryState);
+	//console.log('history.state: ', history.state);
+	console.log('Switching to screenClass: ', screenClass);
 
 	if (screenClass !== _self.LOBBY_SCREEN_CLASS && screenClass !== _self.GAME_SCREEN_CLASS) {
 		console.log('Leave Room');
@@ -468,4 +490,8 @@ roomController.prototype.hideCurrentRoomErrors = function() {
 
 roomController.prototype.clearCurrentRoomErrors = function() {
 	$(this.LOBBY_SCREEN_CLASS).find(this.INPUT_ERRORS_CLASS).html('');
+};
+
+roomController.prototype.showStartGameSpinner = function () {
+	$(this.LOBBY_SCREEN_CLASS).find(this.MAIN_SPINNER_CLASS).show();
 };

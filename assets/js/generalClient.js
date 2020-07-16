@@ -68,7 +68,7 @@ generalClient.prototype.sendLogOutRequest = function() {
 };
 
 generalClient.prototype.checkIfUserIsLoggedIn = function() {
-	logger.info('checkIfUserIsLoggedIn');
+	//logger.info('checkIfUserIsLoggedIn');
 
 	var _self = this;
 
@@ -88,7 +88,7 @@ generalClient.prototype.sendCreateRoomData = function(_data) {
 };
 
 generalClient.prototype.sendLeaveRoomRequest = function(_data) {
-	logger.info('sendLeaveRoomRequest');
+	//logger.info('sendLeaveRoomRequest');
 
 	var _self = this;
 
@@ -110,7 +110,7 @@ generalClient.prototype.getBrowseRoomsData = function() {
 };
 
 generalClient.prototype.getCurrentRoomData = function(_data) {
-  logger.info('getCurrentRoomData');
+  //logger.info('getCurrentRoomData');
 
   var _self = this;
 
@@ -142,7 +142,16 @@ generalClient.prototype.processJoinRoom = function (_data) {
     && _data.result.id == _self.roomController._roomId) {
     _self.roomController.processGetCurrentRoomDataResponse(_data);
   }
-}
+};
+
+generalClient.prototype.startGame = function(_data) {
+  logger.info('startGame');
+  console.log('START GAME');
+
+  var _self = this;
+
+  _self.socket.emit('startGame', _data);
+};
 
 generalClient.prototype.processServerSocketError = function(_data) {
 	logger.info('ServerError err: ', JSON.stringify(_data));
