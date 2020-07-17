@@ -135,6 +135,7 @@ generalClient.prototype.joinRoom = function(_data) {
 
 generalClient.prototype.processJoinRoom = function (_data) {
   logger.info('processJoinRoom');
+  console.log('JOIN ROOM EMIT RESPOSNE');
 
   var _self = this;
 

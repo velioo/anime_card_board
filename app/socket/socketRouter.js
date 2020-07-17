@@ -85,8 +85,38 @@ const self = module.exports = {
 
 		  	console.log('Errors: ', ctx.errors);
 
-		  	ctx.io.emit('startGame', {
-			  	errors: ctx.errors,
+		  	socket.broadcast('startGame', {
+		  		errors: ctx.errors,
+			  	isSuccessful: isSuccessful,
+			  	gameplayData: ctx.gameplayData,
+			  	roomData: ctx.roomData,
+			  });
+	  	} catch (err) {
+	  		socket.emit('serverError', err);
+	  		logger.error('Error: %o', err);
+	  	}
+	  });
+
+	  socket.on('drawCard', async (ctx) => {
+	  	try {
+		  	console.log('drawCard');
+		  	console.log('Data: ', ctx.data);
+
+		  	await gameServer.drawCard(ctx, next);
+
+		  	let isSuccessful = ctx.errors.length ? false : true;
+
+		  	console.log('Errors: ', ctx.errors);
+
+		  	socket.emit('drawCardYou', {
+		  		errors: ctx.errors,
+		  		isSuccessful: isSuccessful,
+		  		cardDrawn: ctx.cardDrawn,
+		  		roomData: ctx.roomData,
+		  	});
+
+		  	socket.broadcast('drawCard', {
+		  		errors: ctx.errors,
 			  	isSuccessful: isSuccessful,
 			  	gameplayData: ctx.gameplayData,
 			  	roomData: ctx.roomData,

@@ -156,6 +156,14 @@ const _JOIN_ROOM_EVENT = {
   "required": [ "errors", "isSuccessful", "isUserLoggedIn", "result" ],
 };
 
+const _DRAW_CARD = {
+  "type": "object",
+  "properties": {
+    "roomId": { "type": "integer" },
+  },
+  "required": [ "roomId" ],
+};
+
 module.exports = {
   SIGN_UP: _SIGN_UP,
   LOGIN: _LOGIN,
@@ -165,4 +173,5 @@ module.exports = {
   WIN_GAME_FORMALLY: _WIN_GAME_FORMALLY,
   START_GAME: _START_GAME,
   JOIN_ROOM_EVENT: _JOIN_ROOM_EVENT,
+  DRAW_CARD: _DRAW_CARD,
 };

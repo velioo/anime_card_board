@@ -49,10 +49,14 @@ var startGameResponse = {
 									"name": { "type": "string" },
 									"currBoardRow": { "type": "integer" },
 									"currBoardColumn": { "type": "integer" },
+									"cardsInHand": "integer",
+									"cardsToDraw": "integer",
+									"cardsInHandObj": { "type": ["array", "null"] },
 								},
 							},
 							"additionalProperties": false,
 						},
+						"playerIdDrawnCard": { "type": "integer" },
 					},
 					"required": [ "startPlayerId", "roomId", "boardData", "timerSeconds", "playersState" ],
 				},
@@ -61,4 +65,23 @@ var startGameResponse = {
 		},
 	},
 	"required": [ "errors", "isSuccessful", "gameplayData", "roomData" ],
+};
+
+var drawCardResponse = startGameResponse;
+
+var drawCardYouResponse = {
+	"type": "object",
+	"properties": {
+		"cardDrawn": {
+			"type": "object",
+	    "properties": {
+	      "cardName": { "type": "string" },
+	      "cardText": { "type": "string" },
+	      "cardImg": { "type": "string" },
+	      "cardId": { "type": "integer" },
+	    },
+	   "required": [ "cardName", "cardText", "cardImg", "cardId" ],
+		},
+	},
+	"required": [ "cardDrawn" ],
 };

@@ -174,6 +174,7 @@ logInSignUpController.prototype.processLogoutResponse = function(data) {
 		logger.info('Data is valid');
 		_self.resetSessionState();
 		_self.showLogOutSuccess(data);
+		window.removeEventListener("beforeunload", _self.client.gameController.beforeUnload);
 	} else {
 		assert(data.errors.length > 0);
 		logger.info('There are validation errors');
@@ -291,6 +292,7 @@ logInSignUpController.prototype.showLoginSuccess = function(data) {
 
 	this.switchMainMenuToLoggedIn();
 	this.processChangeScreen(this.MAIN_MENU_SCREEN_CLASS);
+	window.location.reload();
 };
 
 logInSignUpController.prototype.showLogOutSuccess = function(data) {

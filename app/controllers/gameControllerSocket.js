@@ -82,17 +82,23 @@ module.exports = {
             boardMatrix: JSON.parse(queryStatusBoards.rows[0].board_matrix_json),
             boardDataPlayers: boardDataPlayers,
           },
-          timerSeconds: 120,
+          timerSeconds: 10,
           playersState: {
             [ctx.roomData.player1Id]: {
               name: ctx.roomData.player1Name,
               currBoardRow: boardDataPlayers.player1StartIndexRow,
               currBoardColumn: boardDataPlayers.player1StartIndexColumn,
+              cardsInHand: 0,
+              cardsToDraw: 5,
+              cardsInHandArr: [],
             },
             [ctx.roomData.player2Id]: {
               name: ctx.roomData.player2Name,
               currBoardRow: boardDataPlayers.player2StartIndexRow,
               currBoardColumn: boardDataPlayers.player2StartIndexColumn,
+              cardsInHand: 0,
+              cardsToDraw: 5,
+              cardsInHandArr: [],
             },
           },
         },
@@ -100,11 +106,12 @@ module.exports = {
 
       queryStatus = await pg.pool.query(`
 
-        INSERT INTO games (room_id, player1_id, player2_id, data_json, status_id, board_id)
-        VALUES ($1, $2, $3, $4, 1, $5)
+        INSERT INTO games (room_id, player1_id, player2_id, data_json, room_data_json, status_id, board_id)
+        VALUES ($1, $2, $3, $4, $5, 1, $6)
         RETURNING *
 
-      `, [ ctx.data.roomId, ctx.data.player1Id, ctx.data.player2Id, JSON.stringify(ctx.gameplayData), queryStatusBoards.rows[0].id ]);
+      `, [ ctx.data.roomId, ctx.data.player1Id, ctx.data.player2Id, JSON.stringify(ctx.gameplayData),
+        JSON.stringify(ctx.roomData), queryStatusBoards.rows[0].id ]);
 
       assert(queryStatus.rows[0].id);
 
@@ -117,6 +124,70 @@ module.exports = {
       await pg.pool.query('ROLLBACK');
 
       logger.info('Failed to start game: %o', err);
+    }
+  },
+  drawCard: async (ctx, next) => {
+    console.log('drawCard gameController');
+    ctx.errors = [];
+
+    await pg.pool.query('BEGIN');
+
+    try {
+      ctx.data.roomId = parseInt(ctx.data.roomId);
+
+      const isSchemaValid = ajv.validate(SCHEMAS.DRAW_CARD, ctx.data);
+      assert(isSchemaValid);
+
+      assert(ctx.session.userData && ctx.session.userData.userId);
+
+      let queryStatus = await pg.pool.query(`
+
+        SELECT * FROM games
+        WHERE room_id = $1
+        FOR NO KEY UPDATE
+
+      `, [ ctx.data.roomId ]);
+
+      assert(queryStatus.rows.length == 1);
+      assert(queryStatus.rows[0].player1_id == ctx.session.userData.userId
+        || queryStatus.rows[0].player2_id == ctx.session.userData.userId);
+
+      ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
+      ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
+
+      assert(ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsToDraw > 0);
+      ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsToDraw--;
+      ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsInHand++;
+      ctx.gameplayData.gameState.playerIdDrawnCard = ctx.session.userData.userId;
+
+      ctx.cardDrawn = {
+        cardId: 6,
+        cardName: "Misaka",
+        cardText: "This is Misaka",
+        cardImg: "Misaka.jpg",
+      };
+
+      ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsInHandArr.push(ctx.cardDrawn);
+
+      queryStatus = await pg.pool.query(`
+
+        UPDATE games SET data_json = $1
+        WHERE room_id = $2
+        RETURNING id
+
+      `, [ JSON.stringify(ctx.gameplayData), ctx.roomData.id ]);
+
+      assert(queryStatus.rows.length == 1);
+
+      ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsInHandArr = null;
+
+      await pg.pool.query('COMMIT');
+    } catch (err) {
+      ctx.errors.push({ dataPath: '/draw_card', message: 'There was a problem while drawing card.' });
+
+      await pg.pool.query('ROLLBACK');
+
+      logger.info('Failed to draw card: %o', err);
     }
   },
   winGameFormally: async (ctx, next) => {

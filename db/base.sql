@@ -52,21 +52,21 @@ CREATE TABLE "gameplay_statuses" (
 
 INSERT INTO gameplay_statuses (id, name) VALUES (1, 'In progress'), (2, 'Finished');
 
-CREATE TABLE "borders" (
+CREATE TABLE "boards" (
   "id" bigserial NOT NULL,
-  "border_matrix_json" text NOT NULL,
-  "border_data_json" text NOT NULL,
+  "board_matrix_json" text NOT NULL,
+  "board_data_json" text NOT NULL,
   "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updated_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id)
 );
 
-INSERT INTO borders (id, border_matrix_json, border_data_json) VALUES (1,
+INSERT INTO boards (id, board_matrix_json, board_data_json) VALUES (1,
 '[[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[1,1,1,0,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]',
 '{"player1StartIndexRow":4,"player1StartIndexColumn":0,"player2StartIndexRow":4,"player2StartIndexColumn":19,"boardPath":[[4,0],[4,1],[4,2],[3,2],[3,3],[3,4],[4,4],[5,4],[5,5],[5,6],[4,6],[4,7],[4,8],[4,9],[4,10],[4,11],[4,12],[4,13],[4,14],[4,15],[4,16],[4,17],[4,18],[4,19]]}');
 
-GRANT ALL ON borders TO velioo;
-GRANT ALL ON borders_id_seq TO velioo;
+GRANT ALL ON boards TO velioo;
+GRANT ALL ON boards_id_seq TO velioo;
 
 CREATE TABLE "games" (
   "id" bigserial NOT NULL,
@@ -74,9 +74,10 @@ CREATE TABLE "games" (
   "player1_id" bigint NOT NULL REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
   "player2_id" bigint NOT NULL REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
   "data_json" text NOT NULL,
+  "room_data_json" text NOT NULL,
   "status_id" bigint NOT NULL REFERENCES gameplay_statuses(id) ON UPDATE CASCADE,
   "winning_player_id" bigint REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
-  "border_id" bigint NOT NULL REFERENCES borders(id) ON UPDATE CASCADE,
+  "board_id" bigint NOT NULL REFERENCES boards(id) ON UPDATE CASCADE,
   "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updated_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "finished_at" timestamp,

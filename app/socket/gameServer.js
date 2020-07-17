@@ -16,4 +16,7 @@ const self = module.exports = {
   startGame: async (ctx, next) => {
     await gameController.startGame (ctx, next);
   },
+  drawCard: async (ctx, next) => {
+    await gameController.drawCard (ctx, next);
+  },
 };

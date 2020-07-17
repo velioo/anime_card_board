@@ -292,6 +292,12 @@ body {
   overflow: hidden;
 }
 
+@-moz-document url-prefix() {
+  .anime-cb-cards-in-hand.player-you {
+    overflow: visible !important;
+  }
+}
+
 .anime-cb-cards-in-hand.player-enemy {
   margin-top: -50px;
 }
@@ -331,6 +337,13 @@ body {
 .anime-cb-cards-in-hand-wrapper.player-you {
   bottom: 0;
   z-index: 2;
+/*  overflow: hidden;*/
+}
+
+@-moz-document url-prefix() {
+ .anime-cb-cards-in-hand-wrapper.player-you {
+    overflow: visible !important;
+  }
 }
 
 #anime-cb-card-info-card-name {
@@ -508,21 +521,13 @@ body {
 }*/
 
 .anime-cb-screen_footer-game {
-  position: sticky;
-  bottom: 0;
-  text-align: left;
-  margin-left: 20px;
-  margin-top: -78px;
-  display: inline-block;
-/*  position: fixed;
+  position: fixed;
   bottom: 50%;
   left: 50%;
   margin-left: -930px;
-  margin-bottom: -460px;
+  margin-bottom: -465px;
   display: inline-block;
-  color: white;
-  text-align: center;
-  z-index: 2;*/
+  z-index: 2;
 }
 
 .anime-cb-card-graveyard-wrapper {
@@ -918,8 +923,8 @@ body {
  */
 @-webkit-keyframes draw-from-deck-you-1 {
   0% {
-    -webkit-transform: translateY(-500px) translateX(900px);
-            transform: translateY(-500px) translateX(900px);
+    -webkit-transform: translateY(-500px) translateX(850px);
+            transform: translateY(-500px) translateX(850px);
   }
   100% {
     -webkit-transform: translateY(0) translateX(0);
@@ -928,8 +933,8 @@ body {
 }
 @keyframes draw-from-deck-you-1 {
   0% {
-    -webkit-transform: translateY(-500px) translateX(900px);
-            transform: translateY(-500px) translateX(900px);
+    -webkit-transform: translateY(-500px) translateX(850px);
+            transform: translateY(-500px) translateX(850px);
   }
   100% {
     -webkit-transform: translateY(0) translateX(0);

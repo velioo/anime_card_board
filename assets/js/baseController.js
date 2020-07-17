@@ -87,8 +87,6 @@ baseController.prototype._initListeners = function() {
 		  _self.switchToScreen(stateObj.screenClass);
 		}
 	});
-
-	window.addEventListener("beforeunload", this.beforeUnload, true);
 };
 
 baseController.prototype._initState = function() {
@@ -149,14 +147,17 @@ baseController.prototype.postSwitchScreenHook = function(screenClass) {
 	logger.info('postSwitchScreenHook');
 	console.log('postSwitchScreenHook');
 
-	if (typeof this.client.roomController.postSwitchScreenHook === "function") {
-		this.client.roomController.postSwitchScreenHook(screenClass);
-	}
-};
+	var _self = this;
 
-baseController.prototype.beforeUnload = function(event) {
-	event.preventDefault();
-	event.returnValue = 'Data will be lost if you leave the page, are you sure?';
+	if (typeof _self.client.roomController.postSwitchScreenHook === "function") {
+		_self.client.roomController.postSwitchScreenHook(screenClass);
+	}
+
+	if (_self.client.gameController) {
+		window.removeEventListener("beforeunload", _self.client.gameController.beforeUnload);
+	} else if (_self.client.generalClient) {
+		window.removeEventListener("beforeunload", _self.beforeUnload);
+	}
 };
 
 baseController.prototype.resetAllScreens = function() {

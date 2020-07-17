@@ -13,6 +13,8 @@ gameClient.prototype.initGameSocket = function(socket) {
 	console.log('SOCKET: ', socket);
 
 	socket.on('startGame', this.processStartGame.bind(this));
+	socket.on('drawCard', this.processDrawCard.bind(this));
+	socket.on('drawCardYou', this.processDrawCardYou.bind(this));
 	socket.on('winGameFormally', this.processWinGameFormally.bind(this));
 };
 
@@ -25,6 +27,36 @@ gameClient.prototype.processStartGame = function(_data) {
 	if (_self.generalClient.roomController._roomId
 		&& _self.generalClient.roomController._roomId == _data.roomData.id) {
 		_self.gameController.processStartGameResponse(_data);
+	}
+};
+
+gameClient.prototype.drawCard = function (_data) {
+	logger.info('drawCard');
+
+	var _self = this;
+
+	_self.socket.emit('drawCard', _data);
+};
+
+gameClient.prototype.processDrawCard = function (_data) {
+	logger.info('processDrawCard');
+
+	var _self = this;
+
+	if (_self.generalClient.roomController._roomId
+		&& _self.generalClient.roomController._roomId == _data.roomData.id) {
+		_self.gameController.processDrawCard(_data);
+	}
+};
+
+gameClient.prototype.processDrawCardYou = function (_data) {
+	logger.info('processDrawCardYou');
+
+	var _self = this;
+
+	if (_self.generalClient.roomController._roomId
+		&& _self.generalClient.roomController._roomId == _data.roomData.id) {
+		_self.gameController.processDrawCardYou(_data);
 	}
 };
 
