@@ -1,3 +1,19 @@
+var cardObjProperties = {
+  "cardName": { "type": "string" },
+  "cardText": { "type": "string" },
+  "cardImg": { "type": "string" },
+  "cardId": { "type": "integer" },
+  "cardRarity": { "type": "integer" },
+};
+
+var cardObjRequiredFields = [ "cardName", "cardText", "cardImg", "cardId", "cardRarity" ];
+
+var cardObj = {
+	"type": "object",
+  "properties": cardObjProperties,
+ 	"required": cardObjRequiredFields,
+};
+
 var startGameResponse = {
 	"type": "object",
 	"properties": {
@@ -31,7 +47,7 @@ var startGameResponse = {
 				"gameState": {
 					"type": "object",
 					"properties": {
-						"startPlayerId": { "type": "integer" },
+						"currPlayerId": { "type": "integer" },
 						"roomId": { "type": "integer" },
 						"boardData": {
 							"type": "object",
@@ -42,6 +58,15 @@ var startGameResponse = {
 							},
 						},
 						"timerSeconds": { "type": "integer" },
+						"nextPhase": { "type": "integer" },
+						"playerIdDrawnCard": { "type": ["integer", "null"] },
+						"playerIdSummonedCard": { "type": ["integer", "null"] },
+						"cardSummoned": {
+							"type": ["object", "null"],
+							"properties": cardObjProperties,
+							"required": cardObjRequiredFields,
+						},
+						"cardSummonedIdxInPlayerHand": { "type": ["integer", "null"] },
 						"playersState": {
 							"type": "object",
 							"patternProperties": {
@@ -51,14 +76,30 @@ var startGameResponse = {
 									"currBoardColumn": { "type": "integer" },
 									"cardsInHand": "integer",
 									"cardsToDraw": "integer",
-									"cardsInHandObj": { "type": ["array", "null"] },
+									"cardsSummonConstraints": {
+										"type": "object",
+										"properties": {
+											"cardsCanSummonAny": { "type": "boolean" },
+											"cardsCanSummonCommon": { "type": "boolean" },
+											"cardsCanSummonRare": { "type": "boolean" },
+											"cardsCanSummonEpic": { "type": "boolean" },
+											"cardsCanSummonCommonCount": { "type": "integer" },
+											"cardsCanSummonRareCount": { "type": "integer" },
+											"cardsCanSummonEpicCount": { "type": "integer" },
+										},
+									},
+									"cardsOnFieldArr": {
+										"type": "array",
+										"items": cardObj,
+									},
+									"cardsInHandArr": { "type": ["null"] },
+									"maxCardsOnField": { "type": "integer" },
 								},
 							},
 							"additionalProperties": false,
 						},
-						"playerIdDrawnCard": { "type": "integer" },
 					},
-					"required": [ "startPlayerId", "roomId", "boardData", "timerSeconds", "playersState" ],
+					"required": [ "currPlayerId", "roomId", "boardData", "timerSeconds", "playersState" ],
 				},
 			},
 			"required": [ "gameState" ],
@@ -68,20 +109,15 @@ var startGameResponse = {
 };
 
 var drawCardResponse = startGameResponse;
+var drawPhaseResponse = startGameResponse;
+var standByPhaseResponse = startGameResponse;
+var mainPhaseResponse = startGameResponse;
+var summonCardResponse = startGameResponse;
 
 var drawCardYouResponse = {
 	"type": "object",
 	"properties": {
-		"cardDrawn": {
-			"type": "object",
-	    "properties": {
-	      "cardName": { "type": "string" },
-	      "cardText": { "type": "string" },
-	      "cardImg": { "type": "string" },
-	      "cardId": { "type": "integer" },
-	    },
-	   "required": [ "cardName", "cardText", "cardImg", "cardId" ],
-		},
+		"cardDrawn": cardObj,
 	},
 	"required": [ "cardDrawn" ],
 };

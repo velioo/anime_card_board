@@ -19,4 +19,16 @@ const self = module.exports = {
   drawCard: async (ctx, next) => {
     await gameController.drawCard (ctx, next);
   },
+  drawPhase: async (ctx, next) => {
+    await gameController.drawPhase (ctx, next);
+  },
+  standByPhase: async (ctx, next) => {
+    await gameController.standByPhase (ctx, next);
+  },
+  mainPhase: async (ctx, next) => {
+    await gameController.mainPhase (ctx, next);
+  },
+  summonCard: async (ctx, next) => {
+    await gameController.summonCard (ctx, next);
+  },
 };

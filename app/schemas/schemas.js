@@ -164,6 +164,19 @@ const _DRAW_CARD = {
   "required": [ "roomId" ],
 };
 
+const _DRAW_PHASE = _DRAW_CARD;
+const _STANDBY_PHASE = _DRAW_CARD;
+const _MAIN_PHASE = _DRAW_CARD;
+const _SUMMON_CARD = {
+  "type": "object",
+  "properties": {
+    "roomId": { "type": "integer" },
+    "cardId": { "type": "integer" },
+    "cardIdx": { "type": "integer" },
+  },
+  "required": [ "roomId", "cardId", "cardIdx" ],
+};
+
 module.exports = {
   SIGN_UP: _SIGN_UP,
   LOGIN: _LOGIN,
@@ -174,4 +187,8 @@ module.exports = {
   START_GAME: _START_GAME,
   JOIN_ROOM_EVENT: _JOIN_ROOM_EVENT,
   DRAW_CARD: _DRAW_CARD,
+  DRAW_PHASE: _DRAW_PHASE,
+  STANDBY_PHASE: _STANDBY_PHASE,
+  MAIN_PHASE: _MAIN_PHASE,
+  SUMMON_CARD: _SUMMON_CARD,
 };

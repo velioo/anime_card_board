@@ -155,6 +155,9 @@ baseController.prototype.postSwitchScreenHook = function(screenClass) {
 
 	if (_self.client.gameController) {
 		window.removeEventListener("beforeunload", _self.client.gameController.beforeUnload);
+		if (screenClass != _self.GAME_SCREEN_CLASS) {
+			_self.client.gameController.resetGameState();
+		}
 	} else if (_self.client.generalClient) {
 		window.removeEventListener("beforeunload", _self.beforeUnload);
 	}

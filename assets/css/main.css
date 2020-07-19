@@ -469,7 +469,6 @@ body {
 }
 
 .anime-cb-phase-row {
-
 }
 
 .anime-cb-phase-column {
@@ -480,10 +479,14 @@ body {
   font-weight: 700;
 }
 
-.anime-cb-phase-column.active {
-  background-color: rgba(34, 139, 34, 1);
+.anime-cb-phase-column.active.player-you {
   -webkit-animation: active-phase-blink 2s infinite ;
   animation: active-phase-blink 2s infinite ;
+}
+
+.anime-cb-phase-column.active.player-enemy {
+  -webkit-animation: active-phase-blink-enemy 2s infinite ;
+  animation: active-phase-blink-enemy 2s infinite ;
 }
 
 .anime-cb-phase-column.ended {
@@ -817,6 +820,34 @@ body {
   }
   100% {
     background-color: rgba(34, 139, 34, 1);
+  }
+}
+
+/**
+ * ----------------------------------------
+ * animation blink-2
+ * ----------------------------------------
+ */
+@-webkit-keyframes active-phase-blink-enemy {
+  0% {
+    background-color: rgb(171, 33, 33, 1)
+  }
+  50% {
+    background-color: rgb(171, 33, 33, 0.7)
+  }
+  100% {
+    background-color: rgb(171, 33, 33, 1)
+  }
+}
+@keyframes active-phase-blink-enemy {
+  0% {
+    background-color:rgb(171, 33, 33, 1)
+  }
+  50% {
+    background-color: rgb(171, 33, 33, 0.7)
+  }
+  100% {
+    background-color: rgb(171, 33, 33, 1)
   }
 }
 

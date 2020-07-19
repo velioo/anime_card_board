@@ -168,5 +168,36 @@ const self = module.exports = {
     }
 
     return date.toISOString().slice(0, 10) === dateStr;
-  }
+  },
+  lockRowById: async (params) => {
+    assert(params.table && params.field && params.queryArg);
+    assert(_.isString(params.table) && _.isString(params.field));
+
+    const results = await pg.pool.query(`
+      SELECT *
+      FROM ${params.table}
+      WHERE
+        ${params.field} = $1
+      FOR NO KEY UPDATE
+      `, [ params.queryArg ]);
+
+    assert(results.rowCount == 1);
+
+    return results;
+  },
+  updateRowById: async (params) => {
+    assert(params.table && params.field && params.field2 && params.queryArg && params.queryArg2);
+    assert(_.isString(params.table) && _.isString(params.field) && _.isString(params.field2));
+
+    const results = await pg.pool.query(`
+      UPDATE ${params.table}
+      SET ${params.field} = $1
+      WHERE ${params.field2} = $2
+      RETURNING *
+      `, [ params.queryArg, params.queryArg2 ]);
+
+    assert(results.rowCount == 1);
+
+    return results;
+  },
 };

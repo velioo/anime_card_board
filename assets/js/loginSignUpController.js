@@ -195,6 +195,8 @@ logInSignUpController.prototype.processIsUserLoggedInResponse = function(data) {
 			_self.setIsUserLoggedIn(true);
 			_self._userId = data.userId;
 			_self._username = data.username;
+		} else {
+			_self.processSessionExpired();
 		}
 
 		if (_isBaseControllerStateInited === false) {

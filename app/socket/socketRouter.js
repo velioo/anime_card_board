@@ -127,6 +127,98 @@ const self = module.exports = {
 	  	}
 	  });
 
+	  socket.on('drawPhase', async (ctx) => {
+	  	try {
+		  	console.log('drawPhase');
+		  	console.log('Data: ', ctx.data);
+
+		  	await gameServer.drawPhase(ctx, next);
+
+		  	let isSuccessful = ctx.errors.length ? false : true;
+
+		  	console.log('Errors: ', ctx.errors);
+
+		  	socket.broadcast('drawPhase', {
+		  		errors: ctx.errors,
+			  	isSuccessful: isSuccessful,
+			  	gameplayData: ctx.gameplayData,
+			  	roomData: ctx.roomData,
+			  });
+	  	} catch (err) {
+	  		socket.emit('serverError', err);
+	  		logger.error('Error: %o', err);
+	  	}
+	  });
+
+	  socket.on('standByPhase', async (ctx) => {
+	  	try {
+		  	console.log('standByPhase');
+		  	console.log('Data: ', ctx.data);
+
+		  	await gameServer.standByPhase(ctx, next);
+
+		  	let isSuccessful = ctx.errors.length ? false : true;
+
+		  	console.log('Errors: ', ctx.errors);
+
+		  	socket.broadcast('standByPhase', {
+		  		errors: ctx.errors,
+			  	isSuccessful: isSuccessful,
+			  	gameplayData: ctx.gameplayData,
+			  	roomData: ctx.roomData,
+			  });
+	  	} catch (err) {
+	  		socket.emit('serverError', err);
+	  		logger.error('Error: %o', err);
+	  	}
+	  });
+
+	  socket.on('mainPhase', async (ctx) => {
+	  	try {
+		  	console.log('mainPhase');
+		  	console.log('Data: ', ctx.data);
+
+		  	await gameServer.mainPhase(ctx, next);
+
+		  	let isSuccessful = ctx.errors.length ? false : true;
+
+		  	console.log('Errors: ', ctx.errors);
+
+		  	socket.broadcast('mainPhase', {
+		  		errors: ctx.errors,
+			  	isSuccessful: isSuccessful,
+			  	gameplayData: ctx.gameplayData,
+			  	roomData: ctx.roomData,
+			  });
+	  	} catch (err) {
+	  		socket.emit('serverError', err);
+	  		logger.error('Error: %o', err);
+	  	}
+	  });
+
+	  socket.on('summonCard', async (ctx) => {
+	  	try {
+		  	console.log('summonCard');
+		  	console.log('Data: ', ctx.data);
+
+		  	await gameServer.summonCard(ctx, next);
+
+		  	let isSuccessful = ctx.errors.length ? false : true;
+
+		  	console.log('Errors: ', ctx.errors);
+
+		  	socket.broadcast('summonCard', {
+		  		errors: ctx.errors,
+			  	isSuccessful: isSuccessful,
+			  	gameplayData: ctx.gameplayData,
+			  	roomData: ctx.roomData,
+			  });
+	  	} catch (err) {
+	  		socket.emit('serverError', err);
+	  		logger.error('Error: %o', err);
+	  	}
+	  });
+
 	  socket.on('winGameFormally', async (ctx) => {
 	  	try {
 		  	console.log('winGameFormally');

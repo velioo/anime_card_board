@@ -15,6 +15,10 @@ gameClient.prototype.initGameSocket = function(socket) {
 	socket.on('startGame', this.processStartGame.bind(this));
 	socket.on('drawCard', this.processDrawCard.bind(this));
 	socket.on('drawCardYou', this.processDrawCardYou.bind(this));
+	socket.on('drawPhase', this.processDrawPhase.bind(this));
+	socket.on('standByPhase', this.processStandByPhase.bind(this));
+	socket.on('mainPhase', this.processMainPhase.bind(this));
+	socket.on('summonCard', this.processSummonCard.bind(this));
 	socket.on('winGameFormally', this.processWinGameFormally.bind(this));
 };
 
@@ -57,6 +61,82 @@ gameClient.prototype.processDrawCardYou = function (_data) {
 	if (_self.generalClient.roomController._roomId
 		&& _self.generalClient.roomController._roomId == _data.roomData.id) {
 		_self.gameController.processDrawCardYou(_data);
+	}
+};
+
+gameClient.prototype.drawPhase = function (_data) {
+	logger.info('drawPhase');
+
+	var _self = this;
+
+	_self.socket.emit('drawPhase', _data);
+};
+
+gameClient.prototype.processDrawPhase = function (_data) {
+	logger.info('processDrawPhase');
+
+	var _self = this;
+
+	if (_self.generalClient.roomController._roomId
+		&& _self.generalClient.roomController._roomId == _data.roomData.id) {
+		_self.gameController.processDrawPhase(_data);
+	}
+};
+
+gameClient.prototype.standByPhase = function (_data) {
+	logger.info('standByPhase');
+
+	var _self = this;
+
+	_self.socket.emit('standByPhase', _data);
+};
+
+gameClient.prototype.processStandByPhase = function (_data) {
+	logger.info('processStandByPhase');
+
+	var _self = this;
+
+	if (_self.generalClient.roomController._roomId
+		&& _self.generalClient.roomController._roomId == _data.roomData.id) {
+		_self.gameController.processStandByPhase(_data);
+	}
+};
+
+gameClient.prototype.mainPhase = function (_data) {
+	logger.info('mainPhase');
+
+	var _self = this;
+
+	_self.socket.emit('mainPhase', _data);
+};
+
+gameClient.prototype.processMainPhase = function (_data) {
+	logger.info('processMainPhase');
+
+	var _self = this;
+
+	if (_self.generalClient.roomController._roomId
+		&& _self.generalClient.roomController._roomId == _data.roomData.id) {
+		_self.gameController.processMainPhase(_data);
+	}
+};
+
+gameClient.prototype.summonCard = function (_data) {
+	logger.info('summonCard');
+
+	var _self = this;
+
+	_self.socket.emit('summonCard', _data);
+};
+
+gameClient.prototype.processSummonCard = function (_data) {
+	logger.info('processSummonCard');
+
+	var _self = this;
+
+	if (_self.generalClient.roomController._roomId
+		&& _self.generalClient.roomController._roomId == _data.roomData.id) {
+		_self.gameController.processSummonCard(_data);
 	}
 };
 
