@@ -20,8 +20,9 @@ const self = module.exports = {
 	  socket.on('disconnect', async (ctx) => {
 	  	try {
 		  	console.log('Client disconnected');
+		  	logger.info('Client disconnected: %o', ctx.session.userData);
 
-		  	await gameServer.processDisconnect(ctx, next);
+		  	// await gameServer.processDisconnect(ctx, next);
 
 		  	let isSuccessful = ctx.errors.length ? false : true;
 
@@ -219,6 +220,75 @@ const self = module.exports = {
 	  	}
 	  });
 
+	  socket.on('rollPhase', async (ctx) => {
+	  	try {
+		  	console.log('rollPhase');
+		  	console.log('Data: ', ctx.data);
+
+		  	await gameServer.rollPhase(ctx, next);
+
+		  	let isSuccessful = ctx.errors.length ? false : true;
+
+		  	console.log('Errors: ', ctx.errors);
+
+		  	socket.broadcast('rollPhase', {
+		  		errors: ctx.errors,
+			  	isSuccessful: isSuccessful,
+			  	gameplayData: ctx.gameplayData,
+			  	roomData: ctx.roomData,
+			  });
+	  	} catch (err) {
+	  		socket.emit('serverError', err);
+	  		logger.error('Error: %o', err);
+	  	}
+	  });
+
+	  socket.on('rollDiceBoard', async (ctx) => {
+	  	try {
+		  	console.log('rollDiceBoard');
+		  	console.log('Data: ', ctx.data);
+
+		  	await gameServer.rollDiceBoard(ctx, next);
+
+		  	let isSuccessful = ctx.errors.length ? false : true;
+
+		  	console.log('Errors: ', ctx.errors);
+
+		  	socket.broadcast('rollDiceBoard', {
+		  		errors: ctx.errors,
+			  	isSuccessful: isSuccessful,
+			  	gameplayData: ctx.gameplayData,
+			  	roomData: ctx.roomData,
+			  });
+	  	} catch (err) {
+	  		socket.emit('serverError', err);
+	  		logger.error('Error: %o', err);
+	  	}
+	  });
+
+	  socket.on('endPhase', async (ctx) => {
+	  	try {
+		  	console.log('endPhase');
+		  	console.log('endPhase: ', ctx.data);
+
+		  	await gameServer.endPhase(ctx, next);
+
+		  	let isSuccessful = ctx.errors.length ? false : true;
+
+		  	console.log('Errors: ', ctx.errors);
+
+		  	socket.broadcast('endPhase', {
+		  		errors: ctx.errors,
+			  	isSuccessful: isSuccessful,
+			  	gameplayData: ctx.gameplayData,
+			  	roomData: ctx.roomData,
+			  });
+	  	} catch (err) {
+	  		socket.emit('serverError', err);
+	  		logger.error('Error: %o', err);
+	  	}
+	  });
+
 	  socket.on('winGameFormally', async (ctx) => {
 	  	try {
 		  	console.log('winGameFormally');
@@ -239,27 +309,5 @@ const self = module.exports = {
 	  		logger.error('Error: %o', err);
 	  	}
 	  });
-
-	  // socket.on('login', async (ctx) => {
-	  // 	try {
-		 //  	console.log('Client data: ', ctx.data);
-		 //  	console.log('Is Logged in: ', ctx.isUserLoggedIn);
-
-		 //  	await generalServer.login(ctx, next);
-
-		 //  	let isSuccessful = ctx.errors.length ? false : true;
-
-		 //  	console.log('Errors: ', ctx.errors);
-
-		 //  	socket.emit('login', {
-		 //  		errors: ctx.errors,
-		 //  		userMessage: ctx.userMessage,
-		 //  		isSuccessful: isSuccessful
-		 //  	});
-	  // 	} catch(err) {
-	  // 		socket.emit('serverError', err);
-	  // 		logger.error("Error: %o", err);
-	  // 	}
-	  // });
   },
 };

@@ -35,6 +35,7 @@ roomController.prototype.initElements = function() {
 	this.$createRoomInputs = $(this.CREATE_ROOM_FORM_ID).find('input');
 	this._roomId = null;
 	this._connectingToRoom = false;
+	this._creatingRoom = false;
 	this._inGame = false;
 	this._user2Id = null;
 };
@@ -52,6 +53,8 @@ roomController.prototype.initListeners = function() {
 
 	$(_self.CREATE_ROOM_SUBMIT_BTN_ID).on('click', function(e) {
 		e.preventDefault();
+
+	  _self._creatingRoom = true;
 
 	  var values = {};
 	  _self.$createRoomInputs.each(function() {
@@ -107,7 +110,8 @@ roomController.prototype.roomsIntervalFunc = function() {
 		_self.client.getCurrentRoomData({ roomId: _self._roomId });
 	}
 
-	if (!$(_self.LOBBY_SCREEN_CLASS).is(':visible') && !_self._inGame) {
+	if (!$(_self.LOBBY_SCREEN_CLASS).is(':visible') && !_self._inGame && !_self._creatingRoom) {
+		console.log('Leave room from interval');
 		_self.client.sendLeaveRoomRequest({ roomId: _self._roomId, userId: _self.client.logInSignUpController._userId });
 	}
 };
@@ -126,7 +130,9 @@ roomController.prototype.processGetCurrentRoomDataResponse = function (data) {
 		if (!data.result.id) {
 			if (_self._inGame) {
 				_self._inGame = false;
-				_self.client.gameClient.winGameFormally({ roomId: _self._roomId, userId: _self.client.logInSignUpController._userId });
+				console.log('Room no longer exists, host has left the game, winGameFormally', data);
+				logger.info('Room no longer exists, host has left the game, winGameFormally: %o', data);
+				_self.client.gameClient.winGameFormally({ roomId: _self._roomId });
 			} else if ($(_self.LOBBY_SCREEN_CLASS).is(':visible')) {
 				window.alert("The host has left the room.");
 				_self.processChangeScreen(this.MAIN_MENU_SCREEN_CLASS);
@@ -137,7 +143,7 @@ roomController.prototype.processGetCurrentRoomDataResponse = function (data) {
 
 		// if the player is not the host but is still in lobby screen for some reason despite not being in the room
 		if (data.result.player1Id != _self.client.logInSignUpController._userId
-			&& !data.result.player2Id) {
+			&& !data.result.player2Id && !_self._inGame) {
 			_self.processChangeScreen(this.MAIN_MENU_SCREEN_CLASS);
 			return;
 		}
@@ -145,8 +151,10 @@ roomController.prototype.processGetCurrentRoomDataResponse = function (data) {
 		// if the player is the host and the other player left the game while ingame
 		if (data.result.player1Id == _self.client.logInSignUpController._userId
 			&& !data.result.player2Id && _self._inGame) {
+			console.log('Player 2 is no longer in the room, winGameFormally', data);
+			logger.info('Player 2 is no longer in the room, winGameFormally: %o', data);
 			_self._inGame = false;
-			_self.client.gameClient.winGameFormally({ roomId: _self._roomId, userId: _self.client.logInSignUpController._userId });
+			_self.client.gameClient.winGameFormally({ roomId: _self._roomId });
 			return;
 		}
 
@@ -237,6 +245,7 @@ roomController.prototype.resetRoomState = function () {
 
 	_self._roomId = null;
 	_self._connectingToRoom = false;
+	_self._creatingRoom = false;
 	_self._inGame = false;
 	_self._user2Id = null;
 };
@@ -400,6 +409,7 @@ roomController.prototype.showCreateRoomSuccess = function(data) {
 	$(_self.LOBBY_ROOM_WAITING_PLAYERS_CLASS).show();
 
 	_self.processChangeScreen(_self.LOBBY_SCREEN_CLASS);
+	_self._creatingRoom = false;
 };
 
 roomController.prototype.showJoinRoomSuccess = function(data) {
@@ -445,6 +455,7 @@ roomController.prototype.postSwitchScreenHook = function (screenClass) {
 
 	if (screenClass !== _self.BROWSE_ROOMS_SCREEN_CLASS) {
 		_self._connectingToRoom = false;
+		_self._creatingRoom = false;
 	}
 };
 

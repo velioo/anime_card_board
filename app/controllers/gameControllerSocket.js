@@ -102,11 +102,21 @@ module.exports = {
           playerIdSummonedCard: null,
           cardSummoned: null,
           cardSummonedIdxInPlayerHand: null,
+          rollDiceBoard: {
+            playerIdRollDice: null,
+            rollDiceValue: null,
+          },
+          rollDiceCard: {
+            playerIdRollDice: null,
+            rollDiceValue: null,
+            cardId: null,
+          },
+          playerIdWinGame: null,
           playersState: {
             [ctx.roomData.player1Id]: {
               name: ctx.roomData.player1Name,
-              currBoardRow: boardDataPlayers.player1StartIndexRow,
-              currBoardColumn: boardDataPlayers.player1StartIndexColumn,
+              currBoardIndex: boardDataPlayers.player1StartBoardIndex,
+              lastBoardIndex: boardDataPlayers.player1StartBoardIndex,
               cardsInHand: 0,
               cardsToDraw: 5,
               cardsSummonConstraints: {
@@ -121,11 +131,13 @@ module.exports = {
               cardsInHandArr: [],
               cardsOnFieldArr: [],
               maxCardsOnField: 5,
+              canRollDiceBoardInRollPhase: true,
+              canRollDiceBoardCount: 0,
             },
             [ctx.roomData.player2Id]: {
               name: ctx.roomData.player2Name,
-              currBoardRow: boardDataPlayers.player2StartIndexRow,
-              currBoardColumn: boardDataPlayers.player2StartIndexColumn,
+              currBoardIndex: boardDataPlayers.player2StartBoardIndex,
+              lastBoardIndex: boardDataPlayers.player2StartBoardIndex,
               cardsInHand: 0,
               cardsToDraw: 5,
               cardsSummonConstraints: {
@@ -140,6 +152,8 @@ module.exports = {
               cardsInHandArr: [],
               cardsOnFieldArr: [],
               maxCardsOnField: 5,
+              canRollDiceBoardInRollPhase: true,
+              canRollDiceBoardCount: 0,
             },
           },
         },
@@ -427,6 +441,160 @@ module.exports = {
       logger.info('Failed to summon card: %o', err);
     }
   },
+  rollPhase: async (ctx, next) => {
+    console.log('rollPhase gameController');
+    ctx.errors = [];
+
+    await pg.pool.query('BEGIN');
+
+    try {
+      ctx.data.roomId = parseInt(ctx.data.roomId);
+
+      const isSchemaValid = ajv.validate(SCHEMAS.ROLL_PHASE, ctx.data);
+      assert(isSchemaValid);
+
+      assert(ctx.session.userData && ctx.session.userData.userId);
+
+      let queryStatus = await utils.lockRowById({ table: 'games', field: 'room_id', queryArg: ctx.data.roomId });
+
+      assert(queryStatus.rows[0].player1_id == ctx.session.userData.userId
+        || queryStatus.rows[0].player2_id == ctx.session.userData.userId);
+
+      ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
+      ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
+
+      assert(ctx.gameplayData.gameState.currPlayerId == ctx.session.userData.userId);
+      assert(ctx.gameplayData.gameState.nextPhase == turnPhases.ROLL);
+
+      ctx.gameplayData.gameState.nextPhase = turnPhases.END;
+      ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].canRollDiceBoardCount = 1;
+
+      queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
+        field2: 'room_id', queryArg2: ctx.data.roomId });
+
+      ctx.gameplayData.gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
+      ctx.gameplayData.gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
+
+      await pg.pool.query('COMMIT');
+    } catch (err) {
+      ctx.errors.push({ dataPath: '/roll_phase', message: 'There was a problem with roll phase.' });
+
+      await pg.pool.query('ROLLBACK');
+
+      logger.info('Failed on roll phase: %o', err);
+    }
+  },
+  rollDiceBoard: async (ctx, next) => {
+    console.log('rollDiceBoard gameController');
+    ctx.errors = [];
+
+    await pg.pool.query('BEGIN');
+
+    try {
+      ctx.data.roomId = parseInt(ctx.data.roomId);
+
+      const isSchemaValid = ajv.validate(SCHEMAS.ROLL_PHASE, ctx.data);
+      assert(isSchemaValid);
+
+      assert(ctx.session.userData && ctx.session.userData.userId);
+
+      let queryStatus = await utils.lockRowById({ table: 'games', field: 'room_id', queryArg: ctx.data.roomId });
+
+      assert(queryStatus.rows[0].player1_id == ctx.session.userData.userId
+        || queryStatus.rows[0].player2_id == ctx.session.userData.userId);
+
+      ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
+      ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
+
+      assert(ctx.gameplayData.gameState.currPlayerId == ctx.session.userData.userId);
+      assert(ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].canRollDiceBoardCount > 0);
+
+      if (ctx.gameplayData.gameState.nextPhase == turnPhases.ROLL) {
+        assert(ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].canRollDiceBoardInRollPhase);
+      }
+
+      ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].canRollDiceBoardCount--;
+      ctx.gameplayData.gameState.rollDiceBoard.rollDiceValue = utils.getRandomInt(1, 6);
+      ctx.gameplayData.gameState.rollDiceBoard.playerIdRollDice = ctx.session.userData.userId;
+
+      let boardPath = ctx.gameplayData.gameState.boardData.boardDataPlayers.boardPath;
+      let currBoardIndex = ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].currBoardIndex;
+      let rollDiceValue = ctx.gameplayData.gameState.rollDiceBoard.rollDiceValue;
+
+      ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].lastBoardIndex = currBoardIndex;
+
+      if (ctx.roomData.player1Id == ctx.session.userData.userId && boardPath[currBoardIndex + rollDiceValue]) {
+        ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].currBoardIndex = currBoardIndex + rollDiceValue;
+      } else if (ctx.roomData.player2Id == ctx.session.userData.userId && currBoardIndex - rollDiceValue >= 0) {
+        ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].currBoardIndex = currBoardIndex - rollDiceValue;
+      }
+
+      if (checkWin(ctx)) {
+        ctx.gameplayData.gameState.playerIdWinGame = ctx.session.userData.userId;
+        let success = await winGame(ctx);
+        assert(success === true);
+      }
+
+      queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
+        field2: 'room_id', queryArg2: ctx.data.roomId });
+
+      ctx.gameplayData.gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
+      ctx.gameplayData.gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
+
+      await pg.pool.query('COMMIT');
+    } catch (err) {
+      ctx.errors.push({ dataPath: '/roll_dice_board', message: 'There was a problem with rolling the board dice.' });
+
+      await pg.pool.query('ROLLBACK');
+
+      logger.info('Failed on board dice roll: %o', err);
+    }
+  },
+  endPhase: async (ctx, next) => {
+    console.log('endPhase gameController');
+    ctx.errors = [];
+
+    await pg.pool.query('BEGIN');
+
+    try {
+      ctx.data.roomId = parseInt(ctx.data.roomId);
+
+      const isSchemaValid = ajv.validate(SCHEMAS.END_PHASE, ctx.data);
+      assert(isSchemaValid);
+
+      assert(ctx.session.userData && ctx.session.userData.userId);
+
+      let queryStatus = await utils.lockRowById({ table: 'games', field: 'room_id', queryArg: ctx.data.roomId });
+
+      assert(queryStatus.rows[0].player1_id == ctx.session.userData.userId
+        || queryStatus.rows[0].player2_id == ctx.session.userData.userId);
+
+      ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
+      ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
+
+      assert(ctx.gameplayData.gameState.currPlayerId == ctx.session.userData.userId);
+      assert(ctx.gameplayData.gameState.nextPhase == turnPhases.END);
+      assert(ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].canRollDiceBoardCount <= 0);
+
+      ctx.gameplayData.gameState.nextPhase = turnPhases.DRAW;
+      ctx.gameplayData.gameState.currPlayerId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
+      resetTurn(ctx);
+
+      queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
+        field2: 'room_id', queryArg2: ctx.data.roomId });
+
+      ctx.gameplayData.gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
+      ctx.gameplayData.gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
+
+      await pg.pool.query('COMMIT');
+    } catch (err) {
+      ctx.errors.push({ dataPath: '/end_phase', message: 'There was a problem with end phase.' });
+
+      await pg.pool.query('ROLLBACK');
+
+      logger.info('Failed on end phase: %o', err);
+    }
+  },
   winGameFormally: async (ctx, next) => {
     console.log('winGameFormally gameController');
     ctx.errors = [];
@@ -435,14 +603,11 @@ module.exports = {
 
     try {
       ctx.data.roomId = parseInt(ctx.data.roomId);
-      ctx.data.userId = parseInt(ctx.data.userId);
 
       const isSchemaValid = ajv.validate(SCHEMAS.WIN_GAME_FORMALLY, ctx.data);
 
       assert(isSchemaValid);
-
-      assert(ctx.session.userData && ctx.session.userData.userId
-        && ctx.session.userData.userId == ctx.data.userId);
+      assert(ctx.session.userData && ctx.session.userData.userId);
 
       let player2LeftTheRoom = false;
 
@@ -463,10 +628,10 @@ module.exports = {
 
       if (player2LeftTheRoom) {
         // player 2 left the room
-        assert(queryStatus.rows[0].player1_id == ctx.data.userId);
+        assert(queryStatus.rows[0].player1_id == ctx.session.userData.userId);
       } else {
         // player 1 left the room
-        assert(queryStatus.rows[0].player2_id == ctx.data.userId);
+        assert(queryStatus.rows[0].player2_id == ctx.session.userData.userId);
       }
 
       queryStatus = await pg.pool.query(`
@@ -479,7 +644,7 @@ module.exports = {
           AND status_id = 1
         RETURNING id
 
-      `, [ ctx.data.userId, ctx.data.roomId ]);
+      `, [ ctx.session.userData.userId, ctx.data.roomId ]);
 
       console.log('queryStatus: ', queryStatus);
 
@@ -493,5 +658,61 @@ module.exports = {
 
       logger.info('Failed to win game formally: %o', err);
     }
-  },
+  }
+};
+
+let checkWin = (ctx) => {
+  let boardDataPlayers = ctx.gameplayData.gameState.boardData.boardDataPlayers;
+  let boardPath = boardDataPlayers.boardPath;
+  let currBoardIndex = ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].currBoardIndex;
+
+  if (ctx.roomData.player1Id == ctx.session.userData.userId && currBoardIndex == boardDataPlayers.player2StartBoardIndex) {
+    return true;
+  } else if (ctx.roomData.player2Id == ctx.session.userData.userId && currBoardIndex == boardDataPlayers.player1StartBoardIndex) {
+    return true;
+  }
+
+  return false;
+};
+
+let winGame = async (ctx) => {
+  let queryStatus = await pg.pool.query(`
+
+    UPDATE games
+    SET status_id = 2,
+      winning_player_id = $1,
+      finished_at = now()
+    WHERE room_id = $2
+      AND status_id = 1
+    RETURNING id
+
+  `, [ ctx.session.userData.userId, ctx.roomData.id ]);
+
+  assert(queryStatus.rows[0].id);
+
+  return true;
+};
+
+let resetTurn = (ctx) => {
+  ctx.gameplayData.gameState.playersState[ctx.roomData.player1Id].cardsSummonConstraints.cardsCanSummonCommonCount = 0;
+  ctx.gameplayData.gameState.playersState[ctx.roomData.player1Id].cardsSummonConstraints.cardsCanSummonRareCount = 0;
+  ctx.gameplayData.gameState.playersState[ctx.roomData.player1Id].cardsSummonConstraints.cardsCanSummonEpicCount = 0;
+  ctx.gameplayData.gameState.playersState[ctx.roomData.player1Id].canRollDiceBoardCount = 0;
+  ctx.gameplayData.gameState.playersState[ctx.roomData.player2Id].cardsSummonConstraints.cardsCanSummonCommonCount = 0;
+  ctx.gameplayData.gameState.playersState[ctx.roomData.player2Id].cardsSummonConstraints.cardsCanSummonRareCount = 0;
+  ctx.gameplayData.gameState.playersState[ctx.roomData.player2Id].cardsSummonConstraints.cardsCanSummonEpicCount = 0;
+  ctx.gameplayData.gameState.playersState[ctx.roomData.player2Id].canRollDiceBoardCount = 0;
+  ctx.gameplayData.gameState.playerIdDrawnCard = null;
+  ctx.gameplayData.gameState.playerIdSummonedCard = null;
+  ctx.gameplayData.gameState.cardSummoned = null;
+  ctx.gameplayData.gameState.cardSummonedIdxInPlayerHand = null;
+  ctx.gameplayData.gameState.rollDiceBoard = {
+    playerIdRollDice: null,
+    rollDiceValue: null,
+  };
+  ctx.gameplayData.gameState.rollDiceCard = {
+    playerIdRollDice: null,
+    rollDiceValue: null,
+    cardId: null,
+  };
 };

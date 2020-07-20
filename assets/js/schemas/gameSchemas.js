@@ -67,13 +67,31 @@ var startGameResponse = {
 							"required": cardObjRequiredFields,
 						},
 						"cardSummonedIdxInPlayerHand": { "type": ["integer", "null"] },
+						"rollDiceBoard": {
+							"type": "object",
+							"properties": {
+								"playerIdRollDice": { "type": ["integer", "null"] },
+								"rollDiceValue": { "type": ["integer", "null"] },
+							},
+							"required": [ "playerIdRollDice", "rollDiceValue" ],
+						},
+						"rollDiceCard": {
+							"type": "object",
+							"properties": {
+								"playerIdRollDice": { "type": ["integer", "null"] },
+								"cardId": { "type": ["integer", "null"] },
+								"rollDiceValue": { "type": ["integer", "null"] },
+							},
+							"required": [ "playerIdRollDice", "cardId", "rollDiceValue" ],
+						},
+						"playerIdWinGame": { "type": ["integer", "null"] },
 						"playersState": {
 							"type": "object",
 							"patternProperties": {
 								"^[1-9]\d*$": {
 									"name": { "type": "string" },
-									"currBoardRow": { "type": "integer" },
-									"currBoardColumn": { "type": "integer" },
+									"currBoardIndex": { "type": "integer" },
+									"lastBoardIndex": { "type": "integer" },
 									"cardsInHand": "integer",
 									"cardsToDraw": "integer",
 									"cardsSummonConstraints": {
@@ -92,8 +110,10 @@ var startGameResponse = {
 										"type": "array",
 										"items": cardObj,
 									},
-									"cardsInHandArr": { "type": ["null"] },
+									"cardsInHandArr": { "type": "null" },
 									"maxCardsOnField": { "type": "integer" },
+									"canRollDiceBoardInRollPhase": { "type": "boolean" },
+									"canRollDiceBoardCount": { "type": ["integer", "null"] },
 								},
 							},
 							"additionalProperties": false,
@@ -113,6 +133,9 @@ var drawPhaseResponse = startGameResponse;
 var standByPhaseResponse = startGameResponse;
 var mainPhaseResponse = startGameResponse;
 var summonCardResponse = startGameResponse;
+var rollPhaseResponse = startGameResponse;
+var rollDiceBoardResponse = startGameResponse;
+var endPhaseResponse = startGameResponse;
 
 var drawCardYouResponse = {
 	"type": "object",

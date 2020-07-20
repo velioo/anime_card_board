@@ -614,6 +614,7 @@ body {
   width: 460px;
   height: 120px;
   background-color: rgba(0, 0, 0, 0.3);
+  z-index: 2;
 }
 
 .anime-cb-card-field td {
@@ -638,10 +639,12 @@ body {
   border-radius: 3px;
   transition: box-shadow 0.1s, transform 0.1s;
   vertical-align: middle;
-/*  -webkit-animation: roll-in-bottom 0.6s ease-out both;
-  animation: roll-in-bottom 0.6s ease-out both;*/
 }
 
+.anime-cb-card-onfield.player-enemy {
+  transform: rotate(180deg);
+  -webkit-transform: rotate(180deg);
+}
 .anime-cb-card-onfield.hover:hover {
   z-index: 9999;
   border: 2px solid white;
@@ -769,8 +772,8 @@ body {
     opacity: 0;
   }
   100% {
-    -webkit-transform: translateY(0) rotate(0deg);
-            transform: translateY(0) rotate(0deg);
+    -webkit-transform: translateY(0) rotate(180deg);
+            transform: translateY(0) rotate(180deg);
     opacity: 1;
   }
 }
@@ -781,8 +784,8 @@ body {
     opacity: 0;
   }
   100% {
-    -webkit-transform: translateY(0) rotate(0deg);
-            transform: translateY(0) rotate(0deg);
+    -webkit-transform: translateY(0) rotate(180deg);
+            transform: translateY(0) rotate(180deg);
     opacity: 1;
   }
 }

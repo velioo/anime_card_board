@@ -19,6 +19,9 @@ gameClient.prototype.initGameSocket = function(socket) {
 	socket.on('standByPhase', this.processStandByPhase.bind(this));
 	socket.on('mainPhase', this.processMainPhase.bind(this));
 	socket.on('summonCard', this.processSummonCard.bind(this));
+	socket.on('rollPhase', this.processRollPhase.bind(this));
+	socket.on('rollDiceBoard', this.processRollDiceBoard.bind(this));
+	socket.on('endPhase', this.processEndPhase.bind(this));
 	socket.on('winGameFormally', this.processWinGameFormally.bind(this));
 };
 
@@ -137,6 +140,63 @@ gameClient.prototype.processSummonCard = function (_data) {
 	if (_self.generalClient.roomController._roomId
 		&& _self.generalClient.roomController._roomId == _data.roomData.id) {
 		_self.gameController.processSummonCard(_data);
+	}
+};
+
+gameClient.prototype.rollPhase = function (_data) {
+	logger.info('rollPhase');
+
+	var _self = this;
+
+	_self.socket.emit('rollPhase', _data);
+};
+
+gameClient.prototype.processRollPhase = function (_data) {
+	logger.info('processRollPhase');
+
+	var _self = this;
+
+	if (_self.generalClient.roomController._roomId
+		&& _self.generalClient.roomController._roomId == _data.roomData.id) {
+		_self.gameController.processRollPhase(_data);
+	}
+};
+
+gameClient.prototype.rollDiceBoard = function (_data) {
+	logger.info('rollDiceBoard');
+
+	var _self = this;
+
+	_self.socket.emit('rollDiceBoard', _data);
+};
+
+gameClient.prototype.processRollDiceBoard = function (_data) {
+	logger.info('processRollDiceBoard');
+
+	var _self = this;
+
+	if (_self.generalClient.roomController._roomId
+		&& _self.generalClient.roomController._roomId == _data.roomData.id) {
+		_self.gameController.processRollDiceBoard(_data);
+	}
+};
+
+gameClient.prototype.endPhase = function (_data) {
+	logger.info('endPhase');
+
+	var _self = this;
+
+	_self.socket.emit('endPhase', _data);
+};
+
+gameClient.prototype.processEndPhase = function (_data) {
+	logger.info('processEndPhase');
+
+	var _self = this;
+
+	if (_self.generalClient.roomController._roomId
+		&& _self.generalClient.roomController._roomId == _data.roomData.id) {
+		_self.gameController.processEndPhase(_data);
 	}
 };
 

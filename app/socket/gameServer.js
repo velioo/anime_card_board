@@ -31,4 +31,13 @@ const self = module.exports = {
   summonCard: async (ctx, next) => {
     await gameController.summonCard (ctx, next);
   },
+  rollPhase: async (ctx, next) => {
+    await gameController.rollPhase (ctx, next);
+  },
+  rollDiceBoard: async (ctx, next) => {
+    await gameController.rollDiceBoard (ctx, next);
+  },
+  endPhase: async (ctx, next) => {
+    await gameController.endPhase (ctx, next);
+  },
 };

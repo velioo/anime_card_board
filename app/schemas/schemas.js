@@ -87,17 +87,14 @@ const _WIN_GAME_FORMALLY = {
   "type": "object",
   "properties": {
     "roomId": { "type": "integer" },
-    "userId": { "type": "integer" },
   },
-  "required": [ "roomId", "userId" ],
+  "required": [ "roomId" ],
   "errorMessage": {
     "properties" : {
       "roomId": `Room id should be an integer`,
-      "userId": `User id should be an integer`,
     },
     "required": {
       "roomId": 'No roomId is specified',
-      "userId": 'No userId is specified',
     },
   }
 };
@@ -177,6 +174,9 @@ const _SUMMON_CARD = {
   "required": [ "roomId", "cardId", "cardIdx" ],
 };
 
+const _ROLL_PHASE = _DRAW_CARD;
+const _END_PHASE = _DRAW_CARD;
+
 module.exports = {
   SIGN_UP: _SIGN_UP,
   LOGIN: _LOGIN,
@@ -191,4 +191,6 @@ module.exports = {
   STANDBY_PHASE: _STANDBY_PHASE,
   MAIN_PHASE: _MAIN_PHASE,
   SUMMON_CARD: _SUMMON_CARD,
+  ROLL_PHASE: _ROLL_PHASE,
+  END_PHASE: _END_PHASE,
 };

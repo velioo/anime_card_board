@@ -158,6 +158,9 @@ gameController.prototype.resetGameState = function () {
 	clearInterval(_self.animationsFinishedPollInterval);
 	_self.drawCardInteractive = false;
 	_self.enableScroll();
+	$(_self.CARD_CLASS + _self.PLAYER_YOU_CLASS).off("click");
+	$(_self.DECK_GLOBAL_ID).off("click");
+	$(_self.PHASE_ROLL_ID + ', ' + _self.PHASE_END_ID).off("click");
 };
 
 gameController.prototype.processWinGameFormallyResponse = function (data) {
@@ -240,7 +243,7 @@ gameController.prototype.showEventsInfo = function (infoText) {
 gameController.prototype.renderGameField = function () {
 	var _self = this;
 
-	$(_self.GAME_SCREEN_CLASS).html('<div class="anime-cb-title-page-game"><p id="anime-cb-title-page-game-room-name"></p></div><div id="anime-cb-card-info-card-name"></div><div id="anime-cb-card-info-wrapper"><div id="anime-cb-card-info-subwrapper"><img id="anime-cb-card-info-card" src="/imgs/player_cards/card_back.png"></div></div><div id="anime-cb-card-info-text"></div><div class="anime-cb-card-graveyard-wrapper player-enemy"><p class="anime-cb-card-graveyard-text player-enemy">Enemy Graveyard</p><img class="anime-cb-card-graveyard-deck player-enemy" src="/imgs/player_cards/card_back.png"></div><div id="anime-cb-card-global-deck-wrapper"><img id="anime-cb-card-global-deck" src="/imgs/player_cards/card_back.png"><p id="anime-cb-card-global-deck-text">Global Deck</p></div><div id="anime-cb-game-events-info"><p id="anime-cb-game-events-info-text">Game Start</p></div><div class="anime-cb-turn-timer player-enemy"><p class="anime-cb-turn-timer-text player-enemy"></p></div><div class="anime-cb-turn-timer player-you"><p class="anime-cb-turn-timer-text player-you"></p></div><table id="anime-cb-phases-wrapper"><tr class="anime-cb-phase-row"><td id="anime-cb-phase-draw" class="anime-cb-phase-column next" data-phase-text="Draw Phase">DP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-standby" class="anime-cb-phase-column next" data-phase-text="Standy Phase">SP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-main" class="anime-cb-phase-column next" data-phase-text="Main Phase">MP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-roll" class="anime-cb-phase-column next" data-phase-text="Roll Phase">RP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-end" class="anime-cb-phase-column next" data-phase-text="End Phase">EP</td></tr></table><div class="center-screen"><div class="anime-cb-cards-in-hand-wrapper player-enemy"><div class="anime-cb-cards-in-hand player-enemy"></div></div><div class="anime-cb-board-player-label player-enemy"></div><table class="anime-cb-card-field player-enemy"><tr><td></td><td></td><td></td><td></td><td></td></tr></table><div id="anime-cb-board-wrapper"><table id="anime-cb-board"></table></div><div><table class="anime-cb-card-field player-you"><tr><td></td><td></td><td></td><td></td><td></td></tr></table></div><div class="anime-cb-board-player-label player-you"></div><div class="anime-cb-cards-in-hand-wrapper player-you"><div class="anime-cb-cards-in-hand player-you"></div></div></div><div class="anime-cb-card-graveyard-wrapper player-you"><img class="anime-cb-card-graveyard-deck player-you" src="/imgs/player_cards/card_back.png"><p class="anime-cb-card-graveyard-text player-you">Your Graveyard</p></div><div class="anime-cb-screen_footer-game"><button id="anime-cb-surrender" type="button" class="btn btn-primary anime-cb-button-stateless anime-cb-btn-main-menu">Surrender</button></div><div id="anime-cb-dice-wrapper-player1"></div><div id="anime-cb-dice-wrapper-player2"></div><div class="modal graveyard-modal player-you"> <div class="modal-content"> <div class="modal-header player-you"> <span class="close">&times;</span> <h2>Your Graveyard</h2> </div> <div class="modal-body"> </div> <div class="modal-footer player-you"> <h3>Your Graveyard</h3> </div> </div></div><div class="modal graveyard-modal player-enemy"> <div class="modal-content"> <div class="modal-header player-enemy"> <span class="close">&times;</span> <h2>Enemy Graveyard</h2> </div> <div class="modal-body"> </div> <div class="modal-footer player-enemy"> <h3>Enemy Graveyard</h3> </div> </div></div>');
+	$(_self.GAME_SCREEN_CLASS).html('<div class="anime-cb-title-page-game"><p id="anime-cb-title-page-game-room-name"></p></div><div id="anime-cb-card-info-card-name"></div><div id="anime-cb-card-info-wrapper"><div id="anime-cb-card-info-subwrapper"><img id="anime-cb-card-info-card" src="/imgs/player_cards/card_back.png"></div></div><div id="anime-cb-card-info-text"></div><div class="anime-cb-card-graveyard-wrapper player-enemy"><p class="anime-cb-card-graveyard-text player-enemy">Enemy Graveyard</p><img class="anime-cb-card-graveyard-deck player-enemy" src="/imgs/player_cards/card_back.png"></div><div id="anime-cb-card-global-deck-wrapper"><img id="anime-cb-card-global-deck" src="/imgs/player_cards/card_back.png"><p id="anime-cb-card-global-deck-text">Global Deck</p></div><div id="anime-cb-game-events-info"><p id="anime-cb-game-events-info-text">Game Start</p></div><div class="anime-cb-turn-timer player-enemy"><p class="anime-cb-turn-timer-text player-enemy"></p></div><div class="anime-cb-turn-timer player-you"><p class="anime-cb-turn-timer-text player-you"></p></div><table id="anime-cb-phases-wrapper"><tr class="anime-cb-phase-row"><td id="anime-cb-phase-draw" class="anime-cb-phase-column next" data-phase-text="Draw Phase">DP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-standby" class="anime-cb-phase-column next" data-phase-text="Standy Phase">SP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-main" class="anime-cb-phase-column next" data-phase-text="Main Phase">MP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-roll" class="anime-cb-phase-column next" data-phase-text="Roll Phase">RP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-end" class="anime-cb-phase-column next" data-phase-text="End Phase">EP</td></tr></table><div class="center-screen"><div class="anime-cb-cards-in-hand-wrapper player-enemy"><div class="anime-cb-cards-in-hand player-enemy"></div></div><div class="anime-cb-board-player-label player-enemy"></div><table class="anime-cb-card-field player-enemy"><tr><td></td><td></td><td></td><td></td><td></td></tr></table><div id="anime-cb-board-wrapper"><table id="anime-cb-board"></table></div><div><table class="anime-cb-card-field player-you"><tr><td></td><td></td><td></td><td></td><td></td></tr></table></div><div class="anime-cb-board-player-label player-you"></div><div class="anime-cb-cards-in-hand-wrapper player-you"><div class="anime-cb-cards-in-hand player-you"></div></div></div><div class="anime-cb-card-graveyard-wrapper player-you"><img class="anime-cb-card-graveyard-deck player-you" src="/imgs/player_cards/card_back.png"><p class="anime-cb-card-graveyard-text player-you">Your Graveyard</p></div><div class="anime-cb-screen_footer-game"><button id="anime-cb-surrender" type="button" class="btn btn-primary anime-cb-button-stateless anime-cb-btn-main-menu">Surrender</button></div><div id="anime-cb-dice-wrapper-player-you"></div><div id="anime-cb-dice-wrapper-player-enemy"></div><div class="modal graveyard-modal player-you"> <div class="modal-content"> <div class="modal-header player-you"> <span class="close">&times;</span> <h2>Your Graveyard</h2> </div> <div class="modal-body"> </div> <div class="modal-footer player-you"> <h3>Your Graveyard</h3> </div> </div></div><div class="modal graveyard-modal player-enemy"> <div class="modal-content"> <div class="modal-header player-enemy"> <span class="close">&times;</span> <h2>Enemy Graveyard</h2> </div> <div class="modal-body"> </div> <div class="modal-footer player-enemy"> <h3>Enemy Graveyard</h3> </div> </div></div>');
 };
 
 gameController.prototype.initGameData = function (data) {
@@ -296,13 +299,14 @@ gameController.prototype.setTimerValues = function () {
 gameController.prototype.renderBoard = function () {
 	var _self = this;
 
-	var player1StartIndexRow = _self._gameplayData.gameState.boardData.boardDataPlayers.player1StartIndexRow;
-  var player1StartIndexColumn = _self._gameplayData.gameState.boardData.boardDataPlayers.player1StartIndexColumn;
-  var player2StartIndexRow = _self._gameplayData.gameState.boardData.boardDataPlayers.player2StartIndexRow;
-  var player2StartIndexColumn = _self._gameplayData.gameState.boardData.boardDataPlayers.player2StartIndexColumn;
   var boardMatrix = _self._gameplayData.gameState.boardData.boardMatrix;
+	var boardDataPlayers = _self._gameplayData.gameState.boardData.boardDataPlayers;
+	var player1StartIndexRow = boardDataPlayers.boardPath[boardDataPlayers.player1StartBoardIndex][0];
+  var player1StartIndexColumn = boardDataPlayers.boardPath[boardDataPlayers.player1StartBoardIndex][1];
+  var player2StartIndexRow = boardDataPlayers.boardPath[boardDataPlayers.player2StartBoardIndex][0];
+  var player2StartIndexColumn = boardDataPlayers.boardPath[boardDataPlayers.player2StartBoardIndex][1];
 
-  if (_self._roomData.player1Id == _self._yourUserId) {
+  // if (_self._roomData.player1Id == _self._yourUserId) {
 	  boardMatrix.forEach(function(boardRow, boardRowIdx) {
 	    var boardRowHtml = '<tr class="anime-cb-board-row">';
 	      boardRow.forEach(function(boardColumn, boardColumnIdx) {
@@ -330,57 +334,77 @@ gameController.prototype.renderBoard = function () {
 
 	    $(_self.BOARD_ID).append(boardRowHtml);
 
-	    if (_self._roomData.player1Id == _self._yourUserId) {
-	    	$(_self.BOARD_PLAYER_YOU_ID).css("background-image", 'url("../imgs/player_pieces/Lelouch.jpg")');
-	    	$(_self.BOARD_PLAYER_ENEMY_ID).css("background-image", 'url("../imgs/player_pieces/CC.jpg")');
-	    } else {
-	 			$(_self.BOARD_PLAYER_YOU_ID).css("background-image", 'url("../imgs/player_pieces/CC.jpg")');
-	 			$(_self.BOARD_PLAYER_ENEMY_ID).css("background-image", 'url("../imgs/player_pieces/Lelouch.jpg")');
-	    }
+			_self.setPlayerCharacters();
 	  });
-	} else {
-			boardMatrix.map(function(arr){return arr.reverse();});
-			player1StartIndexRow = _self._gameplayData.gameState.boardData.boardDataPlayers.player2StartIndexRow;
-			player1StartIndexColumn = _self._gameplayData.gameState.boardData.boardDataPlayers.player2StartIndexColumn;
-			player2StartIndexRow = _self._gameplayData.gameState.boardData.boardDataPlayers.player1StartIndexRow;
-			player2StartIndexColumn = _self._gameplayData.gameState.boardData.boardDataPlayers.player1StartIndexColumn;
 
-			boardMatrix.forEach(function(boardRow, boardRowIdx) {
-	    	var boardRowHtml = '<tr class="anime-cb-board-row">';
-	      boardRow.forEach(function(boardColumn, boardColumnIdx) {
-	      	if (boardRowIdx == player1StartIndexRow && boardColumnIdx == player1StartIndexColumn)
-	      	{
-	      		if (_self._roomData.player1Id == _self._yourUserId) {
-	      			boardRowHtml += '<td class="anime-cb-column active"><span id="anime-cb-player-you-position"></span></td>';
-	      		} else {
-	      			boardRowHtml += '<td class="anime-cb-column active"><span id="anime-cb-player-enemy-position"></span></td>';
-	      		}
-	      	} else if (boardRowIdx == player2StartIndexRow && boardColumnIdx == player2StartIndexColumn) {
-	      		if (_self._roomData.player2Id == _self._yourUserId) {
-	      			boardRowHtml += '<td class="anime-cb-column active"><span id="anime-cb-player-you-position"></span></td>';
-	      		} else {
-	      			boardRowHtml += '<td class="anime-cb-column active"><span id="anime-cb-player-enemy-position"></span></td>';
-	      		}
-	      	} else if (boardColumn == 1) {
-	      	  boardRowHtml += '<td class="anime-cb-column active"></td>';
-	      	} else {
-	          boardRowHtml += '<td class="anime-cb-column"></td>';
-	      	}
-	      });
-
-		    boardRowHtml += '</tr>';
-
-		    $(_self.BOARD_ID).append(boardRowHtml);
-
-		    if (_self._roomData.player1Id == _self._yourUserId) {
-		    	$(_self.BOARD_PLAYER_YOU_ID).css("background-image", 'url("../imgs/player_pieces/Lelouch.jpg")');
-		    	$(_self.BOARD_PLAYER_ENEMY_ID).css("background-image", 'url("../imgs/player_pieces/CC.jpg")');
-		    } else {
-		 			$(_self.BOARD_PLAYER_YOU_ID).css("background-image", 'url("../imgs/player_pieces/CC.jpg")');
-		 			$(_self.BOARD_PLAYER_ENEMY_ID).css("background-image", 'url("../imgs/player_pieces/Lelouch.jpg")');
-		    }
-	  });
+	if (_self._roomData.player2Id == _self._yourUserId) {
+		$(_self.BOARD_ID).css("transform", "rotate(180deg)");
+		_self.setPlayerCharactersRotated();
 	}
+	// } else {
+	// 		boardMatrix.map(function(arr){return arr.reverse();});
+	// 		player1StartIndexRow = boardDataPlayers.boardPath[boardDataPlayers.player2StartBoardIndex][0];
+	// 		player1StartIndexColumn = boardDataPlayers.boardPath[boardDataPlayers.player2StartBoardIndex][1];
+	// 		player2StartIndexRow = boardDataPlayers.boardPath[boardDataPlayers.player1StartBoardIndex][0];
+	// 		player2StartIndexColumn = boardDataPlayers.boardPath[boardDataPlayers.player1StartBoardIndex][1];
+
+	// 		boardMatrix.forEach(function(boardRow, boardRowIdx) {
+	//     	var boardRowHtml = '<tr class="anime-cb-board-row">';
+	//       boardRow.forEach(function(boardColumn, boardColumnIdx) {
+	//       	if (boardRowIdx == player1StartIndexRow && boardColumnIdx == player1StartIndexColumn)
+	//       	{
+	//       		if (_self._roomData.player1Id == _self._yourUserId) {
+	//       			boardRowHtml += '<td class="anime-cb-column active"><span id="anime-cb-player-you-position"></span></td>';
+	//       		} else {
+	//       			boardRowHtml += '<td class="anime-cb-column active"><span id="anime-cb-player-enemy-position"></span></td>';
+	//       		}
+	//       	} else if (boardRowIdx == player2StartIndexRow && boardColumnIdx == player2StartIndexColumn) {
+	//       		if (_self._roomData.player2Id == _self._yourUserId) {
+	//       			boardRowHtml += '<td class="anime-cb-column active"><span id="anime-cb-player-you-position"></span></td>';
+	//       		} else {
+	//       			boardRowHtml += '<td class="anime-cb-column active"><span id="anime-cb-player-enemy-position"></span></td>';
+	//       		}
+	//       	} else if (boardColumn == 1) {
+	//       	  boardRowHtml += '<td class="anime-cb-column active"></td>';
+	//       	} else {
+	//           boardRowHtml += '<td class="anime-cb-column"></td>';
+	//       	}
+	//       });
+
+	// 	    boardRowHtml += '</tr>';
+
+	// 	    $(_self.BOARD_ID).append(boardRowHtml);
+
+	// 	    _self.setPlayerCharacters();
+	//   });
+	// }
+};
+
+gameController.prototype.setPlayerCharacters = function () {
+	var _self = this;
+
+  if (_self._roomData.player1Id == _self._yourUserId) {
+  	$(_self.BOARD_PLAYER_YOU_ID).css("background-image", 'url("../imgs/player_pieces/Lelouch.jpg")');
+  	$(_self.BOARD_PLAYER_ENEMY_ID).css("background-image", 'url("../imgs/player_pieces/CC.jpg")');
+  } else {
+		$(_self.BOARD_PLAYER_YOU_ID).css("background-image", 'url("../imgs/player_pieces/CC.jpg")');
+		$(_self.BOARD_PLAYER_ENEMY_ID).css("background-image", 'url("../imgs/player_pieces/Lelouch.jpg")');
+  }
+};
+
+gameController.prototype.setPlayerCharactersRotated = function () {
+	var _self = this;
+
+	$(_self.BOARD_PLAYER_YOU_ID).css("transform", "rotate(180deg)");
+	$(_self.BOARD_PLAYER_ENEMY_ID).css("transform", "rotate(180deg)");
+
+  if (_self._roomData.player1Id == _self._yourUserId) {
+  	$(_self.BOARD_PLAYER_YOU_ID).css("background-image", 'url("../imgs/player_pieces/Lelouch.jpg")');
+  	$(_self.BOARD_PLAYER_ENEMY_ID).css("background-image", 'url("../imgs/player_pieces/CC.jpg")');
+  } else {
+		$(_self.BOARD_PLAYER_YOU_ID).css("background-image", 'url("../imgs/player_pieces/CC.jpg")');
+		$(_self.BOARD_PLAYER_ENEMY_ID).css("background-image", 'url("../imgs/player_pieces/Lelouch.jpg")');
+  }
 };
 
 gameController.prototype.drawStartCards = function () {
@@ -660,10 +684,7 @@ gameController.prototype.summonCard = function (card) {
 	}
 
 	if (retrySummon) {
-  	$(_self.CARDS_IN_HAND_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_YOU_CLASS).on("click", function(e) {
-  		$(_self.CARD_CLASS + _self.PLAYER_YOU_CLASS).off("click");
-  		_self.summonCard.call(_self, this);
-  	});
+		_self.enableMainPhaseBasicActions();
 	} else {
 		logger.info("Sending summon card request to server...");
 		_self.summonCardFromHandAnimationYou(card);
@@ -692,14 +713,88 @@ gameController.prototype.processSummonCard = function (data) {
 
 	if (_self._gameplayData.gameState.playerIdSummonedCard == _self._yourUserId) {
 		setTimeout(function() {
-			$(_self.CARDS_IN_HAND_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_YOU_CLASS).on("click", function(e) {
-	  		$(_self.CARD_CLASS + _self.PLAYER_YOU_CLASS).off("click");
-	  		_self.summonCard.call(_self, this);
-	  	});
+			_self.enableMainPhaseBasicActions();
 		}, 700);
 	} else {
 		_self.summonCardFromHandAnimationEnemy(_self._gameplayData.gameState.cardSummoned);
 	}
+};
+
+gameController.prototype.processRollPhase = function (data) {
+	console.log('processRollPhase');
+	console.log('processRollPhase data: ', data);
+
+	var _self = this;
+
+	assert(ajv.validate(rollPhaseResponse, data), 'rollPhaseResponse is invalid' +
+  	JSON.stringify(ajv.errors, null, 2));
+
+	if (!data.isSuccessful) {
+		assert(data.errors.length > 0);
+
+		_self.showAlertError(data.errors[0].message);
+		return;
+	}
+
+	_self._gameplayData = data.gameplayData;
+	_self._roomData = data.roomData;
+
+	if (_self._gameplayData.gameState.currPlayerId == _self._yourUserId) {
+		_self.startRollPhaseAnimationYou();
+	} else {
+		_self.startRollPhaseAnimationEnemy();
+	}
+};
+
+gameController.prototype.processRollDiceBoard = function (data) {
+	console.log('processRollDiceBoard');
+	console.log('processRollDiceBoard data: ', data);
+
+	var _self = this;
+
+	assert(ajv.validate(rollDiceBoardResponse, data), 'rollDiceBoardResponse is invalid' +
+  	JSON.stringify(ajv.errors, null, 2));
+
+	if (!data.isSuccessful) {
+		assert(data.errors.length > 0);
+
+		_self.showAlertError(data.errors[0].message);
+		return;
+	}
+
+	_self._gameplayData = data.gameplayData;
+	_self._roomData = data.roomData;
+
+	if (_self._gameplayData.gameState.rollDiceBoard.playerIdRollDice == _self._yourUserId) {
+		_self.rollDiceYou(_self._gameplayData.gameState.rollDiceBoard.rollDiceValue, _self.moveYourCharacter, _self.enableRollPhaseBasicActions);
+	} else {
+		_self.rollDiceEnemy(_self._gameplayData.gameState.rollDiceBoard.rollDiceValue, _self.moveEnemyCharacter);
+	}
+};
+
+gameController.prototype.processEndPhase = function (data) {
+	console.log('processEndPhase');
+	console.log('processEndPhase data: ', data);
+
+	var _self = this;
+
+	assert(ajv.validate(endPhaseResponse, data), 'endPhaseResponse is invalid' +
+  	JSON.stringify(ajv.errors, null, 2));
+
+	if (!data.isSuccessful) {
+		assert(data.errors.length > 0);
+
+		_self.showAlertError(data.errors[0].message);
+		return;
+	}
+
+	_self._gameplayData = data.gameplayData;
+	_self._roomData = data.roomData;
+
+	clearInterval(_self.yourTurnTimer);
+	clearInterval(_self.enemyTurnTimer);
+
+	_self.startEndPhaseAnimation(_self.nextTurn);
 };
 
 gameController.prototype.startDrawPhaseAnimationYou = function () {
@@ -738,6 +833,24 @@ gameController.prototype.startMainPhaseAnimationEnemy = function () {
 	_self.switchPhaseEnemy(_self.PHASE_MAIN_ID);
 };
 
+gameController.prototype.startRollPhaseAnimationYou = function () {
+	var _self = this;
+
+	_self.switchPhaseYou(_self.PHASE_ROLL_ID);
+};
+
+gameController.prototype.startRollPhaseAnimationEnemy = function () {
+	var _self = this;
+
+	_self.switchPhaseEnemy(_self.PHASE_ROLL_ID);
+};
+
+gameController.prototype.startEndPhaseAnimation = function (callback) {
+	var _self = this;
+
+	_self.switchPhaseEnemy(_self.PHASE_END_ID, callback);
+};
+
 gameController.prototype.startStandByPhase = function () {
 	var _self = this;
 
@@ -748,6 +861,12 @@ gameController.prototype.startMainPhase = function () {
 	var _self = this;
 
 	_self.client.mainPhase({ roomId: _self._roomData.id });
+};
+
+gameController.prototype.startRollPhase = function () {
+	var _self = this;
+
+	_self.client.rollPhase({ roomId: _self._roomData.id });
 };
 
 gameController.prototype.setYourTurnFieldStyle = function() {
@@ -769,10 +888,10 @@ gameController.prototype.switchPhaseYou = function (currPhaseIdSelector) {
 
 	console.log('switchPhaseYou');
 
-	if (currPhaseIdSelector == _self.PHASE_ROLL_ID || currPhaseIdSelector == _self.PHASE_END_ID) {
-		$(_self.PHASE_ROLL_ID + ', ' + _self.PHASE_END_ID).off("click");
-		$(_self.PHASE_ROLL_ID + ', ' + _self.PHASE_END_ID).removeClass("selectable");
-	}
+	// if (currPhaseIdSelector == _self.PHASE_ROLL_ID || currPhaseIdSelector == _self.PHASE_END_ID) {
+	// 	$(_self.PHASE_ROLL_ID + ', ' + _self.PHASE_END_ID).off("click");
+	// 	$(_self.PHASE_ROLL_ID + ', ' + _self.PHASE_END_ID).removeClass("selectable");
+	// }
 
   var phaseText = $(currPhaseIdSelector).data("phaseText");
 
@@ -787,20 +906,19 @@ gameController.prototype.switchPhaseYou = function (currPhaseIdSelector) {
 
   setTimeout(function() {
   	if (currPhaseIdSelector == _self.PHASE_DRAW_ID) {
-	  	$(_self.DECK_GLOBAL_ID).one('click', _self.drawCard.bind(_self));
+	  	$(_self.DECK_GLOBAL_ID).on('click', function(e) {
+  			$(_self.DECK_GLOBAL_ID).off("click");
+  			_self.drawCard();
+  		});
 	  	_self.drawCardAnimationsFinishedYou = false;
 	  	_self.drawCardInteractive = true;
 	  	_self.startDrawCardAnimationsFinishedPoll(_self.startStandByPhase);
 	  } else if (currPhaseIdSelector == _self.PHASE_STANDBY_ID) {
 	  	_self.startMainPhase();
 	  } else if (currPhaseIdSelector == _self.PHASE_MAIN_ID) {
-	  	$(_self.CARDS_IN_HAND_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_YOU_CLASS).on("click", function(e) {
-	  		$(_self.CARD_CLASS + _self.PLAYER_YOU_CLASS).off("click");
-	  		_self.summonCard.call(_self, this);
-	  	});
+	  	_self.enableMainPhaseBasicActions();
   	} else if (currPhaseIdSelector == _self.PHASE_ROLL_ID) {
-	    $(currPhaseIdSelector).addClass("selectable");
-	    // $(currPhaseIdSelector).one("click", rollDiceWithValues);
+	    _self.enableRollPhaseBasicActions();
 	  } else if (currPhaseIdSelector == _self.PHASE_END_ID) {
 	  	$(currPhaseIdSelector).removeClass("active");
 	  	$(currPhaseIdSelector).addClass("ended");
@@ -808,7 +926,53 @@ gameController.prototype.switchPhaseYou = function (currPhaseIdSelector) {
   }.bind(this), 3000);
 };
 
-gameController.prototype.switchPhaseEnemy = function (currPhaseIdSelector) {
+gameController.prototype.enableMainPhaseBasicActions = function () {
+	var _self = this;
+
+	$(_self.CARDS_IN_HAND_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_YOU_CLASS).on("click", function(e) {
+		_self.disableMainPhaseBasicActions();
+		_self.summonCard.call(_self, this);
+	});
+
+	$(_self.PHASE_ROLL_ID).addClass("selectable");
+
+	$(_self.PHASE_ROLL_ID).on("click", function(e) {
+		_self.disableMainPhaseBasicActions();
+		_self.startRollPhase();
+	});
+};
+
+gameController.prototype.disableMainPhaseBasicActions = function () {
+	var _self = this;
+
+	$(_self.CARD_CLASS + _self.PLAYER_YOU_CLASS).off("click");
+	$(_self.PHASE_ROLL_ID).off("click");
+	$(_self.PHASE_ROLL_ID).removeClass("selectable");
+};
+
+gameController.prototype.enableRollPhaseBasicActions = function () {
+	var _self = this;
+
+	if (_self._gameplayData.gameState.playersState[_self._yourUserId].canRollDiceBoardInRollPhase
+		&& _self._gameplayData.gameState.playersState[_self._yourUserId].canRollDiceBoardCount > 0) {
+		$(_self.PHASE_ROLL_ID).addClass("selectable");
+		$(_self.PHASE_ROLL_ID).on("click", function(e) {
+			$(_self.PHASE_ROLL_ID).off("click");
+			$(_self.PHASE_ROLL_ID).removeClass("selectable");
+			_self.client.rollDiceBoard({ roomId: _self._roomData.id });
+		});
+	} else {
+		$(_self.PHASE_ROLL_ID + ', ' + _self.PHASE_END_ID).removeClass("selectable");
+		$(_self.PHASE_END_ID).addClass("selectable");
+		$(_self.PHASE_END_ID).on("click", function(e) {
+			$(_self.PHASE_END_ID).off("click");
+			$(_self.PHASE_END_ID).removeClass("selectable");
+			_self.client.endPhase({ roomId: _self._roomData.id });
+		});
+	}
+};
+
+gameController.prototype.switchPhaseEnemy = function (currPhaseIdSelector, callback) {
 	var _self = this;
 
 	console.log('switchPhaseEnemy');
@@ -821,8 +985,23 @@ gameController.prototype.switchPhaseEnemy = function (currPhaseIdSelector) {
   $(currPhaseIdSelector).removeClass("next");
   $(currPhaseIdSelector).addClass("active");
 
+  if (currPhaseIdSelector == _self.PHASE_END_ID) {
+		$(currPhaseIdSelector).removeClass("active");
+		$(currPhaseIdSelector).addClass("ended");
+	}
+
   _self.showEventsInfo(phaseText);
-  _self.hideEventsInfo();
+  _self.hideEventsInfo(callback);
+};
+
+gameController.prototype.nextTurn = function () {
+	var _self = this;
+
+  $(_self.PHASE_COLUMN_CLASS).removeClass("ended");
+	$(_self.PHASE_COLUMN_CLASS).removeClass("active");
+	$(_self.PHASE_COLUMN_CLASS).removeClass("selectable");
+  $(_self.PHASE_COLUMN_CLASS).addClass("next");
+  _self.startTurn();
 };
 
 gameController.prototype.fillInfoCard = function (card) {
@@ -878,159 +1057,230 @@ gameController.prototype.noScrollOnCardHover = function (e) {
   }
 };
 
-gameController.prototype.moveYourCharacter = function (diceResult) {
+gameController.prototype.moveYourCharacter = function (callback) {
 	var _self = this;
 
-  // $(_self.PHASE_ROLL_ID).removeClass("selectable");
-  setTimeout(function() {
-    var diceRoll = diceResult[0];
+  var diceRoll = _self._gameplayData.gameState.rollDiceBoard.rollDiceValue;
+  var boardPath = _self._gameplayData.gameState.boardData.boardDataPlayers.boardPath;
+  var currBoardIndex = _self._gameplayData.gameState.playersState[_self._yourUserId].lastBoardIndex;
+  var rowIndex = boardPath[currBoardIndex][0];
+  var columnIndex = boardPath[currBoardIndex][1];
 
-    var rowIndex = _self._gameplayData.gameState.playersState[_self._yourUserId].currBoardRow;
-    var columnIndex = _self._gameplayData.gameState.playersState[_self._yourUserId].currBoardColumn;
-    var currBoardIndex;
+  var animsCounter = 0;
+  function incrementAnimsUpdateBoard() {
+	  animsCounter++;
 
-    for (var k = 0; k < boardPath.length; k++) {
-  	  var boardPos = boardPath[k];
+	  if (animsCounter == diceRoll) {
+			$(_self.BOARD_PLAYER_YOU_ID).remove();
 
-  	  if (rowIndex == boardPos[0] && columnIndex == boardPos[1]) {
-  			currBoardIndex = k;
+			var currPlayerTd = document.getElementById('anime-cb-board').rows[rowIndex].cells[columnIndex];
 
-  			if (boardPath[currBoardIndex + diceRoll] === undefined) {
-  				return;
-  			}
+			$(currPlayerTd).append('<span id="anime-cb-player-you-position"></span>');
 
-	  		for (var i = 0; i < diceRoll; i++) {
-				  if (boardPath[currBoardIndex + 1][0] != rowIndex) {
-				    if (boardPath[currBoardIndex + 1][0] < rowIndex) {
-				  	  $(_self.BOARD_PLAYER_YOU_ID).animate({'margin-top': '-=50px'}, 400, null, incrementAnimsUpdateBoard);
-				  	} else {
-				  	  $(_self.BOARD_PLAYER_YOU_ID).animate({'margin-top': '+=50px'}, 400, null, incrementAnimsUpdateBoard);
-				  	}
-				  }
+			if (_self._enemyUserId == _self._roomData.player2Id) {
+				_self.setPlayerCharacters();
+			} else {
+				_self.setPlayerCharactersRotated();
+			}
 
-				  if (boardPath[currBoardIndex + 1][1] != columnIndex) {
-				    if (boardPath[currBoardIndex + 1][1] < columnIndex) {
-				      $(_self.BOARD_PLAYER_YOU_ID).animate({'margin-left': '-=50px'}, 400, null, incrementAnimsUpdateBoard);
-				    } else {
-				      $(_self.BOARD_PLAYER_YOU_ID).animate({'margin-left': '+=50px'}, 400, null, incrementAnimsUpdateBoard);
-				  	}
-				  }
+			if(_self._gameplayData.gameState.playerIdWinGame && _self._gameplayData.gameState.playerIdWinGame == _self._yourUserId) {
+				var yourName = _self._roomData.player1Id == _self._yourUserId ? _self._roomData.player1Name : _self._roomData.player2Name;
+				window.alert(yourName + " wins the game !");
+				_self.processChangeScreen(_self.MAIN_MENU_SCREEN_CLASS);
+				return;
+			}
 
-				  rowIndex = boardPath[currBoardIndex + 1][0];
-				  columnIndex = boardPath[currBoardIndex + 1][1];
-				  currBoardIndex++;
-		 		}
+			if (typeof callback == "function") {
+				callback.call(_self);
+			}
+  	}
+  }
 
-		 	 	break;
-  	  }
-    }
+	if (_self._enemyUserId == _self._roomData.player2Id) {
+	  setTimeout(function() {
+			if (currBoardIndex + diceRoll > boardPath.length - 1) {
+				if (typeof callback == "function") {
+					callback.call(_self);
+				}
+				return;
+			}
 
-    var animsCounter = 0;
+			for (var i = 0; i < diceRoll; i++) {
+			  if (boardPath[currBoardIndex + 1][0] != rowIndex) {
+			    if (boardPath[currBoardIndex + 1][0] < rowIndex) {
+			  	  $(_self.BOARD_PLAYER_YOU_ID).animate({'margin-top': '-=50px'}, 400, null, incrementAnimsUpdateBoard);
+			  	} else {
+			  	  $(_self.BOARD_PLAYER_YOU_ID).animate({'margin-top': '+=50px'}, 400, null, incrementAnimsUpdateBoard);
+			  	}
+			  }
 
-    function incrementAnimsUpdateBoard() {
-  	  animsCounter++;
+			  if (boardPath[currBoardIndex + 1][1] != columnIndex) {
+			    if (boardPath[currBoardIndex + 1][1] < columnIndex) {
+			      $(_self.BOARD_PLAYER_YOU_ID).animate({'margin-left': '-=50px'}, 400, null, incrementAnimsUpdateBoard);
+			    } else {
+			      $(_self.BOARD_PLAYER_YOU_ID).animate({'margin-left': '+=50px'}, 400, null, incrementAnimsUpdateBoard);
+			  	}
+			  }
 
-  	  if (animsCounter == diceRoll) {
-				$(_self.BOARD_PLAYER_YOU_ID).remove();
+			  rowIndex = boardPath[currBoardIndex + 1][0];
+			  columnIndex = boardPath[currBoardIndex + 1][1];
+			  currBoardIndex++;
+	 		}
+	  }, 2000);
+	} else {
+		setTimeout(function() {
+			if (currBoardIndex - diceRoll < 0) {
+				if (typeof callback == "function") {
+					callback.call(_self);
+				}
+				return;
+			}
 
-				var currPlayerTd = document.getElementById('anime-cb-board').rows[rowIndex].cells[columnIndex];
-				$(currPlayerTd).html('<span id="anime-cb-player-you-position"></span>');
+			for (var i = 0; i < diceRoll; i++) {
+			  if (boardPath[currBoardIndex - 1][0] != rowIndex) {
+			    if (boardPath[currBoardIndex - 1][0] < rowIndex) {
+			  	  $(_self.BOARD_PLAYER_YOU_ID).animate({'margin-top': '-=50px'}, 400, null, incrementAnimsUpdateBoard);
+			  	} else {
+			  	  $(_self.BOARD_PLAYER_YOU_ID).animate({'margin-top': '+=50px'}, 400, null, incrementAnimsUpdateBoard);
+			  	}
+			  }
 
-				// $(_self.PHASE_END_ID).addClass("selectable");
-				// $(_self.PHASE_END_ID).on('click', switchPhase);
-	  	}
-    }
-  }, 2000);
+			  if (boardPath[currBoardIndex - 1][1] != columnIndex) {
+			    if (boardPath[currBoardIndex - 1][1] < columnIndex) {
+			      $(_self.BOARD_PLAYER_YOU_ID).animate({'margin-left': '-=50px'}, 400, null, incrementAnimsUpdateBoard);
+			    } else {
+			      $(_self.BOARD_PLAYER_YOU_ID).animate({'margin-left': '+=50px'}, 400, null, incrementAnimsUpdateBoard);
+			  	}
+			  }
+
+			  rowIndex = boardPath[currBoardIndex - 1][0];
+			  columnIndex = boardPath[currBoardIndex - 1][1];
+			  currBoardIndex--;
+	 		}
+	  }, 2000);
+	}
 }
 
 gameController.prototype.moveEnemyCharacter = function (diceResult) {
 	var _self = this;
 
-  setTimeout(function() {
-    var diceRoll = diceResult[0];
+	console.log('moveEnemyCharacter');
 
-    var rowIndex = _self._gameplayData.gameState.playersState[_self._enemyUserId].currBoardRow;
-    var columnIndex = _self._gameplayData.gameState.playersState[_self._enemyUserId].currBoardColumn;
-    var currBoardIndex;
+  var diceRoll = _self._gameplayData.gameState.rollDiceBoard.rollDiceValue;
+  var boardPath = _self._gameplayData.gameState.boardData.boardDataPlayers.boardPath;
+  var currBoardIndex = _self._gameplayData.gameState.playersState[_self._enemyUserId].lastBoardIndex;
+  var rowIndex = boardPath[currBoardIndex][0];
+  var columnIndex = boardPath[currBoardIndex][1];
 
-    for (var k = 0; k < boardPath.length; k++) {
-  	  var boardPos = boardPath[k];
+	var animsCounter = 0;
+  function incrementAnimsUpdateBoard() {
+	  animsCounter++;
 
-  	  if (rowIndex == boardPos[0] && columnIndex == boardPos[1]) {
-	  		currBoardIndex = k;
+	  if (animsCounter == diceRoll) {
+			$(_self.BOARD_PLAYER_ENEMY_ID).remove();
 
-	  		if (currBoardIndex - diceRoll < 0) {
-	  			return;
-	  		}
+			var currPlayerTd = document.getElementById('anime-cb-board').rows[rowIndex].cells[columnIndex];
+			$(currPlayerTd).append('<span id="anime-cb-player-enemy-position"></span>');
 
-	  		for (var i = 0; i < diceRoll; i++) {
-				  if (boardPath[currBoardIndex - 1][0] != rowIndex) {
-				    if (boardPath[currBoardIndex - 1][0] < rowIndex) {
-				  	  $(_self.BOARD_PLAYER_ENEMY_ID).animate({'margin-top': '-=50px'}, 400, null, incrementAnimsUpdateBoard);
-				  	} else {
-				  	  $(_self.BOARD_PLAYER_ENEMY_ID).animate({'margin-top': '+=50px'}, 400, null, incrementAnimsUpdateBoard);
-				  	}
-				  }
+			if (_self._enemyUserId == _self._roomData.player2Id) {
+				_self.setPlayerCharacters();
+			} else {
+				_self.setPlayerCharactersRotated();
+			}
 
-				  if (boardPath[currBoardIndex - 1][1] != columnIndex) {
-				    if (boardPath[currBoardIndex - 1][1] < columnIndex) {
-				      $(_self.BOARD_PLAYER_ENEMY_ID).animate({'margin-left': '-=50px'}, 400, null, incrementAnimsUpdateBoard);
-				    } else {
-				      $(_self.BOARD_PLAYER_ENEMY_ID).animate({'margin-left': '+=50px'}, 400, null, incrementAnimsUpdateBoard);
-				  	}
-				  }
+			if(_self._gameplayData.gameState.playerIdWinGame && _self._gameplayData.gameState.playerIdWinGame == _self._enemyUserId) {
+				var enemyName = _self._roomData.player1Id == _self._enemyUserId ? _self._roomData.player1Name : _self._roomData.player2Name;
+				window.alert(enemyName + " wins the game !");
+				_self.processChangeScreen(_self.MAIN_MENU_SCREEN_CLASS);
+				return;
+			}
+	  }
+	}
 
-				  rowIndex = boardPath[currBoardIndex - 1][0];
-				  columnIndex = boardPath[currBoardIndex - 1][1];
-				  currBoardIndex--;
-		 		}
+	if (_self._enemyUserId == _self._roomData.player2Id) {
+	  setTimeout(function() {
+			if (currBoardIndex - diceRoll < 0) {
+				return;
+			}
 
-		 	 	break;
-  	  }
-    }
+			for (var i = 0; i < diceRoll; i++) {
+			  if (boardPath[currBoardIndex - 1][0] != rowIndex) {
+			    if (boardPath[currBoardIndex - 1][0] < rowIndex) {
+			  	  $(_self.BOARD_PLAYER_ENEMY_ID).animate({'margin-top': '-=50px'}, 400, null, incrementAnimsUpdateBoard);
+			  	} else {
+			  	  $(_self.BOARD_PLAYER_ENEMY_ID).animate({'margin-top': '+=50px'}, 400, null, incrementAnimsUpdateBoard);
+			  	}
+			  }
 
-    var animsCounter = 0;
+			  if (boardPath[currBoardIndex - 1][1] != columnIndex) {
+			    if (boardPath[currBoardIndex - 1][1] < columnIndex) {
+			      $(_self.BOARD_PLAYER_ENEMY_ID).animate({'margin-left': '-=50px'}, 400, null, incrementAnimsUpdateBoard);
+			    } else {
+			      $(_self.BOARD_PLAYER_ENEMY_ID).animate({'margin-left': '+=50px'}, 400, null, incrementAnimsUpdateBoard);
+			  	}
+			  }
 
-    function incrementAnimsUpdateBoard() {
-  	  animsCounter++;
+			  rowIndex = boardPath[currBoardIndex - 1][0];
+			  columnIndex = boardPath[currBoardIndex - 1][1];
+			  currBoardIndex--;
+	 		}
+	  }, 2000);
+	} else {
+	  setTimeout(function() {
+			if (currBoardIndex + diceRoll > boardPath.length - 1) {
+				return;
+			}
 
-  	  if (animsCounter == diceRoll) {
-				$(_self.BOARD_PLAYER_ENEMY_ID).remove();
+			for (var i = 0; i < diceRoll; i++) {
+			  if (boardPath[currBoardIndex + 1][0] != rowIndex) {
+			    if (boardPath[currBoardIndex + 1][0] < rowIndex) {
+			  	  $(_self.BOARD_PLAYER_ENEMY_ID).animate({'margin-top': '-=50px'}, 400, null, incrementAnimsUpdateBoard);
+			  	} else {
+			  	  $(_self.BOARD_PLAYER_ENEMY_ID).animate({'margin-top': '+=50px'}, 400, null, incrementAnimsUpdateBoard);
+			  	}
+			  }
 
-				var currPlayerTd = document.getElementById('anime-cb-board').rows[rowIndex].cells[columnIndex];
-				$(currPlayerTd).html('<span id="anime-cb-player-enemy-position"></span>');
-  	  }
-    }
-  }, 2000);
+			  if (boardPath[currBoardIndex + 1][1] != columnIndex) {
+			    if (boardPath[currBoardIndex + 1][1] < columnIndex) {
+			      $(_self.BOARD_PLAYER_ENEMY_ID).animate({'margin-left': '-=50px'}, 400, null, incrementAnimsUpdateBoard);
+			    } else {
+			      $(_self.BOARD_PLAYER_ENEMY_ID).animate({'margin-left': '+=50px'}, 400, null, incrementAnimsUpdateBoard);
+			  	}
+			  }
+
+			  rowIndex = boardPath[currBoardIndex + 1][0];
+			  columnIndex = boardPath[currBoardIndex + 1][1];
+			  currBoardIndex++;
+	 		}
+	  }, 2000);
+	}
 }
 
-gameController.prototype.rollDiceYou = function (diceValue) {
+gameController.prototype.rollDiceYou = function (diceValue, callback, callback2) {
 	var _self = this;
 
   var diceContainer = $(_self.DICE_THROW_CONTAINER_PLAYER_YOU_ID)[0];
-  var numberOfDice = 1;
   var options = {
-    diceContainer,
-    numberOfDice,
+    element: diceContainer,
+    numberOfDice: 1,
     delay: 1500,
     values: [diceValue],
-    callback: moveYourCharacter.bind(_self)
+    callback: callback.bind(_self, callback2)
   };
 
   rollADie(options);
 };
 
-gameController.prototype.rollDiceEnemy = function (diceValue) {
+gameController.prototype.rollDiceEnemy = function (diceValue, callback) {
 	var _self = this;
 
   var diceContainer = $(_self.DICE_THROW_CONTAINER_PLAYER_ENEMY_ID)[0];
-  var numberOfDice = 1;
   var options = {
-    diceContainer,
-    numberOfDice,
+    element: diceContainer,
+    numberOfDice: 1,
     delay: 1500,
     values: [diceValue],
-    callback: moveEnemyCharacter.bind(_self)
+    callback: callback.bind(_self)
   };
 
   rollADie(options);
@@ -1107,41 +1357,6 @@ gameController.prototype.summonCardFromHandAnimationEnemy = function (cardObj) {
 		}
 	});
 };
-
-// $('.anime-cb-cards-in-hand-wrapper.player-you').on('click', '.anime-cb-card', summonCardYou;
-
-// Phase switcher -> old
-// gameController.prototype.selectNextPhase = function (e) {
-// 	// split this into two function -> click on roll phase and click on end phase
-// 	$('#anime-cb-phase-roll, #anime-cb-phase-end').off("click");
-
-//   var phaseText = $(this).data("phaseText");
-
-//   $('#anime-cb-phase-roll, #anime-cb-phase-end').removeClass("selectable");
-//   $('.anime-cb-phase-column').removeClass("active");
-//   $(this).parent().prevAll().find('.anime-cb-phase-column').removeClass('next');
-//   $(this).parent().prevAll().find('.anime-cb-phase-column').addClass('ended');
-//   $(this).removeClass("next");
-//   $(this).addClass("active");
-
-//   $('#anime-cb-game-events-info-text').text(phaseText);
-//   $('#anime-cb-game-events-info').css("-webkit-animation", "show-event-popup-slide-right 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both");
-//   $('#anime-cb-game-events-info').css("animation", "show-event-popup-slide-right 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both");
-
-//   setTimeout(function() {
-//     $('#anime-cb-game-events-info').css("-webkit-animation", "hide-event-popup 1s cubic-bezier(0.165, 0.840, 0.440, 1.000) both");
-//   $('#anime-cb-game-events-info').css("animation", "hide-event-popup 1s cubic-bezier(0.165, 0.840, 0.440, 1.000) both");
-//   }.bind(this), 2000);
-
-//   setTimeout(function() {
-//   if ($(this).is($('#anime-cb-phase-roll'))) {
-//     $(this).addClass("selectable");
-//     $('#anime-cb-phase-roll').one("click", rollDiceWithValues);
-//   }
-
-//   // if end phase -> end turn
-//   }.bind(this), 3000);
-// };
 
 gameController.prototype.startYourTimer = function () {
 	var _self = this;
@@ -1231,7 +1446,10 @@ gameController.prototype.drawCardFromDeckYouAnimation = function (card) {
   	$(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_YOU_CLASS).css("overflow", "hidden");
 
   	if (_self.drawCardInteractive && _self._gameplayData.gameState.playersState[_self._yourUserId].cardsToDraw > 0) {
-  		$(_self.DECK_GLOBAL_ID).one('click', _self.drawCard.bind(_self));
+  		$(_self.DECK_GLOBAL_ID).on('click', function(e) {
+  			$(_self.DECK_GLOBAL_ID).off("click");
+  			_self.drawCard();
+  		});
   	} else {
   		_self.drawCardInteractive = false;
   	}
