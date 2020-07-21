@@ -180,6 +180,8 @@ gameController.prototype.setLeaveButton = function () {
 	 	_self.processChangeScreen(_self.MAIN_MENU_SCREEN_CLASS);
 	});
 
+	_self.client.generalClient.sendLeaveRoomRequest({ roomId: _self.client.generalClient.roomController._roomId,
+	  		userId: _self.client.generalClient.logInSignUpController._userId });
 };
 
 gameController.prototype.processWinGameFormallyResponse = function (data) {

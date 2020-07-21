@@ -38,17 +38,21 @@ CREATE TABLE "rooms" (
   PRIMARY KEY (id)
 );
 
+
 CREATE TRIGGER update_room_timestamp BEFORE UPDATE ON rooms FOR EACH ROW EXECUTE PROCEDURE update_timestamp();
 GRANT ALL ON users TO velioo;
 GRANT ALL ON temp_codes TO velioo;
 GRANT ALL ON rooms TO velioo;
 GRANT ALL ON users_id_seq TO velioo;
+GRANT ALL ON rooms_id_seq TO velioo;
 
 CREATE TABLE "gameplay_statuses" (
   "id" integer NOT NULL,
   "name" TEXT NOT NULL,
   PRIMARY KEY (id)
 );
+
+GRANT ALL ON gameplay_statuses TO velioo;
 
 INSERT INTO gameplay_statuses (id, name) VALUES (1, 'In progress'), (2, 'Finished');
 
@@ -84,6 +88,5 @@ CREATE TABLE "games" (
   PRIMARY KEY (id)
 );
 
-GRANT ALL ON gameplay_statuses TO velioo;
 GRANT ALL ON games TO velioo;
 GRANT ALL ON games_id_seq TO velioo;
