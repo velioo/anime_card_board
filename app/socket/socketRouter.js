@@ -19,7 +19,6 @@ const self = module.exports = {
 
 	  socket.on('disconnect', async (ctx) => {
 	  	try {
-		  	console.log('Client disconnected');
 		  	logger.info('Client disconnected: %o', ctx.session.userData);
 
 		  	// await gameServer.processDisconnect(ctx, next);
@@ -35,14 +34,9 @@ const self = module.exports = {
 
 	  socket.on('leaveRoom', async (ctx) => {
 	  	try {
-		  	console.log('Client sent leave room event');
-		  	console.log('Data: ', ctx.data);
-
 		  	await gameServer.leaveRoom(ctx, next);
 
 		  	let isSuccessful = ctx.errors.length ? false : true;
-
-		  	console.log('Errors: ', ctx.errors);
 
 		  	ctx.io.emit('leaveRoom', {
 		  		errors: ctx.errors,
@@ -57,9 +51,6 @@ const self = module.exports = {
 
 	  socket.on('joinRoom', async (ctx) => {
 	  	try {
-		  	console.log('joinRoom');
-		  	console.log('Data: ', ctx.data);
-
 		  	ctx.data.result.id = parseInt(ctx.data.result.id);
 		  	ctx.data.result.player1Id = parseInt(ctx.data.result.player1Id);
 		  	ctx.data.result.player2Id = parseInt(ctx.data.result.player2Id);
@@ -77,14 +68,9 @@ const self = module.exports = {
 
 	  socket.on('startGame', async (ctx) => {
 	  	try {
-		  	console.log('startGame');
-		  	console.log('Data: ', ctx.data);
-
 		  	await gameServer.startGame(ctx, next);
 
 		  	let isSuccessful = ctx.errors.length ? false : true;
-
-		  	console.log('Errors: ', ctx.errors);
 
 		  	socket.broadcast('startGame', {
 		  		errors: ctx.errors,
@@ -100,14 +86,9 @@ const self = module.exports = {
 
 	  socket.on('drawCard', async (ctx) => {
 	  	try {
-		  	console.log('drawCard');
-		  	console.log('Data: ', ctx.data);
-
 		  	await gameServer.drawCard(ctx, next);
 
 		  	let isSuccessful = ctx.errors.length ? false : true;
-
-		  	console.log('Errors: ', ctx.errors);
 
 		  	socket.emit('drawCardYou', {
 		  		errors: ctx.errors,
@@ -130,14 +111,9 @@ const self = module.exports = {
 
 	  socket.on('drawPhase', async (ctx) => {
 	  	try {
-		  	console.log('drawPhase');
-		  	console.log('Data: ', ctx.data);
-
 		  	await gameServer.drawPhase(ctx, next);
 
 		  	let isSuccessful = ctx.errors.length ? false : true;
-
-		  	console.log('Errors: ', ctx.errors);
 
 		  	socket.broadcast('drawPhase', {
 		  		errors: ctx.errors,
@@ -153,14 +129,9 @@ const self = module.exports = {
 
 	  socket.on('standByPhase', async (ctx) => {
 	  	try {
-		  	console.log('standByPhase');
-		  	console.log('Data: ', ctx.data);
-
 		  	await gameServer.standByPhase(ctx, next);
 
 		  	let isSuccessful = ctx.errors.length ? false : true;
-
-		  	console.log('Errors: ', ctx.errors);
 
 		  	socket.broadcast('standByPhase', {
 		  		errors: ctx.errors,
@@ -176,14 +147,9 @@ const self = module.exports = {
 
 	  socket.on('mainPhase', async (ctx) => {
 	  	try {
-		  	console.log('mainPhase');
-		  	console.log('Data: ', ctx.data);
-
 		  	await gameServer.mainPhase(ctx, next);
 
 		  	let isSuccessful = ctx.errors.length ? false : true;
-
-		  	console.log('Errors: ', ctx.errors);
 
 		  	socket.broadcast('mainPhase', {
 		  		errors: ctx.errors,
@@ -199,14 +165,9 @@ const self = module.exports = {
 
 	  socket.on('summonCard', async (ctx) => {
 	  	try {
-		  	console.log('summonCard');
-		  	console.log('Data: ', ctx.data);
-
 		  	await gameServer.summonCard(ctx, next);
 
 		  	let isSuccessful = ctx.errors.length ? false : true;
-
-		  	console.log('Errors: ', ctx.errors);
 
 		  	socket.broadcast('summonCard', {
 		  		errors: ctx.errors,
@@ -222,14 +183,9 @@ const self = module.exports = {
 
 	  socket.on('rollPhase', async (ctx) => {
 	  	try {
-		  	console.log('rollPhase');
-		  	console.log('Data: ', ctx.data);
-
 		  	await gameServer.rollPhase(ctx, next);
 
 		  	let isSuccessful = ctx.errors.length ? false : true;
-
-		  	console.log('Errors: ', ctx.errors);
 
 		  	socket.broadcast('rollPhase', {
 		  		errors: ctx.errors,
@@ -245,14 +201,9 @@ const self = module.exports = {
 
 	  socket.on('rollDiceBoard', async (ctx) => {
 	  	try {
-		  	console.log('rollDiceBoard');
-		  	console.log('Data: ', ctx.data);
-
 		  	await gameServer.rollDiceBoard(ctx, next);
 
 		  	let isSuccessful = ctx.errors.length ? false : true;
-
-		  	console.log('Errors: ', ctx.errors);
 
 		  	socket.broadcast('rollDiceBoard', {
 		  		errors: ctx.errors,
@@ -268,14 +219,9 @@ const self = module.exports = {
 
 	  socket.on('endPhase', async (ctx) => {
 	  	try {
-		  	console.log('endPhase');
-		  	console.log('endPhase: ', ctx.data);
-
 		  	await gameServer.endPhase(ctx, next);
 
 		  	let isSuccessful = ctx.errors.length ? false : true;
-
-		  	console.log('Errors: ', ctx.errors);
 
 		  	socket.broadcast('endPhase', {
 		  		errors: ctx.errors,
@@ -291,14 +237,9 @@ const self = module.exports = {
 
 	  socket.on('winGameFormally', async (ctx) => {
 	  	try {
-		  	console.log('winGameFormally');
-		  	console.log('Data: ', ctx.data);
-
 		  	await gameServer.winGameFormally(ctx, next);
 
 		  	let isSuccessful = ctx.errors.length ? false : true;
-
-		  	console.log('Errors: ', ctx.errors);
 
 		  	socket.emit('winGameFormally', {
 			  	errors: ctx.errors,

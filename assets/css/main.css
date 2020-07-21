@@ -246,17 +246,9 @@ body {
   height: inherit;
 }
 
-.anime-cb-column.active.roll-again {
-/*  background-image: url("../imgs/dice.webp");
-  background-color: white;
-  background-size: contain;
-  background-repeat: no-repeat;*/
-}
-
 #anime-cb-player-you-position {
   width: inherit;
   height: inherit;
-  background-image: url("../imgs/player_pieces/Lelouch.jpg");
   background-size: contain;
   border: 1px solid white;
   border-radius: 50px;
@@ -269,7 +261,6 @@ body {
 #anime-cb-player-enemy-position {
   width: inherit;
   height: inherit;
-  background-image: url("../imgs/player_pieces/CC.jpg");
   background-size:contain;
   border: 1px solid white;
   border-radius: 50px;
@@ -350,6 +341,11 @@ body {
   bottom: 0;
   z-index: 5;
 /*  overflow: hidden;*/
+}
+
+.anime-cb-board-img  ~ #anime-cb-player-you-position, .anime-cb-board-img  ~ #anime-cb-player-enemy-position {
+  margin-top: 0px;
+  margin-left: -50px;
 }
 
 @-moz-document url-prefix() {
@@ -695,8 +691,6 @@ body {
   background-color: rgba(0, 0, 0, 0.6);
   padding: 20px;
   border-radius: 20px;
-  -webkit-animation: show-event-popup-slide-right 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
-  animation: show-event-popup-slide-right 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
 }
 
 .anime-cb-turn-timer.player-enemy {

@@ -21,7 +21,6 @@ const ajvErrors = require('ajv-errors')(ajv);
 
 module.exports = {
   leaveRoom: async (ctx, next) => {
-    console.log('leaveRoom roomController');
     ctx.errors = [];
 
     await pg.pool.query('BEGIN');
@@ -30,7 +29,6 @@ module.exports = {
       let userId = null;
       if (!ctx.session.userData && !ctx.data.userId)
       {
-          console.log('NO DATA');
           return;
       }
 
@@ -52,8 +50,6 @@ module.exports = {
         WHERE player2_id = $1
 
       `, [ userId ]);
-
-      console.log('queryStatus: ', queryStatus);
 
       await pg.pool.query('COMMIT');
     } catch(err) {

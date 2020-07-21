@@ -17,7 +17,6 @@ var self = module.exports = {
 	createRoom: async (ctx, next) => {
 		await next();
 
-		console.log('createRoom roomController');
 		ctx.errors = [];
 
     const isSchemaValid = ajv.validate(SCHEMAS.CREATE_ROOM, ctx.request.body.data);
@@ -57,8 +56,6 @@ var self = module.exports = {
 
       `, [ ctx.session.userData.userId ]);
 
-      console.log('destroyRoom status 1: ', queryStatus);
-
       queryStatus = await pg.pool.query(`
 
         UPDATE rooms
@@ -66,8 +63,6 @@ var self = module.exports = {
         WHERE player2_id = $1
 
       `, [ ctx.session.userData.userId ]);
-
-      console.log('destroyRoom status 2: ', queryStatus);
 
 	    queryStatus = await pg.pool.query(`
 
@@ -95,7 +90,6 @@ var self = module.exports = {
   browseRooms: async (ctx, next) => {
     await next();
 
-    console.log('browseRooms roomController');
     ctx.errors = [];
 
     try {
@@ -105,7 +99,6 @@ var self = module.exports = {
 
       `);
 
-      console.log('browseRooms rows count: ', queryStatus.rows.length);
       ctx.result = {
         roomsData: queryStatus.rows,
       };
@@ -120,7 +113,6 @@ var self = module.exports = {
   getRoomData: async (ctx, next) => {
     await next();
 
-    console.log('getRoomData roomController');
     ctx.errors = [];
 
     ctx.result = {
@@ -136,7 +128,6 @@ var self = module.exports = {
       ctx.request.body.data.roomId = parseInt(ctx.request.body.data.roomId);
 
       const isSchemaValid = ajv.validate(SCHEMAS.GET_ROOM_DATA, ctx.request.body.data);
-      console.log(ctx.request.body.data);
 
       assert(isSchemaValid);
 
@@ -150,8 +141,6 @@ var self = module.exports = {
         WHERE R.id = $1
 
       `, [ ctx.request.body.data.roomId ]);
-
-      console.log('getRoomData rows count: ', queryStatus.rows.length);
 
       if (queryStatus.rows.length > 0) {
         ctx.result = {
@@ -174,7 +163,6 @@ var self = module.exports = {
   joinRoom: async (ctx, next) => {
     await next();
 
-    console.log('joinRoom roomController');
     ctx.errors = [];
 
     ctx.result = {
@@ -192,8 +180,6 @@ var self = module.exports = {
       ctx.request.body.data.roomId = parseInt(ctx.request.body.data.roomId);
 
       const isSchemaValid = ajv.validate(SCHEMAS.JOIN_ROOM_DATA, ctx.request.body.data);
-      console.log(ctx.request.body.data);
-      console.log(ajv.errors);
 
       assert(isSchemaValid);
 
@@ -243,8 +229,6 @@ var self = module.exports = {
         RETURNING id
 
       `, [ ctx.session.userData.userId, ctx.request.body.data.roomId ]);
-
-      console.log('joinRoom rows count: ', queryStatus.rows.length);
 
       if (queryStatus.rows.length <= 0) {
         logger.info('Could not find room to update, request body: %o', ctx.request.body.data);

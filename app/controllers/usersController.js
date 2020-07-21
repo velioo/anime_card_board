@@ -22,7 +22,6 @@ const ajvErrors = require('ajv-errors')(ajv);
 
 var self = module.exports = {
   signUp: async (ctx, next) => {
-    console.log('signUp usersController');
     ctx.errors = [];
 
     const isSchemaValid = ajv.validate(SCHEMAS.SIGN_UP, ctx.request.body.data);
@@ -82,7 +81,6 @@ var self = module.exports = {
     return self.sendResponse(ctx, next);
   },
   logIn: async (ctx, next) => {
-    console.log('logIn usersController');
     ctx.errors = [];
 
     const isSchemaValid = ajv.validate(SCHEMAS.LOGIN, ctx.request.body.data);
@@ -149,7 +147,6 @@ var self = module.exports = {
     ctx.body.username = ctx.session.userData ? ctx.session.userData.username : null;
   },
   logOut: async (ctx, next) => {
-    console.log('logOut usersController');
     ctx.errors = [];
 
     await gameServer.leaveRoom(ctx, next);

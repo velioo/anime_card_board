@@ -1,5 +1,4 @@
 const logger = require('../helpers/logger');
-const gameCore = require('./gameCore.js');
 const roomController = require('../controllers/roomControllerSocket');
 const gameController = require('../controllers/gameControllerSocket');
 

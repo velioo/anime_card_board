@@ -1,12 +1,15 @@
 const logger = require('../helpers/logger');
 const pg = require('../db/pg');
 const utils = require('../helpers/utils');
+const gameCore = require('../socket/gameCore.js');
 
 const {
   ROOT,
   SERVICE_EMAIL_PROVIDER,
   SERVICE_EMAIL,
   EMAIL_PASS,
+  TURN_PHASES,
+  CARD_RARITIES,
 } = require('../constants/constants');
 const SCHEMAS = require('../schemas/schemas');
 
@@ -19,23 +22,9 @@ const Ajv = require('ajv');
 const ajv = new Ajv({ allErrors: true, $data: true, jsonPointers: true });
 const ajvErrors = require('ajv-errors')(ajv);
 
-const turnPhases = {
-    DRAW: 1,
-    STANDBY: 2,
-    MAIN: 3,
-    ROLL: 4,
-    END: 5,
-};
-
-const cardRarities = {
-    COMMON: 1,
-    RARE: 2,
-    EPIC: 3,
-};
-
 module.exports = {
   startGame: async (ctx, next) => {
-    console.log('startGame gameController');
+    logger.info('startGame gameController');
     ctx.errors = [];
 
     await pg.pool.query('BEGIN');
@@ -97,7 +86,7 @@ module.exports = {
             boardDataPlayers: boardDataPlayers,
           },
           timerSeconds: 180,
-          nextPhase: turnPhases.DRAW,
+          nextPhase: TURN_PHASES.DRAW,
           playerIdDrawnCard: null,
           playerIdSummonedCard: null,
           cardSummoned: null,
@@ -133,6 +122,7 @@ module.exports = {
               maxCardsOnField: 5,
               canRollDiceBoardInRollPhase: true,
               canRollDiceBoardCount: 0,
+              rollAgain: false,
             },
             [ctx.roomData.player2Id]: {
               name: ctx.roomData.player2Name,
@@ -154,6 +144,7 @@ module.exports = {
               maxCardsOnField: 5,
               canRollDiceBoardInRollPhase: true,
               canRollDiceBoardCount: 0,
+              rollAgain: false,
             },
           },
         },
@@ -182,7 +173,7 @@ module.exports = {
     }
   },
   drawCard: async (ctx, next) => {
-    console.log('drawCard gameController');
+    logger.info('drawCard gameController');
     ctx.errors = [];
 
     await pg.pool.query('BEGIN');
@@ -209,12 +200,16 @@ module.exports = {
       ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsInHand++;
       ctx.gameplayData.gameState.playerIdDrawnCard = ctx.session.userData.userId;
 
+      await gameCore.drawCardHook(ctx);
+
+      // get random non-used card from db
+
       ctx.cardDrawn = {
         cardId: 6,
         cardName: "Misaka",
         cardText: "This is Misaka",
         cardImg: "Misaka.jpg",
-        cardRarity: cardRarities.COMMON,
+        cardRarity: CARD_RARITIES.COMMON,
       };
 
       ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsInHandArr.push(ctx.cardDrawn);
@@ -235,7 +230,7 @@ module.exports = {
     }
   },
   drawPhase: async (ctx, next) => {
-    console.log('drawPhase gameController');
+    logger.info('drawPhase gameController');
     ctx.errors = [];
 
     await pg.pool.query('BEGIN');
@@ -257,10 +252,11 @@ module.exports = {
       ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
 
       assert(ctx.gameplayData.gameState.currPlayerId == ctx.session.userData.userId);
-      assert(ctx.gameplayData.gameState.nextPhase == turnPhases.DRAW);
+      assert(ctx.gameplayData.gameState.nextPhase == TURN_PHASES.DRAW);
 
-      ctx.gameplayData.gameState.nextPhase = turnPhases.STANDBY;
-      ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsToDraw++;
+      ctx.gameplayData.gameState.nextPhase = TURN_PHASES.STANDBY;
+
+      await gameCore.drawPhaseHook(ctx);
 
       queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
         field2: 'room_id', queryArg2: ctx.data.roomId });
@@ -278,7 +274,7 @@ module.exports = {
     }
   },
   standByPhase: async (ctx, next) => {
-    console.log('standByPhase gameController');
+    logger.info('standByPhase gameController');
     ctx.errors = [];
 
     await pg.pool.query('BEGIN');
@@ -300,9 +296,11 @@ module.exports = {
       ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
 
       assert(ctx.gameplayData.gameState.currPlayerId == ctx.session.userData.userId);
-      assert(ctx.gameplayData.gameState.nextPhase == turnPhases.STANDBY);
+      assert(ctx.gameplayData.gameState.nextPhase == TURN_PHASES.STANDBY);
 
-      ctx.gameplayData.gameState.nextPhase = turnPhases.MAIN_PHASE;
+      ctx.gameplayData.gameState.nextPhase = TURN_PHASES.MAIN_PHASE;
+
+      await gameCore.standyPhaseHook(ctx);
 
       // Do something... -> card effects
 
@@ -322,7 +320,7 @@ module.exports = {
     }
   },
   mainPhase: async (ctx, next) => {
-    console.log('mainPhase gameController');
+    logger.info('mainPhase gameController');
     ctx.errors = [];
 
     await pg.pool.query('BEGIN');
@@ -344,10 +342,11 @@ module.exports = {
       ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
 
       assert(ctx.gameplayData.gameState.currPlayerId == ctx.session.userData.userId);
-      assert(ctx.gameplayData.gameState.nextPhase == turnPhases.MAIN_PHASE);
+      assert(ctx.gameplayData.gameState.nextPhase == TURN_PHASES.MAIN_PHASE);
 
-      ctx.gameplayData.gameState.nextPhase = turnPhases.ROLL;
-      ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsSummonConstraints.cardsCanSummonCommonCount = 2;
+      ctx.gameplayData.gameState.nextPhase = TURN_PHASES.ROLL;
+
+      await gameCore.mainPhaseHook(ctx);
 
       queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
         field2: 'room_id', queryArg2: ctx.data.roomId });
@@ -365,7 +364,7 @@ module.exports = {
     }
   },
   summonCard: async (ctx, next) => {
-    console.log('summonCard gameController');
+    logger.info('summonCard gameController');
     ctx.errors = [];
 
     await pg.pool.query('BEGIN');
@@ -393,20 +392,20 @@ module.exports = {
       assert(ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsSummonConstraints.cardsCanSummonAny);
 
       // TODO: find card in db by cardId, next line is hardcoded !!!
-      var cardRarity = cardRarities.COMMON;
+      var cardRarity = CARD_RARITIES.COMMON;
 
       switch(cardRarity) {
-        case cardRarities.COMMON:
+        case CARD_RARITIES.COMMON:
           assert(ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsSummonConstraints.cardsCanSummonCommon
             && ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsSummonConstraints.cardsCanSummonCommonCount > 0);
           ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsSummonConstraints.cardsCanSummonCommonCount--;
           break;
-        case cardRarities.RARE:
+        case CARD_RARITIES.RARE:
           assert(ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsSummonConstraints.cardsCanSummonRare
             && ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsSummonConstraints.cardsCanSummonRareCount > 0);
           ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsSummonConstraints.cardsCanSummonRareCount--;
           break;
-        case cardRarities.EPIC:
+        case CARD_RARITIES.EPIC:
           assert(ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsSummonConstraints.cardsCanSummonEpic
             && ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsSummonConstraints.cardsCanSummonEpicCount > 0);
           ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsSummonConstraints.cardsCanSummonEpicCount--;
@@ -426,6 +425,8 @@ module.exports = {
       ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsInHand--;
       ctx.gameplayData.gameState.playerIdSummonedCard = ctx.session.userData.userId;
 
+      await gameCore.summonCardHook(ctx, cardSelected);
+
       queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
         field2: 'room_id', queryArg2: ctx.data.roomId });
 
@@ -442,7 +443,7 @@ module.exports = {
     }
   },
   rollPhase: async (ctx, next) => {
-    console.log('rollPhase gameController');
+    logger.info('rollPhase gameController');
     ctx.errors = [];
 
     await pg.pool.query('BEGIN');
@@ -464,10 +465,11 @@ module.exports = {
       ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
 
       assert(ctx.gameplayData.gameState.currPlayerId == ctx.session.userData.userId);
-      assert(ctx.gameplayData.gameState.nextPhase == turnPhases.ROLL);
+      assert(ctx.gameplayData.gameState.nextPhase == TURN_PHASES.ROLL);
 
-      ctx.gameplayData.gameState.nextPhase = turnPhases.END;
-      ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].canRollDiceBoardCount = 1;
+      ctx.gameplayData.gameState.nextPhase = TURN_PHASES.END;
+
+      await gameCore.rollPhaseHook(ctx);
 
       queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
         field2: 'room_id', queryArg2: ctx.data.roomId });
@@ -485,7 +487,7 @@ module.exports = {
     }
   },
   rollDiceBoard: async (ctx, next) => {
-    console.log('rollDiceBoard gameController');
+    logger.info('rollDiceBoard gameController');
     ctx.errors = [];
 
     await pg.pool.query('BEGIN');
@@ -509,25 +511,14 @@ module.exports = {
       assert(ctx.gameplayData.gameState.currPlayerId == ctx.session.userData.userId);
       assert(ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].canRollDiceBoardCount > 0);
 
-      if (ctx.gameplayData.gameState.nextPhase == turnPhases.ROLL) {
+      if (ctx.gameplayData.gameState.nextPhase == TURN_PHASES.ROLL) {
         assert(ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].canRollDiceBoardInRollPhase);
       }
 
       ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].canRollDiceBoardCount--;
-      ctx.gameplayData.gameState.rollDiceBoard.rollDiceValue = utils.getRandomInt(1, 6);
       ctx.gameplayData.gameState.rollDiceBoard.playerIdRollDice = ctx.session.userData.userId;
 
-      let boardPath = ctx.gameplayData.gameState.boardData.boardDataPlayers.boardPath;
-      let currBoardIndex = ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].currBoardIndex;
-      let rollDiceValue = ctx.gameplayData.gameState.rollDiceBoard.rollDiceValue;
-
-      ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].lastBoardIndex = currBoardIndex;
-
-      if (ctx.roomData.player1Id == ctx.session.userData.userId && boardPath[currBoardIndex + rollDiceValue]) {
-        ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].currBoardIndex = currBoardIndex + rollDiceValue;
-      } else if (ctx.roomData.player2Id == ctx.session.userData.userId && currBoardIndex - rollDiceValue >= 0) {
-        ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].currBoardIndex = currBoardIndex - rollDiceValue;
-      }
+      await gameCore.rollDiceBoardHook(ctx);
 
       if (checkWin(ctx)) {
         ctx.gameplayData.gameState.playerIdWinGame = ctx.session.userData.userId;
@@ -551,7 +542,7 @@ module.exports = {
     }
   },
   endPhase: async (ctx, next) => {
-    console.log('endPhase gameController');
+    logger.info('endPhase gameController');
     ctx.errors = [];
 
     await pg.pool.query('BEGIN');
@@ -573,12 +564,15 @@ module.exports = {
       ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
 
       assert(ctx.gameplayData.gameState.currPlayerId == ctx.session.userData.userId);
-      assert(ctx.gameplayData.gameState.nextPhase == turnPhases.END);
+      assert(ctx.gameplayData.gameState.nextPhase == TURN_PHASES.END);
       assert(ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].canRollDiceBoardCount <= 0);
 
-      ctx.gameplayData.gameState.nextPhase = turnPhases.DRAW;
+      ctx.gameplayData.gameState.nextPhase = TURN_PHASES.DRAW;
       ctx.gameplayData.gameState.currPlayerId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
+
       resetTurn(ctx);
+
+      await gameCore.endPhaseHook(ctx);
 
       queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
         field2: 'room_id', queryArg2: ctx.data.roomId });
@@ -596,7 +590,7 @@ module.exports = {
     }
   },
   winGameFormally: async (ctx, next) => {
-    console.log('winGameFormally gameController');
+    logger.info('winGameFormally gameController');
     ctx.errors = [];
 
     await pg.pool.query('BEGIN');
@@ -646,7 +640,7 @@ module.exports = {
 
       `, [ ctx.session.userData.userId, ctx.data.roomId ]);
 
-      console.log('queryStatus: ', queryStatus);
+      logger.info('queryStatus: ', queryStatus);
 
       assert(queryStatus.rows[0].id);
 
@@ -694,23 +688,24 @@ let winGame = async (ctx) => {
 };
 
 let resetTurn = (ctx) => {
-  ctx.gameplayData.gameState.playersState[ctx.roomData.player1Id].cardsSummonConstraints.cardsCanSummonCommonCount = 0;
-  ctx.gameplayData.gameState.playersState[ctx.roomData.player1Id].cardsSummonConstraints.cardsCanSummonRareCount = 0;
-  ctx.gameplayData.gameState.playersState[ctx.roomData.player1Id].cardsSummonConstraints.cardsCanSummonEpicCount = 0;
-  ctx.gameplayData.gameState.playersState[ctx.roomData.player1Id].canRollDiceBoardCount = 0;
-  ctx.gameplayData.gameState.playersState[ctx.roomData.player2Id].cardsSummonConstraints.cardsCanSummonCommonCount = 0;
-  ctx.gameplayData.gameState.playersState[ctx.roomData.player2Id].cardsSummonConstraints.cardsCanSummonRareCount = 0;
-  ctx.gameplayData.gameState.playersState[ctx.roomData.player2Id].cardsSummonConstraints.cardsCanSummonEpicCount = 0;
-  ctx.gameplayData.gameState.playersState[ctx.roomData.player2Id].canRollDiceBoardCount = 0;
-  ctx.gameplayData.gameState.playerIdDrawnCard = null;
-  ctx.gameplayData.gameState.playerIdSummonedCard = null;
-  ctx.gameplayData.gameState.cardSummoned = null;
-  ctx.gameplayData.gameState.cardSummonedIdxInPlayerHand = null;
-  ctx.gameplayData.gameState.rollDiceBoard = {
+  let gameState = ctx.gameplayData.gameState;
+
+  for (let playerId in gameState.playersState) {
+    gameState.playersState[playerId].cardsSummonConstraints.cardsCanSummonCommonCount = 0;
+    gameState.playersState[playerId].cardsSummonConstraints.cardsCanSummonRareCount = 0;
+    gameState.playersState[playerId].cardsSummonConstraints.cardsCanSummonEpicCount = 0;
+    gameState.playersState[playerId].canRollDiceBoardCount = 0;
+    gameState.playersState[playerId].rollAgain = false;
+  }
+  gameState.playerIdDrawnCard = null;
+  gameState.playerIdSummonedCard = null;
+  gameState.cardSummoned = null;
+  gameState.cardSummonedIdxInPlayerHand = null;
+  gameState.rollDiceBoard = {
     playerIdRollDice: null,
     rollDiceValue: null,
   };
-  ctx.gameplayData.gameState.rollDiceCard = {
+  gameState.rollDiceCard = {
     playerIdRollDice: null,
     rollDiceValue: null,
     cardId: null,
