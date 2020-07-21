@@ -24,9 +24,9 @@ const self = module.exports = {
 
 		  	// await gameServer.processDisconnect(ctx, next);
 
-		  	let isSuccessful = ctx.errors.length ? false : true;
+		  	//let isSuccessful = ctx.errors.length ? false : true;
 
-		  	console.log('Errors: ', ctx.errors);
+		  	//console.log('Errors: ', ctx.errors);
 	  	} catch(err) {
 	  		socket.emit('serverError', err);
 	  		logger.error('Error: %o', err);

@@ -1,5 +1,5 @@
 const PORT = +process.argv[2] || 8882;
-const ROOT = 'http://localhost:' + PORT + '/';
+const ROOT = 'http://192.168.0.108:' + PORT + '/';
 
 exports.PORT = PORT;
 exports.ROOT = ROOT;

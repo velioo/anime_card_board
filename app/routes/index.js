@@ -12,7 +12,6 @@ const {
 } = require('../controllers/usersController');
 const {
 	createRoom,
-	//destroyRoom,
 	browseRooms,
 	getRoomData,
 	joinRoom,
@@ -42,7 +41,6 @@ router
 	.post('/browse_rooms', new KoaBody(), browseRooms)
 	.post('/room_data', new KoaBody(), getRoomData)
 	.post('/join_room', new KoaBody(), joinRoom)
-	// .post('/destroy_room', new KoaBody(), destroyRoom)
 	.get('/confirm_account/:code', confirmAccount)
 	.post('/frontend_logger', new KoaBody(), frontendLogger);
 

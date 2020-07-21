@@ -37,6 +37,7 @@ gameController.prototype.initConstants = function() {
 	_self.BOARD_PLAYER_ENEMY_ID = '#anime-cb-player-enemy-position';
 	_self.DICE_THROW_CONTAINER_PLAYER_YOU_ID = '#anime-cb-dice-wrapper-player-you';
 	_self.DICE_THROW_CONTAINER_PLAYER_ENEMY_ID = '#anime-cb-dice-wrapper-player-enemy';
+	_self.BOARD_IMG_CLASS = '.anime-cb-board-img';
 
 	_self.CARD_INFO_IMG_ID = '#anime-cb-card-info-card';
 	_self.CARD_INFO_NAME_ID = '#anime-cb-card-info-card-name';
@@ -161,6 +162,26 @@ gameController.prototype.resetGameState = function () {
 	$(_self.CARD_CLASS + _self.PLAYER_YOU_CLASS).off("click");
 	$(_self.DECK_GLOBAL_ID).off("click");
 	$(_self.PHASE_ROLL_ID + ', ' + _self.PHASE_END_ID).off("click");
+	clearTimeout(_self.hideEventsInfoTimeout);
+	clearTimeout(_self.summonCardTimeout);
+	clearTimeout(_self.switchPhaseTimeout);
+	clearTimeout(_self.moveCharacterTimeout);
+	clearTimeout(_self.drawCardFromDeckYouAnimationTimeout);
+	clearTimeout(_self.drawCardFromDeckEnemyAnimationTimeout);
+};
+
+gameController.prototype.setLeaveButton = function () {
+	var _self = this;
+
+	_self.resetGameState();
+	_self.initListeners();
+
+	$(_self.GAME_SCREEN_CLASS).off("click", _self.SURRENDER_BTN_ID);
+	$(_self.SURRENDER_BTN_ID).text("Return to Menu");
+	$(_self.GAME_SCREEN_CLASS).on('click', _self.SURRENDER_BTN_ID, function(e) {
+	 	_self.processChangeScreen(_self.MAIN_MENU_SCREEN_CLASS);
+	});
+
 };
 
 gameController.prototype.processWinGameFormallyResponse = function (data) {
@@ -176,8 +197,8 @@ gameController.prototype.processWinGameFormallyResponse = function (data) {
 		_self.showAlertError(data.errors[0].message);
 	}
 
-	window.alert("The other player has surrendered or left the room. You win, congratulations !");
-	_self.processChangeScreen(_self.MAIN_MENU_SCREEN_CLASS);
+	_self.showEventsInfo("YOU WIN !!!");
+	_self.setLeaveButton();
 };
 
 gameController.prototype.processStartGameResponse = function (data) {
@@ -223,7 +244,7 @@ gameController.prototype.beforeUnload = function(event) {
 gameController.prototype.hideEventsInfo = function (callback) {
 	var _self = this;
 
-	setTimeout(function() {
+	_self.hideEventsInfoTimeout = setTimeout(function() {
 	  $(_self.EVENTS_INFO_ID).css("-webkit-animation", "hide-event-popup 1s cubic-bezier(0.165, 0.840, 0.440, 1.000) both");
 	  $(_self.EVENTS_INFO_ID).css("animation", "hide-event-popup 1s cubic-bezier(0.165, 0.840, 0.440, 1.000) both");
 	  if (typeof callback === "function") {
@@ -306,81 +327,45 @@ gameController.prototype.renderBoard = function () {
   var player2StartIndexRow = boardDataPlayers.boardPath[boardDataPlayers.player2StartBoardIndex][0];
   var player2StartIndexColumn = boardDataPlayers.boardPath[boardDataPlayers.player2StartBoardIndex][1];
 
-  // if (_self._roomData.player1Id == _self._yourUserId) {
-	  boardMatrix.forEach(function(boardRow, boardRowIdx) {
-	    var boardRowHtml = '<tr class="anime-cb-board-row">';
-	      boardRow.forEach(function(boardColumn, boardColumnIdx) {
-	      	if (boardRowIdx == player1StartIndexRow && boardColumnIdx == player1StartIndexColumn)
-	      	{
-	      		if (_self._roomData.player1Id == _self._yourUserId) {
-	      			boardRowHtml += '<td class="anime-cb-column active"><span id="anime-cb-player-you-position"></span></td>';
-	      		} else {
-	      			boardRowHtml += '<td class="anime-cb-column active"><span id="anime-cb-player-enemy-position"></span></td>';
-	      		}
-	      	} else if (boardRowIdx == player2StartIndexRow && boardColumnIdx == player2StartIndexColumn) {
-	      		if (_self._roomData.player2Id == _self._yourUserId) {
-	      			boardRowHtml += '<td class="anime-cb-column active"><span id="anime-cb-player-you-position"></span></td>';
-	      		} else {
-	      			boardRowHtml += '<td class="anime-cb-column active"><span id="anime-cb-player-enemy-position"></span></td>';
-	      		}
-	      	} else if (boardColumn == 1) {
-	      	  boardRowHtml += '<td class="anime-cb-column active"></td>';
-	      	} else {
-	          boardRowHtml += '<td class="anime-cb-column"></td>';
-	      	}
-	      });
+  boardMatrix.forEach(function(boardRow, boardRowIdx) {
+    var boardRowHtml = '<tr class="anime-cb-board-row">';
+      boardRow.forEach(function(boardColumn, boardColumnIdx) {
+      	if (boardRowIdx == player1StartIndexRow && boardColumnIdx == player1StartIndexColumn)
+      	{
+      		if (_self._roomData.player1Id == _self._yourUserId) {
+      			boardRowHtml += '<td class="anime-cb-column active"><span id="anime-cb-player-you-position"></span></td>';
+      		} else {
+      			boardRowHtml += '<td class="anime-cb-column active"><span id="anime-cb-player-enemy-position"></span></td>';
+      		}
+      	} else if (boardRowIdx == player2StartIndexRow && boardColumnIdx == player2StartIndexColumn) {
+      		if (_self._roomData.player2Id == _self._yourUserId) {
+      			boardRowHtml += '<td class="anime-cb-column active"><span id="anime-cb-player-you-position"></span></td>';
+      		} else {
+      			boardRowHtml += '<td class="anime-cb-column active"><span id="anime-cb-player-enemy-position"></span></td>';
+      		}
+      	} else if (boardColumn == 1) {
+      	  boardRowHtml += '<td class="anime-cb-column active"></td>';
+      	} else if (boardColumn == 2) {
+      		boardRowHtml += '<td class="anime-cb-column active roll-again"><img class="anime-cb-board-img" src="../imgs/dice.webp"></td>';
+      	} else {
+          boardRowHtml += '<td class="anime-cb-column"></td>';
+      	}
+      });
 
-	    boardRowHtml += '</tr>';
+    boardRowHtml += '</tr>';
 
-	    $(_self.BOARD_ID).append(boardRowHtml);
+    $(_self.BOARD_ID).append(boardRowHtml);
 
-			_self.setPlayerCharacters();
-	  });
+		_self.setBoardPieces();
+  });
 
 	if (_self._roomData.player2Id == _self._yourUserId) {
 		$(_self.BOARD_ID).css("transform", "rotate(180deg)");
-		_self.setPlayerCharactersRotated();
+		_self.setBoardPiecesRotated();
 	}
-	// } else {
-	// 		boardMatrix.map(function(arr){return arr.reverse();});
-	// 		player1StartIndexRow = boardDataPlayers.boardPath[boardDataPlayers.player2StartBoardIndex][0];
-	// 		player1StartIndexColumn = boardDataPlayers.boardPath[boardDataPlayers.player2StartBoardIndex][1];
-	// 		player2StartIndexRow = boardDataPlayers.boardPath[boardDataPlayers.player1StartBoardIndex][0];
-	// 		player2StartIndexColumn = boardDataPlayers.boardPath[boardDataPlayers.player1StartBoardIndex][1];
-
-	// 		boardMatrix.forEach(function(boardRow, boardRowIdx) {
-	//     	var boardRowHtml = '<tr class="anime-cb-board-row">';
-	//       boardRow.forEach(function(boardColumn, boardColumnIdx) {
-	//       	if (boardRowIdx == player1StartIndexRow && boardColumnIdx == player1StartIndexColumn)
-	//       	{
-	//       		if (_self._roomData.player1Id == _self._yourUserId) {
-	//       			boardRowHtml += '<td class="anime-cb-column active"><span id="anime-cb-player-you-position"></span></td>';
-	//       		} else {
-	//       			boardRowHtml += '<td class="anime-cb-column active"><span id="anime-cb-player-enemy-position"></span></td>';
-	//       		}
-	//       	} else if (boardRowIdx == player2StartIndexRow && boardColumnIdx == player2StartIndexColumn) {
-	//       		if (_self._roomData.player2Id == _self._yourUserId) {
-	//       			boardRowHtml += '<td class="anime-cb-column active"><span id="anime-cb-player-you-position"></span></td>';
-	//       		} else {
-	//       			boardRowHtml += '<td class="anime-cb-column active"><span id="anime-cb-player-enemy-position"></span></td>';
-	//       		}
-	//       	} else if (boardColumn == 1) {
-	//       	  boardRowHtml += '<td class="anime-cb-column active"></td>';
-	//       	} else {
-	//           boardRowHtml += '<td class="anime-cb-column"></td>';
-	//       	}
-	//       });
-
-	// 	    boardRowHtml += '</tr>';
-
-	// 	    $(_self.BOARD_ID).append(boardRowHtml);
-
-	// 	    _self.setPlayerCharacters();
-	//   });
-	// }
 };
 
-gameController.prototype.setPlayerCharacters = function () {
+gameController.prototype.setBoardPieces = function () {
 	var _self = this;
 
   if (_self._roomData.player1Id == _self._yourUserId) {
@@ -392,7 +377,7 @@ gameController.prototype.setPlayerCharacters = function () {
   }
 };
 
-gameController.prototype.setPlayerCharactersRotated = function () {
+gameController.prototype.setBoardPiecesRotated = function () {
 	var _self = this;
 
 	$(_self.BOARD_PLAYER_YOU_ID).css("transform", "rotate(180deg)");
@@ -405,6 +390,8 @@ gameController.prototype.setPlayerCharactersRotated = function () {
 		$(_self.BOARD_PLAYER_YOU_ID).css("background-image", 'url("../imgs/player_pieces/CC.jpg")');
 		$(_self.BOARD_PLAYER_ENEMY_ID).css("background-image", 'url("../imgs/player_pieces/Lelouch.jpg")');
   }
+
+  $(_self.BOARD_IMG_CLASS).css("transform", "rotate(180deg)");
 };
 
 gameController.prototype.drawStartCards = function () {
@@ -712,7 +699,7 @@ gameController.prototype.processSummonCard = function (data) {
 	_self._roomData = data.roomData;
 
 	if (_self._gameplayData.gameState.playerIdSummonedCard == _self._yourUserId) {
-		setTimeout(function() {
+		_self.summonCardTimeout = setTimeout(function() {
 			_self.enableMainPhaseBasicActions();
 		}, 700);
 	} else {
@@ -904,7 +891,7 @@ gameController.prototype.switchPhaseYou = function (currPhaseIdSelector) {
   _self.showEventsInfo(phaseText);
   _self.hideEventsInfo();
 
-  setTimeout(function() {
+  _self.switchPhaseTimeout = setTimeout(function() {
   	if (currPhaseIdSelector == _self.PHASE_DRAW_ID) {
 	  	$(_self.DECK_GLOBAL_ID).on('click', function(e) {
   			$(_self.DECK_GLOBAL_ID).off("click");
@@ -1078,15 +1065,15 @@ gameController.prototype.moveYourCharacter = function (callback) {
 			$(currPlayerTd).append('<span id="anime-cb-player-you-position"></span>');
 
 			if (_self._enemyUserId == _self._roomData.player2Id) {
-				_self.setPlayerCharacters();
+				_self.setBoardPieces();
 			} else {
-				_self.setPlayerCharactersRotated();
+				_self.setBoardPiecesRotated();
 			}
 
 			if(_self._gameplayData.gameState.playerIdWinGame && _self._gameplayData.gameState.playerIdWinGame == _self._yourUserId) {
 				var yourName = _self._roomData.player1Id == _self._yourUserId ? _self._roomData.player1Name : _self._roomData.player2Name;
-				window.alert(yourName + " wins the game !");
-				_self.processChangeScreen(_self.MAIN_MENU_SCREEN_CLASS);
+				_self.showEventsInfo("YOU WIN !!!");
+				_self.setLeaveButton();
 				return;
 			}
 
@@ -1097,7 +1084,7 @@ gameController.prototype.moveYourCharacter = function (callback) {
   }
 
 	if (_self._enemyUserId == _self._roomData.player2Id) {
-	  setTimeout(function() {
+	  _self.moveCharacterTimeout = setTimeout(function() {
 			if (currBoardIndex + diceRoll > boardPath.length - 1) {
 				if (typeof callback == "function") {
 					callback.call(_self);
@@ -1128,7 +1115,7 @@ gameController.prototype.moveYourCharacter = function (callback) {
 	 		}
 	  }, 2000);
 	} else {
-		setTimeout(function() {
+		_self.moveCharacterTimeout = setTimeout(function() {
 			if (currBoardIndex - diceRoll < 0) {
 				if (typeof callback == "function") {
 					callback.call(_self);
@@ -1183,22 +1170,22 @@ gameController.prototype.moveEnemyCharacter = function (diceResult) {
 			$(currPlayerTd).append('<span id="anime-cb-player-enemy-position"></span>');
 
 			if (_self._enemyUserId == _self._roomData.player2Id) {
-				_self.setPlayerCharacters();
+				_self.setBoardPieces();
 			} else {
-				_self.setPlayerCharactersRotated();
+				_self.setBoardPiecesRotated();
 			}
 
 			if(_self._gameplayData.gameState.playerIdWinGame && _self._gameplayData.gameState.playerIdWinGame == _self._enemyUserId) {
 				var enemyName = _self._roomData.player1Id == _self._enemyUserId ? _self._roomData.player1Name : _self._roomData.player2Name;
-				window.alert(enemyName + " wins the game !");
-				_self.processChangeScreen(_self.MAIN_MENU_SCREEN_CLASS);
+				_self.showEventsInfo("YOU LOSE...");
+				_self.setLeaveButton();
 				return;
 			}
 	  }
 	}
 
 	if (_self._enemyUserId == _self._roomData.player2Id) {
-	  setTimeout(function() {
+	  _self.moveCharacterTimeout = setTimeout(function() {
 			if (currBoardIndex - diceRoll < 0) {
 				return;
 			}
@@ -1226,7 +1213,7 @@ gameController.prototype.moveEnemyCharacter = function (diceResult) {
 	 		}
 	  }, 2000);
 	} else {
-	  setTimeout(function() {
+	  _self.moveCharacterTimeout = setTimeout(function() {
 			if (currBoardIndex + diceRoll > boardPath.length - 1) {
 				return;
 			}

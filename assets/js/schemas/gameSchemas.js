@@ -88,7 +88,7 @@ var startGameResponse = {
 						"playersState": {
 							"type": "object",
 							"patternProperties": {
-								"^[1-9]\d*$": {
+								"^[1-9]\\d*$": {
 									"name": { "type": "string" },
 									"currBoardIndex": { "type": "integer" },
 									"lastBoardIndex": { "type": "integer" },

@@ -241,6 +241,18 @@ body {
   border: 2px double white !important;
 }
 
+.anime-cb-board-img {
+  width: inherit;
+  height: inherit;
+}
+
+.anime-cb-column.active.roll-again {
+/*  background-image: url("../imgs/dice.webp");
+  background-color: white;
+  background-size: contain;
+  background-repeat: no-repeat;*/
+}
+
 #anime-cb-player-you-position {
   width: inherit;
   height: inherit;
@@ -331,12 +343,12 @@ body {
 
 .anime-cb-cards-in-hand-wrapper.player-enemy {
   top: 0;
-  z-index: 2;
+  z-index: 5;
 }
 
 .anime-cb-cards-in-hand-wrapper.player-you {
   bottom: 0;
-  z-index: 2;
+  z-index: 5;
 /*  overflow: hidden;*/
 }
 
@@ -660,6 +672,7 @@ body {
   left: 50%;
   margin-top: -50px;
   margin-left: -100px;
+  z-index: 10;
 }
 
 #anime-cb-dice-wrapper-player-enemy {
@@ -668,6 +681,7 @@ body {
   left: 50%;
   margin-top: -300px;
   margin-left: -100px;
+  z-index: 10;
 }
 
 #anime-cb-game-events-info {

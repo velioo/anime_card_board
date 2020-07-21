@@ -107,18 +107,19 @@ roomController.prototype.roomsIntervalFunc = function() {
 
 	if (_self._roomId && ($(_self.LOBBY_SCREEN_CLASS).is(':visible')
 		|| ($(_self.GAME_SCREEN_CLASS).is(':visible') && _self._inGame))) {
+		console.log('getCurrentRoomData from interval, roomDd: ', _self._roomId);
 		_self.client.getCurrentRoomData({ roomId: _self._roomId });
 	}
 
-	if (!$(_self.LOBBY_SCREEN_CLASS).is(':visible') && !_self._inGame && !_self._creatingRoom) {
+	if (!$(_self.LOBBY_SCREEN_CLASS).is(':visible') && !_self._inGame && !_self._creatingRoom && !_self._connectingToRoom) {
 		console.log('Leave room from interval');
 		_self.client.sendLeaveRoomRequest({ roomId: _self._roomId, userId: _self.client.logInSignUpController._userId });
 	}
 };
 
 roomController.prototype.processGetCurrentRoomDataResponse = function (data) {
-	//logger.info('processGetCurrentRoomDataResponse');
-	//console.log('Room data: ', data);
+	// logger.info('processGetCurrentRoomDataResponse');
+	// console.log('Room data: ', data);
 
 	var _self = this;
 
@@ -253,6 +254,7 @@ roomController.prototype.resetRoomState = function () {
 roomController.prototype.processCreateRoomResponse = function(data) {
 	logger.info('processCreateRoomResponse');
 	logger.info('To validate: ', JSON.stringify(data));
+	console.log('processCreateRoomResponse, data: ', data);
 
 	var _self = this;
 
@@ -277,6 +279,7 @@ roomController.prototype.processCreateRoomResponse = function(data) {
 roomController.prototype.processLeaveRoomResponse = function(data) {
 	logger.info('processLeaveRoomResponse');
 	logger.info('To validate: ', JSON.stringify(data));
+	console.log('processLeaveRoomResponse, data: ', data);
 
 	var _self = this;
 
@@ -284,6 +287,7 @@ roomController.prototype.processLeaveRoomResponse = function(data) {
   	JSON.stringify(ajv.errors, null, 2));
 
   if (_self._roomId && _self._roomId == data.roomId) {
+  	console.log('Room found, refreshing: ', _self._roomId);
   	clearInterval(_self.roomsInterval);
   	_self.client.getCurrentRoomData({ roomId: _self._roomId });
   	_self.roomsInterval = setInterval(_self.roomsIntervalFunc.bind(_self), 3000);
@@ -301,7 +305,6 @@ roomController.prototype.processJoinRoomResponse = function(data) {
 	logger.info('To validate: ', JSON.stringify(data));
 
 	var _self = this;
-	_self._connectingToRoom = false;
 
 	assert(ajv.validate(joinRoomResponse, data), 'joinRoomResponse is invalid' +
   	JSON.stringify(ajv.errors, null, 2));
@@ -423,6 +426,7 @@ roomController.prototype.showJoinRoomSuccess = function(data) {
 	$(_self.LOBBY_ROOM_WAITING_PLAYERS_CLASS).hide();
 
 	_self.processChangeScreen(_self.LOBBY_SCREEN_CLASS);
+	_self._connectingToRoom = false;
 };
 
 roomController.prototype.preSwitchScreenHook = function (screenClass) {
@@ -433,8 +437,8 @@ roomController.prototype.preSwitchScreenHook = function (screenClass) {
 	console.log('Switching to screenClass: ', screenClass);
 
 	if (screenClass !== _self.LOBBY_SCREEN_CLASS && screenClass !== _self.GAME_SCREEN_CLASS) {
-		console.log('Leave Room');
-		_self.client.sendLeaveRoomRequest({ roomId: _self._roomId, userId: _self.client.logInSignUpController._userId });
+		console.log('Leave Room deprecated, no longer leaving room now...');
+		//_self.client.sendLeaveRoomRequest({ roomId: _self._roomId, userId: _self.client.logInSignUpController._userId });
 	}
 
 	if (screenClass === _self.BROWSE_ROOMS_SCREEN_CLASS) {

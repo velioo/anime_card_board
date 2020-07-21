@@ -89,6 +89,7 @@ generalClient.prototype.sendCreateRoomData = function(_data) {
 
 generalClient.prototype.sendLeaveRoomRequest = function(_data) {
 	//logger.info('sendLeaveRoomRequest');
+  console.log('sendLeaveRoomRequest, data: ', _data);
 
 	var _self = this;
 
