@@ -60,7 +60,8 @@ module.exports = {
     let rowIndex = boardPath[currBoardIndex][0];
     let columnIndex = boardPath[currBoardIndex][1];
 
-    if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.ROLL_AGAIN) {
+    if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.ROLL_AGAIN
+    	&& currBoardIndex != gameState.playersState[ctx.session.userData.userId].lastBoardIndex) {
     	gameState.playersState[ctx.session.userData.userId].rollAgain = true;
     	gameState.playersState[ctx.session.userData.userId].canRollDiceBoardCount++;
     }

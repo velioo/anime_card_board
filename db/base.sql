@@ -10,6 +10,9 @@ CREATE TABLE "users" (
   PRIMARY KEY (id)
 );
 
+GRANT ALL ON users TO velioo;
+GRANT ALL ON users_id_seq TO velioo;
+
 CREATE OR REPLACE FUNCTION update_timestamp()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -28,6 +31,8 @@ CREATE TABLE "temp_codes" (
   PRIMARY KEY ("hash")
 );
 
+GRANT ALL ON temp_codes TO velioo;
+
 CREATE TABLE "rooms" (
   "id" serial NOT NULL,
   "name" character varying(20) NOT NULL UNIQUE,
@@ -38,13 +43,10 @@ CREATE TABLE "rooms" (
   PRIMARY KEY (id)
 );
 
+GRANT ALL ON rooms TO velioo;
+GRANT ALL ON rooms_id_seq TO velioo;
 
 CREATE TRIGGER update_room_timestamp BEFORE UPDATE ON rooms FOR EACH ROW EXECUTE PROCEDURE update_timestamp();
-GRANT ALL ON users TO velioo;
-GRANT ALL ON temp_codes TO velioo;
-GRANT ALL ON rooms TO velioo;
-GRANT ALL ON users_id_seq TO velioo;
-GRANT ALL ON rooms_id_seq TO velioo;
 
 CREATE TABLE "gameplay_statuses" (
   "id" integer NOT NULL,

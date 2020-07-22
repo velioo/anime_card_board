@@ -353,7 +353,7 @@ gameController.prototype.renderBoard = function () {
       	} else if (boardColumn == 1) {
       	  boardRowHtml += '<td class="anime-cb-column active"></td>';
       	} else if (boardColumn == 2) {
-      		boardRowHtml += '<td class="anime-cb-column active roll-again"><img class="anime-cb-board-img" src="../imgs/dice.webp"></td>';
+      		boardRowHtml += '<td class="anime-cb-column active roll-again"><img class="anime-cb-board-img" src="/imgs/dice.webp"></td>';
       	} else {
           boardRowHtml += '<td class="anime-cb-column"></td>';
       	}
@@ -376,11 +376,11 @@ gameController.prototype.setBoardPieces = function () {
 	var _self = this;
 
   if (_self._roomData.player1Id == _self._yourUserId) {
-  	$(_self.BOARD_PLAYER_YOU_ID).css("background-image", 'url("../imgs/player_pieces/Lelouch.jpg")');
-  	$(_self.BOARD_PLAYER_ENEMY_ID).css("background-image", 'url("../imgs/player_pieces/CC.jpg")');
+  	$(_self.BOARD_PLAYER_YOU_ID).css("background-image", 'url("/imgs/player_pieces/Lelouch.jpg")');
+  	$(_self.BOARD_PLAYER_ENEMY_ID).css("background-image", 'url("/imgs/player_pieces/CC.jpg")');
   } else {
-		$(_self.BOARD_PLAYER_YOU_ID).css("background-image", 'url("../imgs/player_pieces/CC.jpg")');
-		$(_self.BOARD_PLAYER_ENEMY_ID).css("background-image", 'url("../imgs/player_pieces/Lelouch.jpg")');
+		$(_self.BOARD_PLAYER_YOU_ID).css("background-image", 'url("/imgs/player_pieces/CC.jpg")');
+		$(_self.BOARD_PLAYER_ENEMY_ID).css("background-image", 'url("/imgs/player_pieces/Lelouch.jpg")');
   }
 };
 
@@ -391,11 +391,11 @@ gameController.prototype.setBoardPiecesRotated = function () {
 	$(_self.BOARD_PLAYER_ENEMY_ID).css("transform", "rotate(180deg)");
 
   if (_self._roomData.player1Id == _self._yourUserId) {
-  	$(_self.BOARD_PLAYER_YOU_ID).css("background-image", 'url("../imgs/player_pieces/Lelouch.jpg")');
-  	$(_self.BOARD_PLAYER_ENEMY_ID).css("background-image", 'url("../imgs/player_pieces/CC.jpg")');
+  	$(_self.BOARD_PLAYER_YOU_ID).css("background-image", 'url("/imgs/player_pieces/Lelouch.jpg")');
+  	$(_self.BOARD_PLAYER_ENEMY_ID).css("background-image", 'url("/imgs/player_pieces/CC.jpg")');
   } else {
-		$(_self.BOARD_PLAYER_YOU_ID).css("background-image", 'url("../imgs/player_pieces/CC.jpg")');
-		$(_self.BOARD_PLAYER_ENEMY_ID).css("background-image", 'url("../imgs/player_pieces/Lelouch.jpg")');
+		$(_self.BOARD_PLAYER_YOU_ID).css("background-image", 'url("/imgs/player_pieces/CC.jpg")');
+		$(_self.BOARD_PLAYER_ENEMY_ID).css("background-image", 'url("/imgs/player_pieces/Lelouch.jpg")');
   }
 
   $(_self.BOARD_IMG_CLASS).css("transform", "rotate(180deg)");
@@ -1369,7 +1369,7 @@ gameController.prototype.summonCardFromHandAnimationEnemy = function (cardObj) {
 			$(this).css("-webkit-animation", "summon-enemy-card 0.6s ease-out both");
 			$(this).css("animation", "summon-enemy-card 0.6s ease-out both");
 			$(this).html('<img class="anime-cb-card-onfield hover player-enemy" data-card-text="' + cardText
-				+ '" data-card-name="' + cardName + '" src="imgs/player_cards/' + cardImg + '" data-card-id="' + cardId
+				+ '" data-card-name="' + cardName + '" src="/imgs/player_cards/' + cardImg + '" data-card-id="' + cardId
 				+ '" data-card-rarity="' + cardRarity +'">');
 			$(_self.CARDS_IN_HAND_CLASS).css("overflow", "hidden");
 			$(card).remove();
@@ -1454,7 +1454,7 @@ gameController.prototype.drawCardFromDeckYouAnimation = function (card) {
   $(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_YOU_CLASS).append('<img style="animation: draw-from-deck-you-'
   	+ drawFromDeckAnimationCount + ' 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both; -webkit-animation: draw-from-deck-you-'
   	+ drawFromDeckAnimationCount + ' 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;" class="anime-cb-card player-you"\
-  		 data-card-id="' + cardId + '" data-card-text="' + cardText + '" data-card-name="' + cardName + '" src="imgs/player_cards/'
+  		 data-card-id="' + cardId + '" data-card-text="' + cardText + '" data-card-name="' + cardName + '" src="/imgs/player_cards/'
   		 + cardImg + '" data-card-rarity="' + cardRarity + '">');
 
   _self.increaseYourCardsInHandDensity();
@@ -1508,7 +1508,7 @@ gameController.prototype.drawCardFromDeckEnemyAnimation = function(card) {
   $(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_ENEMY_CLASS).append('<img style="animation: draw-from-deck-enemy-'
   	+ drawFromDeckAnimationCount + ' 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both; -webkit-animation: draw-from-deck-enemy-'
   	+ drawFromDeckAnimationCount + ' 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;" class="anime-cb-card player-enemy"\
-  		src="imgs/player_cards/card_back.png">');
+  		src="/imgs/player_cards/card_back.png">');
 
   _self.increaseEnemyCardsInHandDensity();
 
