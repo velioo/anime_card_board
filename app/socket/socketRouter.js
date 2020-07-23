@@ -109,6 +109,24 @@ const self = module.exports = {
 	  	}
 	  });
 
+	  socket.on('discardCard', async (ctx) => {
+	  	try {
+		  	await gameServer.discardCard(ctx, next);
+
+		  	let isSuccessful = ctx.errors.length ? false : true;
+
+		  	socket.broadcast('discardCard', {
+		  		errors: ctx.errors,
+			  	isSuccessful: isSuccessful,
+			  	gameplayData: ctx.gameplayData,
+			  	roomData: ctx.roomData,
+			  });
+	  	} catch (err) {
+	  		socket.emit('serverError', err);
+	  		logger.error('Error: %o', err);
+	  	}
+	  });
+
 	  socket.on('drawPhase', async (ctx) => {
 	  	try {
 		  	await gameServer.drawPhase(ctx, next);

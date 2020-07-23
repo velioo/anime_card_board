@@ -176,6 +176,7 @@ const _SUMMON_CARD = {
 
 const _ROLL_PHASE = _DRAW_CARD;
 const _END_PHASE = _DRAW_CARD;
+const _DISCARD_CARD = _SUMMON_CARD;
 
 module.exports = {
   SIGN_UP: _SIGN_UP,
@@ -193,4 +194,5 @@ module.exports = {
   SUMMON_CARD: _SUMMON_CARD,
   ROLL_PHASE: _ROLL_PHASE,
   END_PHASE: _END_PHASE,
+  DISCARD_CARD: _DISCARD_CARD,
 };

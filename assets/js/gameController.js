@@ -107,6 +107,7 @@ gameController.prototype.initListeners = function() {
 	$(_self.CARDS_IN_HAND_CLASS).on('DOMMouseScroll mousewheel', _self.noScrollOnCardHover);
 
 	$(_self.GAME_SCREEN_CLASS).on("click", _self.DECK_GRAVEYARD_CLASS + _self.PLAYER_YOU_CLASS, function() {
+		_self.populateGraveyard(_self._yourUserId, _self.PLAYER_YOU_CLASS);
   	$(_self.MODAL_GRAVEYARD_CLASS + _self.PLAYER_YOU_CLASS).show();
 	});
 
@@ -115,6 +116,7 @@ gameController.prototype.initListeners = function() {
 	});
 
 	$(_self.GAME_SCREEN_CLASS).on("click", _self.DECK_GRAVEYARD_CLASS + _self.PLAYER_ENEMY_CLASS, function() {
+		_self.populateGraveyard(_self._enemyUserId, _self.PLAYER_ENEMY_CLASS);
 	  $(_self.MODAL_GRAVEYARD_CLASS + _self.PLAYER_ENEMY_CLASS).show();
 	});
 
@@ -166,6 +168,7 @@ gameController.prototype.resetGameState = function () {
 	clearTimeout(_self.moveCharacterTimeout);
 	clearTimeout(_self.drawCardFromDeckYouAnimationTimeout);
 	clearTimeout(_self.drawCardFromDeckEnemyAnimationTimeout);
+	clearTimeout(_self.discardCardTimeout);
 };
 
 gameController.prototype.setLeaveButton = function () {
@@ -180,8 +183,9 @@ gameController.prototype.setLeaveButton = function () {
 	 	_self.processChangeScreen(_self.MAIN_MENU_SCREEN_CLASS);
 	});
 
+	_self.client.generalClient.roomController.resetRoomsInterval.call(_self.client.generalClient.roomController);
 	_self.client.generalClient.sendLeaveRoomRequest({ roomId: _self.client.generalClient.roomController._roomId,
-	  		userId: _self.client.generalClient.logInSignUpController._userId });
+		userId: _self.client.generalClient.logInSignUpController._userId });
 };
 
 gameController.prototype.processWinGameFormallyResponse = function (data) {
@@ -248,7 +252,7 @@ gameController.prototype.beforeUnload = function(event) {
 	return 'You will lose, if you reload the page. Are you sure you want to leave ?';
 };
 
-gameController.prototype.hideEventsInfo = function (callback) {
+gameController.prototype.hideEventsInfo = function (callback, seconds = 2000) {
 	var _self = this;
 
 	_self.hideEventsInfoTimeout = setTimeout(function() {
@@ -257,7 +261,7 @@ gameController.prototype.hideEventsInfo = function (callback) {
 	  if (typeof callback === "function") {
 	  	callback.call(_self);
 	  }
-	}, 2000);
+	}, seconds);
 };
 
 gameController.prototype.showEventsInfo = function (infoText) {
@@ -271,7 +275,7 @@ gameController.prototype.showEventsInfo = function (infoText) {
 gameController.prototype.renderGameField = function () {
 	var _self = this;
 
-	$(_self.GAME_SCREEN_CLASS).html('<div class="anime-cb-title-page-game"><p id="anime-cb-title-page-game-room-name"></p></div><div id="anime-cb-card-info-card-name"></div><div id="anime-cb-card-info-wrapper"><div id="anime-cb-card-info-subwrapper"><img id="anime-cb-card-info-card" src="/imgs/player_cards/card_back.png"></div></div><div id="anime-cb-card-info-text"></div><div class="anime-cb-card-graveyard-wrapper player-enemy"><p class="anime-cb-card-graveyard-text player-enemy">Enemy Graveyard</p><img class="anime-cb-card-graveyard-deck player-enemy" src="/imgs/player_cards/card_back.png"></div><div id="anime-cb-card-global-deck-wrapper"><img id="anime-cb-card-global-deck" src="/imgs/player_cards/card_back.png"><p id="anime-cb-card-global-deck-text">Global Deck</p></div><div id="anime-cb-game-events-info"><p id="anime-cb-game-events-info-text"></p></div><div class="anime-cb-turn-timer player-enemy"><p class="anime-cb-turn-timer-text player-enemy"></p></div><div class="anime-cb-turn-timer player-you"><p class="anime-cb-turn-timer-text player-you"></p></div><table id="anime-cb-phases-wrapper"><tr class="anime-cb-phase-row"><td id="anime-cb-phase-draw" class="anime-cb-phase-column next" data-phase-text="Draw Phase">DP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-standby" class="anime-cb-phase-column next" data-phase-text="Standy Phase">SP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-main" class="anime-cb-phase-column next" data-phase-text="Main Phase">MP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-roll" class="anime-cb-phase-column next" data-phase-text="Roll Phase">RP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-end" class="anime-cb-phase-column next" data-phase-text="End Phase">EP</td></tr></table><div class="center-screen"><div class="anime-cb-cards-in-hand-wrapper player-enemy"><div class="anime-cb-cards-in-hand player-enemy"></div></div><div class="anime-cb-board-player-label player-enemy"></div><table class="anime-cb-card-field player-enemy"><tr><td></td><td></td><td></td><td></td><td></td></tr></table><div id="anime-cb-board-wrapper"><table id="anime-cb-board"></table></div><div><table class="anime-cb-card-field player-you"><tr><td></td><td></td><td></td><td></td><td></td></tr></table></div><div class="anime-cb-board-player-label player-you"></div><div class="anime-cb-cards-in-hand-wrapper player-you"><div class="anime-cb-cards-in-hand player-you"></div></div></div><div class="anime-cb-card-graveyard-wrapper player-you"><img class="anime-cb-card-graveyard-deck player-you" src="/imgs/player_cards/card_back.png"><p class="anime-cb-card-graveyard-text player-you">Your Graveyard</p></div><div class="anime-cb-screen_footer-game"><button id="anime-cb-surrender" type="button" class="btn btn-primary anime-cb-button-stateless anime-cb-btn-main-menu">Surrender</button></div><div id="anime-cb-dice-wrapper-player-you"></div><div id="anime-cb-dice-wrapper-player-enemy"></div><div class="modal graveyard-modal player-you"> <div class="modal-content"> <div class="modal-header player-you"> <span class="close">&times;</span> <h2>Your Graveyard</h2> </div> <div class="modal-body"> </div> <div class="modal-footer player-you"> <h3>Your Graveyard</h3> </div> </div></div><div class="modal graveyard-modal player-enemy"> <div class="modal-content"> <div class="modal-header player-enemy"> <span class="close">&times;</span> <h2>Enemy Graveyard</h2> </div> <div class="modal-body"> </div> <div class="modal-footer player-enemy"> <h3>Enemy Graveyard</h3> </div> </div></div>');
+	$(_self.GAME_SCREEN_CLASS).html('<div class="anime-cb-title-page-game"><p id="anime-cb-title-page-game-room-name"></p></div><div id="anime-cb-card-info-card-name"></div><div id="anime-cb-card-info-wrapper"><div id="anime-cb-card-info-subwrapper"><img id="anime-cb-card-info-card" src="/imgs/player_cards/card_back.png"></div></div><div id="anime-cb-card-info-text"></div><div class="anime-cb-card-graveyard-wrapper player-enemy"><p class="anime-cb-card-graveyard-text player-enemy">Enemy Graveyard</p><img class="anime-cb-card-graveyard-deck player-enemy bottom"><img class="anime-cb-card-graveyard-deck player-enemy top"></div><div id="anime-cb-card-global-deck-wrapper"><img id="anime-cb-card-global-deck" src="/imgs/player_cards/card_back.png"><p id="anime-cb-card-global-deck-text">Global Deck</p></div><div id="anime-cb-game-events-info"><p id="anime-cb-game-events-info-text"></p></div><div class="anime-cb-turn-timer player-enemy"><p class="anime-cb-turn-timer-text player-enemy"></p></div><div class="anime-cb-turn-timer player-you"><p class="anime-cb-turn-timer-text player-you"></p></div><table id="anime-cb-phases-wrapper"><tr class="anime-cb-phase-row"><td id="anime-cb-phase-draw" class="anime-cb-phase-column next" data-phase-text="Draw Phase">DP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-standby" class="anime-cb-phase-column next" data-phase-text="Standby Phase">SP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-main" class="anime-cb-phase-column next" data-phase-text="Main Phase">MP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-roll" class="anime-cb-phase-column next" data-phase-text="Roll Phase">RP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-end" class="anime-cb-phase-column next" data-phase-text="End Phase">EP</td></tr></table><div class="center-screen"><div class="anime-cb-cards-in-hand-wrapper player-enemy"><div class="anime-cb-cards-in-hand player-enemy"></div></div><div class="anime-cb-board-player-label player-enemy"></div><table class="anime-cb-card-field player-enemy"><tr><td></td><td></td><td></td><td></td><td></td></tr></table><div id="anime-cb-board-wrapper"><table id="anime-cb-board"></table></div><div><table class="anime-cb-card-field player-you"><tr><td></td><td></td><td></td><td></td><td></td></tr></table></div><div class="anime-cb-board-player-label player-you"></div><div class="anime-cb-cards-in-hand-wrapper player-you"><div class="anime-cb-cards-in-hand player-you"></div></div></div><div class="anime-cb-card-graveyard-wrapper player-you"><img class="anime-cb-card-graveyard-deck player-you bottom"><img class="anime-cb-card-graveyard-deck player-you top"><p class="anime-cb-card-graveyard-text player-you">Your Graveyard</p></div><div class="anime-cb-screen_footer-game"><button id="anime-cb-surrender" type="button" class="btn btn-primary anime-cb-button-stateless anime-cb-btn-main-menu">Surrender</button></div><div id="anime-cb-dice-wrapper-player-you"></div><div id="anime-cb-dice-wrapper-player-enemy"></div><div class="modal graveyard-modal player-you"> <div class="modal-content"> <div class="modal-header player-you"> <span class="close">&times;</span> <h2>Your Graveyard</h2> </div> <div class="modal-body"> </div> <div class="modal-footer player-you"> <h3>Your Graveyard</h3> </div> </div></div><div class="modal graveyard-modal player-enemy"> <div class="modal-content"> <div class="modal-header player-enemy"> <span class="close">&times;</span> <h2>Enemy Graveyard</h2> </div> <div class="modal-body"> </div> <div class="modal-footer player-enemy"> <h3>Enemy Graveyard</h3> </div> </div></div>');
 };
 
 gameController.prototype.initGameData = function (data) {
@@ -329,10 +333,12 @@ gameController.prototype.renderBoard = function () {
 
   var boardMatrix = _self._gameplayData.gameState.boardData.boardMatrix;
 	var boardDataPlayers = _self._gameplayData.gameState.boardData.boardDataPlayers;
-	var player1StartIndexRow = boardDataPlayers.boardPath[boardDataPlayers.player1StartBoardIndex][0];
-  var player1StartIndexColumn = boardDataPlayers.boardPath[boardDataPlayers.player1StartBoardIndex][1];
-  var player2StartIndexRow = boardDataPlayers.boardPath[boardDataPlayers.player2StartBoardIndex][0];
-  var player2StartIndexColumn = boardDataPlayers.boardPath[boardDataPlayers.player2StartBoardIndex][1];
+ 	var player1StartBoardIndex = _self._gameplayData.gameState.playersState[_self._roomData.player1Id].currBoardIndex;
+ 	var player2StartBoardIndex = _self._gameplayData.gameState.playersState[_self._roomData.player2Id].currBoardIndex;
+	var player1StartIndexRow = boardDataPlayers.boardPath[player1StartBoardIndex][0];
+	var player1StartIndexColumn = boardDataPlayers.boardPath[player1StartBoardIndex][1];
+	var player2StartIndexRow = boardDataPlayers.boardPath[player2StartBoardIndex][0];
+	var player2StartIndexColumn = boardDataPlayers.boardPath[player2StartBoardIndex][1];
 
   boardMatrix.forEach(function(boardRow, boardRowIdx) {
     var boardRowHtml = '<tr class="anime-cb-board-row">';
@@ -353,7 +359,9 @@ gameController.prototype.renderBoard = function () {
       	} else if (boardColumn == 1) {
       	  boardRowHtml += '<td class="anime-cb-column active"></td>';
       	} else if (boardColumn == 2) {
-      		boardRowHtml += '<td class="anime-cb-column active roll-again"><img class="anime-cb-board-img" src="/imgs/dice.webp"></td>';
+      		boardRowHtml += '<td class="anime-cb-column active roll-again"><img class="anime-cb-board-img" src="/imgs/dice_green.png"></td>';
+      	} else if (boardColumn == 3) {
+      		boardRowHtml += '<td class="anime-cb-column active roll-again"><img class="anime-cb-board-img" src="/imgs/dice_red.png"></td>';
       	} else {
           boardRowHtml += '<td class="anime-cb-column"></td>';
       	}
@@ -366,7 +374,7 @@ gameController.prototype.renderBoard = function () {
 		_self.setBoardPieces();
   });
 
-	if (_self._roomData.player2Id == _self._yourUserId) {
+	if (_self._yourUserId == _self._roomData.player2Id) {
 		$(_self.BOARD_ID).css("transform", "rotate(180deg)");
 		_self.setBoardPiecesRotated();
 	}
@@ -791,6 +799,47 @@ gameController.prototype.processEndPhase = function (data) {
 	_self.startEndPhaseAnimation(_self.nextTurn);
 };
 
+gameController.prototype.discardCard = function (card) {
+	logger.info("Trying to discard card");
+
+	var _self = this;
+
+	var cardId = $(card).data("cardId");
+	var cardIdx = $(card).index();
+
+	logger.info("Sending discard card request to server...");
+	_self.discardCardFromHandYou(card);
+	_self.client.discardCard({ roomId: _self._roomData.id, cardId: cardId, cardIdx: cardIdx });
+};
+
+gameController.prototype.processDiscardCard = function (data) {
+	console.log('processDiscardCard');
+	console.log('processDiscardCard data: ', data);
+
+	var _self = this;
+
+	assert(ajv.validate(discardCardResponse, data), 'discardCardResponse is invalid' +
+  	JSON.stringify(ajv.errors, null, 2));
+
+	if (!data.isSuccessful) {
+		assert(data.errors.length > 0);
+
+		_self.showAlertError(data.errors[0].message);
+		return;
+	}
+
+	_self._gameplayData = data.gameplayData;
+	_self._roomData = data.roomData;
+
+	if (_self._gameplayData.gameState.playerIdDiscardedCard == _self._yourUserId) {
+		_self.discardCardTimeout = setTimeout(function() {
+			_self.enableRollPhaseBasicActions();
+		}, 700);
+	} else {
+		_self.discardCardFromHandEnemy(_self._gameplayData.gameState.cardDiscarded);
+	}
+};
+
 gameController.prototype.startDrawPhaseAnimationYou = function () {
 	var _self = this;
 
@@ -951,12 +1000,29 @@ gameController.prototype.enableRollPhaseBasicActions = function () {
 		&& _self._gameplayData.gameState.playersState[_self._yourUserId].canRollDiceBoardCount > 0) {
 
 		if (_self._gameplayData.gameState.playersState[_self._yourUserId].rollAgain) {
-			_self.showEventsInfo("Roll Again");
+			var eventInfoText = "Roll Again";
+
+			if (_self._gameplayData.gameState.playersState[_self._yourUserId].moveBackwardsOnNextRoll) {
+				eventInfoText += "...backwards"
+			}
+
+			_self.showEventsInfo(eventInfoText);
 			_self.hideEventsInfo(_self.enableRollDiceBoard);
 			return;
 		}
 
 		_self.enableRollDiceBoard();
+	} else if (_self._gameplayData.gameState.playersState[_self._yourUserId].cardsInHand
+		> _self._gameplayData.gameState.playersState[_self._yourUserId].maxCardsInHand) {
+
+		_self.showEventsInfo("You must discard " + (_self._gameplayData.gameState.playersState[_self._yourUserId].cardsInHand
+			- _self._gameplayData.gameState.playersState[_self._yourUserId].maxCardsInHand) + " card/s from your hand");
+
+		$(_self.CARDS_IN_HAND_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_YOU_CLASS).on('click', function(e) {
+			$(_self.CARDS_IN_HAND_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_YOU_CLASS).off();
+			_self.discardCard.call(_self, this);
+			_self.hideEventsInfo(null, 0);
+		});
 	} else {
 		$(_self.PHASE_ROLL_ID + ', ' + _self.PHASE_END_ID).removeClass("selectable");
 		$(_self.PHASE_END_ID).addClass("selectable");
@@ -975,7 +1041,13 @@ gameController.prototype.enemyPostRollDiceBoardHook = function () {
 		&& _self._gameplayData.gameState.playersState[_self._enemyUserId].canRollDiceBoardCount > 0) {
 
 		if (_self._gameplayData.gameState.playersState[_self._enemyUserId].rollAgain) {
-			_self.showEventsInfo(_self._enemyName + " rolls again");
+			var eventInfoText = _self._enemyName + " rolls again";
+
+			if (_self._gameplayData.gameState.playersState[_self._enemyUserId].moveBackwardsOnNextRoll) {
+				eventInfoText += "...backwards"
+			}
+
+			_self.showEventsInfo(eventInfoText);
 			_self.hideEventsInfo();
 			return;
 		}
@@ -1052,6 +1124,31 @@ gameController.prototype.handleCardHover = function (e) {
   $('.anime-cb-cards-in-hand-wrapper.player-you').css("overflow", "visible");
 };
 
+gameController.prototype.populateGraveyard = function (playerId, playerSelectorClass) {
+	var _self = this;
+
+	if (!playerId || !_self._gameplayData) {
+		return;
+	}
+
+	var graveyardArr = _self._gameplayData.gameState.playersState[playerId].cardsInGraveyard;
+
+	$(_self.MODAL_GRAVEYARD_CLASS + playerSelectorClass).find('.modal-body').html("");
+
+	graveyardArr.forEach(function(card) {
+		var cardId = card.cardId;
+		var cardName = card.cardName;
+		var cardText = card.cardText;
+		var cardImg = card.cardImg;
+		var cardRarity = card.cardRarity;
+
+		$(_self.MODAL_GRAVEYARD_CLASS + playerSelectorClass).find('.modal-body')
+			.prepend('<img class="anime-cb-card ' + playerSelectorClass.substr(1) + ' in-graveyard" data-card-text="' + cardText
+				+ '" data-card-name="' + cardName + '" src="/imgs/player_cards/' + cardImg + '" data-card-id="' + cardId
+				+ '" data-card-rarity="' + cardRarity +'">');
+	});
+};
+
 gameController.prototype.noScrollOnCardHover = function (e) {
   var $this = $(this),
     scrollTop = this.scrollTop,
@@ -1081,208 +1178,204 @@ gameController.prototype.noScrollOnCardHover = function (e) {
 gameController.prototype.moveYourCharacter = function (callback) {
 	var _self = this;
 
-  var diceRoll = _self._gameplayData.gameState.rollDiceBoard.rollDiceValue;
-  var boardPath = _self._gameplayData.gameState.boardData.boardDataPlayers.boardPath;
-  var currBoardIndex = _self._gameplayData.gameState.playersState[_self._yourUserId].lastBoardIndex;
-  var rowIndex = boardPath[currBoardIndex][0];
-  var columnIndex = boardPath[currBoardIndex][1];
+  var moveBackwardsYou = _self._gameplayData.gameState.playersState[_self._yourUserId].moveBackwards;
 
-  var animsCounter = 0;
-  function incrementAnimsUpdateBoard() {
-	  animsCounter++;
-
-	  if (animsCounter == diceRoll) {
-			$(_self.BOARD_PLAYER_YOU_ID).remove();
-			var currPlayerTd = document.getElementById('anime-cb-board').rows[rowIndex].cells[columnIndex];
-			$(currPlayerTd).append('<span class="anime-cb-player-position" id="anime-cb-player-you-position"></span>');
-
-			if (_self._enemyUserId == _self._roomData.player2Id) {
-				_self.setBoardPieces();
-			} else {
-				_self.setBoardPiecesRotated();
-			}
-
-			if(_self._gameplayData.gameState.playerIdWinGame && _self._gameplayData.gameState.playerIdWinGame == _self._yourUserId) {
-				var yourName = _self._roomData.player1Id == _self._yourUserId ? _self._roomData.player1Name : _self._roomData.player2Name;
-				_self.showEventsInfo("YOU WIN !!!");
-				_self.setLeaveButton();
-				return;
-			}
-
-			if (typeof callback == "function") {
-				callback.call(_self);
-			}
-  	}
-  }
-
-	if (_self._enemyUserId == _self._roomData.player2Id) {
-	  _self.moveCharacterTimeout = setTimeout(function() {
-			if (currBoardIndex + diceRoll > boardPath.length - 1) {
-				if (typeof callback == "function") {
-					callback.call(_self);
-				}
-				return;
-			}
-
-			for (var i = 0; i < diceRoll; i++) {
-			  if (boardPath[currBoardIndex + 1][0] != rowIndex) {
-			    if (boardPath[currBoardIndex + 1][0] < rowIndex) {
-			  	  $(_self.BOARD_PLAYER_YOU_ID).animate({'margin-top': '-=50px'}, 400, null, incrementAnimsUpdateBoard);
-			  	} else {
-			  	  $(_self.BOARD_PLAYER_YOU_ID).animate({'margin-top': '+=50px'}, 400, null, incrementAnimsUpdateBoard);
-			  	}
-			  }
-
-			  if (boardPath[currBoardIndex + 1][1] != columnIndex) {
-			    if (boardPath[currBoardIndex + 1][1] < columnIndex) {
-			      $(_self.BOARD_PLAYER_YOU_ID).animate({'margin-left': '-=50px'}, 400, null, incrementAnimsUpdateBoard);
-			    } else {
-			      $(_self.BOARD_PLAYER_YOU_ID).animate({'margin-left': '+=50px'}, 400, null, incrementAnimsUpdateBoard);
-			  	}
-			  }
-
-			  rowIndex = boardPath[currBoardIndex + 1][0];
-			  columnIndex = boardPath[currBoardIndex + 1][1];
-			  currBoardIndex++;
-	 		}
-	  }, 2000);
+	if ((_self._yourUserId == _self._roomData.player1Id && !moveBackwardsYou)
+		|| (_self._yourUserId == _self._roomData.player2Id && moveBackwardsYou)) {
+		_self.moveAnimationBoardForward(_self._yourUserId, _self.BOARD_PLAYER_YOU_ID, callback);
 	} else {
-		_self.moveCharacterTimeout = setTimeout(function() {
-			if (currBoardIndex - diceRoll < 0) {
-				if (typeof callback == "function") {
-					callback.call(_self);
-				}
-				return;
-			}
-
-			for (var i = 0; i < diceRoll; i++) {
-			  if (boardPath[currBoardIndex - 1][0] != rowIndex) {
-			    if (boardPath[currBoardIndex - 1][0] < rowIndex) {
-			  	  $(_self.BOARD_PLAYER_YOU_ID).animate({'margin-top': '-=50px'}, 400, null, incrementAnimsUpdateBoard);
-			  	} else {
-			  	  $(_self.BOARD_PLAYER_YOU_ID).animate({'margin-top': '+=50px'}, 400, null, incrementAnimsUpdateBoard);
-			  	}
-			  }
-
-			  if (boardPath[currBoardIndex - 1][1] != columnIndex) {
-			    if (boardPath[currBoardIndex - 1][1] < columnIndex) {
-			      $(_self.BOARD_PLAYER_YOU_ID).animate({'margin-left': '-=50px'}, 400, null, incrementAnimsUpdateBoard);
-			    } else {
-			      $(_self.BOARD_PLAYER_YOU_ID).animate({'margin-left': '+=50px'}, 400, null, incrementAnimsUpdateBoard);
-			  	}
-			  }
-
-			  rowIndex = boardPath[currBoardIndex - 1][0];
-			  columnIndex = boardPath[currBoardIndex - 1][1];
-			  currBoardIndex--;
-	 		}
-	  }, 2000);
+		_self.moveAnimationBoardBackwards(_self._yourUserId, _self.BOARD_PLAYER_YOU_ID, callback);
 	}
 }
 
 gameController.prototype.moveEnemyCharacter = function (callback) {
 	var _self = this;
 
-	console.log('moveEnemyCharacter');
+  var moveBackwardsEnemy = _self._gameplayData.gameState.playersState[_self._enemyUserId].moveBackwards;
+
+	if ((_self._yourUserId == _self._roomData.player1Id && !moveBackwardsEnemy)
+		|| (_self._yourUserId == _self._roomData.player2Id && moveBackwardsEnemy)) {
+		_self.moveAnimationBoardBackwards(_self._enemyUserId, _self.BOARD_PLAYER_ENEMY_ID, callback);
+	} else {
+		_self.moveAnimationBoardForward(_self._enemyUserId, _self.BOARD_PLAYER_ENEMY_ID, callback);
+	}
+}
+
+gameController.prototype.moveAnimationBoardForward = function (playerId, playerIdSelector, callback) {
+	var _self = this;
+
+	var diceRoll = _self._gameplayData.gameState.rollDiceBoard.rollDiceValue;
+  var boardPath = _self._gameplayData.gameState.boardData.boardDataPlayers.boardPath;
+  var currBoardIndex = _self._gameplayData.gameState.playersState[playerId].lastBoardIndex;
+  var rowIndex = boardPath[currBoardIndex][0];
+  var columnIndex = boardPath[currBoardIndex][1];
+
+  var $currTd = $(playerIdSelector).parent();
+  var $currTr = $(playerIdSelector).closest('tr');
+
+  var nextHeight = 50;
+	var nextWidth = 50;
+
+  var animsCounter = 0;
+  function incrementAnimsUpdateBoard() {
+	  animsCounter++;
+
+	  if (!_self._gameplayData) {
+	  	return;
+	  }
+
+	  if (animsCounter == diceRoll) {
+	  	$(playerIdSelector).remove();
+			var currPlayerTd = document.getElementById('anime-cb-board').rows[rowIndex].cells[columnIndex];
+			$(currPlayerTd).append('<span class="anime-cb-player-position" id="' + playerIdSelector.substr(1) + '"></span>');
+
+			_self.checkForWin(callback);
+  	}
+  }
+
+  _self.moveCharacterTimeout = setTimeout(function() {
+		if (currBoardIndex + diceRoll > boardPath.length - 1) {
+			if (typeof callback == "function") {
+				callback.call(_self);
+			}
+			return;
+		}
+
+		for (var i = 0; i < diceRoll; i++) {
+		  if (boardPath[currBoardIndex + 1][0] != rowIndex) {
+		    if (boardPath[currBoardIndex + 1][0] < rowIndex) {
+		    	$currTr = $currTr.prev();
+		    	$currTd = $currTr.find('td:nth-child(' + ($currTd.index() + 1) + ')');
+		    	nextHeight = $currTd.outerHeight();
+		  	  $(playerIdSelector).animate({'margin-top': '-=' + nextHeight + 'px'}, 400, null, incrementAnimsUpdateBoard);
+		  	} else {
+		  		$currTr = $currTr.next();
+		    	$currTd = $currTr.find('td:nth-child(' + ($currTd.index() + 1) + ')');
+		    	nextHeight = $currTd.outerHeight();
+		  	  $(playerIdSelector).animate({'margin-top': '+=' + nextHeight + 'px'}, 400, null, incrementAnimsUpdateBoard);
+		  	}
+		  }
+
+		  if (boardPath[currBoardIndex + 1][1] != columnIndex) {
+		    if (boardPath[currBoardIndex + 1][1] < columnIndex) {
+		    	$currTd = $currTr.find('td:nth-child(' + $currTd.index() + ')');
+		    	nextWidth = $currTd.outerWidth();
+		      $(playerIdSelector).animate({'margin-left': '-=' + nextWidth + 'px'}, 400, null, incrementAnimsUpdateBoard);
+		    } else {
+		    	$currTd = $currTr.find('td:nth-child(' + ($currTd.index() + 2) + ')');
+		    	nextWidth = $currTd.outerWidth();
+		      $(playerIdSelector).animate({'margin-left': '+=' + nextWidth + 'px'}, 400, null, incrementAnimsUpdateBoard);
+		  	}
+		  }
+
+		  rowIndex = boardPath[currBoardIndex + 1][0];
+		  columnIndex = boardPath[currBoardIndex + 1][1];
+		  currBoardIndex++;
+ 		}
+  }, 2000);
+};
+
+gameController.prototype.moveAnimationBoardBackwards = function (playerId, playerIdSelector, callback) {
+	var _self = this;
 
   var diceRoll = _self._gameplayData.gameState.rollDiceBoard.rollDiceValue;
   var boardPath = _self._gameplayData.gameState.boardData.boardDataPlayers.boardPath;
-  var currBoardIndex = _self._gameplayData.gameState.playersState[_self._enemyUserId].lastBoardIndex;
+  var currBoardIndex = _self._gameplayData.gameState.playersState[playerId].lastBoardIndex;
   var rowIndex = boardPath[currBoardIndex][0];
   var columnIndex = boardPath[currBoardIndex][1];
+
+  var $currTd = $(playerIdSelector).parent();
+  var $currTr = $(playerIdSelector).closest('tr');
+
+  var nextHeight = 50;
+	var nextWidth = 50;
 
 	var animsCounter = 0;
   function incrementAnimsUpdateBoard() {
 	  animsCounter++;
 
+	  if (!_self._gameplayData) {
+	  	return;
+	  }
+
 	  if (animsCounter == diceRoll) {
-			$(_self.BOARD_PLAYER_ENEMY_ID).remove();
+	  	$(playerIdSelector).remove();
 			var currPlayerTd = document.getElementById('anime-cb-board').rows[rowIndex].cells[columnIndex];
-			$(currPlayerTd).append('<span class="anime-cb-player-position" id="anime-cb-player-enemy-position"></span>');
+			$(currPlayerTd).append('<span class="anime-cb-player-position" id="' + playerIdSelector.substr(1) + '"></span>');
 
-			if (_self._enemyUserId == _self._roomData.player2Id) {
-				_self.setBoardPieces();
-			} else {
-				_self.setBoardPiecesRotated();
-			}
-
-			if(_self._gameplayData.gameState.playerIdWinGame && _self._gameplayData.gameState.playerIdWinGame == _self._enemyUserId) {
-				var enemyName = _self._roomData.player1Id == _self._enemyUserId ? _self._roomData.player1Name : _self._roomData.player2Name;
-				_self.showEventsInfo("YOU LOSE...");
-				_self.setLeaveButton();
-				return;
-			}
-
-			if (typeof callback == "function") {
-				callback.call(_self);
-			}
+			_self.checkForWin(callback);
 	  }
 	}
 
-	if (_self._enemyUserId == _self._roomData.player2Id) {
-	  _self.moveCharacterTimeout = setTimeout(function() {
-			if (currBoardIndex - diceRoll < 0) {
-				if (typeof callback == "function") {
-					callback.call(_self);
-				}
-				return;
+  _self.moveCharacterTimeout = setTimeout(function() {
+		if (currBoardIndex - diceRoll < 0) {
+			if (typeof callback == "function") {
+				callback.call(_self);
 			}
+			return;
+		}
 
-			for (var i = 0; i < diceRoll; i++) {
-			  if (boardPath[currBoardIndex - 1][0] != rowIndex) {
-			    if (boardPath[currBoardIndex - 1][0] < rowIndex) {
-			  	  $(_self.BOARD_PLAYER_ENEMY_ID).animate({'margin-top': '-=50px'}, 400, null, incrementAnimsUpdateBoard);
-			  	} else {
-			  	  $(_self.BOARD_PLAYER_ENEMY_ID).animate({'margin-top': '+=50px'}, 400, null, incrementAnimsUpdateBoard);
-			  	}
-			  }
+		for (var i = 0; i < diceRoll; i++) {
+		  if (boardPath[currBoardIndex - 1][0] != rowIndex) {
+		    if (boardPath[currBoardIndex - 1][0] < rowIndex) {
+		    	$currTr = $currTr.prev();
+		    	$currTd = $currTr.find('td:nth-child(' + ($currTd.index() + 1) + ')');
+		    	nextHeight = $currTd.outerHeight();
+		  	  $(playerIdSelector).animate({'margin-top': '-=' + nextHeight + 'px'}, 400, null, incrementAnimsUpdateBoard);
+		  	} else {
+		  		$currTr = $currTr.next();
+		    	$currTd = $currTr.find('td:nth-child(' + ($currTd.index() + 1) + ')');
+		    	nextHeight = $currTd.outerHeight();
+		  	  $(playerIdSelector).animate({'margin-top': '+=' + nextHeight + 'px'}, 400, null, incrementAnimsUpdateBoard);
+		  	}
+		  }
 
-			  if (boardPath[currBoardIndex - 1][1] != columnIndex) {
-			    if (boardPath[currBoardIndex - 1][1] < columnIndex) {
-			      $(_self.BOARD_PLAYER_ENEMY_ID).animate({'margin-left': '-=50px'}, 400, null, incrementAnimsUpdateBoard);
-			    } else {
-			      $(_self.BOARD_PLAYER_ENEMY_ID).animate({'margin-left': '+=50px'}, 400, null, incrementAnimsUpdateBoard);
-			  	}
-			  }
+		  if (boardPath[currBoardIndex - 1][1] != columnIndex) {
+		    if (boardPath[currBoardIndex - 1][1] < columnIndex) {
+		    	$currTd = $currTr.find('td:nth-child(' + $currTd.index() + ')');
+		    	nextWidth = $currTd.outerWidth();
+		      $(playerIdSelector).animate({'margin-left': '-=' + nextWidth + 'px'}, 400, null, incrementAnimsUpdateBoard);
+		    } else {
+		    	$currTd = $currTr.find('td:nth-child(' + ($currTd.index() + 2) + ')');
+		    	nextWidth = $currTd.outerWidth();
+		      $(playerIdSelector).animate({'margin-left': '+=' + nextWidth + 'px'}, 400, null, incrementAnimsUpdateBoard);
+		  	}
+		  }
 
-			  rowIndex = boardPath[currBoardIndex - 1][0];
-			  columnIndex = boardPath[currBoardIndex - 1][1];
-			  currBoardIndex--;
-	 		}
-	  }, 2000);
+		  rowIndex = boardPath[currBoardIndex - 1][0];
+		  columnIndex = boardPath[currBoardIndex - 1][1];
+		  currBoardIndex--;
+ 		}
+  }, 2000);
+};
+
+gameController.prototype.checkForWin = function (callback) {
+	var _self = this;
+
+	if (_self._yourUserId == _self._roomData.player1Id) {
+		_self.setBoardPieces();
 	} else {
-	  _self.moveCharacterTimeout = setTimeout(function() {
-			if (currBoardIndex + diceRoll > boardPath.length - 1) {
-				if (typeof callback == "function") {
-					callback.call(_self);
-				}
-				return;
-			}
-
-			for (var i = 0; i < diceRoll; i++) {
-			  if (boardPath[currBoardIndex + 1][0] != rowIndex) {
-			    if (boardPath[currBoardIndex + 1][0] < rowIndex) {
-			  	  $(_self.BOARD_PLAYER_ENEMY_ID).animate({'margin-top': '-=50px'}, 400, null, incrementAnimsUpdateBoard);
-			  	} else {
-			  	  $(_self.BOARD_PLAYER_ENEMY_ID).animate({'margin-top': '+=50px'}, 400, null, incrementAnimsUpdateBoard);
-			  	}
-			  }
-
-			  if (boardPath[currBoardIndex + 1][1] != columnIndex) {
-			    if (boardPath[currBoardIndex + 1][1] < columnIndex) {
-			      $(_self.BOARD_PLAYER_ENEMY_ID).animate({'margin-left': '-=50px'}, 400, null, incrementAnimsUpdateBoard);
-			    } else {
-			      $(_self.BOARD_PLAYER_ENEMY_ID).animate({'margin-left': '+=50px'}, 400, null, incrementAnimsUpdateBoard);
-			  	}
-			  }
-
-			  rowIndex = boardPath[currBoardIndex + 1][0];
-			  columnIndex = boardPath[currBoardIndex + 1][1];
-			  currBoardIndex++;
-	 		}
-	  }, 2000);
+		_self.setBoardPiecesRotated();
 	}
-}
+
+	if (_self._gameplayData.gameState.playerIdWinGame) {
+		if (_self._gameplayData.gameState.playerIdWinGame == _self._yourUserId) {
+			var yourName = _self._roomData.player1Id == _self._yourUserId ? _self._roomData.player1Name : _self._roomData.player2Name;
+			_self.showEventsInfo("YOU WIN !!!");
+			_self.setLeaveButton();
+			return;
+		} else {
+			var enemyName = _self._roomData.player1Id == _self._enemyUserId ? _self._roomData.player1Name : _self._roomData.player2Name;
+			_self.showEventsInfo("YOU LOSE...");
+			_self.setLeaveButton();
+			return;
+		}
+	}
+
+	if (typeof callback == "function") {
+		callback.call(_self);
+	}
+};
 
 gameController.prototype.rollDiceYou = function (diceValue, callback, callback2) {
 	var _self = this;
@@ -1396,8 +1489,8 @@ gameController.prototype.startYourTimer = function () {
 	  	clearInterval(_self.yourTurnTimer);
 	  	_self.client.generalClient.sendLeaveRoomRequest({ roomId: _self.client.generalClient.roomController._roomId,
 	  		userId: _self.client.generalClient.logInSignUpController._userId });
-	  	window.alert('Your time is up, you lose the game :(');
-	  	 _self.processChangeScreen(_self.MAIN_MENU_SCREEN_CLASS);
+				_self.showEventsInfo("Your time is up, YOU LOSE...");
+				_self.setLeaveButton();
 	  	return;
 	  }
 
@@ -1526,6 +1619,52 @@ gameController.prototype.drawCardFromDeckEnemyAnimation = function(card) {
   	$(_self.CARD_CLASS + _self.PLAYER_ENEMY_CLASS).css("-webkit-animation", "");
   	$(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_ENEMY_CLASS).css("overflow", "hidden");
   }, 1000);
+};
+
+gameController.prototype.discardCardFromHandYou = function (card) {
+	var _self = this;
+
+	$(card).remove();
+
+	$(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_YOU_CLASS + '.bottom')
+		.attr("src", $(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_YOU_CLASS + '.top').attr("src"));
+	$(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_YOU_CLASS + '.top')
+		.css("-webkit-animation", "discard-card-from-hand-you 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both");
+	$(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_YOU_CLASS + '.top')
+		.css("animation", "discard-card-from-hand-you 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both");
+
+	$(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_YOU_CLASS + '.top').attr("src", $(card).attr("src"));
+	$(_self.CARDS_IN_HAND_CLASS).css("overflow", "hidden");
+
+	_self.decreaseYourCardsInHandDensity();
+
+	setTimeout(function() {
+		$(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_YOU_CLASS + '.top').css("animation", "");
+		$(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_YOU_CLASS + '.top').css("-webkit-animation", "");
+	}, 600);
+};
+
+gameController.prototype.discardCardFromHandEnemy = function (card) {
+	var _self = this;
+
+	$(_self.CARDS_IN_HAND_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_ENEMY_CLASS).last().remove();
+
+	$(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_ENEMY_CLASS + '.bottom')
+		.attr("src", $(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_ENEMY_CLASS + '.top').attr("src"));
+	$(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_ENEMY_CLASS + '.top')
+		.css("-webkit-animation", "discard-card-from-hand-enemy 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both");
+	$(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_ENEMY_CLASS + '.top')
+		.css("animation", "discard-card-from-hand-enemy 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both");
+
+	$(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_ENEMY_CLASS + '.top').attr("src", "/imgs/player_cards/" + card.cardImg);
+	$(_self.CARDS_IN_HAND_CLASS).css("overflow", "hidden");
+
+	_self.decreaseEnemyCardsInHandDensity();
+
+	setTimeout(function() {
+		$(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_ENEMY_CLASS + '.top').css("animation", "");
+		$(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_ENEMY_CLASS + '.top').css("-webkit-animation", "");
+	}, 600);
 };
 
 gameController.prototype.increaseYourCardsInHandDensity = function() {

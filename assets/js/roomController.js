@@ -288,9 +288,8 @@ roomController.prototype.processLeaveRoomResponse = function(data) {
 
   if (_self._roomId && _self._roomId == data.roomId) {
   	console.log('Room found, refreshing: ', _self._roomId);
-  	clearInterval(_self.roomsInterval);
+  	_self.resetRoomsInterval();
   	_self.client.getCurrentRoomData({ roomId: _self._roomId });
-  	_self.roomsInterval = setInterval(_self.roomsIntervalFunc.bind(_self), 3000);
   }
 
 	if (!data.isSuccessful) {
@@ -298,6 +297,13 @@ roomController.prototype.processLeaveRoomResponse = function(data) {
 
 		_self.showAlertError(data.errors[0].message);
 	}
+};
+
+roomController.prototype.resetRoomsInterval = function () {
+	var _self = this;
+
+	clearInterval(_self.roomsInterval);
+	_self.roomsInterval = setInterval(_self.roomsIntervalFunc.bind(_self), 3000);
 };
 
 roomController.prototype.processJoinRoomResponse = function(data) {

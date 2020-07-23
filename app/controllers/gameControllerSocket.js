@@ -85,7 +85,7 @@ module.exports = {
             boardMatrix: JSON.parse(queryStatusBoards.rows[0].board_matrix_json),
             boardDataPlayers: boardDataPlayers,
           },
-          timerSeconds: 180,
+          timerSeconds: 99999,
           nextPhase: TURN_PHASES.DRAW,
           playerIdDrawnCard: null,
           playerIdSummonedCard: null,
@@ -100,6 +100,8 @@ module.exports = {
             rollDiceValue: null,
             cardId: null,
           },
+          playerIdDiscardedCard: null,
+          cardDiscarded: null,
           playerIdWinGame: null,
           playersState: {
             [ctx.roomData.player1Id]: {
@@ -107,9 +109,11 @@ module.exports = {
               currBoardIndex: boardDataPlayers.player1StartBoardIndex,
               lastBoardIndex: boardDataPlayers.player1StartBoardIndex,
               cardsInHand: 0,
+              maxCardsInHand: 6,
+              cardsToDiscard: 0,
               cardsToDraw: 5,
               cardsSummonConstraints: {
-                cardsCanSummonAny: true,
+                cardsCanSummonAny: false,
                 cardsCanSummonCommon: true,
                 cardsCanSummonRare: true,
                 cardsCanSummonEpic: true,
@@ -123,15 +127,20 @@ module.exports = {
               canRollDiceBoardInRollPhase: true,
               canRollDiceBoardCount: 0,
               rollAgain: false,
+              moveBackwardsOnNextRoll: null,
+              moveBackwards: null,
+              cardsInGraveyard: [],
             },
             [ctx.roomData.player2Id]: {
               name: ctx.roomData.player2Name,
               currBoardIndex: boardDataPlayers.player2StartBoardIndex,
               lastBoardIndex: boardDataPlayers.player2StartBoardIndex,
               cardsInHand: 0,
+              maxCardsInHand: 6,
+              cardsToDiscard: 0,
               cardsToDraw: 5,
               cardsSummonConstraints: {
-                cardsCanSummonAny: true,
+                cardsCanSummonAny: false,
                 cardsCanSummonCommon: true,
                 cardsCanSummonRare: true,
                 cardsCanSummonEpic: true,
@@ -145,6 +154,9 @@ module.exports = {
               canRollDiceBoardInRollPhase: true,
               canRollDiceBoardCount: 0,
               rollAgain: false,
+              moveBackwardsOnNextRoll: null,
+              moveBackwards: null,
+              cardsInGraveyard: [],
             },
           },
         },
@@ -589,6 +601,61 @@ module.exports = {
       logger.info('Failed on end phase: %o', err);
     }
   },
+  discardCard: async (ctx, next) => {
+    logger.info('discardCard gameController');
+    ctx.errors = [];
+
+    await pg.pool.query('BEGIN');
+
+    try {
+      ctx.data.roomId = parseInt(ctx.data.roomId);
+      ctx.data.cardId = parseInt(ctx.data.cardId);
+      ctx.data.cardIdx = parseInt(ctx.data.cardIdx);
+
+      const isSchemaValid = ajv.validate(SCHEMAS.DISCARD_CARD, ctx.data);
+      assert(isSchemaValid);
+
+      assert(ctx.session.userData && ctx.session.userData.userId);
+
+      let queryStatus = await utils.lockRowById({ table: 'games', field: 'room_id', queryArg: ctx.data.roomId });
+
+      assert(queryStatus.rows[0].player1_id == ctx.session.userData.userId
+        || queryStatus.rows[0].player2_id == ctx.session.userData.userId);
+
+      ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
+      ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
+
+      assert(ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsToDiscard > 0);
+      ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsToDiscard--;
+
+      let cardSelected = ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsInHandArr[ctx.data.cardIdx];
+
+      assert(cardSelected && cardSelected.cardId == ctx.data.cardId);
+
+      ctx.gameplayData.gameState.cardDiscarded = cardSelected;
+      ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsInHandArr.splice(ctx.data.cardIdx, 1);
+      ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsInHand--;
+      ctx.gameplayData.gameState.playerIdDiscardedCard = ctx.session.userData.userId;
+
+      ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsInGraveyard.push(cardSelected);
+
+      await gameCore.discardCardHook(ctx);
+
+      queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
+        field2: 'room_id', queryArg2: ctx.data.roomId });
+
+      ctx.gameplayData.gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
+      ctx.gameplayData.gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
+
+      await pg.pool.query('COMMIT');
+    } catch (err) {
+      ctx.errors.push({ dataPath: '/discard_card', message: 'There was a problem while discarding card.' });
+
+      await pg.pool.query('ROLLBACK');
+
+      logger.info('Failed to discard card: %o', err);
+    }
+  },
   winGameFormally: async (ctx, next) => {
     logger.info('winGameFormally gameController');
     ctx.errors = [];
@@ -694,7 +761,6 @@ let resetTurn = (ctx) => {
     gameState.playersState[playerId].cardsSummonConstraints.cardsCanSummonCommonCount = 0;
     gameState.playersState[playerId].cardsSummonConstraints.cardsCanSummonRareCount = 0;
     gameState.playersState[playerId].cardsSummonConstraints.cardsCanSummonEpicCount = 0;
-    gameState.playersState[playerId].canRollDiceBoardCount = 0;
     gameState.playersState[playerId].rollAgain = false;
   }
   gameState.playerIdDrawnCard = null;

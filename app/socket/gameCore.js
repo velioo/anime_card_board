@@ -21,12 +21,16 @@ module.exports = {
 	mainPhaseHook: async (ctx) => {
 		let gameState = ctx.gameplayData.gameState;
 
+		gameState.playersState[ctx.session.userData.userId].cardsSummonConstraints.cardsCanSummonAny = true;
 		gameState.playersState[ctx.session.userData.userId].cardsSummonConstraints.cardsCanSummonCommonCount = 2;
 	},
 	rollPhaseHook: async(ctx) => {
 		let gameState = ctx.gameplayData.gameState;
 
-		gameState.playersState[ctx.session.userData.userId].canRollDiceBoardCount = 1;
+		gameState.playersState[ctx.session.userData.userId].cardsSummonConstraints.cardsCanSummonAny = false;
+		gameState.playersState[ctx.session.userData.userId].canRollDiceBoardCount++;
+		gameState.playersState[ctx.session.userData.userId].cardsToDiscard = gameState.playersState[ctx.session.userData.userId].cardsInHand
+			- gameState.playersState[ctx.session.userData.userId].maxCardsInHand;
 	},
 	endPhaseHook: async (ctx) => {
 
@@ -49,23 +53,46 @@ module.exports = {
 
     gameState.playersState[ctx.session.userData.userId].lastBoardIndex = currBoardIndex;
 
-    if (ctx.roomData.player1Id == ctx.session.userData.userId && boardPath[currBoardIndex + rollDiceValue]) {
-      gameState.playersState[ctx.session.userData.userId].currBoardIndex = currBoardIndex + rollDiceValue;
-    } else if (ctx.roomData.player2Id == ctx.session.userData.userId && currBoardIndex - rollDiceValue >= 0) {
-      gameState.playersState[ctx.session.userData.userId].currBoardIndex = currBoardIndex - rollDiceValue;
+    if (ctx.roomData.player1Id == ctx.session.userData.userId) {
+    	if (boardPath[currBoardIndex + rollDiceValue] && !gameState.playersState[ctx.session.userData.userId].moveBackwardsOnNextRoll) {
+      	gameState.playersState[ctx.session.userData.userId].currBoardIndex = currBoardIndex + rollDiceValue;
+    	} else if (currBoardIndex - rollDiceValue >= 0 && gameState.playersState[ctx.session.userData.userId].moveBackwardsOnNextRoll) {
+    		gameState.playersState[ctx.session.userData.userId].currBoardIndex = currBoardIndex - rollDiceValue;
+    	}
+    } else if (ctx.roomData.player2Id == ctx.session.userData.userId) {
+    	if (currBoardIndex - rollDiceValue >= 0 && !gameState.playersState[ctx.session.userData.userId].moveBackwardsOnNextRoll) {
+      	gameState.playersState[ctx.session.userData.userId].currBoardIndex = currBoardIndex - rollDiceValue;
+    	} else if (boardPath[currBoardIndex + rollDiceValue] && gameState.playersState[ctx.session.userData.userId].moveBackwardsOnNextRoll) {
+    		gameState.playersState[ctx.session.userData.userId].currBoardIndex = currBoardIndex + rollDiceValue;
+    	}
     }
 
     currBoardIndex = gameState.playersState[ctx.session.userData.userId].currBoardIndex;
+		gameState.playersState[ctx.session.userData.userId].moveBackwards = false;
+		gameState.playersState[ctx.session.userData.userId].rollAgain = false;
+
+    if (gameState.playersState[ctx.session.userData.userId].moveBackwardsOnNextRoll) {
+    	gameState.playersState[ctx.session.userData.userId].moveBackwardsOnNextRoll = null;
+    	gameState.playersState[ctx.session.userData.userId].moveBackwards = true;
+    }
 
     let rowIndex = boardPath[currBoardIndex][0];
     let columnIndex = boardPath[currBoardIndex][1];
 
-    if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.ROLL_AGAIN
-    	&& currBoardIndex != gameState.playersState[ctx.session.userData.userId].lastBoardIndex) {
-    	gameState.playersState[ctx.session.userData.userId].rollAgain = true;
-    	gameState.playersState[ctx.session.userData.userId].canRollDiceBoardCount++;
+    if (currBoardIndex != gameState.playersState[ctx.session.userData.userId].lastBoardIndex) {
+	    if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.ROLL_AGAIN) {
+	    	gameState.playersState[ctx.session.userData.userId].rollAgain = true;
+	    	gameState.playersState[ctx.session.userData.userId].canRollDiceBoardCount++;
+	    } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.ROLL_AGAIN_BACKWARDS) {
+	    	gameState.playersState[ctx.session.userData.userId].rollAgain = true;
+	    	gameState.playersState[ctx.session.userData.userId].canRollDiceBoardCount++;
+	    	gameState.playersState[ctx.session.userData.userId].moveBackwardsOnNextRoll = true;
+	    }
     }
 
     logger.info("playerState: %o", gameState.playersState[ctx.session.userData.userId]);
+	},
+	discardCardHook: async (ctx, card) => {
+
 	},
 };

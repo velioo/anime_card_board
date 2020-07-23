@@ -44,6 +44,7 @@ const CARD_RARITIES = {
 const BOARD_FIELDS = {
   NORMAL: 1,
   ROLL_AGAIN: 2,
+  ROLL_AGAIN_BACKWARDS: 3,
 };
 
 module.exports = {

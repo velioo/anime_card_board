@@ -84,6 +84,12 @@ var startGameResponse = {
 							},
 							"required": [ "playerIdRollDice", "cardId", "rollDiceValue" ],
 						},
+						"playerIdDiscardedCard": { "type": ["integer", "null"] },
+						"cardDiscarded": {
+							"type": ["object", "null"],
+							"properties": cardObjProperties,
+							"required": cardObjRequiredFields,
+						},
 						"playerIdWinGame": { "type": ["integer", "null"] },
 						"playersState": {
 							"type": "object",
@@ -115,6 +121,14 @@ var startGameResponse = {
 									"canRollDiceBoardInRollPhase": { "type": "boolean" },
 									"canRollDiceBoardCount": { "type": ["integer", "null"] },
 									"rollAgain": { "type": "boolean" },
+									"moveBackwards": { "type": ["boolean", "null"] },
+									"moveBackwardsOnNextRoll": { "type": ["boolean", "null"] },
+									"maxCardsInHand": { "type": "integer" },
+									"cardsToDiscard": { "type": "integer" },
+									"cardsInGraveyard": {
+										"type": "array",
+										"items": cardObj,
+									},
 								},
 							},
 							"additionalProperties": false,
@@ -137,6 +151,7 @@ var summonCardResponse = startGameResponse;
 var rollPhaseResponse = startGameResponse;
 var rollDiceBoardResponse = startGameResponse;
 var endPhaseResponse = startGameResponse;
+var discardCardResponse = startGameResponse;
 
 var drawCardYouResponse = {
 	"type": "object",
