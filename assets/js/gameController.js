@@ -67,10 +67,35 @@ gameController.prototype.initConstants = function() {
 gameController.prototype.initElements = function() {
 	var _self = this;
 
+	_self.TURN_PHASES = {
+	  DRAW: 1,
+	  STANDBY: 2,
+	  MAIN: 3,
+	  ROLL: 4,
+	  END: 5,
+	};
+
 	_self.CARD_RARITIES = {
     COMMON: 1,
     RARE: 2,
     EPIC: 3,
+	};
+
+	_self.BOARD_FIELDS = {
+	  NORMAL: 1,
+	  ROLL_AGAIN_1: 2,
+	  ROLL_AGAIN_2: 3,
+	  ROLL_AGAIN_3: 4,
+	  ROLL_AGAIN_BACKWARDS: 5,
+	  CARD_DRAW_1: 6,
+	  CARD_DRAW_2: 7,
+	  CARD_DRAW_3: 8,
+	  CARD_DISCARD_1: 9,
+	  CARD_DISCARD_2: 10,
+	  CARD_DISCARD_3: 11,
+	  RANDOM_1: 12,
+	  RANDOM_2: 13,
+	  RANDOM_3: 14,
 	};
 };
 
@@ -184,7 +209,8 @@ gameController.prototype.setLeaveButton = function () {
 	});
 
 	_self.client.generalClient.roomController.resetRoomsInterval.call(_self.client.generalClient.roomController);
-	_self.client.generalClient.sendLeaveRoomRequest({ roomId: _self.client.generalClient.roomController._roomId,
+	_self.client.generalClient.sendLeaveRoomRequest.call(_self.client.generalClient,
+		{ roomId: _self.client.generalClient.roomController._roomId,
 		userId: _self.client.generalClient.logInSignUpController._userId });
 };
 
@@ -238,7 +264,7 @@ gameController.prototype.processStartGameResponse = function (data) {
 			_self.processChangeScreen(_self.GAME_SCREEN_CLASS);
 			_self.showEventsInfo("Game Start");
 			_self.hideAllSpinner();
-			_self.hideEventsInfo();
+			_self.hideEventsInfo(null, 2000);
 			_self.drawStartCards();
 		}
 	}, 500);
@@ -252,12 +278,13 @@ gameController.prototype.beforeUnload = function(event) {
 	return 'You will lose, if you reload the page. Are you sure you want to leave ?';
 };
 
-gameController.prototype.hideEventsInfo = function (callback, seconds = 2000) {
+gameController.prototype.hideEventsInfo = function (callback, seconds = 1000) {
 	var _self = this;
 
 	_self.hideEventsInfoTimeout = setTimeout(function() {
 	  $(_self.EVENTS_INFO_ID).css("-webkit-animation", "hide-event-popup 1s cubic-bezier(0.165, 0.840, 0.440, 1.000) both");
 	  $(_self.EVENTS_INFO_ID).css("animation", "hide-event-popup 1s cubic-bezier(0.165, 0.840, 0.440, 1.000) both");
+	  $(_self.EVENTS_INFO_ID).css("z-index", 1);
 	  if (typeof callback === "function") {
 	  	callback.call(_self);
 	  }
@@ -267,6 +294,7 @@ gameController.prototype.hideEventsInfo = function (callback, seconds = 2000) {
 gameController.prototype.showEventsInfo = function (infoText) {
 	var _self = this;
 
+	$(_self.EVENTS_INFO_ID).css("z-index", 20);
 	$(_self.EVENTS_INFO_TEXT_ID).text(infoText);
   $(_self.EVENTS_INFO_ID).css("-webkit-animation", "show-event-popup-slide-right 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both");
   $(_self.EVENTS_INFO_ID).css("animation", "show-event-popup-slide-right 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both");
@@ -356,12 +384,34 @@ gameController.prototype.renderBoard = function () {
       		} else {
       			boardRowHtml += '<td class="anime-cb-column active"><span class="anime-cb-player-position" id="anime-cb-player-enemy-position"></span></td>';
       		}
-      	} else if (boardColumn == 1) {
+      	} else if (boardColumn == _self.BOARD_FIELDS.NORMAL) {
       	  boardRowHtml += '<td class="anime-cb-column active"></td>';
-      	} else if (boardColumn == 2) {
-      		boardRowHtml += '<td class="anime-cb-column active roll-again"><img class="anime-cb-board-img" src="/imgs/dice_green.png"></td>';
-      	} else if (boardColumn == 3) {
-      		boardRowHtml += '<td class="anime-cb-column active roll-again"><img class="anime-cb-board-img" src="/imgs/dice_red.png"></td>';
+      	} else if (boardColumn == _self.BOARD_FIELDS.ROLL_AGAIN_1) {
+      		boardRowHtml += '<td class="anime-cb-column active roll-again-1"><img class="anime-cb-board-img" src="/imgs/roll_again_1.png"></td>';
+      	} else if (boardColumn == _self.BOARD_FIELDS.ROLL_AGAIN_2) {
+      		boardRowHtml += '<td class="anime-cb-column active roll-again-2"><img class="anime-cb-board-img" src="/imgs/roll_again_2.png"></td>';
+      	} else if (boardColumn == _self.BOARD_FIELDS.ROLL_AGAIN_3) {
+      		boardRowHtml += '<td class="anime-cb-column active roll-again-3"><img class="anime-cb-board-img" src="/imgs/roll_again_3.png"></td>';
+      	} else if (boardColumn == _self.BOARD_FIELDS.ROLL_AGAIN_BACKWARDS) {
+      		boardRowHtml += '<td class="anime-cb-column active roll-again-back-1"><img class="anime-cb-board-img" src="/imgs/roll_again_back_1.png"></td>';
+      	} else if (boardColumn == _self.BOARD_FIELDS.CARD_DRAW_1) {
+      		boardRowHtml += '<td class="anime-cb-column active card-draw-1"><img class="anime-cb-board-img" src="/imgs/card_draw_1.png"></td>';
+      	} else if (boardColumn == _self.BOARD_FIELDS.CARD_DRAW_2) {
+      		boardRowHtml += '<td class="anime-cb-column active card-draw-2"><img class="anime-cb-board-img" src="/imgs/card_draw_2.png"></td>';
+      	} else if (boardColumn == _self.BOARD_FIELDS.CARD_DRAW_3) {
+      		boardRowHtml += '<td class="anime-cb-column active card-draw-3"><img class="anime-cb-board-img" src="/imgs/card_draw_3.png"></td>';
+      	} else if (boardColumn == _self.BOARD_FIELDS.CARD_DISCARD_1) {
+      		boardRowHtml += '<td class="anime-cb-column active card-discard-1"><img class="anime-cb-board-img" src="/imgs/card_discard_1.png"></td>';
+      	} else if (boardColumn == _self.BOARD_FIELDS.CARD_DISCARD_2) {
+      		boardRowHtml += '<td class="anime-cb-column active card-discard-2"><img class="anime-cb-board-img" src="/imgs/card_discard_2.png"></td>';
+      	} else if (boardColumn == _self.BOARD_FIELDS.CARD_DISCARD_3) {
+      		boardRowHtml += '<td class="anime-cb-column active card-discard-3"><img class="anime-cb-board-img" src="/imgs/card_discard_3.png"></td>';
+      	} else if (boardColumn == _self.BOARD_FIELDS.RANDOM_1) {
+      		boardRowHtml += '<td class="anime-cb-column active random-1"><img class="anime-cb-board-img" src="/imgs/random_1.png"></td>';
+      	} else if (boardColumn == _self.BOARD_FIELDS.RANDOM_2) {
+      		boardRowHtml += '<td class="anime-cb-column active random-2"><img class="anime-cb-board-img" src="/imgs/random_2.png"></td>';
+      	} else if (boardColumn == _self.BOARD_FIELDS.RANDOM_3) {
+      		boardRowHtml += '<td class="anime-cb-column active random-3"><img class="anime-cb-board-img" src="/imgs/random_3.png"></td>';
       	} else {
           boardRowHtml += '<td class="anime-cb-column"></td>';
       	}
@@ -506,6 +556,7 @@ gameController.prototype.processDrawCard = function (data) {
 					clearInterval(_self.checkForCardEnemy);
 					_self.checkForCardEnemyIntervalEnabled = false;
 					_self.drawCardAnimationsFinishedEnemy = true;
+					_self.hideEventsInfo(null, 0);
 				} else {
 					clearInterval(_self.checkForCardEnemy);
 					_self.checkForCardEnemyIntervalEnabled = false;
@@ -686,7 +737,7 @@ gameController.prototype.summonCard = function (card) {
 	}
 
 	if (retrySummon) {
-		_self.enableMainPhaseBasicActions();
+		_self.enableMainPhaseActions();
 	} else {
 		logger.info("Sending summon card request to server...");
 		_self.summonCardFromHandAnimationYou(card);
@@ -714,11 +765,9 @@ gameController.prototype.processSummonCard = function (data) {
 	_self._roomData = data.roomData;
 
 	if (_self._gameplayData.gameState.playerIdSummonedCard == _self._yourUserId) {
-		_self.summonCardTimeout = setTimeout(function() {
-			_self.enableMainPhaseBasicActions();
-		}, 700);
+		_self.performCardEffectYou();
 	} else {
-		_self.summonCardFromHandAnimationEnemy(_self._gameplayData.gameState.cardSummoned);
+		_self.summonCardFromHandAnimationEnemy(_self._gameplayData.gameState.cardSummoned, _self.performCardEffectEnemy);
 	}
 };
 
@@ -768,8 +817,13 @@ gameController.prototype.processRollDiceBoard = function (data) {
 	_self._roomData = data.roomData;
 
 	if (_self._gameplayData.gameState.rollDiceBoard.playerIdRollDice == _self._yourUserId) {
-		_self.rollDiceYou(_self._gameplayData.gameState.rollDiceBoard.rollDiceValue, _self.moveYourCharacter, _self.enableRollPhaseBasicActions);
+		if (_self._gameplayData.gameState.nextPhase == _self.TURN_PHASES.ROLL) {
+			_self.rollDiceYou(_self._gameplayData.gameState.rollDiceBoard.rollDiceValue, _self.moveYourCharacter, _self.enableMainPhaseActions);
+		} else if (_self._gameplayData.gameState.nextPhase == _self.TURN_PHASES.END) {
+			_self.rollDiceYou(_self._gameplayData.gameState.rollDiceBoard.rollDiceValue, _self.moveYourCharacter, _self.enableRollPhaseActions);
+		}
 	} else {
+		_self.hideEventsInfo(null, 0);
 		_self.rollDiceEnemy(_self._gameplayData.gameState.rollDiceBoard.rollDiceValue, _self.moveEnemyCharacter, _self.enemyPostRollDiceBoardHook);
 	}
 };
@@ -833,10 +887,17 @@ gameController.prototype.processDiscardCard = function (data) {
 
 	if (_self._gameplayData.gameState.playerIdDiscardedCard == _self._yourUserId) {
 		_self.discardCardTimeout = setTimeout(function() {
-			_self.enableRollPhaseBasicActions();
+			if (_self._gameplayData.gameState.nextPhase == _self.TURN_PHASES.ROLL) {
+				_self.enableMainPhaseActions();
+			} else if (_self._gameplayData.gameState.nextPhase == _self.TURN_PHASES.END) {
+				_self.enableRollPhaseActions();
+			}
 		}, 700);
 	} else {
 		_self.discardCardFromHandEnemy(_self._gameplayData.gameState.cardDiscarded);
+		_self.discardCardTimeout = setTimeout(function() {
+			_self.enemyPostRollDiceBoardHook();
+		}, 700);
 	}
 };
 
@@ -929,13 +990,6 @@ gameController.prototype.setEnemyTurnFieldStyle = function() {
 gameController.prototype.switchPhaseYou = function (currPhaseIdSelector) {
 	var _self = this;
 
-	console.log('switchPhaseYou');
-
-	// if (currPhaseIdSelector == _self.PHASE_ROLL_ID || currPhaseIdSelector == _self.PHASE_END_ID) {
-	// 	$(_self.PHASE_ROLL_ID + ', ' + _self.PHASE_END_ID).off("click");
-	// 	$(_self.PHASE_ROLL_ID + ', ' + _self.PHASE_END_ID).removeClass("selectable");
-	// }
-
   var phaseText = $(currPhaseIdSelector).data("phaseText");
 
   $(_self.PHASE_COLUMN_CLASS).removeClass("active");
@@ -949,40 +1003,132 @@ gameController.prototype.switchPhaseYou = function (currPhaseIdSelector) {
 
   _self.switchPhaseTimeout = setTimeout(function() {
   	if (currPhaseIdSelector == _self.PHASE_DRAW_ID) {
-	  	$(_self.DECK_GLOBAL_ID).on('click', function(e) {
-  			$(_self.DECK_GLOBAL_ID).off("click");
-  			_self.drawCard();
-  		});
-	  	_self.drawCardAnimationsFinishedYou = false;
-	  	_self.drawCardInteractive = true;
+  		_self.setCardDrawListener();
 	  	_self.startDrawCardAnimationsFinishedPoll(_self.startStandByPhase);
 	  } else if (currPhaseIdSelector == _self.PHASE_STANDBY_ID) {
 	  	_self.startMainPhase();
 	  } else if (currPhaseIdSelector == _self.PHASE_MAIN_ID) {
-	  	_self.enableMainPhaseBasicActions();
+	  	_self.enableMainPhaseActions();
   	} else if (currPhaseIdSelector == _self.PHASE_ROLL_ID) {
-	    _self.enableRollPhaseBasicActions();
+	    _self.enableRollPhaseActions();
 	  } else if (currPhaseIdSelector == _self.PHASE_END_ID) {
 	  	$(currPhaseIdSelector).removeClass("active");
 	  	$(currPhaseIdSelector).addClass("ended");
 	  }
-  }.bind(this), 3000);
+  }.bind(this), 1500);
 };
 
-gameController.prototype.enableMainPhaseBasicActions = function () {
+gameController.prototype.enableMainPhaseActions = function () {
 	var _self = this;
 
-	$(_self.CARDS_IN_HAND_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_YOU_CLASS).on("click", function(e) {
-		_self.disableMainPhaseBasicActions();
-		_self.summonCard.call(_self, this);
-	});
+	if (_self._gameplayData.gameState.playersState[_self._yourUserId].canRollDiceBoardInRollPhase
+		&& _self._gameplayData.gameState.playersState[_self._yourUserId].canRollDiceBoardCount > 0) {
+		var eventInfoText = "Roll dice";
 
-	$(_self.PHASE_ROLL_ID).addClass("selectable");
+		if (_self._gameplayData.gameState.playersState[_self._yourUserId].moveBackwardsOnNextRoll) {
+			eventInfoText += "...backwards";
+		} else {
+			eventInfoText += " " + _self._gameplayData.gameState.playersState[_self._yourUserId].canRollDiceBoardCount + " times";
+		}
 
-	$(_self.PHASE_ROLL_ID).on("click", function(e) {
-		_self.disableMainPhaseBasicActions();
-		_self.startRollPhase();
-	});
+		_self.showEventsInfo(eventInfoText);
+		_self.enableRollDiceBoard();
+		return;
+	} else if (_self._gameplayData.gameState.playersState[_self._yourUserId].cardsToDraw > 0) {
+		var eventInfoText = "Draw " + _self._gameplayData.gameState.playersState[_self._yourUserId].cardsToDraw + " card/s from the deck";
+
+		_self.showEventsInfo(eventInfoText);
+		_self.setCardDrawListener();
+	  _self.startDrawCardAnimationsFinishedPoll(_self.enableMainPhaseActions);
+  	return;
+	} else if (_self._gameplayData.gameState.playersState[_self._yourUserId].cardsToDiscard > 0) {
+		_self.showEventsInfo("You must discard "
+			+ _self._gameplayData.gameState.playersState[_self._yourUserId].cardsToDiscard + " card/s from your hand");
+
+		$(_self.CARDS_IN_HAND_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_YOU_CLASS).on('click', function(e) {
+			$(_self.CARDS_IN_HAND_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_YOU_CLASS).off();
+			_self.discardCard.call(_self, this);
+			_self.hideEventsInfo(null, 0);
+		});
+	} else {
+		$(_self.CARDS_IN_HAND_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_YOU_CLASS).on("click", function(e) {
+			_self.disableMainPhaseBasicActions();
+			_self.summonCard.call(_self, this);
+		});
+
+		$(_self.PHASE_ROLL_ID).addClass("selectable");
+
+		$(_self.PHASE_ROLL_ID).on("click", function(e) {
+			_self.disableMainPhaseBasicActions();
+			_self.startRollPhase();
+		});
+	}
+};
+
+gameController.prototype.performCardEffectYou = function () {
+	var _self = this;
+
+	var card = _self._gameplayData.gameState.cardSummoned;
+
+	if (card.cardEffect.instantEffect) {
+		if (card.cardEffect.moveSpacesForward) {
+			_self.moveYourCharacter(card.cardEffect.moveSpacesForward,
+				_self.destroyCardAnimationYou.bind(_self, card, _self.enableMainPhaseActions), 1000);
+		}
+	}
+};
+
+gameController.prototype.performCardEffectEnemy = function () {
+	var _self = this;
+
+	var card = _self._gameplayData.gameState.cardSummoned;
+
+	if (card.cardEffect.instantEffect) {
+		if (card.cardEffect.moveSpacesForward) {
+			_self.moveEnemyCharacter(card.cardEffect.moveSpacesForward, _self.destroyCardAnimationEnemy.bind(_self, card), 1000);
+		}
+	}
+};
+
+gameController.prototype.destroyCardAnimationYou = function (card, callback) {
+	var _self = this;
+
+	var cardEl = $(_self.CARD_FIELD_CLASS + _self.PLAYER_YOU_CLASS).find("[data-card-id='" + card.cardId + "']");
+	console.log(cardEl);
+	$(cardEl).css("animation", "fade-out 1.5s ease-in both");
+  $(cardEl).css("-webkit-animation", "fade-out 1.5s ease-in both");
+  $(cardEl).removeClass("hover");
+
+  setTimeout(function() {
+  	$(cardEl).remove();
+  	$(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_YOU_CLASS + '.bottom')
+			.attr("src", $(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_YOU_CLASS + '.top').attr("src"));
+		$(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_YOU_CLASS + '.top').attr("src", $(cardEl).attr("src"));
+
+  	if (typeof callback === "function") {
+  		callback.call(_self);
+  	}
+  }, 2000);
+};
+
+gameController.prototype.destroyCardAnimationEnemy = function (card, callback) {
+	var _self = this;
+
+	var cardEl = $(_self.CARD_FIELD_CLASS + _self.PLAYER_ENEMY_CLASS).find("[data-card-id='" + card.cardId + "']");
+	$(cardEl).css("animation", "fade-out 1.5s ease-in both");
+  $(cardEl).css("-webkit-animation", "fade-out 1.5s ease-in both");
+  $(cardEl).removeClass("hover");
+
+  setTimeout(function() {
+  	$(cardEl).remove();
+  	$(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_ENEMY_CLASS + '.bottom')
+			.attr("src", $(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_ENEMY_CLASS + '.top').attr("src"));
+		$(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_ENEMY_CLASS + '.top').attr("src", $(cardEl).attr("src"));
+
+  	if (typeof callback === "function") {
+  		callback.call(_self);
+  	}
+  }, 2000);
 };
 
 gameController.prototype.disableMainPhaseBasicActions = function () {
@@ -993,30 +1139,37 @@ gameController.prototype.disableMainPhaseBasicActions = function () {
 	$(_self.PHASE_ROLL_ID).removeClass("selectable");
 };
 
-gameController.prototype.enableRollPhaseBasicActions = function () {
+gameController.prototype.enableRollPhaseActions = function () {
 	var _self = this;
 
 	if (_self._gameplayData.gameState.playersState[_self._yourUserId].canRollDiceBoardInRollPhase
 		&& _self._gameplayData.gameState.playersState[_self._yourUserId].canRollDiceBoardCount > 0) {
 
 		if (_self._gameplayData.gameState.playersState[_self._yourUserId].rollAgain) {
-			var eventInfoText = "Roll Again";
+			var eventInfoText = "Roll again";
 
 			if (_self._gameplayData.gameState.playersState[_self._yourUserId].moveBackwardsOnNextRoll) {
-				eventInfoText += "...backwards"
+				eventInfoText += "...backwards";
+			} else {
+				eventInfoText += " " + _self._gameplayData.gameState.playersState[_self._yourUserId].canRollDiceBoardCount + " more times";
 			}
 
 			_self.showEventsInfo(eventInfoText);
-			_self.hideEventsInfo(_self.enableRollDiceBoard);
+			_self.enableRollDiceBoard();
 			return;
 		}
 
 		_self.enableRollDiceBoard();
-	} else if (_self._gameplayData.gameState.playersState[_self._yourUserId].cardsInHand
-		> _self._gameplayData.gameState.playersState[_self._yourUserId].maxCardsInHand) {
+	} else if (_self._gameplayData.gameState.playersState[_self._yourUserId].cardsToDraw > 0) {
+		var eventInfoText = "Draw " + _self._gameplayData.gameState.playersState[_self._yourUserId].cardsToDraw + " card/s from the deck";
 
-		_self.showEventsInfo("You must discard " + (_self._gameplayData.gameState.playersState[_self._yourUserId].cardsInHand
-			- _self._gameplayData.gameState.playersState[_self._yourUserId].maxCardsInHand) + " card/s from your hand");
+		_self.showEventsInfo(eventInfoText);
+		_self.setCardDrawListener();
+	  _self.startDrawCardAnimationsFinishedPoll(_self.enableRollPhaseActions);
+  	return;
+	} else if (_self._gameplayData.gameState.playersState[_self._yourUserId].cardsToDiscard > 0) {
+		_self.showEventsInfo("You must discard "
+			+ _self._gameplayData.gameState.playersState[_self._yourUserId].cardsToDiscard + " card/s from your hand");
 
 		$(_self.CARDS_IN_HAND_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_YOU_CLASS).on('click', function(e) {
 			$(_self.CARDS_IN_HAND_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_YOU_CLASS).off();
@@ -1024,6 +1177,7 @@ gameController.prototype.enableRollPhaseBasicActions = function () {
 			_self.hideEventsInfo(null, 0);
 		});
 	} else {
+		_self.hideEventsInfo(null, 0);
 		$(_self.PHASE_ROLL_ID + ', ' + _self.PHASE_END_ID).removeClass("selectable");
 		$(_self.PHASE_END_ID).addClass("selectable");
 		$(_self.PHASE_END_ID).on("click", function(e) {
@@ -1044,14 +1198,37 @@ gameController.prototype.enemyPostRollDiceBoardHook = function () {
 			var eventInfoText = _self._enemyName + " rolls again";
 
 			if (_self._gameplayData.gameState.playersState[_self._enemyUserId].moveBackwardsOnNextRoll) {
-				eventInfoText += "...backwards"
+				eventInfoText += "...backwards";
+			} else {
+				eventInfoText += " " + _self._gameplayData.gameState.playersState[_self._enemyUserId].canRollDiceBoardCount + " more times";
 			}
 
 			_self.showEventsInfo(eventInfoText);
-			_self.hideEventsInfo();
 			return;
 		}
+	} else if (_self._gameplayData.gameState.playersState[_self._enemyUserId].cardsToDraw > 0) {
+		var eventInfoText =  _self._enemyName + " draws "
+			+ _self._gameplayData.gameState.playersState[_self._enemyUserId].cardsToDraw + " card/s from the deck";
+		_self.showEventsInfo(eventInfoText);
+	} else if (_self._gameplayData.gameState.playersState[_self._enemyUserId].cardsToDiscard > 0) {
+		_self.showEventsInfo( _self._enemyName + " must discard "
+			+ _self._gameplayData.gameState.playersState[_self._enemyUserId].cardsToDiscard + " card/s from his hand");
+	} else {
+		_self.hideEventsInfo(null, 0);
 	}
+};
+
+gameController.prototype.setCardDrawListener = function () {
+	var _self = this;
+
+	$(_self.DECK_GLOBAL_ID).on('click', function(e) {
+		$(_self.DECK_GLOBAL_ID).off("click");
+		_self.hideEventsInfo(null, 0);
+		_self.drawCard();
+	});
+
+	_self.drawCardAnimationsFinishedYou = false;
+	_self.drawCardInteractive = true;
 };
 
 gameController.prototype.enableRollDiceBoard = function () {
@@ -1059,6 +1236,7 @@ gameController.prototype.enableRollDiceBoard = function () {
 
 	$(_self.PHASE_ROLL_ID).addClass("selectable");
 	$(_self.PHASE_ROLL_ID).on("click", function(e) {
+		_self.hideEventsInfo(null, 0);
 		$(_self.PHASE_ROLL_ID).off("click");
 		$(_self.PHASE_ROLL_ID).removeClass("selectable");
 		_self.client.rollDiceBoard({ roomId: _self._roomData.id });
@@ -1175,36 +1353,35 @@ gameController.prototype.noScrollOnCardHover = function (e) {
   }
 };
 
-gameController.prototype.moveYourCharacter = function (callback) {
+gameController.prototype.moveYourCharacter = function (spacesCount, callback, secondsTimeout = 2000) {
 	var _self = this;
 
   var moveBackwardsYou = _self._gameplayData.gameState.playersState[_self._yourUserId].moveBackwards;
 
 	if ((_self._yourUserId == _self._roomData.player1Id && !moveBackwardsYou)
 		|| (_self._yourUserId == _self._roomData.player2Id && moveBackwardsYou)) {
-		_self.moveAnimationBoardForward(_self._yourUserId, _self.BOARD_PLAYER_YOU_ID, callback);
+		_self.moveAnimationBoardForward(spacesCount, _self._yourUserId, _self.BOARD_PLAYER_YOU_ID, callback, secondsTimeout);
 	} else {
-		_self.moveAnimationBoardBackwards(_self._yourUserId, _self.BOARD_PLAYER_YOU_ID, callback);
+		_self.moveAnimationBoardBackwards(spacesCount, _self._yourUserId, _self.BOARD_PLAYER_YOU_ID, callback, secondsTimeout);
 	}
 }
 
-gameController.prototype.moveEnemyCharacter = function (callback) {
+gameController.prototype.moveEnemyCharacter = function (spacesCount, callback, secondsTimeout = 2000) {
 	var _self = this;
 
   var moveBackwardsEnemy = _self._gameplayData.gameState.playersState[_self._enemyUserId].moveBackwards;
 
 	if ((_self._yourUserId == _self._roomData.player1Id && !moveBackwardsEnemy)
 		|| (_self._yourUserId == _self._roomData.player2Id && moveBackwardsEnemy)) {
-		_self.moveAnimationBoardBackwards(_self._enemyUserId, _self.BOARD_PLAYER_ENEMY_ID, callback);
+		_self.moveAnimationBoardBackwards(spacesCount, _self._enemyUserId, _self.BOARD_PLAYER_ENEMY_ID, callback, secondsTimeout);
 	} else {
-		_self.moveAnimationBoardForward(_self._enemyUserId, _self.BOARD_PLAYER_ENEMY_ID, callback);
+		_self.moveAnimationBoardForward(spacesCount, _self._enemyUserId, _self.BOARD_PLAYER_ENEMY_ID, callback, secondsTimeout);
 	}
 }
 
-gameController.prototype.moveAnimationBoardForward = function (playerId, playerIdSelector, callback) {
+gameController.prototype.moveAnimationBoardForward = function (spacesCount, playerId, playerIdSelector, callback, secondsTimeout = 2000) {
 	var _self = this;
 
-	var diceRoll = _self._gameplayData.gameState.rollDiceBoard.rollDiceValue;
   var boardPath = _self._gameplayData.gameState.boardData.boardDataPlayers.boardPath;
   var currBoardIndex = _self._gameplayData.gameState.playersState[playerId].lastBoardIndex;
   var rowIndex = boardPath[currBoardIndex][0];
@@ -1224,7 +1401,7 @@ gameController.prototype.moveAnimationBoardForward = function (playerId, playerI
 	  	return;
 	  }
 
-	  if (animsCounter == diceRoll) {
+	  if (animsCounter == spacesCount) {
 	  	$(playerIdSelector).remove();
 			var currPlayerTd = document.getElementById('anime-cb-board').rows[rowIndex].cells[columnIndex];
 			$(currPlayerTd).append('<span class="anime-cb-player-position" id="' + playerIdSelector.substr(1) + '"></span>');
@@ -1234,14 +1411,14 @@ gameController.prototype.moveAnimationBoardForward = function (playerId, playerI
   }
 
   _self.moveCharacterTimeout = setTimeout(function() {
-		if (currBoardIndex + diceRoll > boardPath.length - 1) {
+		if (currBoardIndex + spacesCount > boardPath.length - 1) {
 			if (typeof callback == "function") {
 				callback.call(_self);
 			}
 			return;
 		}
 
-		for (var i = 0; i < diceRoll; i++) {
+		for (var i = 0; i < spacesCount; i++) {
 		  if (boardPath[currBoardIndex + 1][0] != rowIndex) {
 		    if (boardPath[currBoardIndex + 1][0] < rowIndex) {
 		    	$currTr = $currTr.prev();
@@ -1272,13 +1449,12 @@ gameController.prototype.moveAnimationBoardForward = function (playerId, playerI
 		  columnIndex = boardPath[currBoardIndex + 1][1];
 		  currBoardIndex++;
  		}
-  }, 2000);
+  }, secondsTimeout);
 };
 
-gameController.prototype.moveAnimationBoardBackwards = function (playerId, playerIdSelector, callback) {
+gameController.prototype.moveAnimationBoardBackwards = function (spacesCount, playerId, playerIdSelector, callback, secondsTimeout = 2000) {
 	var _self = this;
 
-  var diceRoll = _self._gameplayData.gameState.rollDiceBoard.rollDiceValue;
   var boardPath = _self._gameplayData.gameState.boardData.boardDataPlayers.boardPath;
   var currBoardIndex = _self._gameplayData.gameState.playersState[playerId].lastBoardIndex;
   var rowIndex = boardPath[currBoardIndex][0];
@@ -1298,7 +1474,7 @@ gameController.prototype.moveAnimationBoardBackwards = function (playerId, playe
 	  	return;
 	  }
 
-	  if (animsCounter == diceRoll) {
+	  if (animsCounter == spacesCount) {
 	  	$(playerIdSelector).remove();
 			var currPlayerTd = document.getElementById('anime-cb-board').rows[rowIndex].cells[columnIndex];
 			$(currPlayerTd).append('<span class="anime-cb-player-position" id="' + playerIdSelector.substr(1) + '"></span>');
@@ -1308,14 +1484,14 @@ gameController.prototype.moveAnimationBoardBackwards = function (playerId, playe
 	}
 
   _self.moveCharacterTimeout = setTimeout(function() {
-		if (currBoardIndex - diceRoll < 0) {
+		if (currBoardIndex - spacesCount < 0) {
 			if (typeof callback == "function") {
 				callback.call(_self);
 			}
 			return;
 		}
 
-		for (var i = 0; i < diceRoll; i++) {
+		for (var i = 0; i < spacesCount; i++) {
 		  if (boardPath[currBoardIndex - 1][0] != rowIndex) {
 		    if (boardPath[currBoardIndex - 1][0] < rowIndex) {
 		    	$currTr = $currTr.prev();
@@ -1346,7 +1522,7 @@ gameController.prototype.moveAnimationBoardBackwards = function (playerId, playe
 		  columnIndex = boardPath[currBoardIndex - 1][1];
 		  currBoardIndex--;
  		}
-  }, 2000);
+  }, secondsTimeout);
 };
 
 gameController.prototype.checkForWin = function (callback) {
@@ -1386,7 +1562,7 @@ gameController.prototype.rollDiceYou = function (diceValue, callback, callback2)
     numberOfDice: 1,
     delay: 1500,
     values: [diceValue],
-    callback: callback.bind(_self, callback2)
+    callback: callback.bind(_self, diceValue, callback2, 2000)
   };
 
   rollADie(options);
@@ -1401,7 +1577,7 @@ gameController.prototype.rollDiceEnemy = function (diceValue, callback, callback
     numberOfDice: 1,
     delay: 1500,
     values: [diceValue],
-    callback: callback.bind(_self, callback2)
+    callback: callback.bind(_self, diceValue, callback2, 2000)
   };
 
   rollADie(options);
@@ -1434,7 +1610,7 @@ gameController.prototype.summonCardFromHandAnimationYou = function (card) {
 			setTimeout(function() {
 				$(this).css("animation", "");
 				$(this).css("-webkit-animation", "");
-			}.bind(this), 650);
+			}.bind(this), 600);
 
 			return false;
 		}
@@ -1443,7 +1619,7 @@ gameController.prototype.summonCardFromHandAnimationYou = function (card) {
 	assert(cardSuccessfullySummoned);
 };
 
-gameController.prototype.summonCardFromHandAnimationEnemy = function (cardObj) {
+gameController.prototype.summonCardFromHandAnimationEnemy = function (cardObj, callback) {
 	var _self = this;
 
 	var cardIdx = _self._gameplayData.gameState.cardSummonedIdxInPlayerHand + 1;
@@ -1472,7 +1648,11 @@ gameController.prototype.summonCardFromHandAnimationEnemy = function (cardObj) {
 			setTimeout(function() {
 				$(this).css("animation", "");
 				$(this).css("-webkit-animation", "");
-			}.bind(this), 500);
+
+				if (typeof callback === "function") {
+					callback.call(_self);
+				}
+			}.bind(this), 600);
 
 			return false;
 		}
@@ -1487,10 +1667,10 @@ gameController.prototype.startYourTimer = function () {
 	_self.yourTurnTimer = setInterval(function() {
 	  if (timeLeftSeconds <= 0) {
 	  	clearInterval(_self.yourTurnTimer);
-	  	_self.client.generalClient.sendLeaveRoomRequest({ roomId: _self.client.generalClient.roomController._roomId,
-	  		userId: _self.client.generalClient.logInSignUpController._userId });
-				_self.showEventsInfo("Your time is up, YOU LOSE...");
-				_self.setLeaveButton();
+	  	_self.client.generalClient.sendLeaveRoomRequest.call(_self.client.generalClient,
+	  		{ roomId: _self.client.generalClient.roomController._roomId, userId: _self.client.generalClient.logInSignUpController._userId });
+			_self.showEventsInfo("Your time is up, YOU LOSE...");
+			_self.setLeaveButton();
 	  	return;
 	  }
 
@@ -1567,10 +1747,7 @@ gameController.prototype.drawCardFromDeckYouAnimation = function (card) {
   	$(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_YOU_CLASS).css("overflow", "hidden");
 
   	if (_self.drawCardInteractive && _self._gameplayData.gameState.playersState[_self._yourUserId].cardsToDraw > 0) {
-  		$(_self.DECK_GLOBAL_ID).on('click', function(e) {
-  			$(_self.DECK_GLOBAL_ID).off("click");
-  			_self.drawCard();
-  		});
+  		_self.setCardDrawListener();
   	} else {
   		_self.drawCardInteractive = false;
   	}

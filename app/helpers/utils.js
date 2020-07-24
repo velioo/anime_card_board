@@ -185,6 +185,21 @@ const self = module.exports = {
 
     return results;
   },
+  selectRowById: async (params) => {
+    assert(params.table && params.field && params.queryArg);
+    assert(_.isString(params.table) && _.isString(params.field));
+
+    const results = await pg.pool.query(`
+      SELECT *
+      FROM ${params.table}
+      WHERE
+        ${params.field} = $1
+      `, [ params.queryArg ]);
+
+    assert(results.rowCount == 1);
+
+    return results;
+  },
   updateRowById: async (params) => {
     assert(params.table && params.field && params.field2 && params.queryArg && params.queryArg2);
     assert(_.isString(params.table) && _.isString(params.field) && _.isString(params.field2));
@@ -204,5 +219,17 @@ const self = module.exports = {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
+  },
+  getAllFromTable: async (params) => {
+    assert(params.table);
+    assert(_.isString(params.table));
+
+    const results = await pg.pool.query(`
+      SELECT * FROM ${params.table}
+    `);
+
+    assert(results.rowCount > 0);
+
+    return results;
   },
 };

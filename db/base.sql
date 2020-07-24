@@ -92,3 +92,33 @@ CREATE TABLE "games" (
 
 GRANT ALL ON games TO velioo;
 GRANT ALL ON games_id_seq TO velioo;
+
+CREATE table "card_rarities" (
+  "id" integer NOT NULL,
+  "name" text NOT NULL,
+  "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "updated_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id)
+);
+
+GRANT ALL ON card_rarities TO velioo;
+
+CREATE table "cards" (
+  "id" serial NOT NULL,
+  "name" text NOT NULL,
+  "description" text NOT NULL,
+  "image" text NOT NULL,
+  "rarity" integer NOT NULL REFERENCES card_rarities(id),
+  "effect_json" text NOT NULL,
+  PRIMARY KEY (id)
+);
+
+GRANT ALL ON cards TO velioo;
+GRANT ALL ON cards_id_seq TO velioo;
+
+INSERT INTO card_rarities (id, name) VALUES (1, 'Common');
+INSERT INTO card_rarities (id, name) VALUES (2, 'Rare');
+INSERT INTO card_rarities (id, name) VALUES (3, 'Epic');
+
+INSERT INTO cards (id, name, description, image, effect_json) VALUES (1, 'Misaka', 'Go 3 spaces forward', 'Misaka.jpg',
+'{"moveSpacesForward":3,"instantEffect":true}');

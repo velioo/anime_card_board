@@ -28,23 +28,34 @@ const MIN_ROOM_NAME_LEN = 3;
 const MAX_ROOM_NAME_LEN = 20;
 
 const TURN_PHASES = {
-    DRAW: 1,
-    STANDBY: 2,
-    MAIN: 3,
-    ROLL: 4,
-    END: 5,
+  DRAW: 1,
+  STANDBY: 2,
+  MAIN: 3,
+  ROLL: 4,
+  END: 5,
 };
 
 const CARD_RARITIES = {
-    COMMON: 1,
-    RARE: 2,
-    EPIC: 3,
+  COMMON: 1,
+  RARE: 2,
+  EPIC: 3,
 };
 
 const BOARD_FIELDS = {
   NORMAL: 1,
-  ROLL_AGAIN: 2,
-  ROLL_AGAIN_BACKWARDS: 3,
+  ROLL_AGAIN_1: 2,
+  ROLL_AGAIN_2: 3,
+  ROLL_AGAIN_3: 4,
+  ROLL_AGAIN_BACKWARDS: 5,
+  CARD_DRAW_1: 6,
+  CARD_DRAW_2: 7,
+  CARD_DRAW_3: 8,
+  CARD_DISCARD_1: 9,
+  CARD_DISCARD_2: 10,
+  CARD_DISCARD_3: 11,
+  RANDOM_1: 12,
+  RANDOM_2: 13,
+  RANDOM_3: 14,
 };
 
 module.exports = {
