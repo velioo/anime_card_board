@@ -177,6 +177,14 @@ const _SUMMON_CARD = {
 const _ROLL_PHASE = _DRAW_CARD;
 const _END_PHASE = _DRAW_CARD;
 const _DISCARD_CARD = _SUMMON_CARD;
+const _FINISH_CARD = {
+  "type": "object",
+  "properties": {
+    "roomId": { "type": "integer" },
+    "cardId": { "type": "integer" },
+  },
+  "required": [ "roomId", "cardId" ],
+};
 
 module.exports = {
   SIGN_UP: _SIGN_UP,
@@ -195,4 +203,5 @@ module.exports = {
   ROLL_PHASE: _ROLL_PHASE,
   END_PHASE: _END_PHASE,
   DISCARD_CARD: _DISCARD_CARD,
+  FINISH_CARD: _FINISH_CARD,
 };

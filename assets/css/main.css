@@ -243,6 +243,23 @@ body {
   border: 2px double white !important;
 }
 
+.anime-cb-column.selectable-you {
+  cursor: pointer;
+  -webkit-animation: active-phase-blink 2s infinite;
+  animation: active-phase-blink 2s infinite;
+}
+
+.anime-cb-column.selectable-you:hover {
+  background-color: #4169E1;
+  animation: "";
+  -webkit-animation: "";
+}
+
+.anime-cb-column.selectable-enemy {
+  -webkit-animation: active-phase-blink-enemy 2s infinite;
+  animation: active-phase-blink-enemy 2s infinite;
+}
+
 .anime-cb-board-img {
   width: inherit;
   height: inherit;
@@ -281,7 +298,7 @@ body {
 }
 
 .anime-cb-cards-in-hand-wrapper {
-  max-width: 60%;
+  max-width: 55%;
   /*overflow:hidden;*/
   position: sticky;
 /*  left: 50%;*/
@@ -316,7 +333,7 @@ body {
   position: relative;
   border-radius: 3px;
   transition: box-shadow 0.1s, transform 0.1s;
-  z-index: 5;
+  z-index: 7;
 }
 
 .anime-cb-card.player-you {
@@ -338,12 +355,12 @@ body {
 
 .anime-cb-cards-in-hand-wrapper.player-enemy {
   top: 0;
-  z-index: 5;
+  z-index: 7;
 }
 
 .anime-cb-cards-in-hand-wrapper.player-you {
   bottom: 0;
-  z-index: 5;
+  z-index: 7;
 /*  overflow: hidden;*/
 }
 
@@ -492,13 +509,13 @@ body {
 }
 
 .anime-cb-phase-column.active.player-you {
-  -webkit-animation: active-phase-blink 2s infinite ;
-  animation: active-phase-blink 2s infinite ;
+  -webkit-animation: active-phase-blink 2s infinite;
+  animation: active-phase-blink 2s infinite;
 }
 
 .anime-cb-phase-column.active.player-enemy {
-  -webkit-animation: active-phase-blink-enemy 2s infinite ;
-  animation: active-phase-blink-enemy 2s infinite ;
+  -webkit-animation: active-phase-blink-enemy 2s infinite;
+  animation: active-phase-blink-enemy 2s infinite;
 }
 
 .anime-cb-phase-column.ended {
@@ -543,6 +560,29 @@ body {
   margin-bottom: -465px;
   display: inline-block;
   z-index: 2;
+}
+
+.anime-cb-player-status-wrapper {
+  position: fixed;
+  bottom: 50%;
+  left: 50%;
+  margin-left: -750px;
+  margin-bottom: -420px;
+  display: inline-block;
+  z-index: 1;
+  color: white;
+  height: 100px;
+  width: 220px;
+  font-size: 9pt;
+}
+
+.anime-cb-player-status-title {
+  font-size: 12pt;
+}
+
+.anime-cb-player-status-content {
+  overflow-y: auto;
+  height: inherit;
 }
 
 .anime-cb-card-graveyard-wrapper {
@@ -626,11 +666,14 @@ body {
   box-shadow: 0px 0px 30px rgba(0,0,0, 0.6);
 }
 
+.anime-cb-card-field-wrapper {
+  z-index: 5;
+}
+
 .anime-cb-card-field {
   width: 460px;
   height: 120px;
   background-color: rgba(0, 0, 0, 0.3);
-  z-index: 2;
 }
 
 .anime-cb-card-field td {

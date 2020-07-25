@@ -36,9 +36,9 @@ const TURN_PHASES = {
 };
 
 const CARD_RARITIES = {
-  COMMON: 1,
-  RARE: 2,
-  EPIC: 3,
+  COMMON: 'common',
+  RARE: 'rare',
+  EPIC: 'epic',
 };
 
 const BOARD_FIELDS = {

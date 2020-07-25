@@ -23,6 +23,7 @@ gameClient.prototype.initGameSocket = function(socket) {
 	socket.on('rollDiceBoard', this.processRollDiceBoard.bind(this));
 	socket.on('endPhase', this.processEndPhase.bind(this));
 	socket.on('discardCard', this.processDiscardCard.bind(this));
+	socket.on('finishCardEffect', this.processFinishCardEffect.bind(this));
 	socket.on('winGameFormally', this.processWinGameFormally.bind(this));
 };
 
@@ -217,6 +218,25 @@ gameClient.prototype.processDiscardCard = function (_data) {
 	if (_self.generalClient.roomController._roomId
 		&& _self.generalClient.roomController._roomId == _data.roomData.id) {
 		_self.gameController.processDiscardCard(_data);
+	}
+};
+
+gameClient.prototype.finishCardEffect = function (_data) {
+	logger.info('finishCardEffect');
+
+	var _self = this;
+
+	_self.socket.emit('finishCardEffect', _data);
+};
+
+gameClient.prototype.processFinishCardEffect = function (_data) {
+	logger.info('processFinishCardEffect');
+
+	var _self = this;
+
+	if (_self.generalClient.roomController._roomId
+		&& _self.generalClient.roomController._roomId == _data.roomData.id) {
+		_self.gameController.processFinishCardEffect(_data);
 	}
 };
 

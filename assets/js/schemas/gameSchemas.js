@@ -3,7 +3,7 @@ var cardObjProperties = {
   "cardText": { "type": "string" },
   "cardImg": { "type": "string" },
   "cardId": { "type": "integer" },
-  "cardRarity": { "type": "integer" },
+  "cardRarity": { "type": "string" },
 };
 
 var cardObjRequiredFields = [ "cardName", "cardText", "cardImg", "cardId", "cardRarity" ];
@@ -90,6 +90,12 @@ var startGameResponse = {
 							"properties": cardObjProperties,
 							"required": cardObjRequiredFields,
 						},
+						"cardFinish": {
+							"type": ["object", "null"],
+							"properties": cardObjProperties,
+							"required": cardObjRequiredFields,
+						},
+						"playerIdFinishCard": { "type": ["integer", "null"] },
 						"playerIdWinGame": { "type": ["integer", "null"] },
 						"playersState": {
 							"type": "object",
@@ -152,6 +158,7 @@ var rollPhaseResponse = startGameResponse;
 var rollDiceBoardResponse = startGameResponse;
 var endPhaseResponse = startGameResponse;
 var discardCardResponse = startGameResponse;
+var finishCardEffectResponse = startGameResponse;
 
 var drawCardYouResponse = {
 	"type": "object",

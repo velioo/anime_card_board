@@ -64,36 +64,69 @@ var self = module.exports = {
 			}
 		}
 	},
-	summonCardHook: async (ctx, card) => {
+	summonCardHook: async (ctx) => {
 		let gameState = ctx.gameplayData.gameState;
 
-		let boardPath = gameState.boardData.boardDataPlayers.boardPath;
-	  let boardMatrix = gameState.boardData.boardMatrix;
-    let currBoardIndex = gameState.playersState[ctx.session.userData.userId].currBoardIndex;
+		let card = ctx.gameplayData.gameState.cardSummoned;
+    let cardsOnFieldArr = gameState.playersState[ctx.session.userData.userId].cardsOnFieldArr;
 
-    ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsInGraveyard.push(card);
+    cardsOnFieldArr[cardsOnFieldArr.length - 1].cardEffect.isFinished = false;
 
 		if (card.cardEffect.instantEffect) {
+			if (card.cardEffect.autoEffect) {
+    		ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsInGraveyard.push(card);
+				cardsOnFieldArr[cardsOnFieldArr.length - 1].cardEffect.isFinished = true;
+			}
+
 			if (card.cardEffect.moveSpacesForward) {
 				await self.rollDiceBoardHook(ctx, { rollDiceValue: card.cardEffect.moveSpacesForward });
 		  }
 		}
+	},
+	cardFinishHook: async (ctx) => {
+		let gameState = ctx.gameplayData.gameState;
+
+		let card = ctx.gameplayData.gameState.cardFinish;
+    let finishData = ctx.data.finishData;
+
+		gameState.playersState[ctx.session.userData.userId].cardsInGraveyard.push(card);
+
+		if (card.cardEffect.moveSpacesForwardUpTo) {
+			assert(finishData.moveSpacesForward >= 0);
+			card.cardEffect.moveSpacesForward = finishData.moveSpacesForward;
+			await self.rollDiceBoardHook(ctx, { rollDiceValue: finishData.moveSpacesForward });
+	  } else if (card.cardEffect.moveSpacesBackwardsUpToEnemy) {
+	  	assert(finishData.moveSpacesBackwardsEnemy >= 0);
+	  	card.cardEffect.moveSpacesBackwardsEnemy = finishData.moveSpacesBackwardsEnemy;
+	  	let enemyUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
+	  	await self.rollDiceBoardHook(ctx, { rollDiceValue: finishData.moveSpacesBackwardsEnemy,
+	  		userId: enemyUserId, moveBackwardsOnNextRoll: true });
+	  }
 	},
 	rollDiceBoardHook: async (ctx, overwriteParams) => {
 		let gameState = ctx.gameplayData.gameState;
 
 	  let boardPath = gameState.boardData.boardDataPlayers.boardPath;
 	  let boardMatrix = gameState.boardData.boardMatrix;
-    let currBoardIndex = gameState.playersState[ctx.session.userData.userId].currBoardIndex;
+	  let userId = ctx.session.userData.userId;
     let rollDiceValue;
 
 		gameState.rollDiceBoard.rollDiceValue = utils.getRandomInt(1, 6);
 		rollDiceValue = gameState.rollDiceBoard.rollDiceValue;
 
-		if (overwriteParams && overwriteParams.rollDiceValue) {
-			rollDiceValue = overwriteParams.rollDiceValue;
+		if (overwriteParams) {
+			if (overwriteParams.rollDiceValue) {
+				rollDiceValue = overwriteParams.rollDiceValue;
+			}
+			if (overwriteParams.userId) {
+				ctx.session.userData.userId = overwriteParams.userId;
+			}
+			if (overwriteParams.moveBackwardsOnNextRoll) {
+				gameState.playersState[ctx.session.userData.userId].moveBackwardsOnNextRoll = overwriteParams.moveBackwardsOnNextRoll;
+			}
 		}
 
+    let currBoardIndex = gameState.playersState[ctx.session.userData.userId].currBoardIndex;
     gameState.playersState[ctx.session.userData.userId].lastBoardIndex = currBoardIndex;
 
     if (ctx.roomData.player1Id == ctx.session.userData.userId) {
@@ -168,6 +201,8 @@ var self = module.exports = {
       let success = await winGame(ctx);
       assert(success === true);
     }
+
+    ctx.session.userData.userId = userId;
 	},
 	discardCardHook: async (ctx, card) => {
 
@@ -206,7 +241,8 @@ let cardDraw = (ctx, count) => {
 };
 
 let cardDiscard = (ctx, count) => {
-	if (ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsInHand - count >= 0) {
+	if (ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsInHand
+		- ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsToDiscard - count >= 0) {
 		ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsToDiscard += count;
 	} else {
 		ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsToDiscard

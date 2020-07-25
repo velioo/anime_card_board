@@ -199,6 +199,24 @@ const self = module.exports = {
 	  	}
 	  });
 
+	  socket.on('finishCardEffect', async (ctx) => {
+	  	try {
+		  	await gameServer.finishCardEffect(ctx, next);
+
+		  	let isSuccessful = ctx.errors.length ? false : true;
+
+		  	socket.broadcast('finishCardEffect', {
+		  		errors: ctx.errors,
+			  	isSuccessful: isSuccessful,
+			  	gameplayData: ctx.gameplayData,
+			  	roomData: ctx.roomData,
+			  });
+	  	} catch (err) {
+	  		socket.emit('serverError', err);
+	  		logger.error('Error: %o', err);
+	  	}
+	  });
+
 	  socket.on('rollPhase', async (ctx) => {
 	  	try {
 		  	await gameServer.rollPhase(ctx, next);

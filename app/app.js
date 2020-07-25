@@ -42,11 +42,11 @@ app.use(new StaticCache('./uploads', {
 }, dirs));
 app.use(new StaticCache('./node_modules'));
 
-app.keys = ['dca23e28c111808d1f9e6230849ee19e '];
+app.keys = ['dca23e28c111808d1f9e6230849ee19e'];
 
 const SESSION_CONFIG = {
     key: 'koa:sess', /** (string) cookie key (default is koa:sess) */
-    maxAge: 365 * 24 * 60 * 60, /** (number) maxAge in ms (default is 1 days) */
+    maxAge: 315569259747, /** (number) maxAge in ms (default is 1 days) */
     overwrite: true, /** (boolean) can overwrite or not (default true) */
     httpOnly: true, /** (boolean) httpOnly or not (default true) */
     signed: true, /** (boolean) signed or not (default true) */

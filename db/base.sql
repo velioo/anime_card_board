@@ -94,7 +94,7 @@ GRANT ALL ON games TO velioo;
 GRANT ALL ON games_id_seq TO velioo;
 
 CREATE table "card_rarities" (
-  "id" integer NOT NULL,
+  "id" text NOT NULL,
   "name" text NOT NULL,
   "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updated_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -108,7 +108,7 @@ CREATE table "cards" (
   "name" text NOT NULL,
   "description" text NOT NULL,
   "image" text NOT NULL,
-  "rarity" integer NOT NULL REFERENCES card_rarities(id),
+  "rarity_id" text NOT NULL REFERENCES card_rarities(id),
   "effect_json" text NOT NULL,
   PRIMARY KEY (id)
 );
@@ -116,9 +116,12 @@ CREATE table "cards" (
 GRANT ALL ON cards TO velioo;
 GRANT ALL ON cards_id_seq TO velioo;
 
-INSERT INTO card_rarities (id, name) VALUES (1, 'Common');
-INSERT INTO card_rarities (id, name) VALUES (2, 'Rare');
-INSERT INTO card_rarities (id, name) VALUES (3, 'Epic');
+INSERT INTO card_rarities (id, name) VALUES ('common', 'Common');
+INSERT INTO card_rarities (id, name) VALUES ('rare', 'Rare');
+INSERT INTO card_rarities (id, name) VALUES ('epic', 'Epic');
 
-INSERT INTO cards (id, name, description, image, effect_json) VALUES (1, 'Misaka', 'Go 3 spaces forward', 'Misaka.jpg',
-'{"moveSpacesForward":3,"instantEffect":true}');
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json) VALUES (1, 'Misaka', 'Go 5 spaces forward', 'Misaka.jpg', 'common',
+'{"moveSpacesForward":5,"instantEffect":true,"autoEffect":true}');
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json) VALUES (2, 'Alice', 'Go up to to 3 spaces forward',
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json) VALUES (3, 'Okabe', 'Move your oppoenent up to to 3 spaces backward',
+'Okabe.png', 'common', '{"moveSpacesBackwardsUpToEnemy":3,"instantEffect":true,"autoEffect":false}');

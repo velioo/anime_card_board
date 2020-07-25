@@ -42,4 +42,7 @@ const self = module.exports = {
   discardCard: async (ctx, next) => {
     await gameController.discardCard (ctx, next);
   },
+  finishCardEffect: async (ctx, next) => {
+    await gameController.finishCardEffect (ctx, next);
+  },
 };

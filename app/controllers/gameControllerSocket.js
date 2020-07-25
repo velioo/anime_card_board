@@ -85,7 +85,7 @@ module.exports = {
             boardMatrix: JSON.parse(queryStatusBoards.rows[0].board_matrix_json),
             boardDataPlayers: boardDataPlayers,
           },
-          timerSeconds: 99999,
+          timerSeconds: 5000,
           nextPhase: TURN_PHASES.DRAW,
           playerIdDrawnCard: null,
           playerIdSummonedCard: null,
@@ -102,6 +102,8 @@ module.exports = {
           },
           playerIdDiscardedCard: null,
           cardDiscarded: null,
+          playerIdFinishCard: null,
+          cardFinish: null,
           playerIdWinGame: null,
           playersState: {
             [ctx.roomData.player1Id]: {
@@ -434,7 +436,7 @@ module.exports = {
       ctx.gameplayData.gameState.playerIdSummonedCard = ctx.session.userData.userId;
       ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsOnFieldArr.push(cardFromDb);
 
-      await gameCore.summonCardHook(ctx, cardFromDb);
+      await gameCore.summonCardHook(ctx);
 
       queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
         field2: 'room_id', queryArg2: ctx.data.roomId });
@@ -517,7 +519,7 @@ module.exports = {
       ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
       ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
 
-      assert(ctx.gameplayData.gameState.currPlayerId == ctx.session.userData.userId);
+      // assert(ctx.gameplayData.gameState.currPlayerId == ctx.session.userData.userId);
       assert(ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].canRollDiceBoardCount > 0);
 
       if (ctx.gameplayData.gameState.nextPhase == TURN_PHASES.ROLL) {
@@ -647,6 +649,69 @@ module.exports = {
       logger.info('Failed to discard card: %o', err);
     }
   },
+  finishCardEffect: async (ctx, next) => {
+    logger.info('finishCardEffect gameController');
+    ctx.errors = [];
+
+    await pg.pool.query('BEGIN');
+
+    try {
+      ctx.data.roomId = parseInt(ctx.data.roomId);
+      ctx.data.cardId = parseInt(ctx.data.cardId);
+      assert(ctx.data.finishData);
+
+      const isSchemaValid = ajv.validate(SCHEMAS.FINISH_CARD, ctx.data);
+      assert(isSchemaValid);
+
+      assert(ctx.session.userData && ctx.session.userData.userId);
+
+      let queryStatus = await utils.lockRowById({ table: 'games', field: 'room_id', queryArg: ctx.data.roomId });
+
+      assert(queryStatus.rows[0].player1_id == ctx.session.userData.userId
+        || queryStatus.rows[0].player2_id == ctx.session.userData.userId);
+
+      ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
+      ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
+
+      let cardFinish;
+      let cardIdx;
+
+      for (let i = 0; i < ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsOnFieldArr.length; i++) {
+        if (ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsOnFieldArr[i].cardId == ctx.data.cardId) {
+          cardFinish = ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsOnFieldArr[i];
+          cardIdx = i;
+        }
+      }
+
+      assert(cardFinish);
+      assert(cardIdx >= 0);
+      assert((cardFinish.cardId == ctx.data.cardId) && (!cardFinish.cardEffect.isFinished));
+
+      cardFinish.cardEffect.isFinished = true;
+
+      ctx.gameplayData.gameState.cardFinish = cardFinish;
+      ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsOnFieldArr.splice(cardIdx, 1);
+      ctx.gameplayData.gameState.playerIdFinishCard = ctx.session.userData.userId;
+
+      await gameCore.cardFinishHook(ctx);
+
+      logger.info("FINISH CARD EFFECT, CARD: %o", ctx.gameplayData.gameState.cardFinish);
+
+      queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
+        field2: 'room_id', queryArg2: ctx.data.roomId });
+
+      ctx.gameplayData.gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
+      ctx.gameplayData.gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
+
+      await pg.pool.query('COMMIT');
+    } catch (err) {
+      ctx.errors.push({ dataPath: '/finish_card', message: 'There was a problem while finishing card effect.' });
+
+      await pg.pool.query('ROLLBACK');
+
+      logger.info('Failed to finish card: %o', err);
+    }
+  },
   winGameFormally: async (ctx, next) => {
     logger.info('winGameFormally gameController');
     ctx.errors = [];
@@ -721,9 +786,13 @@ let resetTurn = (ctx) => {
     gameState.playersState[playerId].cardsSummonConstraints.cardsCanSummonRareCount = 0;
     gameState.playersState[playerId].cardsSummonConstraints.cardsCanSummonEpicCount = 0;
     gameState.playersState[playerId].rollAgain = false;
+    gameState.playersState[playerId].moveBackwardsOnNextRoll = null;
+    gameState.playersState[playerId].moveBackwards = null;
   }
   gameState.playerIdDrawnCard = null;
   gameState.playerIdSummonedCard = null;
+  gameState.playerIdDiscardedCard = null;
+  gameState.playerIdFinishCard = null;
   gameState.cardSummoned = null;
   gameState.cardSummonedIdxInPlayerHand = null;
   gameState.rollDiceBoard = {
@@ -735,4 +804,6 @@ let resetTurn = (ctx) => {
     rollDiceValue: null,
     cardId: null,
   };
+  gameState.cardDiscarded = null;
+  gameState.cardFinish = null;
 };
