@@ -695,8 +695,6 @@ module.exports = {
 
       await gameCore.cardFinishHook(ctx);
 
-      logger.info("FINISH CARD EFFECT, CARD: %o", ctx.gameplayData.gameState.cardFinish);
-
       queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
         field2: 'room_id', queryArg2: ctx.data.roomId });
 
