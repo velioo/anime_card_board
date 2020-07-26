@@ -249,6 +249,15 @@ gameClient.prototype.winGameFormally = function(_data) {
 	_self.socket.emit('winGameFormally', _data);
 };
 
+gameClient.prototype.winGameEnemyTimeout = function(_data) {
+	logger.info('winGameEnemyTimeout');
+	console.log('winGameEnemyTimeout');
+
+	var _self = this;
+
+	_self.socket.emit('winGameEnemyTimeout', _data);
+};
+
 gameClient.prototype.processWinGameFormally = function(_data) {
 	logger.info('processWinGameFormally');
 	console.log('processWinGameFormally');

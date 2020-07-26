@@ -279,7 +279,23 @@ const self = module.exports = {
 
 		  	socket.emit('winGameFormally', {
 			  	errors: ctx.errors,
-			  	isSuccessful: isSuccessful
+			  	isSuccessful: isSuccessful,
+			  });
+	  	} catch (err) {
+	  		socket.emit('serverError', err);
+	  		logger.error('Error: %o', err);
+	  	}
+	  });
+
+	 	socket.on('winGameEnemyTimeout', async (ctx) => {
+	  	try {
+		  	await gameServer.winGameEnemyTimeout(ctx, next);
+
+		  	let isSuccessful = ctx.errors.length ? false : true;
+
+		  	socket.emit('winGameFormally', {
+			  	errors: ctx.errors,
+			  	isSuccessful: isSuccessful,
 			  });
 	  	} catch (err) {
 	  		socket.emit('serverError', err);

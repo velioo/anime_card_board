@@ -174,6 +174,7 @@ gameController.prototype.resetGameState = function () {
 	_self._yourName = null;
 	_self._enemyName = null;
 	_self_enemyUserId = null;
+	_self._yourUserId = null;
 	$(_self.GAME_SCREEN_CLASS + "*").off();
 	clearInterval(_self.yourTurnTimer);
 	clearInterval(_self.enemyTurnTimer);
@@ -201,6 +202,11 @@ gameController.prototype.resetGameState = function () {
 	$(_self.BOARD_COLUMN_CLASS).off("click");
 	$(_self.BOARD_COLUMN_CLASS).removeClass("selectable-you");
 	$(_self.BOARD_COLUMN_CLASS).removeClass("selectable-enemy");
+	_self.timeLeftSecondsEnemy = null;
+	_self.timeLeftSecondsYou = null;
+	_self.timerPauseEnemy = false;
+	_self.timerPauseYou = false;
+	clearTimeout(_self.winGameEnemyTimeout);
 };
 
 gameController.prototype.setLeaveButton = function () {
@@ -232,6 +238,10 @@ gameController.prototype.processWinGameFormallyResponse = function (data) {
 		assert(data.errors.length > 0);
 
 		_self.showAlertError(data.errors[0].message);
+	}
+
+	if (!_self._gameplayData) {
+		return;
 	}
 
 	_self.showEventsInfo("YOU WIN !!!");
@@ -600,15 +610,20 @@ gameController.prototype.startTurn = function () {
 	var _self = this;
 
 	_self.setTimerValues();
+	_self.timerPauseYou = false;
+	_self.timerPauseEnemy = false;
 
 	if (_self._gameplayData.gameState.currPlayerId == _self._yourUserId) {
-		_self.startYourTimer();
 		_self.setYourTurnFieldStyle();
 		_self.startDrawPhase();
+		_self.timerPauseEnemy = true;
 	} else {
-		_self.startEnemyTimer();
 		_self.setEnemyTurnFieldStyle();
+		_self.timerPauseYou = true;
 	}
+
+	_self.startYourTimer();
+	_self.startEnemyTimer();
 };
 
 gameController.prototype.disableScroll = function () {
@@ -875,6 +890,7 @@ gameController.prototype.processEndPhase = function (data) {
 	_self._roomData = data.roomData;
 	_self.updateGameStatusInfo();
 
+	clearTimeout(_self.winGameEnemyTimeout);
 	clearInterval(_self.yourTurnTimer);
 	clearInterval(_self.enemyTurnTimer);
 
@@ -1175,6 +1191,8 @@ gameController.prototype.enableActionsInEnemyPhase = function () {
 		});
 	} else {
 		_self.hideEventsInfo(null, 0);
+		_self.pauseTimerYou();
+		_self.resumeTimerEnemy();
 	}
 };
 
@@ -1210,9 +1228,13 @@ gameController.prototype.checkIfEnemyIsOnSpecialSpace = function () {
 		|| _self._gameplayData.gameState.playersState[_self._enemyUserId].cardsToDraw > 0
 		|| _self._gameplayData.gameState.playersState[_self._enemyUserId].cardsToDiscard > 0) {
 		_self.waitForEnemyActions();
+		_self.pauseTimerYou();
+		_self.resumeTimerEnemy();
 	} else {
 		_self.hideEventsInfo(null, 0);
 		_self.enableMainPhaseActions();
+		_self.resumeTimerYou();
+		_self.pauseTimerEnemy();
 	}
 };
 
@@ -1223,6 +1245,8 @@ gameController.prototype.checkIfYouAreOnSpecialSpace = function () {
 		|| _self._gameplayData.gameState.playersState[_self._yourUserId].cardsToDraw > 0
 		|| _self._gameplayData.gameState.playersState[_self._yourUserId].cardsToDiscard > 0) {
 		_self.enableActionsInEnemyPhase();
+		_self.resumeTimerYou();
+		_self.pauseTimerEnemy();
 	}
 };
 
@@ -2051,10 +2075,13 @@ gameController.prototype.summonCardFromHandAnimationEnemy = function (cardObj, c
 gameController.prototype.startYourTimer = function () {
 	var _self = this;
 
-	var timeLeftSeconds = _self._gameplayData.gameState.timerSeconds;
+	_self.timeLeftSecondsYou = _self._gameplayData.gameState.timerSeconds;
 
 	_self.yourTurnTimer = setInterval(function() {
-	  if (timeLeftSeconds <= 0) {
+		if (_self.timerPauseYou) {
+			return;
+		}
+	  if (_self.timeLeftSecondsYou <= 0) {
 	  	clearInterval(_self.yourTurnTimer);
 	  	_self.client.generalClient.sendLeaveRoomRequest.call(_self.client.generalClient,
 	  		{ roomId: _self.client.generalClient.roomController._roomId, userId: _self.client.generalClient.logInSignUpController._userId });
@@ -2063,25 +2090,55 @@ gameController.prototype.startYourTimer = function () {
 	  	return;
 	  }
 
-	  timeLeftSeconds--;
-	  $('.anime-cb-turn-timer-text.player-you').text(timeLeftSeconds);
+	  _self.timeLeftSecondsYou--;
+	  $('.anime-cb-turn-timer-text.player-you').text(_self.timeLeftSecondsYou);
 	}, 1000);
 };
 
 gameController.prototype.startEnemyTimer = function () {
 	var _self = this;
 
-	var timeLeftSeconds = _self._gameplayData.gameState.timerSeconds;
+	_self.timeLeftSecondsEnemy = _self._gameplayData.gameState.timerSeconds;
 
 	_self.enemyTurnTimer = setInterval(function() {
-	  if (timeLeftSeconds <= 0) {
+		if (_self.timerPauseEnemy) {
+			return;
+		}
+	  if (_self.timeLeftSecondsEnemy <= 0) {
 	  	clearInterval(_self.enemyTurnTimer);
+	  	_self.winGameEnemyTimeout = setTimeout(function() {
+	  		_self.client.winGameEnemyTimeout({ roomId: _self._roomData.id });
+	  	}, 5000);
 	  	return;
 	  }
 
-	  timeLeftSeconds--;
-	  $('.anime-cb-turn-timer-text.player-enemy').text(timeLeftSeconds);
+	  _self.timeLeftSecondsEnemy--;
+	  $('.anime-cb-turn-timer-text.player-enemy').text(_self.timeLeftSecondsEnemy);
 	}, 1000);
+};
+
+gameController.prototype.pauseTimerYou = function () {
+	var _self = this;
+
+	_self.timerPauseYou = true;
+};
+
+gameController.prototype.resumeTimerYou = function () {
+	var _self = this;
+
+	_self.timerPauseYou = false;
+};
+
+gameController.prototype.pauseTimerEnemy = function () {
+	var _self = this;
+
+	_self.timerPauseEnemy = true;
+};
+
+gameController.prototype.resumeTimerEnemy = function () {
+	var _self = this;
+
+	_self.timerPauseEnemy = false;
 };
 
 gameController.prototype.drawCardFromDeckYouAnimation = function (card) {

@@ -16,6 +16,10 @@
 
 <script type="text/javascript">
     window.onerror = function (msg, url, lineNo, columnNo, error) {
+      if ($('.anime-cb-screen-game').is(':visible') && !_gameClient.gameController._gameplayData) {
+        return;
+      }
+
       window.alert('There was a problem while processing your request.');
       if(error !== null) {
         if(error.stack != '') {

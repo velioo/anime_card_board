@@ -185,6 +185,7 @@ const _FINISH_CARD = {
   },
   "required": [ "roomId", "cardId" ],
 };
+const _WIN_GAME_ENEMY_TIMEOUT = _WIN_GAME_FORMALLY;
 
 module.exports = {
   SIGN_UP: _SIGN_UP,
@@ -204,4 +205,5 @@ module.exports = {
   END_PHASE: _END_PHASE,
   DISCARD_CARD: _DISCARD_CARD,
   FINISH_CARD: _FINISH_CARD,
+  WIN_GAME_ENEMY_TIMEOUT: _WIN_GAME_ENEMY_TIMEOUT,
 };

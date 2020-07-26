@@ -85,7 +85,7 @@ module.exports = {
             boardMatrix: JSON.parse(queryStatusBoards.rows[0].board_matrix_json),
             boardDataPlayers: boardDataPlayers,
           },
-          timerSeconds: 5000,
+          timerSeconds: 300,
           nextPhase: TURN_PHASES.DRAW,
           playerIdDrawnCard: null,
           playerIdSummonedCard: null,
@@ -259,6 +259,10 @@ module.exports = {
       assert(ctx.gameplayData.gameState.nextPhase == TURN_PHASES.DRAW);
 
       ctx.gameplayData.gameState.nextPhase = TURN_PHASES.STANDBY;
+      var currTime = new Date();
+      currTime = Math.round(currTime.getTime() / 1000);
+      ctx.gameplayData.gameState.startTurnTime = currTime;
+      ctx.gameplayData.gameState.turnDeadlineTime = currTime + ctx.gameplayData.gameState.timerSeconds;
 
       await gameCore.drawPhaseHook(ctx);
 
@@ -763,7 +767,59 @@ module.exports = {
 
       logger.info('queryStatus: ', queryStatus);
 
-      assert(queryStatus.rows[0].id);
+      // assert(queryStatus.rows[0].id);
+
+      await pg.pool.query('COMMIT');
+    } catch(err) {
+      ctx.errors.push({ dataPath: '/win_game_formally', message: 'There was a problem finishing the game. Please try again later.' });
+
+      await pg.pool.query('ROLLBACK');
+
+      logger.info('Failed to win game formally: %o', err);
+    }
+  },
+  winGameEnemyTimeout: async (ctx, next) => {
+    logger.info('winGameEnemyTimeout gameController');
+    ctx.errors = [];
+
+    await pg.pool.query('BEGIN');
+
+    try {
+      ctx.data.roomId = parseInt(ctx.data.roomId);
+
+      const isSchemaValid = ajv.validate(SCHEMAS.WIN_GAME_ENEMY_TIMEOUT, ctx.data);
+
+      assert(isSchemaValid);
+      assert(ctx.session.userData && ctx.session.userData.userId);
+
+      let queryStatus = await utils.lockRowById({ table: 'games', field: 'room_id', queryArg: ctx.data.roomId });
+
+      assert(queryStatus.rows[0].player1_id == ctx.session.userData.userId
+        || queryStatus.rows[0].player2_id == ctx.session.userData.userId);
+
+      ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
+      ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
+
+      assert(ctx.session.userData.userId != ctx.gameplayData.gameState.currPlayerId);
+      assert(ctx.session.userData.userId == ctx.roomData.player1Id || ctx.session.userData.userId == ctx.roomData.player2Id);
+
+      var currTime = new Date();
+      currTime = Math.round(currTime.getTime() / 1000);
+      assert(currTime > ctx.gameplayData.gameState.turnDeadlineTime);
+
+      queryStatus = await pg.pool.query(`
+
+        UPDATE games
+        SET status_id = 2,
+          winning_player_id = $1,
+          finished_at = now()
+        WHERE room_id = $2
+          AND status_id = 1
+        RETURNING id
+
+      `, [ ctx.session.userData.userId, ctx.data.roomId ]);
+
+      logger.info('queryStatus: ', queryStatus);
 
       await pg.pool.query('COMMIT');
     } catch(err) {
