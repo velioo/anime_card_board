@@ -149,7 +149,7 @@ var self = module.exports = {
   logOut: async (ctx, next) => {
     ctx.errors = [];
 
-    await gameServer.leaveRoom(ctx, next);
+    await gameServer.processDisconnect(ctx, next);
 
     if (ctx.session.isUserLoggedIn) {
       ctx.session.userData = null;

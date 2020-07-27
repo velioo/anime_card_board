@@ -96,6 +96,7 @@ var startGameResponse = {
 							"required": cardObjRequiredFields,
 						},
 						"playerIdFinishCard": { "type": ["integer", "null"] },
+						"activePlayerId": { "type": "integer" },
 						"playerIdWinGame": { "type": ["integer", "null"] },
 						"playersState": {
 							"type": "object",
@@ -116,6 +117,14 @@ var startGameResponse = {
 											"cardsCanSummonCommonCount": { "type": "integer" },
 											"cardsCanSummonRareCount": { "type": "integer" },
 											"cardsCanSummonEpicCount": { "type": "integer" },
+										},
+									},
+									"cardsSummonedThisTurnCount": {
+										"type": "object",
+										"properties": {
+											"common": { "type": "integer" },
+											"rare": { "type": "integer" },
+											"epic": { "type": "integer" },
 										},
 									},
 									"cardsOnFieldArr": {

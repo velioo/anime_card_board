@@ -169,6 +169,8 @@ gameController.prototype.initIntervals = function() {
 gameController.prototype.resetGameState = function () {
 	var _self = this;
 
+	console.log('RESET GAME STATE');
+
 	_self._gameplayData = null;
 	_self._roomData = null;
 	_self._yourName = null;
@@ -207,6 +209,10 @@ gameController.prototype.resetGameState = function () {
 	_self.timerPauseEnemy = false;
 	_self.timerPauseYou = false;
 	clearTimeout(_self.winGameEnemyTimeout);
+	_self.timeLeftSecondsYou = null;
+	_self.timeLeftSecondsEnemy = null;
+	clearTimeout(_self._startDrawCardAnimationsFinishedFlushTimeout);
+	_self._forceFinish = false;
 };
 
 gameController.prototype.setLeaveButton = function () {
@@ -223,8 +229,7 @@ gameController.prototype.setLeaveButton = function () {
 
 	_self.client.generalClient.roomController.resetRoomsInterval.call(_self.client.generalClient.roomController);
 	_self.client.generalClient.sendLeaveRoomRequest.call(_self.client.generalClient,
-		{ roomId: _self.client.generalClient.roomController._roomId,
-		userId: _self.client.generalClient.logInSignUpController._userId });
+		{ roomId: _self.client.generalClient.roomController._roomId });
 };
 
 gameController.prototype.processWinGameFormallyResponse = function (data) {
@@ -238,6 +243,7 @@ gameController.prototype.processWinGameFormallyResponse = function (data) {
 		assert(data.errors.length > 0);
 
 		_self.showAlertError(data.errors[0].message);
+		return;
 	}
 
 	if (!_self._gameplayData) {
@@ -298,12 +304,8 @@ gameController.prototype.beforeUnload = function(event) {
 gameController.prototype.hideEventsInfo = function (callback, seconds = 1000) {
 	var _self = this;
 
-	console.log('hide venets seconmds: ' + seconds);
-
 	_self.hideEventsInfoTimeout = setTimeout(function() {
-	  $(_self.EVENTS_INFO_ID).css("-webkit-animation", "hide-event-popup 1s cubic-bezier(0.165, 0.840, 0.440, 1.000) both");
-	  $(_self.EVENTS_INFO_ID).css("animation", "hide-event-popup 1s cubic-bezier(0.165, 0.840, 0.440, 1.000) both");
-	  $(_self.EVENTS_INFO_ID).css("z-index", 1);
+	  $(_self.EVENTS_INFO_ID).removeClass("showEvent hideEvent").addClass("hideEvent");
 	  if (typeof callback === "function") {
 	  	callback.call(_self);
 	  }
@@ -313,10 +315,8 @@ gameController.prototype.hideEventsInfo = function (callback, seconds = 1000) {
 gameController.prototype.showEventsInfo = function (infoText) {
 	var _self = this;
 
-	$(_self.EVENTS_INFO_ID).css("z-index", 20);
 	$(_self.EVENTS_INFO_TEXT_ID).text(infoText);
-  $(_self.EVENTS_INFO_ID).css("-webkit-animation", "show-event-popup-slide-right 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both");
-  $(_self.EVENTS_INFO_ID).css("animation", "show-event-popup-slide-right 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both");
+	$(_self.EVENTS_INFO_ID).removeClass("hideEvent showEvent").addClass("showEvent");
 };
 
 gameController.prototype.renderGameField = function () {
@@ -373,6 +373,8 @@ gameController.prototype.setTimerValues = function () {
 	var _self = this;
 
 	$(_self.TIMER_CLASS).text(_self._gameplayData.gameState.timerSeconds);
+	_self.timeLeftSecondsYou = _self._gameplayData.gameState.timerSeconds;
+	_self.timeLeftSecondsEnemy = _self._gameplayData.gameState.timerSeconds;
 };
 
 gameController.prototype.renderBoard = function () {
@@ -499,14 +501,18 @@ gameController.prototype.drawStartCards = function () {
 gameController.prototype.startDrawCardAnimationsFinishedPoll = function (callback) {
 	var _self = this;
 
-	_self.animationsFinishedPollInterval = setInterval(function() {
-		if (_self.drawCardAnimationsFinishedYou && _self.drawCardAnimationsFinishedEnemy) {
-			clearInterval(_self.animationsFinishedPollInterval);
-			if (typeof callback == "function") {
-				callback.call(_self);
+	_self._forceFinish = true;
+	_self._startDrawCardAnimationsFinishedFlushTimeout = setTimeout(function() {
+		_self._forceFinish = false;
+		_self.animationsFinishedPollInterval = setInterval(function() {
+			if ((_self.drawCardAnimationsFinishedYou && _self.drawCardAnimationsFinishedEnemy) || _self._forceFinish) {
+				clearInterval(_self.animationsFinishedPollInterval);
+				if (typeof callback == "function") {
+					callback.call(_self);
+				}
 			}
-		}
-	}, 500);
+		}, 50);
+	}, 60);
 };
 
 gameController.prototype.drawCard = function () {
@@ -560,11 +566,19 @@ gameController.prototype.processDrawCard = function (data) {
 					clearInterval(_self.checkForCardYou);
 					_self.checkForCardYouIntervalEnabled = false;
 				}
-			}, 600);
+			}, 550);
 		}
 	} else {
 		_self._cardsDrawnEnemy++;
 		if (!_self.checkForCardEnemyIntervalEnabled) {
+			if (_self._gameplayData.gameState.playersState[_self._enemyUserId].cardsToDraw == 0) {
+				_self.hideEventsInfo(null, 0);
+			} else if (_self._gameplayData.gameState.playersState[_self._enemyUserId].cardsToDraw > 0
+				&& _self._gameplayData.gameState.nextPhase != _self.TURN_PHASES.DRAW) {
+				var eventInfoText =  _self._enemyName + " draws "
+					+ _self._gameplayData.gameState.playersState[_self._enemyUserId].cardsToDraw + " card/s from the deck";
+				_self.showEventsInfo(eventInfoText);
+			}
 			_self.drawCardFromDeckEnemyAnimation();
 			_self._cardsDrawnEnemy--;
 			_self.checkForCardEnemyIntervalEnabled = true;
@@ -576,12 +590,11 @@ gameController.prototype.processDrawCard = function (data) {
 					clearInterval(_self.checkForCardEnemy);
 					_self.checkForCardEnemyIntervalEnabled = false;
 					_self.drawCardAnimationsFinishedEnemy = true;
-					// _self.hideEventsInfo(null, 0);
 				} else {
 					clearInterval(_self.checkForCardEnemy);
 					_self.checkForCardEnemyIntervalEnabled = false;
 				}
-			}, 600);
+			}, 550);
 		}
 	}
 };
@@ -727,42 +740,72 @@ gameController.prototype.processMainPhase = function (data) {
 };
 
 gameController.prototype.summonCard = function (card) {
-	logger.info("Trying to summon card: ", card);
-	console.log('Trying to summoncard: ', card);
+	logger.info("Trying to summon card");
 
 	var _self = this;
 
-	var playerState = _self._gameplayData.gameState.playersState[_self._yourUserId];
-	var cardsOnFieldCount = playerState.cardsOnFieldArr.length;
+  var boardPath = _self._gameplayData.gameState.boardData.boardDataPlayers.boardPath;
+  var currBoardIndexYou = _self._gameplayData.gameState.playersState[_self._yourUserId].currBoardIndex;
+  var currBoardIndexEnemy = _self._gameplayData.gameState.playersState[_self._enemyUserId].currBoardIndex;
+	var playerStateYou = _self._gameplayData.gameState.playersState[_self._yourUserId];
+	var playerStateEnemy = _self._gameplayData.gameState.playersState[_self._enemyUserId];
+	var cardsOnFieldCount = playerStateYou.cardsOnFieldArr.length;
 	var cardRarity = $(card).data("cardRarity");
+	var cardEffect = $(card).data("cardEffect");
 	var cardId = $(card).data("cardId");
 	var cardIdx = $(card).index();
 	var retrySummon = false;
 
-	if (cardsOnFieldCount + 1 > playerState.maxCardsOnField
-		|| ! playerState.cardsSummonConstraints.cardsCanSummonAny) {
+	if (cardsOnFieldCount + 1 > playerStateYou.maxCardsOnField
+		|| ! playerStateYou.cardsSummonConstraints.cardsCanSummonAny) {
 		retrySummon = true;
 	}
 
 	switch(cardRarity) {
 		case _self.CARD_RARITIES.COMMON:
-			if (! playerState.cardsSummonConstraints.cardsCanSummonCommon
-				|| playerState.cardsSummonConstraints.cardsCanSummonCommonCount <= 0) {
+			if (! playerStateYou.cardsSummonConstraints.cardsCanSummonCommon
+				|| playerStateYou.cardsSummonConstraints.cardsCanSummonCommonCount <= 0) {
 				retrySummon = true;
 			}
 			break;
 		case _self.CARD_RARITIES.RARE:
-			if (! playerState.cardsSummonConstraints.cardsCanSummonRare
-				|| playerState.cardsSummonConstraints.cardsCanSummonRareCount <= 0) {
+			if (! playerStateYou.cardsSummonConstraints.cardsCanSummonRare
+				|| playerStateYou.cardsSummonConstraints.cardsCanSummonRareCount <= 0) {
 				retrySummon = true;
 			}
 			break;
 		case _self.CARD_RARITIES.EPIC:
-					if (! playerState.cardsSummonConstraints.cardsCanSummonEpic
-						|| playerState.cardsSummonConstraints.cardsCanSummonEpicCount <= 0) {
+					if (! playerStateYou.cardsSummonConstraints.cardsCanSummonEpic
+						|| playerStateYou.cardsSummonConstraints.cardsCanSummonEpicCount <= 0) {
 				retrySummon = true;
 			}
 			break;
+	}
+
+	if (cardEffect.moveSpacesForward) {
+		if (_self._yourUserId == _self._roomData.player1Id) {
+			if (!boardPath[currBoardIndexYou + cardEffect.moveSpacesForward]) {
+				retrySummon = true;
+			}
+		} else if (currBoardIndexYou - cardEffect.moveSpacesForward < 0) {
+				retrySummon = true;
+		}
+	} else if (cardEffect.moveSpacesBackwardsUpToEnemy) {
+		if (_self._enemyUserId == _self._roomData.player2Id) {
+			if (currBoardIndexEnemy >= _self._gameplayData.gameState.boardData.boardDataPlayers.player2StartBoardIndex) {
+				retrySummon = true;
+			}
+		} else if (currBoardIndexEnemy <= _self._gameplayData.gameState.boardData.boardDataPlayers.player1StartBoardIndex) {
+				retrySummon = true;
+		}
+	} else if (cardEffect.moveSpacesBackwardsEnemy) {
+		if (_self._enemyUserId == _self._roomData.player2Id) {
+			if (!boardPath[currBoardIndexEnemy + cardEffect.moveSpacesBackwardsEnemy]) {
+				retrySummon = true;
+			}
+		} else if (currBoardIndexEnemy - cardEffect.moveSpacesBackwardsEnemy < 0) {
+				retrySummon = true;
+		}
 	}
 
 	if (retrySummon) {
@@ -860,7 +903,7 @@ gameController.prototype.processRollDiceBoard = function (data) {
 			_self.rollDiceYou(_self._gameplayData.gameState.rollDiceBoard.rollDiceValue, _self.moveYourCharacter, _self.enableActionsInEnemyPhase);
 		}
 	} else {
-		_self.hideEventsInfo(null, 0);
+		// _self.hideEventsInfo(null, 0);
 
 		if (_self._gameplayData.gameState.currPlayerId == _self._enemyUserId) {
 			_self.rollDiceEnemy(_self._gameplayData.gameState.rollDiceBoard.rollDiceValue, _self.moveEnemyCharacter, _self.waitForEnemyActions);
@@ -1097,7 +1140,7 @@ gameController.prototype.switchPhaseYou = function (currPhaseIdSelector) {
 	  	$(currPhaseIdSelector).removeClass("active");
 	  	$(currPhaseIdSelector).addClass("ended");
 	  }
-  }.bind(this), 2000);
+  }.bind(this), 2100);
 };
 
 gameController.prototype.enableMainPhaseActions = function () {
@@ -1217,6 +1260,9 @@ gameController.prototype.performCardEffectYou = function (card) {
 		}	else if (card.cardEffect.moveSpacesForward) {
 			_self.moveYourCharacter(card.cardEffect.moveSpacesForward,
 				_self.destroyCardAnimationYou.bind(_self, card, _self.enableMainPhaseActions), 1000);
+		} else if (card.cardEffect.moveSpacesBackwardsEnemy) {
+			_self.moveEnemyCharacter(card.cardEffect.moveSpacesBackwardsEnemy,
+				_self.destroyCardAnimationYou.bind(_self, card, _self.checkIfEnemyIsOnSpecialSpace), 0);
 		}
 	}
 };
@@ -1308,7 +1354,7 @@ gameController.prototype.setBoardSpaceListenerMoveSpacesForwardsUpToYou = functi
 
 	if (i == 0) {
 		_self.client.finishCardEffect({ roomId: _self._roomData.id, cardId: card.cardId,
-			finishData: { moveSpacesForward: 0 } });
+			finishData: { moveSpacesForward: card.cardEffect.moveSpacesForwardUpTo } });
 		$(_self.BOARD_ID).css("z-index", 1);
 	}
 };
@@ -1361,7 +1407,7 @@ gameController.prototype.setBoardSpaceListenerMoveSpacesBackwardsUpToEnemyYou = 
 
 	if (i == 0) {
 		_self.client.finishCardEffect({ roomId: _self._roomData.id, cardId: card.cardId,
-			finishData: { moveSpacesBackwardsEnemy: 0 } });
+			finishData: { moveSpacesBackwardsEnemy: card.cardEffect.moveSpacesBackwardsUpToEnemy } });
 		$(_self.BOARD_ID).css("z-index", 1);
 	}
 };
@@ -1473,6 +1519,9 @@ gameController.prototype.performCardEffectEnemy = function (card) {
 		} else if (card.cardEffect.moveSpacesForward) {
 			_self.moveEnemyCharacter(card.cardEffect.moveSpacesForward,
 				_self.destroyCardAnimationEnemy.bind(_self, card, _self.waitForEnemyActions), 1000);
+		} else if (card.cardEffect.moveSpacesBackwardsEnemy) {
+			_self.moveYourCharacter(card.cardEffect.moveSpacesBackwardsEnemy,
+				_self.destroyCardAnimationEnemy.bind(_self, card, _self.checkIfYouAreOnSpecialSpace), 0);
 		}
 	}
 };
@@ -1598,10 +1647,16 @@ gameController.prototype.waitForEnemyActions = function () {
 			_self.startDrawCardAnimationsFinishedPoll(_self.waitForEnemyActions);
 		}
 	} else if (enemyState.cardsToDiscard > 0) {
-		_self.showEventsInfo( _self._enemyName + " must discard "
-			+ enemyState.cardsToDiscard + " card/s from his hand");
+		var eventInfoText = _self._enemyName + " must discard "
+			+ enemyState.cardsToDiscard + " card/s from his hand";
+		_self.showEventsInfo(eventInfoText);
 	} else {
-		_self.hideEventsInfo(null, 0);
+		if (_self._gameplayData.gameState.nextPhase != _self.TURN_PHASES.STANDBY
+			&& _self._gameplayData.gameState.nextPhase != _self.TURN_PHASES.MAIN) {
+			console.log('waitForEnemyActions HIDE');
+			console.log(_self._gameplayData.gameState.nextPhase, _self.TURN_PHASES.STANDBY, _self.TURN_PHASES.MAIN);
+			_self.hideEventsInfo(null, 0);
+		}
 	}
 };
 
@@ -1657,7 +1712,7 @@ gameController.prototype.switchPhaseEnemy = function (currPhaseIdSelector, callb
   	if (typeof callback === "function") {
   		callback.call(_self);
   	}
-  }, 2000);
+  }, 2100);
 };
 
 gameController.prototype.nextTurn = function () {
@@ -1713,8 +1768,8 @@ gameController.prototype.populateGraveyard = function (playerId, playerSelectorC
 	}
 
 	var graveyardArr = _self._gameplayData.gameState.playersState[playerId].cardsInGraveyard;
-
-	$(_self.MODAL_GRAVEYARD_CLASS + playerSelectorClass).find('.modal-body').html("");
+	var $modal_body = $(_self.MODAL_GRAVEYARD_CLASS + playerSelectorClass).find('.modal-body');
+	$modal_body.html("");
 
 	graveyardArr.forEach(function(card) {
 		var cardId = card.cardId;
@@ -1722,11 +1777,12 @@ gameController.prototype.populateGraveyard = function (playerId, playerSelectorC
 		var cardText = card.cardText;
 		var cardImg = card.cardImg;
 		var cardRarity = card.cardRarity;
+		var cardEffect = card.cardEffect;
 
-		$(_self.MODAL_GRAVEYARD_CLASS + playerSelectorClass).find('.modal-body')
-			.prepend('<img class="anime-cb-card ' + playerSelectorClass.substr(1) + ' in-graveyard" data-card-text="' + cardText
+		$modal_body.prepend('<img class="anime-cb-card ' + playerSelectorClass.substr(1) + ' in-graveyard" data-card-text="' + cardText
 				+ '" data-card-name="' + cardName + '" src="/imgs/player_cards/' + cardImg + '" data-card-id="' + cardId
-				+ '" data-card-rarity="' + cardRarity +'">');
+				+ '" data-card-rarity="' + cardRarity + '">');
+		$modal_body.find('img').first().data("cardEffect", cardEffect);
 	});
 };
 
@@ -1967,6 +2023,7 @@ gameController.prototype.rollDiceYou = function (diceValue, callback, callback2)
     numberOfDice: 1,
     delay: 1500,
     values: [diceValue],
+    noSound: true,
     callback: callback.bind(_self, diceValue, callback2, 2000)
   };
 
@@ -1982,6 +2039,7 @@ gameController.prototype.rollDiceEnemy = function (diceValue, callback, callback
     numberOfDice: 1,
     delay: 1500,
     values: [diceValue],
+    noSound: true,
     callback: callback.bind(_self, diceValue, callback2, 2000)
   };
 
@@ -2000,6 +2058,7 @@ gameController.prototype.summonCardFromHandAnimationYou = function (cardObj, cal
 	var cardText = cardObj.cardText;
 	var cardImg = cardObj.cardImg;
 	var cardRarity = cardObj.cardRarity;
+	var cardEffect = cardObj.cardEffect;
 	var cardSuccessfullySummoned = false;
 
 	$(_self.CARD_FIELD_CLASS + _self.PLAYER_YOU_CLASS + ' td').each(function(idx) {
@@ -2008,7 +2067,8 @@ gameController.prototype.summonCardFromHandAnimationYou = function (cardObj, cal
 			$(this).css("animation", "summon-your-card 0.6s ease-out both");
 			$(this).html('<img class="anime-cb-card-onfield hover player-you" data-card-text="' + cardText
 				+ '" data-card-name="' + cardName + '" src="/imgs/player_cards/' + cardImg + '" data-card-id="' + cardId
-				+ '" data-card-rarity="' + cardRarity +'">');
+				+ '" data-card-rarity="' + cardRarity + '">');
+			$(this).find('img').data("cardEffect", cardEffect);
 			$(_self.CARDS_IN_HAND_CLASS).css("overflow", "hidden");
 			$(card).remove();
 
@@ -2044,6 +2104,7 @@ gameController.prototype.summonCardFromHandAnimationEnemy = function (cardObj, c
 	var cardText = cardObj.cardText;
 	var cardImg = cardObj.cardImg;
 	var cardRarity = cardObj.cardRarity;
+	var cardEffect = cardObj.cardEffect;
 	var cardSuccessfullySummoned = false;
 
 	$($(_self.CARD_FIELD_CLASS + _self.PLAYER_ENEMY_CLASS + ' td').get().reverse()).each(function(idx) {
@@ -2052,7 +2113,8 @@ gameController.prototype.summonCardFromHandAnimationEnemy = function (cardObj, c
 			$(this).css("animation", "summon-enemy-card 0.6s ease-out both");
 			$(this).html('<img class="anime-cb-card-onfield hover player-enemy" data-card-text="' + cardText
 				+ '" data-card-name="' + cardName + '" src="/imgs/player_cards/' + cardImg + '" data-card-id="' + cardId
-				+ '" data-card-rarity="' + cardRarity +'">');
+				+ '" data-card-rarity="' + cardRarity + '">');
+			$(this).find('img').data("cardEffect", cardEffect);
 			$(_self.CARDS_IN_HAND_CLASS).css("overflow", "hidden");
 			$(card).remove();
 
@@ -2084,7 +2146,7 @@ gameController.prototype.startYourTimer = function () {
 	  if (_self.timeLeftSecondsYou <= 0) {
 	  	clearInterval(_self.yourTurnTimer);
 	  	_self.client.generalClient.sendLeaveRoomRequest.call(_self.client.generalClient,
-	  		{ roomId: _self.client.generalClient.roomController._roomId, userId: _self.client.generalClient.logInSignUpController._userId });
+	  		{ roomId: _self.client.generalClient.roomController._roomId });
 			_self.showEventsInfo("Your time is up, YOU LOSE...");
 			_self.setLeaveButton();
 	  	return;
@@ -2149,6 +2211,7 @@ gameController.prototype.drawCardFromDeckYouAnimation = function (card) {
 	var cardText = card.cardText;
 	var cardImg = card.cardImg;
 	var cardRarity = card.cardRarity;
+	var cardEffect = card.cardEffect;
 
   var cardsInHandCount = $(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_YOU_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_YOU_CLASS).length;
   var drawFromDeckAnimationCount = cardsInHandCount + 1;
@@ -2175,6 +2238,7 @@ gameController.prototype.drawCardFromDeckYouAnimation = function (card) {
   	+ drawFromDeckAnimationCount + ' 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;" class="anime-cb-card player-you"\
   		 data-card-id="' + cardId + '" data-card-text="' + cardText + '" data-card-name="' + cardName + '" src="/imgs/player_cards/'
   		 + cardImg + '" data-card-rarity="' + cardRarity + '">');
+  $(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_YOU_CLASS + ' img').last().data("cardEffect", cardEffect);
 
   _self.increaseYourCardsInHandDensity();
 
@@ -2198,7 +2262,7 @@ gameController.prototype.drawCardFromDeckYouAnimation = function (card) {
   		_self.drawCardInteractive = false;
   	}
   	// $(_self.CARDS_IN_HAND_WRAPPER_CLASS + _self.PLAYER_YOU_CLASS).css("overflow", "hidden");
-  }, 700);
+  }, 550);
 };
 
 gameController.prototype.drawCardFromDeckEnemyAnimation = function(card) {
@@ -2297,6 +2361,7 @@ gameController.prototype.increaseYourCardsInHandDensity = function() {
 		+ ':nth-child(1)').css("margin-left", "0px");
   var baseMarginLeft = parseInt($(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_YOU_CLASS
   	+ ' ' + _self.CARD_CLASS + _self.PLAYER_YOU_CLASS + ':nth-child(2)').css("margin-left"));
+
   if (baseMarginLeft >= -96)
   {
   	baseMarginLeft -= 8;
@@ -2313,7 +2378,11 @@ gameController.prototype.decreaseYourCardsInHandDensity = function() {
 		+ ':nth-child(1)').css("margin-left", "0px");
   var baseMarginLeft = parseInt($(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_YOU_CLASS
   	+ ' ' + _self.CARD_CLASS + _self.PLAYER_YOU_CLASS + ':nth-child(2)').css("margin-left"));
-  baseMarginLeft += 8;
+
+  if ($(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_YOU_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_YOU_CLASS).length <= 13)
+  {
+  	baseMarginLeft += 8;
+  }
 
   $(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_YOU_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_YOU_CLASS
   	+ ':not(:first)').css("margin-left", baseMarginLeft + "px");
@@ -2326,6 +2395,7 @@ gameController.prototype.increaseEnemyCardsInHandDensity = function() {
 		+ ':nth-child(1)').css("margin-left", "0px");
   var baseMarginLeft = parseInt($(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_ENEMY_CLASS
   	+ ' ' + _self.CARD_CLASS + _self.PLAYER_ENEMY_CLASS + ':nth-child(2)').css("margin-left"));
+
   if (baseMarginLeft >= -96)
   {
   	baseMarginLeft -= 8;
@@ -2342,7 +2412,11 @@ gameController.prototype.decreaseEnemyCardsInHandDensity = function() {
 		+ ':nth-child(1)').css("margin-left", "0px");
   var baseMarginLeft = parseInt($(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_ENEMY_CLASS
   	+ ' ' + _self.CARD_CLASS + _self.PLAYER_ENEMY_CLASS + ':nth-child(2)').css("margin-left"));
-  baseMarginLeft += 8;
+
+  if ($(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_ENEMY_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_ENEMY_CLASS).length <= 13)
+  {
+  	baseMarginLeft += 8;
+  }
 
   $(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_ENEMY_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_ENEMY_CLASS
   	+ ':not(:first)').css("margin-left", baseMarginLeft + "px");
@@ -2350,6 +2424,10 @@ gameController.prototype.decreaseEnemyCardsInHandDensity = function() {
 
 gameController.prototype.updateGameStatusInfo = function () {
 	var _self = this;
+
+	if (!_self._gameplayData) {
+		return;
+	}
 
 	var gameState = _self._gameplayData.gameState;
 	var playerYouStatus = gameState.playersState[_self._yourUserId];

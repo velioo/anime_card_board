@@ -744,6 +744,18 @@ body {
   border-radius: 20px;
 }
 
+#anime-cb-game-events-info.showEvent {
+  z-index: 20;
+  animation: show-event-popup-slide-right 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+  -webkit-animation: show-event-popup-slide-right 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+}
+
+#anime-cb-game-events-info.hideEvent {
+  z-index: 3;
+  animation: hide-event-popup 0.5s cubic-bezier(0.165, 0.840, 0.440, 1.000) both;
+  -webkit-animation: hide-event-popup 0.5s cubic-bezier(0.165, 0.840, 0.440, 1.000) both;
+}
+
 .anime-cb-turn-timer.player-enemy {
   position: fixed;
   top: 50%;
@@ -933,10 +945,9 @@ body {
     opacity: 0;
   }
   100% {
-    -webkit-transform: translateX(0);
-            transform: translateX(0);
+    -webkit-transform: translateX(0) translate(-50%, -50%);
+            transform: translateX(0) translate(-50%, -50%);
     opacity: 1;
-    transform: translate(-50%, -50%);
   }
 }
 @keyframes show-event-popup-slide-right {
@@ -946,10 +957,9 @@ body {
     opacity: 0;
   }
   100% {
-    -webkit-transform: translateX(0);
+    -webkit-transform: translateX(0) translate(-50%, -50%);
             transform: translateX(0) translate(-50%, -50%);
     opacity: 1;
-    transform: translate(-50%, -50%);
   }
 }
 
@@ -975,12 +985,11 @@ body {
     transform: translate(-50%, -50%);
   }
   100% {
-    -webkit-transform: scale(2);
-            transform: scale(2);
+    -webkit-transform: scale(2) translate(-20%, -20%);
+            transform: scale(2) translate(-20%, -20%);
     -webkit-filter: blur(4px);
             filter: blur(4px);
     opacity: 0;
-    transform: translate(-50%, -50%);
   }
 }
 @keyframes hide-event-popup {

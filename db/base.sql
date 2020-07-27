@@ -120,8 +120,11 @@ INSERT INTO card_rarities (id, name) VALUES ('common', 'Common');
 INSERT INTO card_rarities (id, name) VALUES ('rare', 'Rare');
 INSERT INTO card_rarities (id, name) VALUES ('epic', 'Epic');
 
-INSERT INTO cards (id, name, description, image, rarity_id, effect_json) VALUES (1, 'Misaka', 'Go 5 spaces forward', 'Misaka.jpg', 'common',
-'{"moveSpacesForward":5,"instantEffect":true,"autoEffect":true}');
-INSERT INTO cards (id, name, description, image, rarity_id, effect_json) VALUES (2, 'Alice', 'Go up to to 3 spaces forward',
-INSERT INTO cards (id, name, description, image, rarity_id, effect_json) VALUES (3, 'Okabe', 'Move your oppoenent up to to 3 spaces backward',
-'Okabe.png', 'common', '{"moveSpacesBackwardsUpToEnemy":3,"instantEffect":true,"autoEffect":false}');
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json) VALUES (1, 'Misaka', 'Go 6 spaces forward', 'Misaka 3.jpg', 'rare',
+'{"moveSpacesForward":6,"instantEffect":true,"autoEffect":true}');
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json) VALUES (2, 'Alice', 'Go up to to 2 spaces forward',
+'Alice.jpg', 'common', '{"moveSpacesForwardUpTo":2, "instantEffect": true, "autoEffect": false}');
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json) VALUES (3, 'Okabe', 'Move your opponent  up to to 2 spaces backward',
+'Okabe.png', 'common', '{"moveSpacesBackwardsUpToEnemy":2,"instantEffect":true,"autoEffect":false}');
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json) VALUES (4, 'Kagura', 'Move your opponent 6 spaces backward',
+'Kagura.jpg', 'rare', '{"moveSpacesBackwardsEnemy":6,"instantEffect":true,"autoEffect":true}');

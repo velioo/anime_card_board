@@ -96,7 +96,7 @@ logInSignUpController.prototype.initListeners = function() {
 logInSignUpController.prototype.initIntervals = function() {
 	var _self = this;
 
-	_self.logInInterval = setInterval(_self.logInIntervalFunc.bind(_self), 3000);
+	// _self.logInInterval = setInterval(_self.logInIntervalFunc.bind(_self), 3000);
 };
 
 logInSignUpController.prototype.logInIntervalFunc = function() {

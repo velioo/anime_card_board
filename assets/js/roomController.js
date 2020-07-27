@@ -51,6 +51,10 @@ roomController.prototype.initListeners = function() {
 		_self.startGame();
 	});
 
+	$(_self.LOBBY_SCREEN_CLASS).on('click', _self.LEAVE_ROOM_BTN_ID, function(e) {
+		_self.client.sendLeaveRoomRequest({ roomId: _self._roomId });
+	});
+
 	$(_self.CREATE_ROOM_SUBMIT_BTN_ID).on('click', function(e) {
 		e.preventDefault();
 
@@ -111,9 +115,10 @@ roomController.prototype.roomsIntervalFunc = function() {
 		_self.client.getCurrentRoomData({ roomId: _self._roomId });
 	}
 
-	if (!$(_self.LOBBY_SCREEN_CLASS).is(':visible') && !_self._inGame && !_self._creatingRoom && !_self._connectingToRoom) {
+	if (!$(_self.LOBBY_SCREEN_CLASS).is(':visible') && !_self._inGame && !_self._creatingRoom
+		&& !_self._connectingToRoom && _self._roomId) {
 		console.log('Leave room from interval');
-		_self.client.sendLeaveRoomRequest({ roomId: _self._roomId, userId: _self.client.logInSignUpController._userId });
+		_self.client.sendLeaveRoomRequest({ roomId: _self._roomId });
 	}
 };
 

@@ -20,12 +20,13 @@ const self = module.exports = {
 	  socket.on('disconnect', async (ctx) => {
 	  	try {
 		  	logger.info('Client disconnected: %o', ctx.session.userData);
+		  	console.log('Client disconnected: ', ctx.session.userData);
 
-		  	// await gameServer.processDisconnect(ctx, next);
+		  	await gameServer.processDisconnect(ctx, next);
 
-		  	//let isSuccessful = ctx.errors.length ? false : true;
+		  	let isSuccessful = ctx.errors.length ? false : true;
 
-		  	//console.log('Errors: ', ctx.errors);
+		  	console.log('Errors: ', ctx.errors);
 	  	} catch(err) {
 	  		socket.emit('serverError', err);
 	  		logger.error('Error: %o', err);

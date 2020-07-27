@@ -22,7 +22,9 @@ var self = module.exports = {
 		let gameState = ctx.gameplayData.gameState;
 
 		gameState.playersState[ctx.session.userData.userId].cardsSummonConstraints.cardsCanSummonAny = true;
-		gameState.playersState[ctx.session.userData.userId].cardsSummonConstraints.cardsCanSummonCommonCount = 2;
+		gameState.playersState[ctx.session.userData.userId].cardsSummonConstraints.cardsCanSummonCommonCount += 10;
+		gameState.playersState[ctx.session.userData.userId].cardsSummonConstraints.cardsCanSummonRareCount += 5;
+		gameState.playersState[ctx.session.userData.userId].cardsSummonConstraints.cardsCanSummonEpicCount += 5;
 	},
 	rollPhaseHook: async(ctx) => {
 		let gameState = ctx.gameplayData.gameState;
@@ -69,6 +71,8 @@ var self = module.exports = {
 
 		let card = ctx.gameplayData.gameState.cardSummoned;
     let cardsOnFieldArr = gameState.playersState[ctx.session.userData.userId].cardsOnFieldArr;
+    let enemyUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
+    let yourUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player1Id : ctx.roomData.player2Id;
 
     cardsOnFieldArr[cardsOnFieldArr.length - 1].cardEffect.isFinished = false;
 
@@ -79,7 +83,12 @@ var self = module.exports = {
 			}
 
 			if (card.cardEffect.moveSpacesForward) {
-				await self.rollDiceBoardHook(ctx, { rollDiceValue: card.cardEffect.moveSpacesForward });
+				await self.rollDiceBoardHook(ctx, { rollDiceValue: card.cardEffect.moveSpacesForward, moveIfCan: false });
+		  }
+
+		  if (card.cardEffect.moveSpacesBackwardsEnemy) {
+		  	await self.rollDiceBoardHook(ctx, { rollDiceValue: card.cardEffect.moveSpacesBackwardsEnemy,
+		  		userId: enemyUserId, moveBackwardsOnNextRoll: true, moveIfCan: false });
 		  }
 		}
 	},
@@ -88,19 +97,20 @@ var self = module.exports = {
 
 		let card = ctx.gameplayData.gameState.cardFinish;
     let finishData = ctx.data.finishData;
+    let enemyUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
+    let yourUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player1Id : ctx.roomData.player2Id;
 
 		gameState.playersState[ctx.session.userData.userId].cardsInGraveyard.push(card);
 
 		if (card.cardEffect.moveSpacesForwardUpTo) {
 			assert(finishData.moveSpacesForward >= 0);
 			card.cardEffect.moveSpacesForward = finishData.moveSpacesForward;
-			await self.rollDiceBoardHook(ctx, { rollDiceValue: finishData.moveSpacesForward });
+			await self.rollDiceBoardHook(ctx, { rollDiceValue: finishData.moveSpacesForward, moveIfCan: false });
 	  } else if (card.cardEffect.moveSpacesBackwardsUpToEnemy) {
-	  	assert(finishData.moveSpacesBackwardsEnemy >= 0);
+	  	assert(finishData.moveSpacesBackwardsEnemy > 0);
 	  	card.cardEffect.moveSpacesBackwardsEnemy = finishData.moveSpacesBackwardsEnemy;
-	  	let enemyUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
 	  	await self.rollDiceBoardHook(ctx, { rollDiceValue: finishData.moveSpacesBackwardsEnemy,
-	  		userId: enemyUserId, moveBackwardsOnNextRoll: true });
+	  		userId: enemyUserId, moveBackwardsOnNextRoll: true, moveIfCan: false });
 	  }
 	},
 	rollDiceBoardHook: async (ctx, overwriteParams) => {
@@ -109,20 +119,24 @@ var self = module.exports = {
 	  let boardPath = gameState.boardData.boardDataPlayers.boardPath;
 	  let boardMatrix = gameState.boardData.boardMatrix;
 	  let userId = ctx.session.userData.userId;
+	  let moveIfCan = true;
     let rollDiceValue;
 
 		gameState.rollDiceBoard.rollDiceValue = utils.getRandomInt(1, 6);
 		rollDiceValue = gameState.rollDiceBoard.rollDiceValue;
 
 		if (overwriteParams) {
-			if (overwriteParams.rollDiceValue) {
+			if ("rollDiceValue" in overwriteParams) {
 				rollDiceValue = overwriteParams.rollDiceValue;
 			}
-			if (overwriteParams.userId) {
+			if ("userId" in overwriteParams) {
 				ctx.session.userData.userId = overwriteParams.userId;
 			}
-			if (overwriteParams.moveBackwardsOnNextRoll) {
+			if ("moveBackwardsOnNextRoll" in overwriteParams) {
 				gameState.playersState[ctx.session.userData.userId].moveBackwardsOnNextRoll = overwriteParams.moveBackwardsOnNextRoll;
+			}
+			if ("moveIfCan" in overwriteParams) {
+				moveIfCan = overwriteParams.moveIfCan;
 			}
 		}
 
@@ -131,15 +145,35 @@ var self = module.exports = {
 
     if (ctx.roomData.player1Id == ctx.session.userData.userId) {
     	if (!gameState.playersState[ctx.session.userData.userId].moveBackwardsOnNextRoll) {
-      	moveBoardForwardIfCan(ctx, rollDiceValue);
+    		if (moveIfCan)
+    		{
+      		moveBoardForwardIfCan(ctx, rollDiceValue);
+    		} else {
+    			moveBoardForward(ctx, rollDiceValue);
+    		}
     	} else if (gameState.playersState[ctx.session.userData.userId].moveBackwardsOnNextRoll) {
-    		moveBoardBackwardsIfCan(ctx, rollDiceValue);
+    		if (moveIfCan)
+    		{
+    			moveBoardBackwardsIfCan(ctx, rollDiceValue);
+    		} else {
+    			moveBoardBackwards(ctx, rollDiceValue);
+    		}
     	}
     } else if (ctx.roomData.player2Id == ctx.session.userData.userId) {
     	if (!gameState.playersState[ctx.session.userData.userId].moveBackwardsOnNextRoll) {
-      	moveBoardBackwardsIfCan(ctx, rollDiceValue);
+    		if (moveIfCan)
+    		{
+      		moveBoardBackwardsIfCan(ctx, rollDiceValue);
+      	} else {
+      		moveBoardBackwards(ctx, rollDiceValue);
+      	}
     	} else if (gameState.playersState[ctx.session.userData.userId].moveBackwardsOnNextRoll) {
-    		moveBoardForwardIfCan(ctx, rollDiceValue);
+    		if (moveIfCan)
+    		{
+    			moveBoardForwardIfCan(ctx, rollDiceValue);
+    		} else {
+    			moveBoardForward(ctx, rollDiceValue);
+    		}
     	}
     }
 
@@ -207,6 +241,23 @@ var self = module.exports = {
 	discardCardHook: async (ctx, card) => {
 
 	},
+	activePlayerHook: async (ctx, card) => {
+		let gameState = ctx.gameplayData.gameState;
+
+		let enemyUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
+    let yourUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player1Id : ctx.roomData.player2Id;
+
+		if (gameState.playersState[enemyUserId].canRollDiceBoardCount > 0
+			|| gameState.playersState[enemyUserId].cardsToDraw > 0
+			|| gameState.playersState[enemyUserId].cardsToDiscard > 0
+			|| gameState.playersState[enemyUserId].cardsSummonConstraints.cardsCanSummonCommonCount > 0
+			|| gameState.playersState[enemyUserId].cardsSummonConstraints.cardsCanSummonRareCount > 0
+			|| gameState.playersState[enemyUserId].cardsSummonConstraints.cardsCanSummonEpicCount > 0) {
+			ctx.gameplayData.gameState.activePlayerId = enemyUserId;
+		} else {
+			ctx.gameplayData.gameState.activePlayerId = yourUserId;
+		}
+	},
 };
 
 let moveBoardForwardIfCan = (ctx, count) => {
@@ -223,6 +274,20 @@ let moveBoardBackwardsIfCan = (ctx, count) => {
 	if (currBoardIndex - count >= 0) {
   	ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].currBoardIndex = currBoardIndex - count;
 	}
+};
+
+let moveBoardForward = (ctx, count) => {
+	let currBoardIndex = ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].currBoardIndex;
+
+	assert(ctx.gameplayData.gameState.boardData.boardDataPlayers.boardPath[currBoardIndex + count]);
+  ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].currBoardIndex = currBoardIndex + count;
+};
+
+let moveBoardBackwards = (ctx, count) => {
+	let currBoardIndex = ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].currBoardIndex;
+
+	assert(currBoardIndex - count >= 0);
+  ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].currBoardIndex = currBoardIndex - count;
 };
 
 let rollAgain = (ctx, count) => {

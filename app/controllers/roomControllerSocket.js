@@ -20,28 +20,20 @@ const ajv = new Ajv({ allErrors: true, $data: true, jsonPointers: true });
 const ajvErrors = require('ajv-errors')(ajv);
 
 module.exports = {
-  leaveRoom: async (ctx, next) => {
+  leaveRoomAll: async (ctx, next) => {
     ctx.errors = [];
 
     await pg.pool.query('BEGIN');
 
     try {
-      let userId = null;
-      if (!ctx.session.userData && !ctx.data.userId)
-      {
-          return;
-      }
-
-      userId = ctx.session.userData ? ctx.session.userData.userId : ctx.data.userId;
-
-      assert(userId);
+      assert(ctx.session.userData && ctx.session.userData.userId);
 
       let queryStatus = await pg.pool.query(`
 
         DELETE FROM rooms
         WHERE player1_id = $1
 
-      `, [ userId ]);
+      `, [ ctx.session.userData.userId ]);
 
       queryStatus = await pg.pool.query(`
 
@@ -49,7 +41,47 @@ module.exports = {
         SET player2_id = null
         WHERE player2_id = $1
 
-      `, [ userId ]);
+      `, [ ctx.session.userData.userId ]);
+
+      await pg.pool.query('COMMIT');
+    } catch(err) {
+      ctx.errors.push({ dataPath: '/room_name', message: 'There was a problem leaving the room. Please try again later.' });
+
+      await pg.pool.query('ROLLBACK');
+
+      logger.info('Failed to leave room: %o', err);
+    }
+  },
+  leaveRoom: async (ctx, next) => {
+    ctx.errors = [];
+
+    await pg.pool.query('BEGIN');
+
+    try {
+      if (!ctx.data.roomId) {
+        return;
+      }
+
+      ctx.data.roomId = parseInt(ctx.data.roomId);
+
+      assert(ctx.session.userData && ctx.session.userData.userId);
+
+      let queryStatus = await pg.pool.query(`
+
+        DELETE FROM rooms
+        WHERE player1_id = $1
+        AND id = $2
+
+      `, [ ctx.session.userData.userId, ctx.data.roomId ]);
+
+      queryStatus = await pg.pool.query(`
+
+        UPDATE rooms
+        SET player2_id = null
+        WHERE player2_id = $1
+        AND id = $2
+
+      `, [ ctx.session.userData.userId, ctx.data.roomId ]);
 
       await pg.pool.query('COMMIT');
     } catch(err) {

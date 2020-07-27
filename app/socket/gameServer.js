@@ -4,7 +4,7 @@ const gameController = require('../controllers/gameControllerSocket');
 
 const self = module.exports = {
   processDisconnect: async (ctx, next) => {
-  	await roomController.leaveRoom (ctx, next);
+  	await roomController.leaveRoomAll (ctx, next);
   },
   leaveRoom: async (ctx, next) => {
   	await roomController.leaveRoom (ctx, next);

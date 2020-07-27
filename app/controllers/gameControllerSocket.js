@@ -123,6 +123,11 @@ module.exports = {
                 cardsCanSummonRareCount: 0,
                 cardsCanSummonEpicCount: 0,
               },
+              cardsSummonedThisTurnCount: {
+                common: 0,
+                rare: 0,
+                epic: 0,
+              },
               cardsInHandArr: [],
               cardsOnFieldArr: [],
               maxCardsOnField: 5,
@@ -150,6 +155,11 @@ module.exports = {
                 cardsCanSummonRareCount: 0,
                 cardsCanSummonEpicCount: 0,
               },
+              cardsSummonedThisTurnCount: {
+                common: 0,
+                rare: 0,
+                epic: 0,
+              },
               cardsInHandArr: [],
               cardsOnFieldArr: [],
               maxCardsOnField: 5,
@@ -176,6 +186,8 @@ module.exports = {
       assert(queryStatus.rows[0].id);
 
       ctx.gameplayData.gameState.gameId = queryStatus.rows[0].id;
+
+      await gameCore.activePlayerHook(ctx);
 
       await pg.pool.query('COMMIT');
     } catch (err) {
@@ -215,6 +227,7 @@ module.exports = {
       ctx.gameplayData.gameState.playerIdDrawnCard = ctx.session.userData.userId;
 
       await gameCore.drawCardHook(ctx);
+      await gameCore.activePlayerHook(ctx);
 
       ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsInHandArr.push(ctx.cardDrawn);
 
@@ -265,6 +278,7 @@ module.exports = {
       ctx.gameplayData.gameState.turnDeadlineTime = currTime + ctx.gameplayData.gameState.timerSeconds;
 
       await gameCore.drawPhaseHook(ctx);
+      await gameCore.activePlayerHook(ctx);
 
       queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
         field2: 'room_id', queryArg2: ctx.data.roomId });
@@ -306,9 +320,10 @@ module.exports = {
       assert(ctx.gameplayData.gameState.currPlayerId == ctx.session.userData.userId);
       assert(ctx.gameplayData.gameState.nextPhase == TURN_PHASES.STANDBY);
 
-      ctx.gameplayData.gameState.nextPhase = TURN_PHASES.MAIN_PHASE;
+      ctx.gameplayData.gameState.nextPhase = TURN_PHASES.MAIN;
 
       await gameCore.standyPhaseHook(ctx);
+      await gameCore.activePlayerHook(ctx);
 
       // Do something... -> card effects
 
@@ -350,11 +365,12 @@ module.exports = {
       ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
 
       assert(ctx.gameplayData.gameState.currPlayerId == ctx.session.userData.userId);
-      assert(ctx.gameplayData.gameState.nextPhase == TURN_PHASES.MAIN_PHASE);
+      assert(ctx.gameplayData.gameState.nextPhase == TURN_PHASES.MAIN);
 
       ctx.gameplayData.gameState.nextPhase = TURN_PHASES.ROLL;
 
       await gameCore.mainPhaseHook(ctx);
+      await gameCore.activePlayerHook(ctx);
 
       queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
         field2: 'room_id', queryArg2: ctx.data.roomId });
@@ -409,38 +425,89 @@ module.exports = {
         cardEffect: JSON.parse(cardStatus.rows[0].effect_json),
       };
 
+      let playerState = ctx.gameplayData.gameState.playersState[ctx.session.userData.userId];
+
+      // GUIDE:
+      // Each turn you can summon: (2 common) OR (1 common AND 1 rare) OR (1 epic) cards
+      // Minimum increment is (1 common) OR (2 common and 1 rare cards) !!!
+      // You can't increment only the rare cards you can summon per turn.
+      // If you want +1 rare cards on turn, you must allow -> OR 2 common per turn
+      // 1 epic is worth (2 common AND 1 rare) OR (4 common) OR (2 rare).
+      // If you want to increment +1 epic cards you must allow -> OR (2 common AND 1 rare) OR (4 common) OR (2 rare)
+      // 1 epic = 2 rare = 4 common = 2 common and 1 rare
+      // 1 rare = 2 common
+
+      // COMPLETELY REVAMP THE SYSTEM -> MAKE IT LIKE HEARTHSTONE, EACH CARD COSTS POINTS TO SUMMON, AND YOU HAVE A POOL OF POINTS TO USE
+      // EVERY TURN
+
       switch(cardFromDb.cardRarity) {
         case CARD_RARITIES.COMMON:
-          assert(ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsSummonConstraints.cardsCanSummonCommon
-            && ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsSummonConstraints.cardsCanSummonCommonCount > 0);
-          ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsSummonConstraints.cardsCanSummonCommonCount--;
+          assert(playerState.cardsSummonConstraints.cardsCanSummonCommon && playerState.cardsSummonConstraints.cardsCanSummonCommonCount > 0);
+          playerState.cardsSummonedThisTurnCount.common++;
+
+          playerState.cardsSummonConstraints.cardsCanSummonCommonCount--;
+
+          if (((playerState.cardsSummonedThisTurnCount.common + playerState.cardsSummonedThisTurnCount.rare) == 1)
+            && playerState.cardsSummonConstraints.cardsCanSummonEpicCount > 0) {
+            playerState.cardsSummonConstraints.cardsCanSummonEpicCount--;
+          }
+
+          if (((playerState.cardsSummonedThisTurnCount.common + playerState.cardsSummonedThisTurnCount.rare) >= 3
+            && ((playerState.cardsSummonedThisTurnCount.common + playerState.cardsSummonedThisTurnCount.rare) % 2 == 1))
+            && playerState.cardsSummonConstraints.cardsCanSummonEpicCount > 0) {
+            playerState.cardsSummonConstraints.cardsCanSummonEpicCount--;
+          }
+
+          if (((playerState.cardsSummonedThisTurnCount.common + playerState.cardsSummonedThisTurnCount.rare) >= 2
+            && ((playerState.cardsSummonedThisTurnCount.common + playerState.cardsSummonedThisTurnCount.rare) % 2 == 0))
+            && playerState.cardsSummonConstraints.cardsCanSummonRareCount > 0) {
+            playerState.cardsSummonConstraints.cardsCanSummonRareCount--;
+          }
           break;
         case CARD_RARITIES.RARE:
-          assert(ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsSummonConstraints.cardsCanSummonRare
-            && ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsSummonConstraints.cardsCanSummonRareCount > 0);
-          ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsSummonConstraints.cardsCanSummonRareCount--;
+          assert(playerState.cardsSummonConstraints.cardsCanSummonRare && playerState.cardsSummonConstraints.cardsCanSummonRareCount > 0);
+          playerState.cardsSummonedThisTurnCount.rare++;
+
+          playerState.cardsSummonConstraints.cardsCanSummonRareCount--;
+          playerState.cardsSummonConstraints.cardsCanSummonCommonCount--;
+
+          if (((playerState.cardsSummonedThisTurnCount.common + playerState.cardsSummonedThisTurnCount.rare) == 1)
+            && playerState.cardsSummonConstraints.cardsCanSummonEpicCount > 0) {
+            playerState.cardsSummonConstraints.cardsCanSummonEpicCount--;
+          }
+
+          if (((playerState.cardsSummonedThisTurnCount.common + playerState.cardsSummonedThisTurnCount.rare) >= 3
+            && ((playerState.cardsSummonedThisTurnCount.common + playerState.cardsSummonedThisTurnCount.rare) % 2 == 1))
+            && playerState.cardsSummonConstraints.cardsCanSummonEpicCount > 0) {
+            playerState.cardsSummonConstraints.cardsCanSummonEpicCount--;
+          }
           break;
         case CARD_RARITIES.EPIC:
-          assert(ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsSummonConstraints.cardsCanSummonEpic
-            && ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsSummonConstraints.cardsCanSummonEpicCount > 0);
-          ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsSummonConstraints.cardsCanSummonEpicCount--;
+          assert(playerState.cardsSummonConstraints.cardsCanSummonEpic && playerState.cardsSummonConstraints.cardsCanSummonEpicCount > 0);
+          playerState.cardsSummonedThisTurnCount.epic++;
+
+          playerState.cardsSummonConstraints.cardsCanSummonEpicCount--;
+
+          playerState.cardsSummonConstraints.cardsCanSummonRareCount--;
+          playerState.cardsSummonConstraints.cardsCanSummonCommonCount -= 2;
           break;
         default:
           assert(0, "Invalid card rarity: " + cardRarity);
           break;
       }
 
-      let cardSelected = ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsInHandArr[ctx.data.cardIdx];
+      let cardSelected = playerState.cardsInHandArr[ctx.data.cardIdx];
       assert(cardSelected && (cardSelected.cardId == ctx.data.cardId) && (cardFromDb.cardId == cardSelected.cardId));
 
       ctx.gameplayData.gameState.cardSummonedIdxInPlayerHand = ctx.data.cardIdx;
       ctx.gameplayData.gameState.cardSummoned = cardFromDb;
-      ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsInHandArr.splice(ctx.data.cardIdx, 1);
-      ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsInHand--;
+      playerState.cardsInHandArr.splice(ctx.data.cardIdx, 1);
+      playerState.cardsInHand--;
       ctx.gameplayData.gameState.playerIdSummonedCard = ctx.session.userData.userId;
-      ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsOnFieldArr.push(cardFromDb);
+      playerState.cardsOnFieldArr.push(cardFromDb);
 
       await gameCore.summonCardHook(ctx);
+      await gameCore.activePlayerHook(ctx);
 
       queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
         field2: 'room_id', queryArg2: ctx.data.roomId });
@@ -485,6 +552,7 @@ module.exports = {
       ctx.gameplayData.gameState.nextPhase = TURN_PHASES.END;
 
       await gameCore.rollPhaseHook(ctx);
+      await gameCore.activePlayerHook(ctx);
 
       queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
         field2: 'room_id', queryArg2: ctx.data.roomId });
@@ -534,6 +602,7 @@ module.exports = {
       ctx.gameplayData.gameState.rollDiceBoard.playerIdRollDice = ctx.session.userData.userId;
 
       await gameCore.rollDiceBoardHook(ctx);
+      await gameCore.activePlayerHook(ctx);
 
       queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
         field2: 'room_id', queryArg2: ctx.data.roomId });
@@ -576,6 +645,7 @@ module.exports = {
       assert(ctx.gameplayData.gameState.nextPhase == TURN_PHASES.END);
 
       await gameCore.endPhaseHook(ctx);
+      await gameCore.activePlayerHook(ctx);
 
       ctx.gameplayData.gameState.nextPhase = TURN_PHASES.DRAW;
       ctx.gameplayData.gameState.currPlayerId = ctx.session.userData.userId == ctx.roomData.player1Id
@@ -637,6 +707,7 @@ module.exports = {
       ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsInGraveyard.push(cardSelected);
 
       await gameCore.discardCardHook(ctx);
+      await gameCore.activePlayerHook(ctx);
 
       queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
         field2: 'room_id', queryArg2: ctx.data.roomId });
@@ -698,6 +769,7 @@ module.exports = {
       ctx.gameplayData.gameState.playerIdFinishCard = ctx.session.userData.userId;
 
       await gameCore.cardFinishHook(ctx);
+      await gameCore.activePlayerHook(ctx);
 
       queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
         field2: 'room_id', queryArg2: ctx.data.roomId });
@@ -800,7 +872,9 @@ module.exports = {
       ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
       ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
 
-      assert(ctx.session.userData.userId != ctx.gameplayData.gameState.currPlayerId);
+      assert((ctx.session.userData.userId != ctx.gameplayData.gameState.currPlayerId)
+        || (ctx.session.userData.userId != ctx.gameplayData.gameState.activePlayerId));
+      assert(ctx.session.userData.userId != ctx.gameplayData.gameState.activePlayerId);
       assert(ctx.session.userData.userId == ctx.roomData.player1Id || ctx.session.userData.userId == ctx.roomData.player2Id);
 
       var currTime = new Date();
@@ -823,11 +897,11 @@ module.exports = {
 
       await pg.pool.query('COMMIT');
     } catch(err) {
-      ctx.errors.push({ dataPath: '/win_game_formally', message: 'There was a problem finishing the game. Please try again later.' });
+      ctx.errors.push({ dataPath: '/win_game_timeout', message: 'There was a problem finishing the game. Please try again later.' });
 
       await pg.pool.query('ROLLBACK');
 
-      logger.info('Failed to win game formally: %o', err);
+      logger.info('Failed to win game timeout: %o', err);
     }
   }
 };
@@ -842,6 +916,9 @@ let resetTurn = (ctx) => {
     gameState.playersState[playerId].rollAgain = false;
     gameState.playersState[playerId].moveBackwardsOnNextRoll = null;
     gameState.playersState[playerId].moveBackwards = null;
+    gameState.playersState[playerId].cardsSummonedThisTurnCount.common = 0;
+    gameState.playersState[playerId].cardsSummonedThisTurnCount.rare = 0;
+    gameState.playersState[playerId].cardsSummonedThisTurnCount.epic = 0;
   }
   gameState.playerIdDrawnCard = null;
   gameState.playerIdSummonedCard = null;
