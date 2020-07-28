@@ -250,16 +250,16 @@ var self = module.exports = {
 	activePlayerHook: async (ctx, card) => {
 		let gameState = ctx.gameplayData.gameState;
 
-		let enemyUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
-    let yourUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player1Id : ctx.roomData.player2Id;
+    let currPlayerId = gameState.currPlayerId;
+    let notCurrPlayerId = currPlayerId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
 
-		if (gameState.playersState[enemyUserId].canRollDiceBoardCount > 0
-			|| gameState.playersState[enemyUserId].cardsToDraw > 0
-			|| gameState.playersState[enemyUserId].cardsToDiscard > 0
-			|| gameState.playersState[enemyUserId].energyPoints > 0) {
-			ctx.gameplayData.gameState.activePlayerId = enemyUserId;
+		if (gameState.playersState[notCurrPlayerId].canRollDiceBoardCount > 0
+			|| gameState.playersState[notCurrPlayerId].cardsToDraw > 0
+			|| gameState.playersState[notCurrPlayerId].cardsToDiscard > 0
+			|| gameState.playersState[notCurrPlayerId].energyPoints > 0) {
+			ctx.gameplayData.gameState.activePlayerId = notCurrPlayerId;
 		} else {
-			ctx.gameplayData.gameState.activePlayerId = yourUserId;
+			ctx.gameplayData.gameState.activePlayerId = currPlayerId;
 		}
 	},
 };
