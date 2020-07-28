@@ -4,9 +4,11 @@ var cardObjProperties = {
   "cardImg": { "type": "string" },
   "cardId": { "type": "integer" },
   "cardRarity": { "type": "string" },
+  "cardEffect": { "type": "object" },
+  "cardCost": { "type": "integer" },
 };
 
-var cardObjRequiredFields = [ "cardName", "cardText", "cardImg", "cardId", "cardRarity" ];
+var cardObjRequiredFields = [ "cardName", "cardText", "cardImg", "cardId", "cardRarity", "cardEffect", "cardCost" ];
 
 var cardObj = {
 	"type": "object",
@@ -114,9 +116,6 @@ var startGameResponse = {
 											"cardsCanSummonCommon": { "type": "boolean" },
 											"cardsCanSummonRare": { "type": "boolean" },
 											"cardsCanSummonEpic": { "type": "boolean" },
-											"cardsCanSummonCommonCount": { "type": "integer" },
-											"cardsCanSummonRareCount": { "type": "integer" },
-											"cardsCanSummonEpicCount": { "type": "integer" },
 										},
 									},
 									"cardsSummonedThisTurnCount": {
@@ -144,6 +143,8 @@ var startGameResponse = {
 										"type": "array",
 										"items": cardObj,
 									},
+									"energyPoints": { "type": "integer" },
+									"maxEnergyPoints": { "type": "integer" },
 								},
 							},
 							"additionalProperties": false,

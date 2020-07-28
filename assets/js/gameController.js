@@ -64,6 +64,7 @@ gameController.prototype.initConstants = function() {
 	_self.MODAL_GRAVEYARD_CLASS = '.graveyard-modal';
 
 	_self.GAME_STATUS_CONTENT_CLASS = '.anime-cb-player-status-content';
+	_self.ENERGY_POINTS_TEXT_CLASS = '.anime-cb-energy-points-text';
 };
 
 gameController.prototype.initElements = function() {
@@ -111,7 +112,7 @@ gameController.prototype.initListeners = function() {
 		}
 	});
 
-	$(_self.GAME_SCREEN_CLASS).on('mousemove mouseover', _self.CARD_ON_FIELD_CLASS, function(e) {
+	$(_self.GAME_SCREEN_CLASS).on('mousemove mouseover', _self.CARD_ON_FIELD_CLASS + ", " + _self.DECK_GRAVEYARD_CLASS, function(e) {
  		_self.fillInfoCard(this);
 	});
 
@@ -322,7 +323,7 @@ gameController.prototype.showEventsInfo = function (infoText) {
 gameController.prototype.renderGameField = function () {
 	var _self = this;
 
-	$(_self.GAME_SCREEN_CLASS).html('<div class="anime-cb-title-page-game"><p id="anime-cb-title-page-game-room-name"></p></div><div id="anime-cb-card-info-card-name"></div><div id="anime-cb-card-info-wrapper"><div id="anime-cb-card-info-subwrapper"><img id="anime-cb-card-info-card" src="/imgs/player_cards/card_back.png"></div></div><div id="anime-cb-card-info-text"></div><div class="anime-cb-card-graveyard-wrapper player-enemy"><p class="anime-cb-card-graveyard-text player-enemy">Enemy Graveyard</p><img class="anime-cb-card-graveyard-deck player-enemy bottom"><img class="anime-cb-card-graveyard-deck player-enemy top"></div><div id="anime-cb-card-global-deck-wrapper"><img id="anime-cb-card-global-deck" src="/imgs/player_cards/card_back.png"><p id="anime-cb-card-global-deck-text">Global Deck</p></div><div id="anime-cb-game-events-info"><p id="anime-cb-game-events-info-text"></p></div><div class="anime-cb-turn-timer player-enemy"><p class="anime-cb-turn-timer-text player-enemy"></p></div><div class="anime-cb-turn-timer player-you"><p class="anime-cb-turn-timer-text player-you"></p></div><table id="anime-cb-phases-wrapper"><tr class="anime-cb-phase-row"><td id="anime-cb-phase-draw" class="anime-cb-phase-column next" data-phase-text="Draw Phase">DP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-standby" class="anime-cb-phase-column next" data-phase-text="Standby Phase">SP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-main" class="anime-cb-phase-column next" data-phase-text="Main Phase">MP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-roll" class="anime-cb-phase-column next" data-phase-text="Roll Phase">RP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-end" class="anime-cb-phase-column next" data-phase-text="End Phase">EP</td></tr></table><div class="center-screen"><div class="anime-cb-cards-in-hand-wrapper player-enemy"><div class="anime-cb-cards-in-hand player-enemy"></div></div><div class="anime-cb-board-player-label player-enemy"></div><div class="anime-cb-card-field-wrapper"><table class="anime-cb-card-field player-enemy"><tr><td></td><td></td><td></td><td></td><td></td></tr></table></div><div id="anime-cb-board-wrapper"><table id="anime-cb-board"></table></div><div class="anime-cb-card-field-wrapper"><table class="anime-cb-card-field player-you"><tr><td></td><td></td><td></td><td></td><td></td></tr></table></div><div class="anime-cb-board-player-label player-you"></div><div class="anime-cb-cards-in-hand-wrapper player-you"><div class="anime-cb-cards-in-hand player-you"></div></div></div><div class="anime-cb-card-graveyard-wrapper player-you"><img class="anime-cb-card-graveyard-deck player-you bottom"><img class="anime-cb-card-graveyard-deck player-you top"><p class="anime-cb-card-graveyard-text player-you">Your Graveyard</p></div><div class="anime-cb-screen_footer-game"><button id="anime-cb-surrender" type="button" class="btn btn-primary anime-cb-button-stateless anime-cb-btn-main-menu">Surrender</button></div><div class="anime-cb-player-status-wrapper"><p class="anime-cb-player-status-title">Game Status</p><div class="anime-cb-player-status-content"></div></div><div id="anime-cb-dice-wrapper-player-you"></div><div id="anime-cb-dice-wrapper-player-enemy"></div><div class="modal graveyard-modal player-you"> <div class="modal-content"> <div class="modal-header player-you"> <span class="close">&times;</span> <h2>Your Graveyard</h2> </div> <div class="modal-body"> </div> <div class="modal-footer player-you"> <h3>Your Graveyard</h3> </div> </div></div><div class="modal graveyard-modal player-enemy"> <div class="modal-content"> <div class="modal-header player-enemy"> <span class="close">&times;</span> <h2>Enemy Graveyard</h2> </div> <div class="modal-body"> </div> <div class="modal-footer player-enemy"> <h3>Enemy Graveyard</h3> </div> </div></div>');
+	$(_self.GAME_SCREEN_CLASS).html('<div class="anime-cb-title-page-game"><p id="anime-cb-title-page-game-room-name"></p></div><div id="anime-cb-card-info-card-name"></div><div id="anime-cb-card-info-wrapper"><div id="anime-cb-card-info-subwrapper"><img id="anime-cb-card-info-card" src="/imgs/player_cards/card_back.png"></div></div><div id="anime-cb-card-info-text"></div><div class="anime-cb-card-graveyard-wrapper player-enemy"><p class="anime-cb-card-graveyard-text player-enemy">Enemy Graveyard</p><img class="anime-cb-card-graveyard-deck player-enemy bottom"><img class="anime-cb-card-graveyard-deck player-enemy top"></div><div id="anime-cb-card-global-deck-wrapper"><img id="anime-cb-card-global-deck" src="/imgs/player_cards/card_back.png"><p id="anime-cb-card-global-deck-text">Global Deck</p></div><div id="anime-cb-game-events-info"><p id="anime-cb-game-events-info-text"></p></div><div class="anime-cb-turn-timer player-enemy"><p class="anime-cb-turn-timer-text player-enemy"></p></div><div class="anime-cb-turn-timer player-you"><p class="anime-cb-turn-timer-text player-you"></p></div><div class="anime-cb-energy-points-wrapper player-you"><p class="anime-cb-energy-points-title player-you">Energy</p><p class="anime-cb-energy-points-text player-you"></p></div><div class="anime-cb-energy-points-wrapper player-enemy"><p class="anime-cb-energy-points-title player-enemy">Energy</p><p class="anime-cb-energy-points-text player-enemy"></p></div><table id="anime-cb-phases-wrapper"><tr class="anime-cb-phase-row"><td id="anime-cb-phase-draw" class="anime-cb-phase-column next" data-phase-text="Draw Phase">DP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-standby" class="anime-cb-phase-column next" data-phase-text="Standby Phase">SP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-main" class="anime-cb-phase-column next" data-phase-text="Main Phase">MP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-roll" class="anime-cb-phase-column next" data-phase-text="Roll Phase">RP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-end" class="anime-cb-phase-column next" data-phase-text="End Phase">EP</td></tr></table><div class="center-screen"><div class="anime-cb-cards-in-hand-wrapper player-enemy"><div class="anime-cb-cards-in-hand player-enemy"></div></div><div class="anime-cb-board-player-label player-enemy"></div><div class="anime-cb-card-field-wrapper"><table class="anime-cb-card-field player-enemy"><tr><td></td><td></td><td></td><td></td><td></td></tr></table></div><div id="anime-cb-board-wrapper"><table id="anime-cb-board"></table></div><div class="anime-cb-card-field-wrapper"><table class="anime-cb-card-field player-you"><tr><td></td><td></td><td></td><td></td><td></td></tr></table></div><div class="anime-cb-board-player-label player-you"></div><div class="anime-cb-cards-in-hand-wrapper player-you"><div class="anime-cb-cards-in-hand player-you"></div></div></div><div class="anime-cb-card-graveyard-wrapper player-you"><img class="anime-cb-card-graveyard-deck player-you bottom"><img class="anime-cb-card-graveyard-deck player-you top"><p class="anime-cb-card-graveyard-text player-you">Your Graveyard</p></div><div class="anime-cb-screen_footer-game"><button id="anime-cb-surrender" type="button" class="btn btn-primary anime-cb-button-stateless anime-cb-btn-main-menu">Surrender</button></div><div class="anime-cb-player-status-wrapper"><p class="anime-cb-player-status-title">Game Status</p><div class="anime-cb-player-status-content"></div></div><div id="anime-cb-dice-wrapper-player-you"></div><div id="anime-cb-dice-wrapper-player-enemy"></div><div class="modal graveyard-modal player-you"> <div class="modal-content"> <div class="modal-header player-you"> <span class="close">&times;</span> <h2>Your Graveyard</h2> </div> <div class="modal-body"> </div> <div class="modal-footer player-you"> <h3>Your Graveyard</h3> </div> </div></div><div class="modal graveyard-modal player-enemy"> <div class="modal-content"> <div class="modal-header player-enemy"> <span class="close">&times;</span> <h2>Enemy Graveyard</h2> </div> <div class="modal-body"> </div> <div class="modal-footer player-enemy"> <h3>Enemy Graveyard</h3> </div> </div></div>');
 };
 
 gameController.prototype.initGameData = function (data) {
@@ -754,29 +755,28 @@ gameController.prototype.summonCard = function (card) {
 	var cardEffect = $(card).data("cardEffect");
 	var cardId = $(card).data("cardId");
 	var cardIdx = $(card).index();
+	var cardCost = $(card).data("cardCost");
 	var retrySummon = false;
 
 	if (cardsOnFieldCount + 1 > playerStateYou.maxCardsOnField
-		|| ! playerStateYou.cardsSummonConstraints.cardsCanSummonAny) {
+		|| ! playerStateYou.cardsSummonConstraints.cardsCanSummonAny
+		|| playerStateYou.energyPoints < cardCost) {
 		retrySummon = true;
 	}
 
 	switch(cardRarity) {
 		case _self.CARD_RARITIES.COMMON:
-			if (! playerStateYou.cardsSummonConstraints.cardsCanSummonCommon
-				|| playerStateYou.cardsSummonConstraints.cardsCanSummonCommonCount <= 0) {
+			if (! playerStateYou.cardsSummonConstraints.cardsCanSummonCommon) {
 				retrySummon = true;
 			}
 			break;
 		case _self.CARD_RARITIES.RARE:
-			if (! playerStateYou.cardsSummonConstraints.cardsCanSummonRare
-				|| playerStateYou.cardsSummonConstraints.cardsCanSummonRareCount <= 0) {
+			if (! playerStateYou.cardsSummonConstraints.cardsCanSummonRare) {
 				retrySummon = true;
 			}
 			break;
 		case _self.CARD_RARITIES.EPIC:
-					if (! playerStateYou.cardsSummonConstraints.cardsCanSummonEpic
-						|| playerStateYou.cardsSummonConstraints.cardsCanSummonEpicCount <= 0) {
+					if (! playerStateYou.cardsSummonConstraints.cardsCanSummonEpic) {
 				retrySummon = true;
 			}
 			break;
@@ -1530,16 +1530,23 @@ gameController.prototype.destroyCardAnimationYou = function (card, callback) {
 	var _self = this;
 
 	var cardEl = $(_self.CARD_FIELD_CLASS + _self.PLAYER_YOU_CLASS).find("[data-card-id='" + card.cardId + "']");
-	console.log(cardEl);
 	$(cardEl).css("animation", "fade-out 1.5s ease-in both");
   $(cardEl).css("-webkit-animation", "fade-out 1.5s ease-in both");
   $(cardEl).removeClass("hover");
 
   setTimeout(function() {
-  	$(cardEl).remove();
   	$(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_YOU_CLASS + '.bottom')
 			.attr("src", $(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_YOU_CLASS + '.top').attr("src"));
-		$(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_YOU_CLASS + '.top').attr("src", $(cardEl).attr("src"));
+
+		var $graveyardTopCard = $(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_YOU_CLASS + '.top');
+		$graveyardTopCard.attr("src", $(cardEl).attr("src"));
+		$graveyardTopCard.data("cardId", $(cardEl).data("cardId"));
+		$graveyardTopCard.data("cardName", $(cardEl).data("cardName"));
+		$graveyardTopCard.data("cardText", $(cardEl).data("cardText"));
+		$graveyardTopCard.data("cardRarity", $(cardEl).data("cardRarity"));
+		$graveyardTopCard.data("cardEffect", $(cardEl).data("cardEffect"));
+		$graveyardTopCard.data("cardCost", $(cardEl).data("cardCost"));
+  	$(cardEl).remove();
 
   	if (typeof callback === "function") {
   		callback.call(_self);
@@ -1556,10 +1563,18 @@ gameController.prototype.destroyCardAnimationEnemy = function (card, callback) {
   $(cardEl).removeClass("hover");
 
   setTimeout(function() {
-  	$(cardEl).remove();
   	$(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_ENEMY_CLASS + '.bottom')
 			.attr("src", $(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_ENEMY_CLASS + '.top').attr("src"));
-		$(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_ENEMY_CLASS + '.top').attr("src", $(cardEl).attr("src"));
+
+		var $graveyardTopCard = $(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_ENEMY_CLASS + '.top');
+		$graveyardTopCard.attr("src", $(cardEl).attr("src"));
+		$graveyardTopCard.data("cardId", $(cardEl).data("cardId"));
+		$graveyardTopCard.data("cardName", $(cardEl).data("cardName"));
+		$graveyardTopCard.data("cardText", $(cardEl).data("cardText"));
+		$graveyardTopCard.data("cardRarity", $(cardEl).data("cardRarity"));
+		$graveyardTopCard.data("cardEffect", $(cardEl).data("cardEffect"));
+		$graveyardTopCard.data("cardCost", $(cardEl).data("cardCost"));
+  	$(cardEl).remove();
 
   	if (typeof callback === "function") {
   		callback.call(_self);
@@ -1728,13 +1743,19 @@ gameController.prototype.nextTurn = function () {
 gameController.prototype.fillInfoCard = function (card) {
 	var _self = this;
 
+	if (!$(card).attr("src")) {
+		return;
+	}
+
 	var cardRarity = $(card).data("cardRarity") || "";
 	var cardText = $(card).data("cardText") || "";
-	cardRarity = cardRarity ? cardRarity.toUpperCase() + ': ' : cardRarity;
+	var cardCost = $(card).data("cardCost") || "";
+	cardRarity = cardRarity ? cardRarity.toUpperCase() : cardRarity;
+	cardCost = cardCost ? "[" + cardCost + "]: " : cardCost;
 
   $(_self.CARD_INFO_IMG_ID).attr("src", $(card).attr("src"));
   $(_self.CARD_INFO_IMG_ID).css("border", "1px solid white");
-  $(_self.CARD_INFO_TEXT_ID).text(cardRarity + cardText);
+  $(_self.CARD_INFO_TEXT_ID).text(cardRarity + cardCost + cardText);
   $(_self.CARD_INFO_NAME_ID).text($(card).data("cardName") || "");
 };
 
@@ -1778,11 +1799,17 @@ gameController.prototype.populateGraveyard = function (playerId, playerSelectorC
 		var cardImg = card.cardImg;
 		var cardRarity = card.cardRarity;
 		var cardEffect = card.cardEffect;
+		var cardCost = card.cardCost;
 
-		$modal_body.prepend('<img class="anime-cb-card ' + playerSelectorClass.substr(1) + ' in-graveyard" data-card-text="' + cardText
-				+ '" data-card-name="' + cardName + '" src="/imgs/player_cards/' + cardImg + '" data-card-id="' + cardId
-				+ '" data-card-rarity="' + cardRarity + '">');
+		$modal_body.prepend('<img class="anime-cb-card ' + playerSelectorClass.substr(1) + ' in-graveyard" src="/imgs/player_cards/' + cardImg + '">');
+
+		var $card = $modal_body.find('img').first();
+		$modal_body.find('img').first().data("cardId", cardId);
+		$modal_body.find('img').first().data("cardName", cardName);
+		$modal_body.find('img').first().data("cardText", cardText);
+		$modal_body.find('img').first().data("cardRarity", cardRarity);
 		$modal_body.find('img').first().data("cardEffect", cardEffect);
+		$modal_body.find('img').first().data("cardCost", cardCost);
 	});
 };
 
@@ -2059,16 +2086,21 @@ gameController.prototype.summonCardFromHandAnimationYou = function (cardObj, cal
 	var cardImg = cardObj.cardImg;
 	var cardRarity = cardObj.cardRarity;
 	var cardEffect = cardObj.cardEffect;
+	var cardCost = cardObj.cardCost;
 	var cardSuccessfullySummoned = false;
 
 	$(_self.CARD_FIELD_CLASS + _self.PLAYER_YOU_CLASS + ' td').each(function(idx) {
 		if (!$(this).find('img').length) {
 			$(this).css("-webkit-animation", "summon-your-card 0.6s ease-out both");
 			$(this).css("animation", "summon-your-card 0.6s ease-out both");
-			$(this).html('<img class="anime-cb-card-onfield hover player-you" data-card-text="' + cardText
-				+ '" data-card-name="' + cardName + '" src="/imgs/player_cards/' + cardImg + '" data-card-id="' + cardId
-				+ '" data-card-rarity="' + cardRarity + '">');
+			$(this).html('<img class="anime-cb-card-onfield hover player-you" src="/imgs/player_cards/'
+				+ cardImg + '" data-card-id="' + cardId + '">');
+			$(this).find('img').data("cardId", cardId);
+			$(this).find('img').data("cardName", cardName);
+			$(this).find('img').data("cardText", cardText);
+			$(this).find('img').data("cardRarity", cardRarity);
 			$(this).find('img').data("cardEffect", cardEffect);
+			$(this).find('img').data("cardCost", cardCost);
 			$(_self.CARDS_IN_HAND_CLASS).css("overflow", "hidden");
 			$(card).remove();
 
@@ -2105,16 +2137,21 @@ gameController.prototype.summonCardFromHandAnimationEnemy = function (cardObj, c
 	var cardImg = cardObj.cardImg;
 	var cardRarity = cardObj.cardRarity;
 	var cardEffect = cardObj.cardEffect;
+	var cardCost = cardObj.cardCost;
 	var cardSuccessfullySummoned = false;
 
 	$($(_self.CARD_FIELD_CLASS + _self.PLAYER_ENEMY_CLASS + ' td').get().reverse()).each(function(idx) {
 		if (!$(this).find('img').length) {
 			$(this).css("-webkit-animation", "summon-enemy-card 0.6s ease-out both");
 			$(this).css("animation", "summon-enemy-card 0.6s ease-out both");
-			$(this).html('<img class="anime-cb-card-onfield hover player-enemy" data-card-text="' + cardText
-				+ '" data-card-name="' + cardName + '" src="/imgs/player_cards/' + cardImg + '" data-card-id="' + cardId
-				+ '" data-card-rarity="' + cardRarity + '">');
+			$(this).html('<img class="anime-cb-card-onfield hover player-enemy" src="/imgs/player_cards/'
+				+ cardImg + '" data-card-id="' + cardId + '">');
+			$(this).find('img').data("cardId", cardId);
+			$(this).find('img').data("cardName", cardName);
+			$(this).find('img').data("cardText", cardText);
+			$(this).find('img').data("cardRarity", cardRarity);
 			$(this).find('img').data("cardEffect", cardEffect);
+			$(this).find('img').data("cardCost", cardCost);
 			$(_self.CARDS_IN_HAND_CLASS).css("overflow", "hidden");
 			$(card).remove();
 
@@ -2212,6 +2249,7 @@ gameController.prototype.drawCardFromDeckYouAnimation = function (card) {
 	var cardImg = card.cardImg;
 	var cardRarity = card.cardRarity;
 	var cardEffect = card.cardEffect;
+	var cardCost = card.cardCost;
 
   var cardsInHandCount = $(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_YOU_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_YOU_CLASS).length;
   var drawFromDeckAnimationCount = cardsInHandCount + 1;
@@ -2235,10 +2273,16 @@ gameController.prototype.drawCardFromDeckYouAnimation = function (card) {
   // $(_self.CARDS_IN_HAND_WRAPPER_CLASS + _self.PLAYER_YOU_CLASS).css("overflow", "visible");
   $(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_YOU_CLASS).append('<img style="animation: draw-from-deck-you-'
   	+ drawFromDeckAnimationCount + ' 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both; -webkit-animation: draw-from-deck-you-'
-  	+ drawFromDeckAnimationCount + ' 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;" class="anime-cb-card player-you"\
-  		 data-card-id="' + cardId + '" data-card-text="' + cardText + '" data-card-name="' + cardName + '" src="/imgs/player_cards/'
-  		 + cardImg + '" data-card-rarity="' + cardRarity + '">');
-  $(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_YOU_CLASS + ' img').last().data("cardEffect", cardEffect);
+  	+ drawFromDeckAnimationCount + ' 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;" class="anime-cb-card player-you" '
+  		+ 'src="/imgs/player_cards/' + cardImg + '">');
+
+  var $card = $(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_YOU_CLASS + ' img').last();
+  $card.data("cardId", cardId);
+  $card.data("cardName", cardName);
+  $card.data("cardText", cardText);
+  $card.data("cardRarity", cardRarity);
+  $card.data("cardEffect", cardEffect);
+  $card.data("cardCost", cardCost);
 
   _self.increaseYourCardsInHandDensity();
 
@@ -2287,8 +2331,8 @@ gameController.prototype.drawCardFromDeckEnemyAnimation = function(card) {
   $(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_ENEMY_CLASS).css("overflow", "visible");
   $(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_ENEMY_CLASS).append('<img style="animation: draw-from-deck-enemy-'
   	+ drawFromDeckAnimationCount + ' 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both; -webkit-animation: draw-from-deck-enemy-'
-  	+ drawFromDeckAnimationCount + ' 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;" class="anime-cb-card player-enemy"\
-  		src="/imgs/player_cards/card_back.png">');
+  	+ drawFromDeckAnimationCount + ' 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;" class="anime-cb-card player-enemy" '
+  		+ 'src="/imgs/player_cards/card_back.png">');
 
   _self.increaseEnemyCardsInHandDensity();
 
@@ -2320,7 +2364,14 @@ gameController.prototype.discardCardFromHandYou = function (card) {
 	$(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_YOU_CLASS + '.top')
 		.css("animation", "discard-card-from-hand-you 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both");
 
-	$(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_YOU_CLASS + '.top').attr("src", $(card).attr("src"));
+	var $graveyardTopCard = $(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_YOU_CLASS + '.top');
+	$graveyardTopCard.attr("src", $(card).attr("src"));
+	$graveyardTopCard.data("cardId", $(card).data("cardId"));
+	$graveyardTopCard.data("cardName", $(card).data("cardName"));
+	$graveyardTopCard.data("cardText", $(card).data("cardText"));
+	$graveyardTopCard.data("cardRarity", $(card).data("cardRarity"));
+	$graveyardTopCard.data("cardEffect", $(card).data("cardEffect"));
+	$graveyardTopCard.data("cardCost", $(card).data("cardCost"));
 	$(_self.CARDS_IN_HAND_CLASS).css("overflow", "hidden");
 
 	_self.decreaseYourCardsInHandDensity();
@@ -2343,7 +2394,14 @@ gameController.prototype.discardCardFromHandEnemy = function (card) {
 	$(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_ENEMY_CLASS + '.top')
 		.css("animation", "discard-card-from-hand-enemy 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both");
 
-	$(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_ENEMY_CLASS + '.top').attr("src", "/imgs/player_cards/" + card.cardImg);
+	var $graveyardTopCard = $(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_ENEMY_CLASS + '.top');
+	$graveyardTopCard.attr("src", "/imgs/player_cards/" + card.cardImg);
+	$graveyardTopCard.data("cardId", card.cardId);
+	$graveyardTopCard.data("cardName", card.cardName);
+	$graveyardTopCard.data("cardText", card.cardText);
+	$graveyardTopCard.data("cardRarity", card.cardRarity);
+	$graveyardTopCard.data("cardEffect", card.cardEffect);
+	$graveyardTopCard.data("cardCost", card.cardCost);
 	$(_self.CARDS_IN_HAND_CLASS).css("overflow", "hidden");
 
 	_self.decreaseEnemyCardsInHandDensity();
@@ -2433,25 +2491,28 @@ gameController.prototype.updateGameStatusInfo = function () {
 	var playerYouStatus = gameState.playersState[_self._yourUserId];
 	var playerEnemyStatus = gameState.playersState[_self._enemyUserId];
 
+	$(_self.ENERGY_POINTS_TEXT_CLASS + _self.PLAYER_YOU_CLASS).html(playerYouStatus.energyPoints + "/" + playerYouStatus.maxEnergyPoints);
+	$(_self.ENERGY_POINTS_TEXT_CLASS + _self.PLAYER_ENEMY_CLASS).html(playerEnemyStatus.energyPoints + "/" + playerEnemyStatus.maxEnergyPoints);
+
 	var statusContent = "Your status: <br>";
 
 	statusContent += "- Cards to Draw: " + playerYouStatus.cardsToDraw + "<br>";
 	statusContent += "- Cards to discard: " + playerYouStatus.cardsToDiscard + "<br>";
 	statusContent += "- Dice to roll: " + playerYouStatus.canRollDiceBoardCount + "<br>";
-	statusContent += "- Cards can summon any: " + (playerYouStatus.cardsSummonConstraints.cardsCanSummonAny ? "Yes" : "No") + "<br>";
-	statusContent += "- Cards can summon common: " + playerYouStatus.cardsSummonConstraints.cardsCanSummonCommonCount + "<br>";
-	statusContent += "- Cards can summon rare: " + playerYouStatus.cardsSummonConstraints.cardsCanSummonRareCount + "<br>";
-	statusContent += "- Cards can summon epic: " + playerYouStatus.cardsSummonConstraints.cardsCanSummonEpicCount + "<br>";
+	statusContent += "- Can summon any: " + (playerYouStatus.cardsSummonConstraints.cardsCanSummonAny ? "Yes" : "No") + "<br>";
+	statusContent += "- Can summon common: " + (playerYouStatus.cardsSummonConstraints.cardsCanSummonCommon ? "Yes" : "No") + "<br>";
+	statusContent += "- Can summon rare: " + (playerYouStatus.cardsSummonConstraints.cardsCanSummonRare ? "Yes" : "No") + "<br>";
+	statusContent += "- Can summon epic: " + (playerYouStatus.cardsSummonConstraints.cardsCanSummonEpic ? "Yes" : "No") + "<br>";
 
 	statusContent += "Enemy status: <br>";
 
 	statusContent += "- Cards to Draw: " + playerEnemyStatus.cardsToDraw + "<br>";
 	statusContent += "- Cards to discard: " + playerEnemyStatus.cardsToDiscard + "<br>";
 	statusContent += "- Dice to roll: " + playerEnemyStatus.canRollDiceBoardCount + "<br>";
-	statusContent += "- Cards can summon any: " + (playerEnemyStatus.cardsSummonConstraints.cardsCanSummonAny ? "Yes" : "No") + "<br>";
-	statusContent += "- Cards can summon common: " + playerEnemyStatus.cardsSummonConstraints.cardsCanSummonCommonCount + "<br>";
-	statusContent += "- Cards can summon rare: " + playerEnemyStatus.cardsSummonConstraints.cardsCanSummonRareCount + "<br>";
-	statusContent += "- Cards can summon epic: " + playerEnemyStatus.cardsSummonConstraints.cardsCanSummonEpicCount + "<br>";
+	statusContent += "- Can summon any: " + (playerEnemyStatus.cardsSummonConstraints.cardsCanSummonAny ? "Yes" : "No") + "<br>";
+	statusContent += "- Can summon common: " + (playerEnemyStatus.cardsSummonConstraints.cardsCanSummonCommon ? "Yes" : "No") + "<br>";
+	statusContent += "- Can summon rare: " + (playerEnemyStatus.cardsSummonConstraints.cardsCanSummonRare ? "Yes" : "No") + "<br>";
+	statusContent += "- Can summon epic: " + (playerEnemyStatus.cardsSummonConstraints.cardsCanSummonEpic ? "Yes" : "No") + "<br>";
 
 	$(_self.GAME_STATUS_CONTENT_CLASS).html(statusContent);
 };

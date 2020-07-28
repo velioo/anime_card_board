@@ -119,9 +119,6 @@ module.exports = {
                 cardsCanSummonCommon: true,
                 cardsCanSummonRare: true,
                 cardsCanSummonEpic: true,
-                cardsCanSummonCommonCount: 0,
-                cardsCanSummonRareCount: 0,
-                cardsCanSummonEpicCount: 0,
               },
               cardsSummonedThisTurnCount: {
                 common: 0,
@@ -137,6 +134,8 @@ module.exports = {
               moveBackwardsOnNextRoll: null,
               moveBackwards: null,
               cardsInGraveyard: [],
+              energyPoints: 0,
+              maxEnergyPoints: 5,
             },
             [ctx.roomData.player2Id]: {
               name: ctx.roomData.player2Name,
@@ -151,9 +150,6 @@ module.exports = {
                 cardsCanSummonCommon: true,
                 cardsCanSummonRare: true,
                 cardsCanSummonEpic: true,
-                cardsCanSummonCommonCount: 0,
-                cardsCanSummonRareCount: 0,
-                cardsCanSummonEpicCount: 0,
               },
               cardsSummonedThisTurnCount: {
                 common: 0,
@@ -169,6 +165,8 @@ module.exports = {
               moveBackwardsOnNextRoll: null,
               moveBackwards: null,
               cardsInGraveyard: [],
+              energyPoints: 0,
+              maxEnergyPoints: 5,
             },
           },
         },
@@ -220,22 +218,25 @@ module.exports = {
       ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
       ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
 
-      assert(ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsToDraw > 0);
+      let gameState = ctx.gameplayData.gameState;
+      let playerState = gameState.playersState[ctx.session.userData.userId];
 
-      ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsToDraw--;
-      ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsInHand++;
-      ctx.gameplayData.gameState.playerIdDrawnCard = ctx.session.userData.userId;
+      assert(playerState.cardsToDraw > 0);
+
+      playerState.cardsToDraw--;
+      playerState.cardsInHand++;
+      gameState.playerIdDrawnCard = ctx.session.userData.userId;
 
       await gameCore.drawCardHook(ctx);
       await gameCore.activePlayerHook(ctx);
 
-      ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsInHandArr.push(ctx.cardDrawn);
+      playerState.cardsInHandArr.push(ctx.cardDrawn);
 
       queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
         field2: 'room_id', queryArg2: ctx.data.roomId });
 
-      ctx.gameplayData.gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
-      ctx.gameplayData.gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
+      gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
+      gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
 
       await pg.pool.query('COMMIT');
     } catch (err) {
@@ -268,14 +269,17 @@ module.exports = {
       ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
       ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
 
-      assert(ctx.gameplayData.gameState.currPlayerId == ctx.session.userData.userId);
-      assert(ctx.gameplayData.gameState.nextPhase == TURN_PHASES.DRAW);
+      let gameState = ctx.gameplayData.gameState;
+      let playerState = gameState.playersState[ctx.session.userData.userId];
 
-      ctx.gameplayData.gameState.nextPhase = TURN_PHASES.STANDBY;
+      assert(gameState.currPlayerId == ctx.session.userData.userId);
+      assert(gameState.nextPhase == TURN_PHASES.DRAW);
+
+      gameState.nextPhase = TURN_PHASES.STANDBY;
       var currTime = new Date();
       currTime = Math.round(currTime.getTime() / 1000);
-      ctx.gameplayData.gameState.startTurnTime = currTime;
-      ctx.gameplayData.gameState.turnDeadlineTime = currTime + ctx.gameplayData.gameState.timerSeconds;
+      gameState.startTurnTime = currTime;
+      gameState.turnDeadlineTime = currTime + ctx.gameplayData.gameState.timerSeconds;
 
       await gameCore.drawPhaseHook(ctx);
       await gameCore.activePlayerHook(ctx);
@@ -283,8 +287,8 @@ module.exports = {
       queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
         field2: 'room_id', queryArg2: ctx.data.roomId });
 
-      ctx.gameplayData.gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
-      ctx.gameplayData.gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
+      gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
+      gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
 
       await pg.pool.query('COMMIT');
     } catch (err) {
@@ -317,10 +321,13 @@ module.exports = {
       ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
       ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
 
-      assert(ctx.gameplayData.gameState.currPlayerId == ctx.session.userData.userId);
-      assert(ctx.gameplayData.gameState.nextPhase == TURN_PHASES.STANDBY);
+      let gameState = ctx.gameplayData.gameState;
+      let playerState = gameState.playersState[ctx.session.userData.userId];
 
-      ctx.gameplayData.gameState.nextPhase = TURN_PHASES.MAIN;
+      assert(gameState.currPlayerId == ctx.session.userData.userId);
+      assert(gameState.nextPhase == TURN_PHASES.STANDBY);
+
+      gameState.nextPhase = TURN_PHASES.MAIN;
 
       await gameCore.standyPhaseHook(ctx);
       await gameCore.activePlayerHook(ctx);
@@ -330,8 +337,8 @@ module.exports = {
       queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
         field2: 'room_id', queryArg2: ctx.data.roomId });
 
-      ctx.gameplayData.gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
-      ctx.gameplayData.gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
+      gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
+      gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
 
       await pg.pool.query('COMMIT');
     } catch (err) {
@@ -364,10 +371,13 @@ module.exports = {
       ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
       ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
 
-      assert(ctx.gameplayData.gameState.currPlayerId == ctx.session.userData.userId);
-      assert(ctx.gameplayData.gameState.nextPhase == TURN_PHASES.MAIN);
+      let gameState = ctx.gameplayData.gameState;
+      let playerState = gameState.playersState[ctx.session.userData.userId];
 
-      ctx.gameplayData.gameState.nextPhase = TURN_PHASES.ROLL;
+      assert(gameState.currPlayerId == ctx.session.userData.userId);
+      assert(gameState.nextPhase == TURN_PHASES.MAIN);
+
+      gameState.nextPhase = TURN_PHASES.ROLL;
 
       await gameCore.mainPhaseHook(ctx);
       await gameCore.activePlayerHook(ctx);
@@ -375,8 +385,8 @@ module.exports = {
       queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
         field2: 'room_id', queryArg2: ctx.data.roomId });
 
-      ctx.gameplayData.gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
-      ctx.gameplayData.gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
+      gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
+      gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
 
       await pg.pool.query('COMMIT');
     } catch (err) {
@@ -411,9 +421,12 @@ module.exports = {
       ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
       ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
 
-      assert(ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsOnFieldArr.length
-        < ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].maxCardsOnField);
-      assert(ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsSummonConstraints.cardsCanSummonAny);
+      let gameState = ctx.gameplayData.gameState;
+      let playerState = gameState.playersState[ctx.session.userData.userId];
+
+      assert(playerState.cardsOnFieldArr.length
+        < playerState.maxCardsOnField);
+      assert(playerState.cardsSummonConstraints.cardsCanSummonAny);
 
       let cardStatus = await utils.selectRowById({ table: 'cards', field: 'id', queryArg: ctx.data.cardId });
       var cardFromDb = {
@@ -423,73 +436,24 @@ module.exports = {
         cardImg: cardStatus.rows[0].image,
         cardRarity: cardStatus.rows[0].rarity_id,
         cardEffect: JSON.parse(cardStatus.rows[0].effect_json),
+        cardCost: cardStatus.rows[0].cost,
       };
 
-      let playerState = ctx.gameplayData.gameState.playersState[ctx.session.userData.userId];
-
-      // GUIDE:
-      // Each turn you can summon: (2 common) OR (1 common AND 1 rare) OR (1 epic) cards
-      // Minimum increment is (1 common) OR (2 common and 1 rare cards) !!!
-      // You can't increment only the rare cards you can summon per turn.
-      // If you want +1 rare cards on turn, you must allow -> OR 2 common per turn
-      // 1 epic is worth (2 common AND 1 rare) OR (4 common) OR (2 rare).
-      // If you want to increment +1 epic cards you must allow -> OR (2 common AND 1 rare) OR (4 common) OR (2 rare)
-      // 1 epic = 2 rare = 4 common = 2 common and 1 rare
-      // 1 rare = 2 common
-
-      // COMPLETELY REVAMP THE SYSTEM -> MAKE IT LIKE HEARTHSTONE, EACH CARD COSTS POINTS TO SUMMON, AND YOU HAVE A POOL OF POINTS TO USE
-      // EVERY TURN
+      assert(playerState.energyPoints >= cardFromDb.cardCost);
+      playerState.energyPoints -= cardFromDb.cardCost;
 
       switch(cardFromDb.cardRarity) {
         case CARD_RARITIES.COMMON:
-          assert(playerState.cardsSummonConstraints.cardsCanSummonCommon && playerState.cardsSummonConstraints.cardsCanSummonCommonCount > 0);
+          assert(playerState.cardsSummonConstraints.cardsCanSummonCommon);
           playerState.cardsSummonedThisTurnCount.common++;
-
-          playerState.cardsSummonConstraints.cardsCanSummonCommonCount--;
-
-          if (((playerState.cardsSummonedThisTurnCount.common + playerState.cardsSummonedThisTurnCount.rare) == 1)
-            && playerState.cardsSummonConstraints.cardsCanSummonEpicCount > 0) {
-            playerState.cardsSummonConstraints.cardsCanSummonEpicCount--;
-          }
-
-          if (((playerState.cardsSummonedThisTurnCount.common + playerState.cardsSummonedThisTurnCount.rare) >= 3
-            && ((playerState.cardsSummonedThisTurnCount.common + playerState.cardsSummonedThisTurnCount.rare) % 2 == 1))
-            && playerState.cardsSummonConstraints.cardsCanSummonEpicCount > 0) {
-            playerState.cardsSummonConstraints.cardsCanSummonEpicCount--;
-          }
-
-          if (((playerState.cardsSummonedThisTurnCount.common + playerState.cardsSummonedThisTurnCount.rare) >= 2
-            && ((playerState.cardsSummonedThisTurnCount.common + playerState.cardsSummonedThisTurnCount.rare) % 2 == 0))
-            && playerState.cardsSummonConstraints.cardsCanSummonRareCount > 0) {
-            playerState.cardsSummonConstraints.cardsCanSummonRareCount--;
-          }
           break;
         case CARD_RARITIES.RARE:
-          assert(playerState.cardsSummonConstraints.cardsCanSummonRare && playerState.cardsSummonConstraints.cardsCanSummonRareCount > 0);
+          assert(playerState.cardsSummonConstraints.cardsCanSummonRare);
           playerState.cardsSummonedThisTurnCount.rare++;
-
-          playerState.cardsSummonConstraints.cardsCanSummonRareCount--;
-          playerState.cardsSummonConstraints.cardsCanSummonCommonCount--;
-
-          if (((playerState.cardsSummonedThisTurnCount.common + playerState.cardsSummonedThisTurnCount.rare) == 1)
-            && playerState.cardsSummonConstraints.cardsCanSummonEpicCount > 0) {
-            playerState.cardsSummonConstraints.cardsCanSummonEpicCount--;
-          }
-
-          if (((playerState.cardsSummonedThisTurnCount.common + playerState.cardsSummonedThisTurnCount.rare) >= 3
-            && ((playerState.cardsSummonedThisTurnCount.common + playerState.cardsSummonedThisTurnCount.rare) % 2 == 1))
-            && playerState.cardsSummonConstraints.cardsCanSummonEpicCount > 0) {
-            playerState.cardsSummonConstraints.cardsCanSummonEpicCount--;
-          }
           break;
         case CARD_RARITIES.EPIC:
-          assert(playerState.cardsSummonConstraints.cardsCanSummonEpic && playerState.cardsSummonConstraints.cardsCanSummonEpicCount > 0);
+          assert(playerState.cardsSummonConstraints.cardsCanSummonEpic);
           playerState.cardsSummonedThisTurnCount.epic++;
-
-          playerState.cardsSummonConstraints.cardsCanSummonEpicCount--;
-
-          playerState.cardsSummonConstraints.cardsCanSummonRareCount--;
-          playerState.cardsSummonConstraints.cardsCanSummonCommonCount -= 2;
           break;
         default:
           assert(0, "Invalid card rarity: " + cardRarity);
@@ -499,11 +463,11 @@ module.exports = {
       let cardSelected = playerState.cardsInHandArr[ctx.data.cardIdx];
       assert(cardSelected && (cardSelected.cardId == ctx.data.cardId) && (cardFromDb.cardId == cardSelected.cardId));
 
-      ctx.gameplayData.gameState.cardSummonedIdxInPlayerHand = ctx.data.cardIdx;
-      ctx.gameplayData.gameState.cardSummoned = cardFromDb;
+      gameState.cardSummonedIdxInPlayerHand = ctx.data.cardIdx;
+      gameState.cardSummoned = cardFromDb;
       playerState.cardsInHandArr.splice(ctx.data.cardIdx, 1);
       playerState.cardsInHand--;
-      ctx.gameplayData.gameState.playerIdSummonedCard = ctx.session.userData.userId;
+      gameState.playerIdSummonedCard = ctx.session.userData.userId;
       playerState.cardsOnFieldArr.push(cardFromDb);
 
       await gameCore.summonCardHook(ctx);
@@ -512,8 +476,8 @@ module.exports = {
       queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
         field2: 'room_id', queryArg2: ctx.data.roomId });
 
-      ctx.gameplayData.gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
-      ctx.gameplayData.gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
+      gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
+      gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
 
       await pg.pool.query('COMMIT');
     } catch (err) {
@@ -546,10 +510,13 @@ module.exports = {
       ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
       ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
 
-      assert(ctx.gameplayData.gameState.currPlayerId == ctx.session.userData.userId);
-      assert(ctx.gameplayData.gameState.nextPhase == TURN_PHASES.ROLL);
+      let gameState = ctx.gameplayData.gameState;
+      let playerState = gameState.playersState[ctx.session.userData.userId];
 
-      ctx.gameplayData.gameState.nextPhase = TURN_PHASES.END;
+      assert(gameState.currPlayerId == ctx.session.userData.userId);
+      assert(gameState.nextPhase == TURN_PHASES.ROLL);
+
+      gameState.nextPhase = TURN_PHASES.END;
 
       await gameCore.rollPhaseHook(ctx);
       await gameCore.activePlayerHook(ctx);
@@ -557,8 +524,8 @@ module.exports = {
       queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
         field2: 'room_id', queryArg2: ctx.data.roomId });
 
-      ctx.gameplayData.gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
-      ctx.gameplayData.gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
+      gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
+      gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
 
       await pg.pool.query('COMMIT');
     } catch (err) {
@@ -591,15 +558,17 @@ module.exports = {
       ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
       ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
 
-      // assert(ctx.gameplayData.gameState.currPlayerId == ctx.session.userData.userId);
-      assert(ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].canRollDiceBoardCount > 0);
+      let gameState = ctx.gameplayData.gameState;
+      let playerState = gameState.playersState[ctx.session.userData.userId];
 
-      if (ctx.gameplayData.gameState.nextPhase == TURN_PHASES.ROLL) {
-        assert(ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].canRollDiceBoardInRollPhase);
+      assert(playerState.canRollDiceBoardCount > 0);
+
+      if (gameState.nextPhase == TURN_PHASES.ROLL) {
+        assert(playerState.canRollDiceBoardInRollPhase);
       }
 
-      ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].canRollDiceBoardCount--;
-      ctx.gameplayData.gameState.rollDiceBoard.playerIdRollDice = ctx.session.userData.userId;
+      playerState.canRollDiceBoardCount--;
+      gameState.rollDiceBoard.playerIdRollDice = ctx.session.userData.userId;
 
       await gameCore.rollDiceBoardHook(ctx);
       await gameCore.activePlayerHook(ctx);
@@ -607,8 +576,8 @@ module.exports = {
       queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
         field2: 'room_id', queryArg2: ctx.data.roomId });
 
-      ctx.gameplayData.gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
-      ctx.gameplayData.gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
+      gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
+      gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
 
       await pg.pool.query('COMMIT');
     } catch (err) {
@@ -641,14 +610,17 @@ module.exports = {
       ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
       ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
 
-      assert(ctx.gameplayData.gameState.currPlayerId == ctx.session.userData.userId);
-      assert(ctx.gameplayData.gameState.nextPhase == TURN_PHASES.END);
+      let gameState = ctx.gameplayData.gameState;
+      let playerState = gameState.playersState[ctx.session.userData.userId];
+
+      assert(gameState.currPlayerId == ctx.session.userData.userId);
+      assert(gameState.nextPhase == TURN_PHASES.END);
 
       await gameCore.endPhaseHook(ctx);
       await gameCore.activePlayerHook(ctx);
 
-      ctx.gameplayData.gameState.nextPhase = TURN_PHASES.DRAW;
-      ctx.gameplayData.gameState.currPlayerId = ctx.session.userData.userId == ctx.roomData.player1Id
+      gameState.nextPhase = TURN_PHASES.DRAW;
+      gameState.currPlayerId = ctx.session.userData.userId == ctx.roomData.player1Id
         ? ctx.roomData.player2Id : ctx.roomData.player1Id;
 
       resetTurn(ctx);
@@ -656,8 +628,8 @@ module.exports = {
       queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
         field2: 'room_id', queryArg2: ctx.data.roomId });
 
-      ctx.gameplayData.gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
-      ctx.gameplayData.gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
+      gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
+      gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
 
       await pg.pool.query('COMMIT');
     } catch (err) {
@@ -692,19 +664,22 @@ module.exports = {
       ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
       ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
 
-      assert(ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsToDiscard > 0);
-      ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsToDiscard--;
+      let gameState = ctx.gameplayData.gameState;
+      let playerState = gameState.playersState[ctx.session.userData.userId];
 
-      let cardSelected = ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsInHandArr[ctx.data.cardIdx];
+      assert(playerState.cardsToDiscard > 0);
+      playerState.cardsToDiscard--;
+
+      let cardSelected = playerState.cardsInHandArr[ctx.data.cardIdx];
 
       assert(cardSelected && cardSelected.cardId == ctx.data.cardId);
 
-      ctx.gameplayData.gameState.cardDiscarded = cardSelected;
-      ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsInHandArr.splice(ctx.data.cardIdx, 1);
-      ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsInHand--;
-      ctx.gameplayData.gameState.playerIdDiscardedCard = ctx.session.userData.userId;
+      gameState.cardDiscarded = cardSelected;
+      playerState.cardsInHandArr.splice(ctx.data.cardIdx, 1);
+      playerState.cardsInHand--;
+      gameState.playerIdDiscardedCard = ctx.session.userData.userId;
 
-      ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsInGraveyard.push(cardSelected);
+      playerState.cardsInGraveyard.push(cardSelected);
 
       await gameCore.discardCardHook(ctx);
       await gameCore.activePlayerHook(ctx);
@@ -712,8 +687,8 @@ module.exports = {
       queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
         field2: 'room_id', queryArg2: ctx.data.roomId });
 
-      ctx.gameplayData.gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
-      ctx.gameplayData.gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
+      gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
+      gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
 
       await pg.pool.query('COMMIT');
     } catch (err) {
@@ -748,12 +723,15 @@ module.exports = {
       ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
       ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
 
+      let gameState = ctx.gameplayData.gameState;
+      let playerState = gameState.playersState[ctx.session.userData.userId];
+
       let cardFinish;
       let cardIdx;
 
-      for (let i = 0; i < ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsOnFieldArr.length; i++) {
-        if (ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsOnFieldArr[i].cardId == ctx.data.cardId) {
-          cardFinish = ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsOnFieldArr[i];
+      for (let i = 0; i < playerState.cardsOnFieldArr.length; i++) {
+        if (playerState.cardsOnFieldArr[i].cardId == ctx.data.cardId) {
+          cardFinish = playerState.cardsOnFieldArr[i];
           cardIdx = i;
         }
       }
@@ -764,9 +742,9 @@ module.exports = {
 
       cardFinish.cardEffect.isFinished = true;
 
-      ctx.gameplayData.gameState.cardFinish = cardFinish;
-      ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsOnFieldArr.splice(cardIdx, 1);
-      ctx.gameplayData.gameState.playerIdFinishCard = ctx.session.userData.userId;
+      gameState.cardFinish = cardFinish;
+      playerState.cardsOnFieldArr.splice(cardIdx, 1);
+      gameState.playerIdFinishCard = ctx.session.userData.userId;
 
       await gameCore.cardFinishHook(ctx);
       await gameCore.activePlayerHook(ctx);
@@ -774,8 +752,8 @@ module.exports = {
       queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
         field2: 'room_id', queryArg2: ctx.data.roomId });
 
-      ctx.gameplayData.gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
-      ctx.gameplayData.gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
+      gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
+      gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
 
       await pg.pool.query('COMMIT');
     } catch (err) {
@@ -872,14 +850,17 @@ module.exports = {
       ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
       ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
 
-      assert((ctx.session.userData.userId != ctx.gameplayData.gameState.currPlayerId)
-        || (ctx.session.userData.userId != ctx.gameplayData.gameState.activePlayerId));
-      assert(ctx.session.userData.userId != ctx.gameplayData.gameState.activePlayerId);
+      let gameState = ctx.gameplayData.gameState;
+      let playerState = gameState.playersState[ctx.session.userData.userId];
+
+      assert((ctx.session.userData.userId != gameState.currPlayerId)
+        || (ctx.session.userData.userId != gameState.activePlayerId));
+      assert(ctx.session.userData.userId != gameState.activePlayerId);
       assert(ctx.session.userData.userId == ctx.roomData.player1Id || ctx.session.userData.userId == ctx.roomData.player2Id);
 
       var currTime = new Date();
       currTime = Math.round(currTime.getTime() / 1000);
-      assert(currTime > ctx.gameplayData.gameState.turnDeadlineTime);
+      assert(currTime > gameState.turnDeadlineTime);
 
       queryStatus = await pg.pool.query(`
 
@@ -910,9 +891,7 @@ let resetTurn = (ctx) => {
   let gameState = ctx.gameplayData.gameState;
 
   for (let playerId in gameState.playersState) {
-    gameState.playersState[playerId].cardsSummonConstraints.cardsCanSummonCommonCount = 0;
-    gameState.playersState[playerId].cardsSummonConstraints.cardsCanSummonRareCount = 0;
-    gameState.playersState[playerId].cardsSummonConstraints.cardsCanSummonEpicCount = 0;
+    gameState.playersState[playerId].cardsSummonConstraints.energyPoints = 0;
     gameState.playersState[playerId].rollAgain = false;
     gameState.playersState[playerId].moveBackwardsOnNextRoll = null;
     gameState.playersState[playerId].moveBackwards = null;

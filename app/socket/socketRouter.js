@@ -16,17 +16,28 @@ const self = module.exports = {
 	  const socket = ctx.socket;
 
 	  console.log('socket id: ' + socket.id);
+	  logger.info('Sessions: %o', ctx.sessions);
 
 	  socket.on('disconnect', async (ctx) => {
 	  	try {
 		  	logger.info('Client disconnected: %o', ctx.session.userData);
 		  	console.log('Client disconnected: ', ctx.session.userData);
 
-		  	await gameServer.processDisconnect(ctx, next);
+		  	if (ctx.session.userData && ctx.session.userData.userId) {
+		  		ctx.sessions[ctx.session.userData.userId] = null;
+		  	}
 
-		  	let isSuccessful = ctx.errors.length ? false : true;
+		  	ctx.disconnectTimeout = setTimeout(async () => {
+		  		if (ctx.sessions[ctx.session.userData.userId]) {
+		  			return;
+		  		}
 
-		  	console.log('Errors: ', ctx.errors);
+		  		await gameServer.processDisconnect(ctx, next);
+		  	}, 5000);
+
+		  	// let isSuccessful = ctx.errors.length ? false : true;
+
+		  	// console.log('Errors: ', ctx.errors);
 	  	} catch(err) {
 	  		socket.emit('serverError', err);
 	  		logger.error('Error: %o', err);

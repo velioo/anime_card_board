@@ -99,15 +99,17 @@ app.use( async (ctx) => {
   }
 });
 
-// io.use(async (ctx, next) => {
-//   console.log('middleware invoke begin: %s, %s', ctx.event, ctx.id);
-
-//   console.log('middleware invoke end: %s, %s', ctx.event, ctx.id);
-// });
+let sessions;
 
 io.on('connect', async (ctx, next) => {
   try {
     ctx.io = io;
+
+    if (ctx.session.userData && ctx.session.userData.userId) {
+      sessions[ctx.session.userData.userId] = true;
+    }
+
+    ctx.sessions = sessions;
     await socketRouter.routeRequest(ctx, next);
   } catch (err) {
     logger.error('IO Errors: %o', err);
@@ -117,4 +119,5 @@ io.on('connect', async (ctx, next) => {
 server.listen(PORT, () => {
   console.log('Server running on port: ' + PORT);
   logger.info('Server started on port: ' + PORT);
+  sessions = {};
 });

@@ -395,6 +395,9 @@ roomController.prototype.renderBrowseRoomsErrors = function(data) {
 	});
 
 	$(_self.BROWSE_ROOMS_SCREEN_CLASS).find(_self.INPUT_ERRORS_CLASS).show();
+	_self.enableElement(_self.JOIN_ROOM_BTN_CLASS);
+	_self.hideAllSpinner();
+	_self._connectingToRoom = false;
 };
 
 roomController.prototype.renderCurrentRoomErrors = function(data) {

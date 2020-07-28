@@ -26,6 +26,10 @@ module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
+      if (!ctx.session.userData) {
+        return;
+      }
+
       assert(ctx.session.userData && ctx.session.userData.userId);
 
       let queryStatus = await pg.pool.query(`

@@ -20,32 +20,35 @@ var self = module.exports = {
 	},
 	mainPhaseHook: async (ctx) => {
 		let gameState = ctx.gameplayData.gameState;
+		let playerState = gameState.playersState[ctx.session.userData.userId];
 
-		gameState.playersState[ctx.session.userData.userId].cardsSummonConstraints.cardsCanSummonAny = true;
-		gameState.playersState[ctx.session.userData.userId].cardsSummonConstraints.cardsCanSummonCommonCount += 10;
-		gameState.playersState[ctx.session.userData.userId].cardsSummonConstraints.cardsCanSummonRareCount += 5;
-		gameState.playersState[ctx.session.userData.userId].cardsSummonConstraints.cardsCanSummonEpicCount += 5;
+		playerState.cardsSummonConstraints.cardsCanSummonAny = true;
+		playerState.energyPoints = playerState.maxEnergyPoints;
 	},
 	rollPhaseHook: async(ctx) => {
 		let gameState = ctx.gameplayData.gameState;
+		let playerState = gameState.playersState[ctx.session.userData.userId];
 
-		gameState.playersState[ctx.session.userData.userId].cardsSummonConstraints.cardsCanSummonAny = false;
-		gameState.playersState[ctx.session.userData.userId].canRollDiceBoardCount++;
+		playerState.cardsSummonConstraints.cardsCanSummonAny = false;
+		playerState.energyPoints = 0;
+		playerState.canRollDiceBoardCount++;
 
-		if (gameState.playersState[ctx.session.userData.userId].cardsInHand > gameState.playersState[ctx.session.userData.userId].maxCardsInHand) {
-			gameState.playersState[ctx.session.userData.userId].cardsToDiscard += (gameState.playersState[ctx.session.userData.userId].cardsInHand
-				- gameState.playersState[ctx.session.userData.userId].maxCardsInHand);
+		if (playerState.cardsInHand > playerState.maxCardsInHand) {
+			playerState.cardsToDiscard += (playerState.cardsInHand
+				- playerState.maxCardsInHand);
 		}
 	},
 	endPhaseHook: async (ctx) => {
 		let gameState = ctx.gameplayData.gameState;
+		let playerState = gameState.playersState[ctx.session.userData.userId];
 
-    assert(gameState.playersState[ctx.session.userData.userId].canRollDiceBoardCount == 0);
-    assert(gameState.playersState[ctx.session.userData.userId].cardsToDiscard == 0);
-    assert(gameState.playersState[ctx.session.userData.userId].cardsToDraw == 0);
+    assert(playerState.canRollDiceBoardCount == 0);
+    assert(playerState.cardsToDiscard == 0);
+    assert(playerState.cardsToDraw == 0);
 	},
 	drawCardHook: async (ctx) => {
 		let gameState = ctx.gameplayData.gameState;
+		let playerState = gameState.playersState[ctx.session.userData.userId];
 
 		let cardsStatus = await utils.getAllFromTable({ table: 'cards' });
 		let randNum = utils.getRandomInt(0, cardsStatus.rowCount - 1);
@@ -54,10 +57,11 @@ var self = module.exports = {
 		ctx.cardDrawn = {
 	    cardId: cardSelected.id,
 	    cardName: cardSelected.name,
-	    cardText: cardSelected.description ,
+	    cardText: cardSelected.description,
 	    cardImg: cardSelected.image,
 	    cardRarity: cardSelected.rarity_id,
 	    cardEffect: JSON.parse(cardSelected.effect_json),
+	    cardCost: cardSelected.cost,
     };
 
 		if (gameState.nextPhase == TURN_PHASES.END) {
@@ -68,9 +72,10 @@ var self = module.exports = {
 	},
 	summonCardHook: async (ctx) => {
 		let gameState = ctx.gameplayData.gameState;
+		let playerState = gameState.playersState[ctx.session.userData.userId];
 
 		let card = ctx.gameplayData.gameState.cardSummoned;
-    let cardsOnFieldArr = gameState.playersState[ctx.session.userData.userId].cardsOnFieldArr;
+    let cardsOnFieldArr = playerState.cardsOnFieldArr;
     let enemyUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
     let yourUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player1Id : ctx.roomData.player2Id;
 
@@ -78,7 +83,7 @@ var self = module.exports = {
 
 		if (card.cardEffect.instantEffect) {
 			if (card.cardEffect.autoEffect) {
-    		ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsInGraveyard.push(card);
+    		playerState.cardsInGraveyard.push(card);
 				cardsOnFieldArr[cardsOnFieldArr.length - 1].cardEffect.isFinished = true;
 			}
 
@@ -94,13 +99,14 @@ var self = module.exports = {
 	},
 	cardFinishHook: async (ctx) => {
 		let gameState = ctx.gameplayData.gameState;
+		let playerState = gameState.playersState[ctx.session.userData.userId];
 
 		let card = ctx.gameplayData.gameState.cardFinish;
     let finishData = ctx.data.finishData;
     let enemyUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
     let yourUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player1Id : ctx.roomData.player2Id;
 
-		gameState.playersState[ctx.session.userData.userId].cardsInGraveyard.push(card);
+		playerState.cardsInGraveyard.push(card);
 
 		if (card.cardEffect.moveSpacesForwardUpTo) {
 			assert(finishData.moveSpacesForward >= 0);
@@ -250,9 +256,7 @@ var self = module.exports = {
 		if (gameState.playersState[enemyUserId].canRollDiceBoardCount > 0
 			|| gameState.playersState[enemyUserId].cardsToDraw > 0
 			|| gameState.playersState[enemyUserId].cardsToDiscard > 0
-			|| gameState.playersState[enemyUserId].cardsSummonConstraints.cardsCanSummonCommonCount > 0
-			|| gameState.playersState[enemyUserId].cardsSummonConstraints.cardsCanSummonRareCount > 0
-			|| gameState.playersState[enemyUserId].cardsSummonConstraints.cardsCanSummonEpicCount > 0) {
+			|| gameState.playersState[enemyUserId].energyPoints > 0) {
 			ctx.gameplayData.gameState.activePlayerId = enemyUserId;
 		} else {
 			ctx.gameplayData.gameState.activePlayerId = yourUserId;
