@@ -169,6 +169,36 @@ var rollDiceBoardResponse = startGameResponse;
 var endPhaseResponse = startGameResponse;
 var discardCardResponse = startGameResponse;
 var finishCardEffectResponse = startGameResponse;
+var winGameResponse = {
+	"type": "object",
+	"properties": {
+		"errors" : {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"dataPath": { "type": "string", "pattern": "/.+"  },
+					"message": { "type": "string" },
+				},
+				"required": [ "dataPath", "message" ]
+			}
+		},
+		"isSuccessful": { "type": "boolean" },
+		"roomData": {
+			"type": "object",
+			"properties": {
+				"id": { "type": "integer" },
+				"name": { "type": "string" },
+				"player1Id": { "type": "integer" },
+				"player2Id": { "type": "integer" },
+				"player1Name": { "type": "string" },
+				"player2Name": { "type": "string" },
+			},
+			"required": [ "id", "name", "player1Id", "player2Id", "player1Name", "player2Name" ],
+		},
+		"playerIdWinGame": { "type": ["integer", "null"] },
+	},
+};
 
 var drawCardYouResponse = {
 	"type": "object",

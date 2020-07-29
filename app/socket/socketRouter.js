@@ -8,6 +8,7 @@ const SCHEMAS = require('../schemas/schemas');
 const Ajv = require('ajv');
 const ajv = new Ajv({ allErrors: true, $data: true, jsonPointers: true });
 const ajvErrors = require('ajv-errors')(ajv);
+const _ = require('lodash/lang');
 
 const self = module.exports = {
   routeRequest: async (ctx, next) => {
@@ -20,40 +21,53 @@ const self = module.exports = {
 
 	  socket.on('disconnect', async (ctx) => {
 	  	try {
-		  	logger.info('Client disconnected: %o', ctx.session.userData);
-		  	console.log('Client disconnected: ', ctx.session.userData);
+	  		let ctx_c = _.clone(ctx);
+		  	logger.info('Client disconnected: %o', ctx_c.session.userData);
+		  	console.log('Client disconnected: ', ctx_c.session.userData);
 
-		  	if (ctx.session.userData && ctx.session.userData.userId) {
-		  		ctx.sessions[ctx.session.userData.userId] = null;
+		  	if (ctx_c.session.userData && ctx_c.session.userData.userId && ctx_c.sessions[ctx_c.session.userData.userId]) {
+		  		ctx_c.sessions[ctx_c.session.userData.userId].disconnected = true;
 		  	}
 
-		  	ctx.disconnectTimeout = setTimeout(async () => {
-		  		if (ctx.sessions[ctx.session.userData.userId]) {
+		  	ctx_c.disconnectTimeout = setTimeout(async () => {
+		  		if (ctx_c.session.userData && ctx_c.session.userData.userId &&
+		  			ctx_c.sessions[ctx_c.session.userData.userId] && !ctx_c.sessions[ctx_c.session.userData.userId].disconnected) {
 		  			return;
 		  		}
 
-		  		await gameServer.processDisconnect(ctx, next);
+		  		await gameServer.processDisconnect(ctx_c, next);
+
+		  		if (ctx_c.session.userData && ctx_c.session.userData.userId && ctx_c.sessions[ctx_c.session.userData.userId]) {
+		  			ctx_c.sessions[ctx_c.session.userData.userId] = null;
+		  		}
 		  	}, 5000);
-
-		  	// let isSuccessful = ctx.errors.length ? false : true;
-
-		  	// console.log('Errors: ', ctx.errors);
 	  	} catch(err) {
 	  		socket.emit('serverError', err);
 	  		logger.error('Error: %o', err);
 	  	}
 	  });
 
+	  socket.on('player-reconnect', async (ctx) => {
+	  	let ctx_c = _.clone(ctx);
+	  	logger.info('Client reconnected: %o', ctx_c.session.userData);
+	  	console.log('Client reconnected: ', ctx_c.session.userData);
+
+	  	if (ctx_c.session.userData && ctx_c.session.userData.userId && ctx_c.sessions[ctx_c.session.userData.userId]) {
+	  		ctx_c.sessions[ctx_c.session.userData.userId].disconnected = false;
+	  	}
+	  });
+
 	  socket.on('leaveRoom', async (ctx) => {
 	  	try {
-		  	await gameServer.leaveRoom(ctx, next);
+	  		let ctx_c = _.clone(ctx);
+		  	await gameServer.leaveRoom(ctx_c, next);
 
-		  	let isSuccessful = ctx.errors.length ? false : true;
+		  	let isSuccessful = ctx_c.errors.length ? false : true;
 
-		  	ctx.io.emit('leaveRoom', {
-		  		errors: ctx.errors,
+		  	ctx_c.io.emit('leaveRoom', {
+		  		errors: ctx_c.errors,
 		  		isSuccessful: isSuccessful,
-		  		roomId: ctx.data.roomId,
+		  		roomId: ctx_c.data.roomId,
 		  	});
 	  	} catch(err) {
 	  		socket.emit('serverError', err);
@@ -63,15 +77,16 @@ const self = module.exports = {
 
 	  socket.on('joinRoom', async (ctx) => {
 	  	try {
-		  	ctx.data.result.id = parseInt(ctx.data.result.id);
-		  	ctx.data.result.player1Id = parseInt(ctx.data.result.player1Id);
-		  	ctx.data.result.player2Id = parseInt(ctx.data.result.player2Id);
+	  		let ctx_c = _.clone(ctx);
+		  	ctx_c.data.result.id = parseInt(ctx_c.data.result.id);
+		  	ctx_c.data.result.player1Id = parseInt(ctx_c.data.result.player1Id);
+		  	ctx_c.data.result.player2Id = parseInt(ctx_c.data.result.player2Id);
 
-		  	const isSchemaValid = ajv.validate(SCHEMAS.JOIN_ROOM_EVENT, ctx.data);
+		  	const isSchemaValid = ajv.validate(SCHEMAS.JOIN_ROOM_EVENT, ctx_c.data);
 
 		  	assert(isSchemaValid);
 
-		  	socket.broadcast('joinRoom', ctx.data);
+		  	socket.broadcast('joinRoom', ctx_c.data);
 	  	} catch (err) {
 	  		socket.emit('serverError', err);
 	  		logger.error('Error: %o', err);
@@ -80,15 +95,21 @@ const self = module.exports = {
 
 	  socket.on('startGame', async (ctx) => {
 	  	try {
-		  	await gameServer.startGame(ctx, next);
+	  		let ctx_c = _.clone(ctx);
+	  		ctx_c.socket = ctx.socket;
 
-		  	let isSuccessful = ctx.errors.length ? false : true;
+	  		logger.info('Start game data: %o', ctx_c.data);
+
+		  	await gameServer.startGame(ctx_c, next);
+
+		  	let isSuccessful = ctx_c.errors.length ? false : true;
 
 		  	socket.broadcast('startGame', {
-		  		errors: ctx.errors,
+		  		errors: ctx_c.errors,
 			  	isSuccessful: isSuccessful,
-			  	gameplayData: ctx.gameplayData,
-			  	roomData: ctx.roomData,
+			  	gameplayData: ctx_c.gameplayData,
+			  	roomData: ctx_c.roomData,
+			  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 			  });
 	  	} catch (err) {
 	  		socket.emit('serverError', err);
@@ -98,22 +119,27 @@ const self = module.exports = {
 
 	  socket.on('drawCard', async (ctx) => {
 	  	try {
-		  	await gameServer.drawCard(ctx, next);
+	  		let ctx_c = _.clone(ctx);
+	  		logger.info('Draw card data: %o', ctx_c.data);
 
-		  	let isSuccessful = ctx.errors.length ? false : true;
+		  	await gameServer.drawCard(ctx_c, next);
+
+		  	let isSuccessful = ctx_c.errors.length ? false : true;
 
 		  	socket.emit('drawCardYou', {
-		  		errors: ctx.errors,
+		  		errors: ctx_c.errors,
 		  		isSuccessful: isSuccessful,
-		  		cardDrawn: ctx.cardDrawn,
-		  		roomData: ctx.roomData,
+		  		cardDrawn: ctx_c.cardDrawn,
+		  		roomData: ctx_c.roomData,
+		  		roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 		  	});
 
 		  	socket.broadcast('drawCard', {
-		  		errors: ctx.errors,
+		  		errors: ctx_c.errors,
 			  	isSuccessful: isSuccessful,
-			  	gameplayData: ctx.gameplayData,
-			  	roomData: ctx.roomData,
+			  	gameplayData: ctx_c.gameplayData,
+			  	roomData: ctx_c.roomData,
+			  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 			  });
 	  	} catch (err) {
 	  		socket.emit('serverError', err);
@@ -123,15 +149,19 @@ const self = module.exports = {
 
 	  socket.on('discardCard', async (ctx) => {
 	  	try {
-		  	await gameServer.discardCard(ctx, next);
+	  		let ctx_c = _.clone(ctx);
+	  		logger.info('Discard card data: %o', ctx_c.data);
 
-		  	let isSuccessful = ctx.errors.length ? false : true;
+		  	await gameServer.discardCard(ctx_c, next);
+
+		  	let isSuccessful = ctx_c.errors.length ? false : true;
 
 		  	socket.broadcast('discardCard', {
-		  		errors: ctx.errors,
+		  		errors: ctx_c.errors,
 			  	isSuccessful: isSuccessful,
-			  	gameplayData: ctx.gameplayData,
-			  	roomData: ctx.roomData,
+			  	gameplayData: ctx_c.gameplayData,
+			  	roomData: ctx_c.roomData,
+			  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 			  });
 	  	} catch (err) {
 	  		socket.emit('serverError', err);
@@ -141,15 +171,21 @@ const self = module.exports = {
 
 	  socket.on('drawPhase', async (ctx) => {
 	  	try {
-		  	await gameServer.drawPhase(ctx, next);
+	  		let ctx_c = _.clone(ctx);
+	  		ctx_c.socket = ctx.socket;
 
-		  	let isSuccessful = ctx.errors.length ? false : true;
+	  		logger.info('Draw phase data: %o', ctx_c.data);
+
+		  	await gameServer.drawPhase(ctx_c, next);
+
+		  	let isSuccessful = ctx_c.errors.length ? false : true;
 
 		  	socket.broadcast('drawPhase', {
-		  		errors: ctx.errors,
+		  		errors: ctx_c.errors,
 			  	isSuccessful: isSuccessful,
-			  	gameplayData: ctx.gameplayData,
-			  	roomData: ctx.roomData,
+			  	gameplayData: ctx_c.gameplayData,
+			  	roomData: ctx_c.roomData,
+			  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 			  });
 	  	} catch (err) {
 	  		socket.emit('serverError', err);
@@ -159,15 +195,19 @@ const self = module.exports = {
 
 	  socket.on('standByPhase', async (ctx) => {
 	  	try {
-		  	await gameServer.standByPhase(ctx, next);
+	  		let ctx_c = _.clone(ctx);
+	  		logger.info('Standby phase data: %o', ctx_c.data);
 
-		  	let isSuccessful = ctx.errors.length ? false : true;
+		  	await gameServer.standByPhase(ctx_c, next);
+
+		  	let isSuccessful = ctx_c.errors.length ? false : true;
 
 		  	socket.broadcast('standByPhase', {
-		  		errors: ctx.errors,
+		  		errors: ctx_c.errors,
 			  	isSuccessful: isSuccessful,
-			  	gameplayData: ctx.gameplayData,
-			  	roomData: ctx.roomData,
+			  	gameplayData: ctx_c.gameplayData,
+			  	roomData: ctx_c.roomData,
+			  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 			  });
 	  	} catch (err) {
 	  		socket.emit('serverError', err);
@@ -177,15 +217,19 @@ const self = module.exports = {
 
 	  socket.on('mainPhase', async (ctx) => {
 	  	try {
-		  	await gameServer.mainPhase(ctx, next);
+	  		let ctx_c = _.clone(ctx);
+	  		logger.info('Main phase data: %o', ctx_c.data);
 
-		  	let isSuccessful = ctx.errors.length ? false : true;
+		  	await gameServer.mainPhase(ctx_c, next);
+
+		  	let isSuccessful = ctx_c.errors.length ? false : true;
 
 		  	socket.broadcast('mainPhase', {
-		  		errors: ctx.errors,
+		  		errors: ctx_c.errors,
 			  	isSuccessful: isSuccessful,
-			  	gameplayData: ctx.gameplayData,
-			  	roomData: ctx.roomData,
+			  	gameplayData: ctx_c.gameplayData,
+			  	roomData: ctx_c.roomData,
+			  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 			  });
 	  	} catch (err) {
 	  		socket.emit('serverError', err);
@@ -195,15 +239,19 @@ const self = module.exports = {
 
 	  socket.on('summonCard', async (ctx) => {
 	  	try {
-		  	await gameServer.summonCard(ctx, next);
+	  		let ctx_c = _.clone(ctx);
+	  		logger.info('Summon card data: %o', ctx_c.data);
 
-		  	let isSuccessful = ctx.errors.length ? false : true;
+		  	await gameServer.summonCard(ctx_c, next);
+
+		  	let isSuccessful = ctx_c.errors.length ? false : true;
 
 		  	socket.broadcast('summonCard', {
-		  		errors: ctx.errors,
+		  		errors: ctx_c.errors,
 			  	isSuccessful: isSuccessful,
-			  	gameplayData: ctx.gameplayData,
-			  	roomData: ctx.roomData,
+			  	gameplayData: ctx_c.gameplayData,
+			  	roomData: ctx_c.roomData,
+			  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 			  });
 	  	} catch (err) {
 	  		socket.emit('serverError', err);
@@ -213,15 +261,19 @@ const self = module.exports = {
 
 	  socket.on('finishCardEffect', async (ctx) => {
 	  	try {
-		  	await gameServer.finishCardEffect(ctx, next);
+	  		let ctx_c = _.clone(ctx);
+	  		logger.info('Finish card data: %o', ctx_c.data);
 
-		  	let isSuccessful = ctx.errors.length ? false : true;
+		  	await gameServer.finishCardEffect(ctx_c, next);
+
+		  	let isSuccessful = ctx_c.errors.length ? false : true;
 
 		  	socket.broadcast('finishCardEffect', {
-		  		errors: ctx.errors,
+		  		errors: ctx_c.errors,
 			  	isSuccessful: isSuccessful,
-			  	gameplayData: ctx.gameplayData,
-			  	roomData: ctx.roomData,
+			  	gameplayData: ctx_c.gameplayData,
+			  	roomData: ctx_c.roomData,
+			  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 			  });
 	  	} catch (err) {
 	  		socket.emit('serverError', err);
@@ -231,15 +283,19 @@ const self = module.exports = {
 
 	  socket.on('rollPhase', async (ctx) => {
 	  	try {
-		  	await gameServer.rollPhase(ctx, next);
+	  		let ctx_c = _.clone(ctx);
+	  		logger.info('Roll phase data: %o', ctx_c.data);
 
-		  	let isSuccessful = ctx.errors.length ? false : true;
+		  	await gameServer.rollPhase(ctx_c, next);
+
+		  	let isSuccessful = ctx_c.errors.length ? false : true;
 
 		  	socket.broadcast('rollPhase', {
-		  		errors: ctx.errors,
+		  		errors: ctx_c.errors,
 			  	isSuccessful: isSuccessful,
-			  	gameplayData: ctx.gameplayData,
-			  	roomData: ctx.roomData,
+			  	gameplayData: ctx_c.gameplayData,
+			  	roomData: ctx_c.roomData,
+			  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 			  });
 	  	} catch (err) {
 	  		socket.emit('serverError', err);
@@ -249,15 +305,19 @@ const self = module.exports = {
 
 	  socket.on('rollDiceBoard', async (ctx) => {
 	  	try {
-		  	await gameServer.rollDiceBoard(ctx, next);
+	  		let ctx_c = _.clone(ctx);
+	  		logger.info('Roll dice data: %o', ctx_c.data);
 
-		  	let isSuccessful = ctx.errors.length ? false : true;
+		  	await gameServer.rollDiceBoard(ctx_c, next);
+
+		  	let isSuccessful = ctx_c.errors.length ? false : true;
 
 		  	socket.broadcast('rollDiceBoard', {
-		  		errors: ctx.errors,
+		  		errors: ctx_c.errors,
 			  	isSuccessful: isSuccessful,
-			  	gameplayData: ctx.gameplayData,
-			  	roomData: ctx.roomData,
+			  	gameplayData: ctx_c.gameplayData,
+			  	roomData: ctx_c.roomData,
+			  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 			  });
 	  	} catch (err) {
 	  		socket.emit('serverError', err);
@@ -267,15 +327,19 @@ const self = module.exports = {
 
 	  socket.on('endPhase', async (ctx) => {
 	  	try {
-		  	await gameServer.endPhase(ctx, next);
+	  		let ctx_c = _.clone(ctx);
+	  		logger.info('End phase data: %o', ctx_c.data);
 
-		  	let isSuccessful = ctx.errors.length ? false : true;
+		  	await gameServer.endPhase(ctx_c, next);
+
+		  	let isSuccessful = ctx_c.errors.length ? false : true;
 
 		  	socket.broadcast('endPhase', {
-		  		errors: ctx.errors,
+		  		errors: ctx_c.errors,
 			  	isSuccessful: isSuccessful,
-			  	gameplayData: ctx.gameplayData,
-			  	roomData: ctx.roomData,
+			  	gameplayData: ctx_c.gameplayData,
+			  	roomData: ctx_c.roomData,
+			  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 			  });
 	  	} catch (err) {
 	  		socket.emit('serverError', err);
@@ -285,28 +349,15 @@ const self = module.exports = {
 
 	  socket.on('winGameFormally', async (ctx) => {
 	  	try {
-		  	await gameServer.winGameFormally(ctx, next);
+	  		let ctx_c = _.clone(ctx);
+	  		logger.info('Win game formally data: %o', ctx_c.data);
 
-		  	let isSuccessful = ctx.errors.length ? false : true;
+		  	await gameServer.winGameFormally(ctx_c, next);
 
-		  	socket.emit('winGameFormally', {
-			  	errors: ctx.errors,
-			  	isSuccessful: isSuccessful,
-			  });
-	  	} catch (err) {
-	  		socket.emit('serverError', err);
-	  		logger.error('Error: %o', err);
-	  	}
-	  });
-
-	 	socket.on('winGameEnemyTimeout', async (ctx) => {
-	  	try {
-		  	await gameServer.winGameEnemyTimeout(ctx, next);
-
-		  	let isSuccessful = ctx.errors.length ? false : true;
+		  	let isSuccessful = ctx_c.errors.length ? false : true;
 
 		  	socket.emit('winGameFormally', {
-			  	errors: ctx.errors,
+			  	errors: ctx_c.errors,
 			  	isSuccessful: isSuccessful,
 			  });
 	  	} catch (err) {

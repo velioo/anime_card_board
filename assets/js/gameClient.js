@@ -24,6 +24,8 @@ gameClient.prototype.initGameSocket = function(socket) {
 	socket.on('endPhase', this.processEndPhase.bind(this));
 	socket.on('discardCard', this.processDiscardCard.bind(this));
 	socket.on('finishCardEffect', this.processFinishCardEffect.bind(this));
+	socket.on('timerValues', this.processTimerValues.bind(this));
+	socket.on('winGame', this.processWinGame.bind(this));
 	socket.on('winGameFormally', this.processWinGameFormally.bind(this));
 };
 
@@ -33,8 +35,8 @@ gameClient.prototype.processStartGame = function(_data) {
 
 	var _self = this;
 
-	if (_self.generalClient.roomController._roomId
-		&& _self.generalClient.roomController._roomId == _data.roomData.id) {
+	if (_self.generalClient.roomController._roomId && _data.roomId
+		&& _self.generalClient.roomController._roomId == _data.roomId) {
 		_self.gameController.processStartGameResponse(_data);
 	}
 };
@@ -52,8 +54,8 @@ gameClient.prototype.processDrawCard = function (_data) {
 
 	var _self = this;
 
-	if (_self.generalClient.roomController._roomId
-		&& _self.generalClient.roomController._roomId == _data.roomData.id) {
+	if (_self.generalClient.roomController._roomId && _data.roomId
+		&& _self.generalClient.roomController._roomId == _data.roomId) {
 		_self.gameController.processDrawCard(_data);
 	}
 };
@@ -63,8 +65,8 @@ gameClient.prototype.processDrawCardYou = function (_data) {
 
 	var _self = this;
 
-	if (_self.generalClient.roomController._roomId
-		&& _self.generalClient.roomController._roomId == _data.roomData.id) {
+	if (_self.generalClient.roomController._roomId && _data.roomId
+		&& _self.generalClient.roomController._roomId == _data.roomId) {
 		_self.gameController.processDrawCardYou(_data);
 	}
 };
@@ -82,8 +84,8 @@ gameClient.prototype.processDrawPhase = function (_data) {
 
 	var _self = this;
 
-	if (_self.generalClient.roomController._roomId
-		&& _self.generalClient.roomController._roomId == _data.roomData.id) {
+	if (_self.generalClient.roomController._roomId && _data.roomId
+		&& _self.generalClient.roomController._roomId == _data.roomId) {
 		_self.gameController.processDrawPhase(_data);
 	}
 };
@@ -101,8 +103,8 @@ gameClient.prototype.processStandByPhase = function (_data) {
 
 	var _self = this;
 
-	if (_self.generalClient.roomController._roomId
-		&& _self.generalClient.roomController._roomId == _data.roomData.id) {
+	if (_self.generalClient.roomController._roomId && _data.roomId
+		&& _self.generalClient.roomController._roomId == _data.roomId) {
 		_self.gameController.processStandByPhase(_data);
 	}
 };
@@ -120,8 +122,8 @@ gameClient.prototype.processMainPhase = function (_data) {
 
 	var _self = this;
 
-	if (_self.generalClient.roomController._roomId
-		&& _self.generalClient.roomController._roomId == _data.roomData.id) {
+	if (_self.generalClient.roomController._roomId && _data.roomId
+		&& _self.generalClient.roomController._roomId == _data.roomId) {
 		_self.gameController.processMainPhase(_data);
 	}
 };
@@ -139,8 +141,8 @@ gameClient.prototype.processSummonCard = function (_data) {
 
 	var _self = this;
 
-	if (_self.generalClient.roomController._roomId
-		&& _self.generalClient.roomController._roomId == _data.roomData.id) {
+	if (_self.generalClient.roomController._roomId && _data.roomId
+		&& _self.generalClient.roomController._roomId == _data.roomId) {
 		_self.gameController.processSummonCard(_data);
 	}
 };
@@ -158,8 +160,8 @@ gameClient.prototype.processRollPhase = function (_data) {
 
 	var _self = this;
 
-	if (_self.generalClient.roomController._roomId
-		&& _self.generalClient.roomController._roomId == _data.roomData.id) {
+	if (_self.generalClient.roomController._roomId && _data.roomId
+		&& _self.generalClient.roomController._roomId == _data.roomId) {
 		_self.gameController.processRollPhase(_data);
 	}
 };
@@ -177,8 +179,8 @@ gameClient.prototype.processRollDiceBoard = function (_data) {
 
 	var _self = this;
 
-	if (_self.generalClient.roomController._roomId
-		&& _self.generalClient.roomController._roomId == _data.roomData.id) {
+	if (_self.generalClient.roomController._roomId &&_data.roomId
+		&& _self.generalClient.roomController._roomId == _data.roomId) {
 		_self.gameController.processRollDiceBoard(_data);
 	}
 };
@@ -196,8 +198,8 @@ gameClient.prototype.processEndPhase = function (_data) {
 
 	var _self = this;
 
-	if (_self.generalClient.roomController._roomId
-		&& _self.generalClient.roomController._roomId == _data.roomData.id) {
+	if (_self.generalClient.roomController._roomId && _data.roomId
+		&& _self.generalClient.roomController._roomId == _data.roomId) {
 		_self.gameController.processEndPhase(_data);
 	}
 };
@@ -215,8 +217,8 @@ gameClient.prototype.processDiscardCard = function (_data) {
 
 	var _self = this;
 
-	if (_self.generalClient.roomController._roomId
-		&& _self.generalClient.roomController._roomId == _data.roomData.id) {
+	if (_self.generalClient.roomController._roomId && _data.roomId
+		&& _self.generalClient.roomController._roomId == _data.roomId) {
 		_self.gameController.processDiscardCard(_data);
 	}
 };
@@ -234,8 +236,8 @@ gameClient.prototype.processFinishCardEffect = function (_data) {
 
 	var _self = this;
 
-	if (_self.generalClient.roomController._roomId
-		&& _self.generalClient.roomController._roomId == _data.roomData.id) {
+	if (_self.generalClient.roomController._roomId && _data.roomId
+		&& _self.generalClient.roomController._roomId == _data.roomId) {
 		_self.gameController.processFinishCardEffect(_data);
 	}
 };
@@ -249,14 +251,23 @@ gameClient.prototype.winGameFormally = function(_data) {
 	_self.socket.emit('winGameFormally', _data);
 };
 
-gameClient.prototype.winGameEnemyTimeout = function(_data) {
-	logger.info('winGameEnemyTimeout');
-	console.log('winGameEnemyTimeout');
-
+gameClient.prototype.processTimerValues = function(_data) {
 	var _self = this;
 
-	_self.socket.emit('winGameEnemyTimeout', _data);
+	if (_self.generalClient.roomController._roomId && _data.roomId
+		&& _self.generalClient.roomController._roomId == _data.roomId) {
+		_self.gameController.processTimerValues(_data);
+	}
 };
+
+// gameClient.prototype.winGameEnemyTimeout = function(_data) {
+// 	logger.info('winGameEnemyTimeout');
+// 	console.log('winGameEnemyTimeout');
+
+// 	var _self = this;
+
+// 	_self.socket.emit('winGameEnemyTimeout', _data);
+// };
 
 gameClient.prototype.processWinGameFormally = function(_data) {
 	logger.info('processWinGameFormally');
@@ -265,4 +276,16 @@ gameClient.prototype.processWinGameFormally = function(_data) {
 	var _self = this;
 
 	_self.gameController.processWinGameFormallyResponse(_data);
+};
+
+gameClient.prototype.processWinGame = function(_data) {
+	logger.info('processWinGame');
+	console.log('processWinGame');
+
+	var _self = this;
+
+	if (_self.generalClient.roomController._roomId && _data.roomId
+		&& _self.generalClient.roomController._roomId == _data.roomId) {
+		_self.gameController.processWinGame(_data);
+	}
 };

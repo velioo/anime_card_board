@@ -89,24 +89,24 @@ var createRoomResponse = {
 	"required": [ "errors", "isSuccessful", "isUserLoggedIn", "result" ],
 };
 
-var leaveRoomResponse = {
-	"type": "object",
-	"properties": {
-		"errors" : {
-			"type": "array",
-			"items": {
-				"type": "object",
-				"properties": {
-					"dataPath": { "type": "string", "pattern": "/.+"  },
-					"message": { "type": "string" },
-				},
-				"required": [ "dataPath", "message" ]
-			}
-		},
-		"isSuccessful": { "type": "boolean" },
-	},
-	"required": [ "errors", "isSuccessful" ],
-};
+// var leaveRoomResponse = {
+// 	"type": "object",
+// 	"properties": {
+// 		"errors" : {
+// 			"type": "array",
+// 			"items": {
+// 				"type": "object",
+// 				"properties": {
+// 					"dataPath": { "type": "string", "pattern": "/.+"  },
+// 					"message": { "type": "string" },
+// 				},
+// 				"required": [ "dataPath", "message" ]
+// 			}
+// 		},
+// 		"isSuccessful": { "type": "boolean" },
+// 	},
+// 	"required": [ "errors", "isSuccessful" ],
+// };
 
 var browseRoomsResponse = {
 	"type": "object",

@@ -32,6 +32,11 @@ module.exports = {
 
       assert(ctx.session.userData && ctx.session.userData.userId);
 
+      if (ctx.sessions[ctx.session.userData.userId]) {
+        clearInterval(ctx.sessions[ctx.session.userData.userId].turnInterval);
+        ctx.sessions[ctx.session.userData.userId].roomId = null;
+      }
+
       let queryStatus = await pg.pool.query(`
 
         DELETE FROM rooms
@@ -69,6 +74,11 @@ module.exports = {
       ctx.data.roomId = parseInt(ctx.data.roomId);
 
       assert(ctx.session.userData && ctx.session.userData.userId);
+
+      if (ctx.sessions[ctx.session.userData.userId]) {
+        clearInterval(ctx.sessions[ctx.session.userData.userId].turnInterval);
+        ctx.sessions[ctx.session.userData.userId].roomId = null;
+      }
 
       let queryStatus = await pg.pool.query(`
 

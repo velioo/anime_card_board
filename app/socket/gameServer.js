@@ -45,7 +45,4 @@ const self = module.exports = {
   finishCardEffect: async (ctx, next) => {
     await gameController.finishCardEffect (ctx, next);
   },
-  winGameEnemyTimeout: async (ctx, next) => {
-    await gameController.winGameEnemyTimeout (ctx, next);
-  },
 };

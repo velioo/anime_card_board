@@ -5,7 +5,12 @@ var generalClient = function() {
 };
 
 generalClient.prototype.clientConnectToServer = function() {
-	this.socket = io.connect();
+	this.socket = io.connect('/', {
+    "reconnection": true,
+    "reconnectionDelay": 100,
+    "reconnectionDelayMax" : 200,
+    "reconnectionAttempts": Infinity,
+  });
 
   //When we connect, we are not 'connected' until we have a server id
   //and are placed in a game by the server. The server sends us a message for that.
@@ -22,6 +27,7 @@ generalClient.prototype.clientConnectToServer = function() {
   this.socket.on('disconnect', this.processDisconnect.bind(this));
   this.socket.on('leaveRoom', this.processLeaveRoom.bind(this));
   this.socket.on('joinRoom', this.processJoinRoom.bind(this));
+  this.socket.on('reconnect', this.sendServerReconnect.bind(this));
       //Sent each tick of the server simulation. This is our authoritive update
   // this.socket.on('onserverupdate', this.client_onserverupdate_recieved.bind(this));
       //Handle when we connect to the server, showing state and storing id's.
@@ -33,6 +39,12 @@ generalClient.prototype.clientConnectToServer = function() {
 
 
 	// this.socket.emit('signUp', { username: "velioo", password: "12345678", email: "velioocs@mail.bg", conf_password: "12345678" });
+};
+
+generalClient.prototype.sendServerReconnect = function () {
+  var _self = this;
+
+  _self.socket.emit('player-reconnect');
 };
 
 generalClient.prototype.sendSignUpData = function(_data) {
@@ -136,11 +148,10 @@ generalClient.prototype.joinRoom = function(_data) {
 
 generalClient.prototype.processJoinRoom = function (_data) {
   logger.info('processJoinRoom');
-  console.log('JOIN ROOM EMIT RESPOSNE');
 
   var _self = this;
 
-  if (_data.result.id && _self.roomController._roomId
+  if (_data.result && _data.result.id && _self.roomController._roomId
     && _data.result.id == _self.roomController._roomId) {
     _self.roomController.processGetCurrentRoomDataResponse(_data);
   }
@@ -164,6 +175,8 @@ generalClient.prototype.processDisconnect = function(_data) {
 	logger.info('processDisconnect');
 
 	var _self = this;
+
+  _self.socket.emit('player-reconnect');
 };
 
 generalClient.prototype.processLeaveRoom = function(_data) {
@@ -211,7 +224,7 @@ generalClient.prototype.failHandler = function (xhr, status, errorThrown) {
       }
     }
 
-    _self.roomController.processChangeScreen(_self.roomController.MAIN_MENU_SCREEN_CLASS);
+    // _self.roomController.processChangeScreen(_self.roomController.MAIN_MENU_SCREEN_CLASS);
     window.alert('There was a problem while processing your request. Please try again later.');
   }
 

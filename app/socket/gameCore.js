@@ -109,14 +109,20 @@ var self = module.exports = {
 		playerState.cardsInGraveyard.push(card);
 
 		if (card.cardEffect.moveSpacesForwardUpTo) {
-			assert(finishData.moveSpacesForward >= 0);
+			assert((finishData.moveSpacesForward > 0) && (finishData.moveSpacesForward <= card.cardEffect.moveSpacesForwardUpTo));
 			card.cardEffect.moveSpacesForward = finishData.moveSpacesForward;
 			await self.rollDiceBoardHook(ctx, { rollDiceValue: finishData.moveSpacesForward, moveIfCan: false });
 	  } else if (card.cardEffect.moveSpacesBackwardsUpToEnemy) {
-	  	assert(finishData.moveSpacesBackwardsEnemy > 0);
+	  	assert((finishData.moveSpacesBackwardsEnemy > 0) && (finishData.moveSpacesBackwardsEnemy <= card.cardEffect.moveSpacesBackwardsUpToEnemy));
 	  	card.cardEffect.moveSpacesBackwardsEnemy = finishData.moveSpacesBackwardsEnemy;
 	  	await self.rollDiceBoardHook(ctx, { rollDiceValue: finishData.moveSpacesBackwardsEnemy,
 	  		userId: enemyUserId, moveBackwardsOnNextRoll: true, moveIfCan: false });
+	  } else if (card.cardEffect.moveSpacesForwardOrBackwardUpTo) {
+	  	assert((finishData.moveSpaces > 0) && (finishData.moveSpaces <= card.cardEffect.moveSpacesForwardOrBackwardUpTo));
+	  	assert("moveBackward" in finishData);
+	  	card.cardEffect.moveSpaces = finishData.moveSpaces;
+	  	await self.rollDiceBoardHook(ctx, { rollDiceValue: finishData.moveSpaces,
+	  		userId: yourUserId, moveBackwardsOnNextRoll: finishData.moveBackward, moveIfCan: false });
 	  }
 	},
 	rollDiceBoardHook: async (ctx, overwriteParams) => {
@@ -258,8 +264,12 @@ var self = module.exports = {
 			|| gameState.playersState[notCurrPlayerId].cardsToDiscard > 0
 			|| gameState.playersState[notCurrPlayerId].energyPoints > 0) {
 			ctx.gameplayData.gameState.activePlayerId = notCurrPlayerId;
+			ctx.sessions[notCurrPlayerId].pausedTimer = false;
+			ctx.sessions[currPlayerId].pausedTimer = true;
 		} else {
 			ctx.gameplayData.gameState.activePlayerId = currPlayerId;
+			ctx.sessions[notCurrPlayerId].pausedTimer = true;
+			ctx.sessions[currPlayerId].pausedTimer = false;
 		}
 	},
 };

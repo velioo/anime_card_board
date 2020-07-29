@@ -31,6 +31,7 @@ const server = Http.createServer(app.callback());
 const IO = require( 'koa-socket.io' );
 const KoaSocketSession = require('koa-socket-session');
 const io = new IO({ namespace: '/' });
+let sessions;
 
 app.use(globalErrHandler);
 
@@ -59,6 +60,7 @@ app.use(async (ctx, next) => {
   ctx.state.FRONTEND_LOGGER_INTERVAL = FRONTEND_LOGGER_INTERVAL;
   ctx.state.session = ctx.session;
   ctx.session.isUserLoggedIn = ctx.session.isUserLoggedIn || false;
+  ctx.sessions = sessions;
 
   await next();
 });
@@ -99,14 +101,22 @@ app.use( async (ctx) => {
   }
 });
 
-let sessions;
-
 io.on('connect', async (ctx, next) => {
   try {
     ctx.io = io;
 
     if (ctx.session.userData && ctx.session.userData.userId) {
-      sessions[ctx.session.userData.userId] = true;
+      if (!sessions[ctx.session.userData.userId]) {
+        sessions[ctx.session.userData.userId] = {
+          turnInterval: null,
+          pausedTimer: true,
+          timerValue: null,
+          disconnected: false,
+          roomId: null,
+        };
+      } else {
+        sessions[ctx.session.userData.userId].disconnected = false;
+      }
     }
 
     ctx.sessions = sessions;

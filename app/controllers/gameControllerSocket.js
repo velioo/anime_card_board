@@ -22,7 +22,7 @@ const Ajv = require('ajv');
 const ajv = new Ajv({ allErrors: true, $data: true, jsonPointers: true });
 const ajvErrors = require('ajv-errors')(ajv);
 
-module.exports = {
+const self = module.exports = {
   startGame: async (ctx, next) => {
     logger.info('startGame gameController');
     ctx.errors = [];
@@ -30,6 +30,9 @@ module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
+      // let rand = utils.getRandomInt(0, 1);
+      // assert(rand);
+
       ctx.data.roomId = parseInt(ctx.data.roomId);
       ctx.data.player1Id = parseInt(ctx.data.player1Id);
       ctx.data.player2Id = parseInt(ctx.data.player2Id);
@@ -79,6 +82,7 @@ module.exports = {
       ctx.gameplayData = {
         gameState: {
           currPlayerId: ctx.data.player1Id,
+          activePlayerId: ctx.data.player1Id,
           roomId: ctx.roomData.id,
           boardData: {
             id: queryStatusBoards.rows[0].board_id,
@@ -185,7 +189,10 @@ module.exports = {
 
       ctx.gameplayData.gameState.gameId = queryStatus.rows[0].id;
 
-      await gameCore.activePlayerHook(ctx);
+      resetTimers(ctx);
+
+      ctx.sessions[ctx.roomData.player1Id].roomId = ctx.roomData.id;
+      ctx.sessions[ctx.roomData.player2Id].roomId = ctx.roomData.id;
 
       await pg.pool.query('COMMIT');
     } catch (err) {
@@ -203,6 +210,9 @@ module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
+      // let rand = utils.getRandomInt(0, 1);
+      // assert(rand);
+
       ctx.data.roomId = parseInt(ctx.data.roomId);
 
       const isSchemaValid = ajv.validate(SCHEMAS.DRAW_CARD, ctx.data);
@@ -228,7 +238,10 @@ module.exports = {
       gameState.playerIdDrawnCard = ctx.session.userData.userId;
 
       await gameCore.drawCardHook(ctx);
-      await gameCore.activePlayerHook(ctx);
+
+      if (gameState.nextPhase != TURN_PHASES.DRAW) {
+        await gameCore.activePlayerHook(ctx);
+      }
 
       playerState.cardsInHandArr.push(ctx.cardDrawn);
 
@@ -240,7 +253,7 @@ module.exports = {
 
       await pg.pool.query('COMMIT');
     } catch (err) {
-      ctx.errors.push({ dataPath: '/draw_card', message: 'There was a problem while drawing card.' });
+      ctx.errors.push({ dataPath: '/draw_card', message: 'There was a problem while drawing card. Retrying...' });
 
       await pg.pool.query('ROLLBACK');
 
@@ -254,6 +267,8 @@ module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
+      // let rand = utils.getRandomInt(0, 1);
+      // assert(rand);
       ctx.data.roomId = parseInt(ctx.data.roomId);
 
       const isSchemaValid = ajv.validate(SCHEMAS.DRAW_PHASE, ctx.data);
@@ -276,10 +291,8 @@ module.exports = {
       assert(gameState.nextPhase == TURN_PHASES.DRAW);
 
       gameState.nextPhase = TURN_PHASES.STANDBY;
-      var currTime = new Date();
-      currTime = Math.round(currTime.getTime() / 1000);
-      gameState.startTurnTime = currTime;
-      gameState.turnDeadlineTime = currTime + ctx.gameplayData.gameState.timerSeconds;
+
+      resetTimers(ctx);
 
       await gameCore.drawPhaseHook(ctx);
       await gameCore.activePlayerHook(ctx);
@@ -292,7 +305,7 @@ module.exports = {
 
       await pg.pool.query('COMMIT');
     } catch (err) {
-      ctx.errors.push({ dataPath: '/draw_phase', message: 'There was a problem with draw phase.' });
+      ctx.errors.push({ dataPath: '/draw_phase', message: 'There was a problem with draw phase. Retryng...' });
 
       await pg.pool.query('ROLLBACK');
 
@@ -306,6 +319,8 @@ module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
+      // let rand = utils.getRandomInt(0, 1);
+      // assert(rand);
       ctx.data.roomId = parseInt(ctx.data.roomId);
 
       const isSchemaValid = ajv.validate(SCHEMAS.STANDBY_PHASE, ctx.data);
@@ -342,7 +357,7 @@ module.exports = {
 
       await pg.pool.query('COMMIT');
     } catch (err) {
-      ctx.errors.push({ dataPath: '/standby_phase', message: 'There was a problem with standby phase.' });
+      ctx.errors.push({ dataPath: '/standby_phase', message: 'There was a problem with standby phase. Retrying...' });
 
       await pg.pool.query('ROLLBACK');
 
@@ -356,6 +371,8 @@ module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
+      // let rand = utils.getRandomInt(0, 1);
+      // assert(rand);
       ctx.data.roomId = parseInt(ctx.data.roomId);
 
       const isSchemaValid = ajv.validate(SCHEMAS.MAIN_PHASE, ctx.data);
@@ -390,7 +407,7 @@ module.exports = {
 
       await pg.pool.query('COMMIT');
     } catch (err) {
-      ctx.errors.push({ dataPath: '/main_phase', message: 'There was a problem with main phase.' });
+      ctx.errors.push({ dataPath: '/main_phase', message: 'There was a problem with main phase. Retrying...' });
 
       await pg.pool.query('ROLLBACK');
 
@@ -404,6 +421,8 @@ module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
+      // let rand = utils.getRandomInt(0, 1);
+      // assert(rand);
       ctx.data.roomId = parseInt(ctx.data.roomId);
       ctx.data.cardId = parseInt(ctx.data.cardId);
       ctx.data.cardIdx = parseInt(ctx.data.cardIdx);
@@ -481,7 +500,7 @@ module.exports = {
 
       await pg.pool.query('COMMIT');
     } catch (err) {
-      ctx.errors.push({ dataPath: '/summon_card', message: 'There was a problem while summoning card.' });
+      ctx.errors.push({ dataPath: '/summon_card', message: 'There was a problem while summoning card. Retrying...' });
 
       await pg.pool.query('ROLLBACK');
 
@@ -495,6 +514,8 @@ module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
+      // let rand = utils.getRandomInt(0, 1);
+      // assert(rand);
       ctx.data.roomId = parseInt(ctx.data.roomId);
 
       const isSchemaValid = ajv.validate(SCHEMAS.ROLL_PHASE, ctx.data);
@@ -529,7 +550,7 @@ module.exports = {
 
       await pg.pool.query('COMMIT');
     } catch (err) {
-      ctx.errors.push({ dataPath: '/roll_phase', message: 'There was a problem with roll phase.' });
+      ctx.errors.push({ dataPath: '/roll_phase', message: 'There was a problem with roll phase. Retrying...' });
 
       await pg.pool.query('ROLLBACK');
 
@@ -543,6 +564,8 @@ module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
+      // let rand = utils.getRandomInt(0, 1);
+      // assert(rand);
       ctx.data.roomId = parseInt(ctx.data.roomId);
 
       const isSchemaValid = ajv.validate(SCHEMAS.ROLL_PHASE, ctx.data);
@@ -581,7 +604,7 @@ module.exports = {
 
       await pg.pool.query('COMMIT');
     } catch (err) {
-      ctx.errors.push({ dataPath: '/roll_dice_board', message: 'There was a problem with rolling the board dice.' });
+      ctx.errors.push({ dataPath: '/roll_dice_board', message: 'There was a problem with rolling the board dice. Retrying...' });
 
       await pg.pool.query('ROLLBACK');
 
@@ -595,6 +618,8 @@ module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
+      // let rand = utils.getRandomInt(0, 1);
+      // assert(rand);
       ctx.data.roomId = parseInt(ctx.data.roomId);
 
       const isSchemaValid = ajv.validate(SCHEMAS.END_PHASE, ctx.data);
@@ -617,11 +642,15 @@ module.exports = {
       assert(gameState.nextPhase == TURN_PHASES.END);
 
       await gameCore.endPhaseHook(ctx);
-      await gameCore.activePlayerHook(ctx);
+
+      ctx.sessions[ctx.roomData.player1Id].pausedTimer = true;
+      ctx.sessions[ctx.roomData.player2Id].pausedTimer = true;
 
       gameState.nextPhase = TURN_PHASES.DRAW;
       gameState.currPlayerId = ctx.session.userData.userId == ctx.roomData.player1Id
         ? ctx.roomData.player2Id : ctx.roomData.player1Id;
+
+      await gameCore.activePlayerHook(ctx);
 
       resetTurn(ctx);
 
@@ -633,7 +662,7 @@ module.exports = {
 
       await pg.pool.query('COMMIT');
     } catch (err) {
-      ctx.errors.push({ dataPath: '/end_phase', message: 'There was a problem with end phase.' });
+      ctx.errors.push({ dataPath: '/end_phase', message: 'There was a problem with end phase. Retrying...' });
 
       await pg.pool.query('ROLLBACK');
 
@@ -647,6 +676,8 @@ module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
+      // let rand = utils.getRandomInt(0, 1);
+      // assert(rand);
       ctx.data.roomId = parseInt(ctx.data.roomId);
       ctx.data.cardId = parseInt(ctx.data.cardId);
       ctx.data.cardIdx = parseInt(ctx.data.cardIdx);
@@ -692,7 +723,7 @@ module.exports = {
 
       await pg.pool.query('COMMIT');
     } catch (err) {
-      ctx.errors.push({ dataPath: '/discard_card', message: 'There was a problem while discarding card.' });
+      ctx.errors.push({ dataPath: '/discard_card', message: 'There was a problem while discarding card. Retrying...' });
 
       await pg.pool.query('ROLLBACK');
 
@@ -706,6 +737,8 @@ module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
+      // let rand = utils.getRandomInt(0, 1);
+      // assert(rand);
       ctx.data.roomId = parseInt(ctx.data.roomId);
       ctx.data.cardId = parseInt(ctx.data.cardId);
       assert(ctx.data.finishData);
@@ -757,7 +790,7 @@ module.exports = {
 
       await pg.pool.query('COMMIT');
     } catch (err) {
-      ctx.errors.push({ dataPath: '/finish_card', message: 'There was a problem while finishing card effect.' });
+      ctx.errors.push({ dataPath: '/finish_card', message: 'There was a problem while finishing card effect. Retrying...' });
 
       await pg.pool.query('ROLLBACK');
 
@@ -796,10 +829,8 @@ module.exports = {
       queryStatus = await utils.lockRowById({ table: 'games', field: 'room_id', queryArg: ctx.data.roomId });
 
       if (player2LeftTheRoom) {
-        // player 2 left the room
         assert(queryStatus.rows[0].player1_id == ctx.session.userData.userId);
       } else {
-        // player 1 left the room
         assert(queryStatus.rows[0].player2_id == ctx.session.userData.userId);
       }
 
@@ -821,46 +852,29 @@ module.exports = {
 
       await pg.pool.query('COMMIT');
     } catch(err) {
-      ctx.errors.push({ dataPath: '/win_game_formally', message: 'There was a problem finishing the game. Please try again later.' });
+      ctx.errors.push({ dataPath: '/win_game_formally', message: 'There was a problem finishing the game.' });
 
       await pg.pool.query('ROLLBACK');
 
       logger.info('Failed to win game formally: %o', err);
     }
   },
-  winGameEnemyTimeout: async (ctx, next) => {
-    logger.info('winGameEnemyTimeout gameController');
+  winGame: async (ctx, roomId, userId) => {
+    logger.info('winGame gameController');
     ctx.errors = [];
 
     await pg.pool.query('BEGIN');
 
     try {
-      ctx.data.roomId = parseInt(ctx.data.roomId);
+      let queryStatus = await utils.lockRowById({ table: 'games', field: 'room_id', queryArg: roomId });
 
-      const isSchemaValid = ajv.validate(SCHEMAS.WIN_GAME_ENEMY_TIMEOUT, ctx.data);
-
-      assert(isSchemaValid);
-      assert(ctx.session.userData && ctx.session.userData.userId);
-
-      let queryStatus = await utils.lockRowById({ table: 'games', field: 'room_id', queryArg: ctx.data.roomId });
-
-      assert(queryStatus.rows[0].player1_id == ctx.session.userData.userId
-        || queryStatus.rows[0].player2_id == ctx.session.userData.userId);
+      assert(queryStatus.rows[0].player1_id == userId
+        || queryStatus.rows[0].player2_id == userId);
 
       ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
       ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
 
-      let gameState = ctx.gameplayData.gameState;
-      let playerState = gameState.playersState[ctx.session.userData.userId];
-
-      assert((ctx.session.userData.userId != gameState.currPlayerId)
-        || (ctx.session.userData.userId != gameState.activePlayerId));
-      assert(ctx.session.userData.userId != gameState.activePlayerId);
-      assert(ctx.session.userData.userId == ctx.roomData.player1Id || ctx.session.userData.userId == ctx.roomData.player2Id);
-
-      var currTime = new Date();
-      currTime = Math.round(currTime.getTime() / 1000);
-      assert(currTime > gameState.turnDeadlineTime);
+      assert(userId != ctx.gameplayData.gameState.activePlayerId);
 
       queryStatus = await pg.pool.query(`
 
@@ -872,15 +886,37 @@ module.exports = {
           AND status_id = 1
         RETURNING id
 
-      `, [ ctx.session.userData.userId, ctx.data.roomId ]);
+      `, [ userId, roomId ]);
 
       logger.info('queryStatus: ', queryStatus);
 
+      if (queryStatus.rowCount >= 1) {
+        ctx.socket.broadcast('winGame', {
+          errors: ctx.errors,
+          isSuccessful: true,
+          roomData: ctx.roomData,
+          roomId: roomId,
+          playerIdWinGame: userId,
+        });
+      } else {
+        ctx.socket.broadcast('winGame', {
+          errors: ctx.errors,
+          isSuccessful: true,
+          roomData: ctx.roomData ? ctx.roomData : { id: roomId },
+          roomId: roomId,
+          playerIdWinGame: null,
+        });
+      }
+
       await pg.pool.query('COMMIT');
     } catch(err) {
-      ctx.errors.push({ dataPath: '/win_game_timeout', message: 'There was a problem finishing the game. Please try again later.' });
+      ctx.errors.push({ dataPath: '/win_game_timeout', message: 'There was a problem finishing the game.' });
 
       await pg.pool.query('ROLLBACK');
+
+      setTimeout(async () => {
+        await self.winGame(ctx, roomId, userId);
+      }, 5000);
 
       logger.info('Failed to win game timeout: %o', err);
     }
@@ -916,4 +952,61 @@ let resetTurn = (ctx) => {
   };
   gameState.cardDiscarded = null;
   gameState.cardFinish = null;
+};
+
+let resetTimers = (ctx) => {
+  clearInterval(ctx.sessions[ctx.roomData.player1Id].turnInterval);
+  clearInterval(ctx.sessions[ctx.roomData.player2Id].turnInterval);
+  ctx.sessions[ctx.roomData.player1Id].pausedTimer = true;
+  ctx.sessions[ctx.roomData.player2Id].pausedTimer = true;
+  ctx.sessions[ctx.roomData.player1Id].timerValue = ctx.gameplayData.gameState.timerSeconds + 3;
+  ctx.sessions[ctx.roomData.player2Id].timerValue = ctx.gameplayData.gameState.timerSeconds + 3;
+
+  ctx.socket.broadcast('timerValues', {
+    timerValuePlayer1: ctx.sessions[ctx.roomData.player1Id].timerValue,
+    timerValuePlayer2: ctx.sessions[ctx.roomData.player2Id].timerValue,
+    roomId: ctx.roomData.id,
+  });
+
+  ctx.sessions[ctx.roomData.player1Id].turnInterval = setInterval(async () => {
+    if (ctx.sessions[ctx.roomData.player1Id].pausedTimer) {
+      return;
+    }
+
+    ctx.sessions[ctx.roomData.player1Id].timerValue--;
+
+    ctx.socket.broadcast('timerValues', {
+      timerValuePlayer1: ctx.sessions[ctx.roomData.player1Id].timerValue,
+      timerValuePlayer2: ctx.sessions[ctx.roomData.player2Id].timerValue,
+      roomId: ctx.roomData.id,
+    });
+
+    console.log('Player 1 turn seconds left: ', ctx.sessions[ctx.roomData.player1Id].timerValue);
+
+    if (ctx.sessions[ctx.roomData.player1Id].timerValue <= 0) {
+      clearInterval(ctx.sessions[ctx.roomData.player1Id].turnInterval);
+      await self.winGame(ctx, ctx.roomData.id, ctx.roomData.player2Id);
+    }
+  }, 1000);
+
+  ctx.sessions[ctx.roomData.player2Id].turnInterval = setInterval(async () => {
+    if (ctx.sessions[ctx.roomData.player2Id].pausedTimer) {
+      return;
+    }
+
+    ctx.sessions[ctx.roomData.player2Id].timerValue--;
+
+    ctx.socket.broadcast('timerValues', {
+      timerValuePlayer1: ctx.sessions[ctx.roomData.player1Id].timerValue,
+      timerValuePlayer2: ctx.sessions[ctx.roomData.player2Id].timerValue,
+      roomId: ctx.roomData.id,
+    });
+
+    console.log('Player 2 turn seconds left: ', ctx.sessions[ctx.roomData.player2Id].timerValue);
+
+    if (ctx.sessions[ctx.roomData.player2Id].timerValue <= 0) {
+      clearInterval(ctx.sessions[ctx.roomData.player2Id].turnInterval);
+      await self.winGame(ctx, ctx.roomData.id, ctx.roomData.player1Id);
+    }
+  }, 1000);
 };

@@ -288,20 +288,11 @@ roomController.prototype.processLeaveRoomResponse = function(data) {
 
 	var _self = this;
 
-  assert(ajv.validate(leaveRoomResponse, data), 'leaveRoomResponse is invalid' +
-  	JSON.stringify(ajv.errors, null, 2));
-
   if (_self._roomId && _self._roomId == data.roomId) {
   	console.log('Room found, refreshing: ', _self._roomId);
   	_self.resetRoomsInterval();
   	_self.client.getCurrentRoomData({ roomId: _self._roomId });
   }
-
-	if (!data.isSuccessful) {
-		assert(data.errors.length > 0);
-
-		_self.showAlertError(data.errors[0].message);
-	}
 };
 
 roomController.prototype.resetRoomsInterval = function () {
@@ -418,6 +409,8 @@ roomController.prototype.showCreateRoomSuccess = function(data) {
 	logger.info('showCreateRoomSuccess');
 	var _self = this;
 
+	_self._hostId = _self.client.logInSignUpController._userId;
+
 	$(_self.LOBBY_ROOM_NAME_CLASS).text('Room: ' + data.result.roomName);
 	$(_self.LOBBY_ROOM_PLAYERS_CLASS).text('Players: ' + data.result.player1Name);
 	$(_self.LOBBY_SCREEN_CLASS).find(_self.SCREEN_FOOTER_CLASS)
@@ -432,6 +425,8 @@ roomController.prototype.showCreateRoomSuccess = function(data) {
 roomController.prototype.showJoinRoomSuccess = function(data) {
 	logger.info('showJoinRoomSuccess');
 	var _self = this;
+
+	_self._hostId = null;
 
 	$(_self.LOBBY_ROOM_NAME_CLASS).text('Room: ' + data.result.name);
 	$(_self.LOBBY_ROOM_PLAYERS_CLASS).text('Players: ' + data.result.player1Name + ', ' + data.result.player2Name);
