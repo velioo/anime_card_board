@@ -45,4 +45,10 @@ const self = module.exports = {
   finishCardEffect: async (ctx, next) => {
     await gameController.finishCardEffect (ctx, next);
   },
+  activateCardEffect: async (ctx, next) => {
+    await gameController.activateCardEffect (ctx, next);
+  },
+  finishCardEffectContinuous: async (ctx, next) => {
+    await gameController.finishCardEffectContinuous (ctx, next);
+  },
 };

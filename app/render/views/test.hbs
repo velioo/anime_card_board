@@ -4,6 +4,7 @@
     <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.css">
     <script src="/jquery/dist/jquery.js"></script>
     <script src="/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="/stickytooltip/stickytooltip.js"></script>
     <script type="text/javascript" src="/roll-a-die/dist/roll-a-die.js"></script>
     <link rel="stylesheet" href="/css/main.css">
 </head>
@@ -97,7 +98,7 @@
 		<div>
 			<table class="anime-cb-card-field player-you">
 				<tr>
-					<td><img class="anime-cb-card-onfield hover player-you" data-card-text="This is Saber" data-card-name="Saber" src="imgs/player_cards/Saber.jpg"></td>
+					<td><img data-tooltip="activateEffect" class="anime-cb-card-onfield hover player-you" data-card-text="This is Saber" data-card-name="Saber" src="imgs/player_cards/Saber.jpg"></td>
 					<td></td>
 					<td></td>
 					<td></td>
@@ -110,7 +111,7 @@
 		</div>
 		<div class="anime-cb-cards-in-hand-wrapper player-you">
 			<div class="anime-cb-cards-in-hand player-you">
-				<img class="anime-cb-card player-you" data-card-text="This is Kurumi" data-card-name="Kurumi" src="imgs/player_cards/Kurumi 3.jpg">
+				<img class="anime-cb-card player-you" data-card-text="This is Kurumi" data-card-name="Kurumi" src="imgs/player_cards/Kurumi 3.jpg" >
  				<img class="anime-cb-card player-you" data-card-text="This is Ange" data-card-name="Ange" src="imgs/player_cards/Ange 2.jpg">
 				<img class="anime-cb-card player-you" data-card-text="This is Saber" data-card-name="Saber" src="imgs/player_cards/Saber.jpg">
 				<img class="anime-cb-card player-you" data-card-text="This is Maki" data-card-name="Maki" src="imgs/player_cards/Maki.jpg">
@@ -236,6 +237,12 @@
 	      <h3>Enemy Graveyard</h3>
 	    </div>
 	  </div>
+	</div>
+	<div id="mystickytooltip" class="stickytooltip">
+		<div style="padding:5px">
+		<div id="activateEffect">Activate</div>
+		</div>
+		<div class="stickystatus"></div>
 	</div>
 </div>
 </div>

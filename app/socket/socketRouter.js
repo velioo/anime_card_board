@@ -37,9 +37,9 @@ const self = module.exports = {
 
 		  		await gameServer.processDisconnect(ctx_c, next);
 
-		  		if (ctx_c.session.userData && ctx_c.session.userData.userId && ctx_c.sessions[ctx_c.session.userData.userId]) {
-		  			ctx_c.sessions[ctx_c.session.userData.userId] = null;
-		  		}
+		  		// if (ctx_c.session.userData && ctx_c.session.userData.userId && ctx_c.sessions[ctx_c.session.userData.userId]) {
+		  		// 	ctx_c.sessions[ctx_c.session.userData.userId] = null;
+		  		// }
 		  	}, 5000);
 	  	} catch(err) {
 	  		socket.emit('serverError', err);
@@ -104,13 +104,36 @@ const self = module.exports = {
 
 		  	let isSuccessful = ctx_c.errors.length ? false : true;
 
-		  	socket.broadcast('startGame', {
-		  		errors: ctx_c.errors,
-			  	isSuccessful: isSuccessful,
-			  	gameplayData: ctx_c.gameplayData,
-			  	roomData: ctx_c.roomData,
-			  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
-			  });
+		  	console.log('room id: ', ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId);
+
+		  	if (ctx_c.roomData && ctx_c.sessions[ctx_c.roomData.player1Id] && ctx_c.sessions[ctx_c.roomData.player2Id]
+		  		&& ctx_c.sessions[ctx_c.roomData.player1Id].socketId && ctx_c.sessions[ctx_c.roomData.player2Id].socketId
+		  		&& ctx_c.io.getSocket(ctx_c.sessions[ctx_c.roomData.player1Id].socketId) && ctx_c.io.getSocket(ctx_c.sessions[ctx_c.roomData.player2Id].socketId)) {
+
+			  	ctx.io.getSocket(ctx_c.sessions[ctx_c.roomData.player1Id].socketId).emit('startGame', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+
+				  ctx.io.getSocket(ctx_c.sessions[ctx_c.roomData.player2Id].socketId).emit('startGame', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+		  	} else {
+			  	socket.broadcast('startGame', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+		  	}
 	  	} catch (err) {
 	  		socket.emit('serverError', err);
 	  		logger.error('Error: %o', err);
@@ -134,13 +157,34 @@ const self = module.exports = {
 		  		roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 		  	});
 
-		  	socket.broadcast('drawCard', {
-		  		errors: ctx_c.errors,
-			  	isSuccessful: isSuccessful,
-			  	gameplayData: ctx_c.gameplayData,
-			  	roomData: ctx_c.roomData,
-			  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
-			  });
+		  	if (ctx_c.roomData && ctx_c.sessions[ctx_c.roomData.player1Id] && ctx_c.sessions[ctx_c.roomData.player2Id]
+		  		&& ctx_c.sessions[ctx_c.roomData.player1Id].socketId && ctx_c.sessions[ctx_c.roomData.player2Id].socketId
+		  		&& ctx_c.io.getSocket(ctx_c.sessions[ctx_c.roomData.player1Id].socketId) && ctx_c.io.getSocket(ctx_c.sessions[ctx_c.roomData.player2Id].socketId)) {
+
+			  	ctx.io.getSocket(ctx_c.sessions[ctx_c.roomData.player1Id].socketId).emit('drawCard', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+
+				  ctx.io.getSocket(ctx_c.sessions[ctx_c.roomData.player2Id].socketId).emit('drawCard', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+		  	} else {
+			  	socket.broadcast('drawCard', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+		  	}
 	  	} catch (err) {
 	  		socket.emit('serverError', err);
 	  		logger.error('Error: %o', err);
@@ -156,13 +200,34 @@ const self = module.exports = {
 
 		  	let isSuccessful = ctx_c.errors.length ? false : true;
 
-		  	socket.broadcast('discardCard', {
-		  		errors: ctx_c.errors,
-			  	isSuccessful: isSuccessful,
-			  	gameplayData: ctx_c.gameplayData,
-			  	roomData: ctx_c.roomData,
-			  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
-			  });
+		  	if (ctx_c.roomData && ctx_c.sessions[ctx_c.roomData.player1Id] && ctx_c.sessions[ctx_c.roomData.player2Id]
+		  		&& ctx_c.sessions[ctx_c.roomData.player1Id].socketId && ctx_c.sessions[ctx_c.roomData.player2Id].socketId
+		  		&& ctx_c.io.getSocket(ctx_c.sessions[ctx_c.roomData.player1Id].socketId) && ctx_c.io.getSocket(ctx_c.sessions[ctx_c.roomData.player2Id].socketId)) {
+
+			  	ctx.io.getSocket(ctx_c.sessions[ctx_c.roomData.player1Id].socketId).emit('discardCard', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+
+				  ctx.io.getSocket(ctx_c.sessions[ctx_c.roomData.player2Id].socketId).emit('discardCard', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+		  	} else {
+					socket.broadcast('discardCard', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+		  	}
 	  	} catch (err) {
 	  		socket.emit('serverError', err);
 	  		logger.error('Error: %o', err);
@@ -180,13 +245,34 @@ const self = module.exports = {
 
 		  	let isSuccessful = ctx_c.errors.length ? false : true;
 
-		  	socket.broadcast('drawPhase', {
-		  		errors: ctx_c.errors,
-			  	isSuccessful: isSuccessful,
-			  	gameplayData: ctx_c.gameplayData,
-			  	roomData: ctx_c.roomData,
-			  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
-			  });
+		  	if (ctx_c.roomData && ctx_c.sessions[ctx_c.roomData.player1Id] && ctx_c.sessions[ctx_c.roomData.player2Id]
+		  		&& ctx_c.sessions[ctx_c.roomData.player1Id].socketId && ctx_c.sessions[ctx_c.roomData.player2Id].socketId
+		  		&& ctx_c.io.getSocket(ctx_c.sessions[ctx_c.roomData.player1Id].socketId) && ctx_c.io.getSocket(ctx_c.sessions[ctx_c.roomData.player2Id].socketId)) {
+
+			  	ctx.io.getSocket(ctx_c.sessions[ctx_c.roomData.player1Id].socketId).emit('drawPhase', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+
+				  ctx.io.getSocket(ctx_c.sessions[ctx_c.roomData.player2Id].socketId).emit('drawPhase', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+		  	} else {
+					socket.broadcast('drawPhase', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+		  	}
 	  	} catch (err) {
 	  		socket.emit('serverError', err);
 	  		logger.error('Error: %o', err);
@@ -202,13 +288,34 @@ const self = module.exports = {
 
 		  	let isSuccessful = ctx_c.errors.length ? false : true;
 
-		  	socket.broadcast('standByPhase', {
-		  		errors: ctx_c.errors,
-			  	isSuccessful: isSuccessful,
-			  	gameplayData: ctx_c.gameplayData,
-			  	roomData: ctx_c.roomData,
-			  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
-			  });
+		  	if (ctx_c.roomData && ctx_c.sessions[ctx_c.roomData.player1Id] && ctx_c.sessions[ctx_c.roomData.player2Id]
+		  		&& ctx_c.sessions[ctx_c.roomData.player1Id].socketId && ctx_c.sessions[ctx_c.roomData.player2Id].socketId
+		  		&& ctx_c.io.getSocket(ctx_c.sessions[ctx_c.roomData.player1Id].socketId) && ctx_c.io.getSocket(ctx_c.sessions[ctx_c.roomData.player2Id].socketId)) {
+
+			  	ctx.io.getSocket(ctx_c.sessions[ctx_c.roomData.player1Id].socketId).emit('standByPhase', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+
+				  ctx.io.getSocket(ctx_c.sessions[ctx_c.roomData.player2Id].socketId).emit('standByPhase', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+		  	} else {
+					socket.broadcast('standByPhase', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+		  	}
 	  	} catch (err) {
 	  		socket.emit('serverError', err);
 	  		logger.error('Error: %o', err);
@@ -224,13 +331,34 @@ const self = module.exports = {
 
 		  	let isSuccessful = ctx_c.errors.length ? false : true;
 
-		  	socket.broadcast('mainPhase', {
-		  		errors: ctx_c.errors,
-			  	isSuccessful: isSuccessful,
-			  	gameplayData: ctx_c.gameplayData,
-			  	roomData: ctx_c.roomData,
-			  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
-			  });
+		  	if (ctx_c.roomData && ctx_c.sessions[ctx_c.roomData.player1Id] && ctx_c.sessions[ctx_c.roomData.player2Id]
+		  		&& ctx_c.sessions[ctx_c.roomData.player1Id].socketId && ctx_c.sessions[ctx_c.roomData.player2Id].socketId
+		  		&& ctx_c.io.getSocket(ctx_c.sessions[ctx_c.roomData.player1Id].socketId) && ctx_c.io.getSocket(ctx_c.sessions[ctx_c.roomData.player2Id].socketId)) {
+
+			  	ctx.io.getSocket(ctx_c.sessions[ctx_c.roomData.player1Id].socketId).emit('mainPhase', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+
+				  ctx.io.getSocket(ctx_c.sessions[ctx_c.roomData.player2Id].socketId).emit('mainPhase', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+		  	} else {
+					socket.broadcast('mainPhase', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+		  	}
 	  	} catch (err) {
 	  		socket.emit('serverError', err);
 	  		logger.error('Error: %o', err);
@@ -246,13 +374,34 @@ const self = module.exports = {
 
 		  	let isSuccessful = ctx_c.errors.length ? false : true;
 
-		  	socket.broadcast('summonCard', {
-		  		errors: ctx_c.errors,
-			  	isSuccessful: isSuccessful,
-			  	gameplayData: ctx_c.gameplayData,
-			  	roomData: ctx_c.roomData,
-			  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
-			  });
+		  	if (ctx_c.roomData && ctx_c.sessions[ctx_c.roomData.player1Id] && ctx_c.sessions[ctx_c.roomData.player2Id]
+		  		&& ctx_c.sessions[ctx_c.roomData.player1Id].socketId && ctx_c.sessions[ctx_c.roomData.player2Id].socketId
+		  		&& ctx_c.io.getSocket(ctx_c.sessions[ctx_c.roomData.player1Id].socketId) && ctx_c.io.getSocket(ctx_c.sessions[ctx_c.roomData.player2Id].socketId)) {
+
+			  	ctx.io.getSocket(ctx_c.sessions[ctx_c.roomData.player1Id].socketId).emit('summonCard', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+
+				  ctx.io.getSocket(ctx_c.sessions[ctx_c.roomData.player2Id].socketId).emit('summonCard', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+		  	} else {
+					socket.broadcast('summonCard', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+		  	}
 	  	} catch (err) {
 	  		socket.emit('serverError', err);
 	  		logger.error('Error: %o', err);
@@ -268,13 +417,120 @@ const self = module.exports = {
 
 		  	let isSuccessful = ctx_c.errors.length ? false : true;
 
-		  	socket.broadcast('finishCardEffect', {
-		  		errors: ctx_c.errors,
-			  	isSuccessful: isSuccessful,
-			  	gameplayData: ctx_c.gameplayData,
-			  	roomData: ctx_c.roomData,
-			  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
-			  });
+		  	if (ctx_c.roomData && ctx_c.sessions[ctx_c.roomData.player1Id] && ctx_c.sessions[ctx_c.roomData.player2Id]
+		  		&& ctx_c.sessions[ctx_c.roomData.player1Id].socketId && ctx_c.sessions[ctx_c.roomData.player2Id].socketId
+		  		&& ctx_c.io.getSocket(ctx_c.sessions[ctx_c.roomData.player1Id].socketId) && ctx_c.io.getSocket(ctx_c.sessions[ctx_c.roomData.player2Id].socketId)) {
+
+			  	ctx.io.getSocket(ctx_c.sessions[ctx_c.roomData.player1Id].socketId).emit('finishCardEffect', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+
+				  ctx.io.getSocket(ctx_c.sessions[ctx_c.roomData.player2Id].socketId).emit('finishCardEffect', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+		  	} else {
+					socket.broadcast('finishCardEffect', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+		  	}
+	  	} catch (err) {
+	  		socket.emit('serverError', err);
+	  		logger.error('Error: %o', err);
+	  	}
+	  });
+
+	  socket.on('activateCardEffect', async (ctx) => {
+	  	try {
+	  		let ctx_c = _.clone(ctx);
+	  		logger.info('Active card data: %o', ctx_c.data);
+
+		  	await gameServer.activateCardEffect(ctx_c, next);
+
+		  	let isSuccessful = ctx_c.errors.length ? false : true;
+
+		  	if (ctx_c.roomData && ctx_c.sessions[ctx_c.roomData.player1Id] && ctx_c.sessions[ctx_c.roomData.player2Id]
+		  		&& ctx_c.sessions[ctx_c.roomData.player1Id].socketId && ctx_c.sessions[ctx_c.roomData.player2Id].socketId
+		  		&& ctx_c.io.getSocket(ctx_c.sessions[ctx_c.roomData.player1Id].socketId) && ctx_c.io.getSocket(ctx_c.sessions[ctx_c.roomData.player2Id].socketId)) {
+
+			  	ctx.io.getSocket(ctx_c.sessions[ctx_c.roomData.player1Id].socketId).emit('activateCardEffect', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+
+				  ctx.io.getSocket(ctx_c.sessions[ctx_c.roomData.player2Id].socketId).emit('activateCardEffect', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+		  	} else {
+					socket.broadcast('activateCardEffect', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+		  	}
+	  	} catch (err) {
+	  		socket.emit('serverError', err);
+	  		logger.error('Error: %o', err);
+	  	}
+	  });
+
+	  socket.on('finishCardEffectContinuous', async (ctx) => {
+	  	try {
+	  		let ctx_c = _.clone(ctx);
+	  		logger.info('Finish card effect continuous data: %o', ctx_c.data);
+
+		  	await gameServer.finishCardEffectContinuous(ctx_c, next);
+
+		  	let isSuccessful = ctx_c.errors.length ? false : true;
+
+		  	if (ctx_c.roomData && ctx_c.sessions[ctx_c.roomData.player1Id] && ctx_c.sessions[ctx_c.roomData.player2Id]
+		  		&& ctx_c.sessions[ctx_c.roomData.player1Id].socketId && ctx_c.sessions[ctx_c.roomData.player2Id].socketId
+		  		&& ctx_c.io.getSocket(ctx_c.sessions[ctx_c.roomData.player1Id].socketId) && ctx_c.io.getSocket(ctx_c.sessions[ctx_c.roomData.player2Id].socketId)) {
+
+			  	ctx.io.getSocket(ctx_c.sessions[ctx_c.roomData.player1Id].socketId).emit('finishCardEffectContinuous', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+
+				  ctx.io.getSocket(ctx_c.sessions[ctx_c.roomData.player2Id].socketId).emit('finishCardEffectContinuous', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+		  	} else {
+					socket.broadcast('finishCardEffectContinuous', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+		  	}
 	  	} catch (err) {
 	  		socket.emit('serverError', err);
 	  		logger.error('Error: %o', err);
@@ -290,13 +546,34 @@ const self = module.exports = {
 
 		  	let isSuccessful = ctx_c.errors.length ? false : true;
 
-		  	socket.broadcast('rollPhase', {
-		  		errors: ctx_c.errors,
-			  	isSuccessful: isSuccessful,
-			  	gameplayData: ctx_c.gameplayData,
-			  	roomData: ctx_c.roomData,
-			  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
-			  });
+		  	if (ctx_c.roomData && ctx_c.sessions[ctx_c.roomData.player1Id] && ctx_c.sessions[ctx_c.roomData.player2Id]
+		  		&& ctx_c.sessions[ctx_c.roomData.player1Id].socketId && ctx_c.sessions[ctx_c.roomData.player2Id].socketId
+		  		&& ctx_c.io.getSocket(ctx_c.sessions[ctx_c.roomData.player1Id].socketId) && ctx_c.io.getSocket(ctx_c.sessions[ctx_c.roomData.player2Id].socketId)) {
+
+			  	ctx.io.getSocket(ctx_c.sessions[ctx_c.roomData.player1Id].socketId).emit('rollPhase', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+
+				  ctx.io.getSocket(ctx_c.sessions[ctx_c.roomData.player2Id].socketId).emit('rollPhase', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+		  	} else {
+					socket.broadcast('rollPhase', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+		  	}
 	  	} catch (err) {
 	  		socket.emit('serverError', err);
 	  		logger.error('Error: %o', err);
@@ -312,13 +589,34 @@ const self = module.exports = {
 
 		  	let isSuccessful = ctx_c.errors.length ? false : true;
 
-		  	socket.broadcast('rollDiceBoard', {
-		  		errors: ctx_c.errors,
-			  	isSuccessful: isSuccessful,
-			  	gameplayData: ctx_c.gameplayData,
-			  	roomData: ctx_c.roomData,
-			  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
-			  });
+		  	if (ctx_c.roomData && ctx_c.sessions[ctx_c.roomData.player1Id] && ctx_c.sessions[ctx_c.roomData.player2Id]
+		  		&& ctx_c.sessions[ctx_c.roomData.player1Id].socketId && ctx_c.sessions[ctx_c.roomData.player2Id].socketId
+		  		&& ctx_c.io.getSocket(ctx_c.sessions[ctx_c.roomData.player1Id].socketId) && ctx_c.io.getSocket(ctx_c.sessions[ctx_c.roomData.player2Id].socketId)) {
+
+			  	ctx.io.getSocket(ctx_c.sessions[ctx_c.roomData.player1Id].socketId).emit('rollDiceBoard', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+
+				  ctx.io.getSocket(ctx_c.sessions[ctx_c.roomData.player2Id].socketId).emit('rollDiceBoard', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+		  	} else {
+					socket.broadcast('rollDiceBoard', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+		  	}
 	  	} catch (err) {
 	  		socket.emit('serverError', err);
 	  		logger.error('Error: %o', err);
@@ -334,13 +632,34 @@ const self = module.exports = {
 
 		  	let isSuccessful = ctx_c.errors.length ? false : true;
 
-		  	socket.broadcast('endPhase', {
-		  		errors: ctx_c.errors,
-			  	isSuccessful: isSuccessful,
-			  	gameplayData: ctx_c.gameplayData,
-			  	roomData: ctx_c.roomData,
-			  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
-			  });
+		  	if (ctx_c.roomData && ctx_c.sessions[ctx_c.roomData.player1Id] && ctx_c.sessions[ctx_c.roomData.player2Id]
+		  		&& ctx_c.sessions[ctx_c.roomData.player1Id].socketId && ctx_c.sessions[ctx_c.roomData.player2Id].socketId
+		  		&& ctx_c.io.getSocket(ctx_c.sessions[ctx_c.roomData.player1Id].socketId) && ctx_c.io.getSocket(ctx_c.sessions[ctx_c.roomData.player2Id].socketId)) {
+
+			  	ctx.io.getSocket(ctx_c.sessions[ctx_c.roomData.player1Id].socketId).emit('endPhase', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+
+				  ctx.io.getSocket(ctx_c.sessions[ctx_c.roomData.player2Id].socketId).emit('endPhase', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+		  	} else {
+			  	socket.broadcast('endPhase', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+		  	}
 	  	} catch (err) {
 	  		socket.emit('serverError', err);
 	  		logger.error('Error: %o', err);

@@ -46,7 +46,7 @@ roomController.prototype.initListeners = function() {
 	$(_self.LOBBY_SCREEN_CLASS).on('click', _self.START_GAME_BTN_ID, function(e) {
 		logger.info('Starting game...');
 		console.log('START GAME BTN CLICK');
-
+		_self.disableElement(_self.START_GAME_BTN_ID);
 		_self.showStartGameSpinner();
 		_self.startGame();
 	});
@@ -460,6 +460,10 @@ roomController.prototype.preSwitchScreenHook = function (screenClass) {
 		_self._inGame = true;
 	} else {
 		_self._inGame = false;
+	}
+
+	if (screenClass == _self.LOBBY_SCREEN_CLASS) {
+		_self.enableElement(_self.START_GAME_BTN_ID);
 	}
 };
 

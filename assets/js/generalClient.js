@@ -5,10 +5,11 @@ var generalClient = function() {
 };
 
 generalClient.prototype.clientConnectToServer = function() {
+  this.socket = null;
 	this.socket = io.connect('/', {
     "reconnection": true,
-    "reconnectionDelay": 100,
-    "reconnectionDelayMax" : 200,
+    "reconnectionDelay": 1000,
+    "reconnectionDelayMax" : 1500,
     "reconnectionAttempts": Infinity,
   });
 
@@ -176,6 +177,7 @@ generalClient.prototype.processDisconnect = function(_data) {
 
 	var _self = this;
 
+  // _self.clientConnectToServer();
   _self.socket.emit('player-reconnect');
 };
 

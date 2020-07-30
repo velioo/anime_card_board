@@ -380,7 +380,7 @@ body {
   bottom: 50%;
   left: 50%;
   margin-left: -930px;
-  margin-bottom: 280px;
+  margin-bottom: 330px;
   width: 300px;
   display: inline-block;
   color: white;
@@ -394,7 +394,7 @@ body {
   bottom: 50%;
   left: 50%;
   margin-left: -930px;
-  margin-bottom: -170px;
+  margin-bottom: -120px;
   display: inline-block;
   color: white;
   text-align: center;
@@ -427,7 +427,7 @@ body {
   top: 50%;
   left: 50%;
   margin-left: -930px;
-  margin-top: 180px;
+  margin-top: 130px;
   display: inline-block;
   color: white;
   text-align: left;
@@ -437,6 +437,8 @@ body {
   color: white;
   font-size: 12pt;
   width: 300px;
+  max-height: 160px;
+  overflow-y: auto;
 }
 
 #anime-cb-card-global-deck-wrapper {
@@ -1731,3 +1733,23 @@ body {
   }
 }
 
+.stickytooltip{
+  display:none;
+  position:absolute;
+  display:none;
+  border: 2px solid black;
+  background:white;
+  z-index:3000;
+}
+
+
+.stickytooltip .stickystatus{
+  background:black;
+  color:white;
+  text-align:center;
+}
+
+#activateEffect {
+  font-size: 14pt;
+  font-weight: 700;
+}

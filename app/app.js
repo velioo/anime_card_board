@@ -16,6 +16,7 @@ const hbaHelpers = require('./helpers/handlebars/helpers');
 const hbaPartials = require('./helpers/handlebars/partials');
 const socketRouter = require('./socket/socketRouter.js');
 const authenticate = require('./middlewares/authenticate');
+const _ = require('lodash/lang');
 const { routes, allowedMethods } = require('./routes');
 const dirs = {};
 
@@ -28,7 +29,7 @@ const Views = require('koa-views');
 const path = require('path');
 const Http = require('http');
 const server = Http.createServer(app.callback());
-const IO = require( 'koa-socket.io' );
+const IO = require( './socket/koa-socket.io/lib/index.js' );
 const KoaSocketSession = require('koa-socket-session');
 const io = new IO({ namespace: '/' });
 let sessions;
@@ -113,9 +114,11 @@ io.on('connect', async (ctx, next) => {
           timerValue: null,
           disconnected: false,
           roomId: null,
+          socketId: ctx.socket.id,
         };
       } else {
         sessions[ctx.session.userData.userId].disconnected = false;
+        sessions[ctx.session.userData.userId].socketId = ctx.socket.id;
       }
     }
 

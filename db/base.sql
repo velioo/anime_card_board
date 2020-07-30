@@ -131,3 +131,7 @@ INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) V
 'Kagura.jpg', 'rare', '{"moveSpacesBackwardsEnemy":6,"instantEffect":true,"autoEffect":true}', 3);
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) VALUES (5, 'Lucy', 'Move 1 space forward or backward',
 'Lucy.png', 'common', '{"moveSpacesForwardOrBackwardUpTo":1,"instantEffect":true,"autoEffect":false}', 2);
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) VALUES (6, 'Kakashi',
+'Choose a special board space up to 4 spaces forward and apply its effect for yourself. You can use this effect once per turn for maximum 3 turns in total. Each use of this effect consumes 1 Energy.',
+'Kakashi.jpg', 'epic',
+'{"instantEffect":false, "autoEffect":false, "continuous": true, "effectChargesCount": 3, "maxUsesPerTurn": 1, "continuousEffectType": "onClick", "energyPerUse": 1, "copySpecialSpacesUpTo": 4}', 4);

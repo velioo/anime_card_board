@@ -79,12 +79,13 @@ var self = module.exports = {
     let enemyUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
     let yourUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player1Id : ctx.roomData.player2Id;
 
-    cardsOnFieldArr[cardsOnFieldArr.length - 1].cardEffect.isFinished = false;
+    card.cardEffect.isFinished = false;
 
 		if (card.cardEffect.instantEffect) {
 			if (card.cardEffect.autoEffect) {
     		playerState.cardsInGraveyard.push(card);
-				cardsOnFieldArr[cardsOnFieldArr.length - 1].cardEffect.isFinished = true;
+    		playerState.cardsOnFieldArr.pop();
+				card.cardEffect.isFinished = true;
 			}
 
 			if (card.cardEffect.moveSpacesForward) {
@@ -95,6 +96,9 @@ var self = module.exports = {
 		  	await self.rollDiceBoardHook(ctx, { rollDiceValue: card.cardEffect.moveSpacesBackwardsEnemy,
 		  		userId: enemyUserId, moveBackwardsOnNextRoll: true, moveIfCan: false });
 		  }
+		} else if (card.cardEffect.copySpecialSpacesUpTo && card.cardEffect.maxUsesPerTurn && card.cardEffect.effectChargesCount > 0) {
+			card.cardEffect.activationsCountThisTurn = 0;
+			card.cardEffect.chargesUsedTotal = 0;
 		}
 	},
 	cardFinishHook: async (ctx) => {
@@ -123,6 +127,91 @@ var self = module.exports = {
 	  	card.cardEffect.moveSpaces = finishData.moveSpaces;
 	  	await self.rollDiceBoardHook(ctx, { rollDiceValue: finishData.moveSpaces,
 	  		userId: yourUserId, moveBackwardsOnNextRoll: finishData.moveBackward, moveIfCan: false });
+	  }
+	},
+	activateCardEffectHook: async (ctx) => {
+		let gameState = ctx.gameplayData.gameState;
+		let playerState = gameState.playersState[ctx.session.userData.userId];
+
+		let card = ctx.gameplayData.gameState.cardActivated;
+		let boardPath = gameState.boardData.boardDataPlayers.boardPath;
+	  let boardMatrix = gameState.boardData.boardMatrix;
+	  let currBoardIndexYou = gameState.playersState[ctx.session.userData.userId].currBoardIndex;
+
+		if (card.cardEffect.copySpecialSpacesUpTo) {
+			assert(card.cardEffect.activationsCountThisTurn < card.cardEffect.maxUsesPerTurn);
+			assert(card.cardEffect.chargesUsedTotal < card.cardEffect.effectChargesCount);
+			if (card.cardEffect.energyPerUse) {
+				assert(playerState.energyPoints >= card.cardEffect.energyPerUse);
+				playerState.energyPoints -= card.cardEffect.energyPerUse;
+			}
+
+			card.cardEffect.activationsCountThisTurn++;
+			card.cardEffect.chargesUsedTotal++;
+
+			let availableSpecialSpaces = card.cardEffect.copySpecialSpacesUpTo;
+			if (ctx.session.userData.userId == ctx.roomData.player1Id) {
+				for(let i = 0; i < card.cardEffect.copySpecialSpacesUpTo; i++) {
+					if ((currBoardIndexYou + i) > (boardPath.length - 1)) {
+						availableSpecialSpaces--;
+					} else if (boardMatrix[boardPath[currBoardIndexYou + i][0]][boardPath[currBoardIndexYou + i][1]] <= 1) {
+						availableSpecialSpaces--;
+					}
+				}
+			} else {
+				for(let i = 0; i < card.cardEffect.copySpecialSpacesUpTo; i++) {
+					if ((currBoardIndexYou - i) < 0) {
+						availableSpecialSpaces--;
+					} else if (boardMatrix[boardPath[currBoardIndexYou - i][0]][boardPath[currBoardIndexYou - i][1]] <= 1) {
+						availableSpecialSpaces--;
+					}
+				}
+			}
+
+			assert(availableSpecialSpaces > 0);
+		}
+	},
+	cardFinishContinuousHook: async (ctx) => {
+		let gameState = ctx.gameplayData.gameState;
+		let playerState = gameState.playersState[ctx.session.userData.userId];
+
+		let card = ctx.gameplayData.gameState.cardFinishContinuous;
+    let finishData = ctx.data.finishData;
+		let boardPath = gameState.boardData.boardDataPlayers.boardPath;
+	  let boardMatrix = gameState.boardData.boardMatrix;
+	  let currBoardIndexYou = gameState.playersState[ctx.session.userData.userId].currBoardIndex;
+    let enemyUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
+    let yourUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player1Id : ctx.roomData.player2Id;
+
+		if (card.cardEffect.copySpecialSpacesUpTo) {
+			assert((finishData.copySpecialSpaceRowIndex > 0) && (finishData.copySpecialSpaceColumnIndex > 0));
+			assert(boardMatrix[finishData.copySpecialSpaceRowIndex][finishData.copySpecialSpaceColumnIndex] > 1);
+
+			let validSpace = false;
+			if (ctx.session.userData.userId == ctx.roomData.player1Id) {
+				for(let i = 1; i <= card.cardEffect.copySpecialSpacesUpTo; i++) {
+					if (((currBoardIndexYou + i) <= (boardPath.length - 1)) && (boardPath[currBoardIndexYou + i][0] == finishData.copySpecialSpaceRowIndex)
+						&& (boardPath[currBoardIndexYou + i][1] == finishData.copySpecialSpaceColumnIndex)) {
+						validSpace = true
+					}
+				}
+			} else {
+				for(let i = 1; i <= card.cardEffect.copySpecialSpacesUpTo; i++) {
+					if ((currBoardIndexYou - i >= 0) && (boardPath[currBoardIndexYou - i][0] == finishData.copySpecialSpaceRowIndex)
+						&& (boardPath[currBoardIndexYou - i][1] == finishData.copySpecialSpaceColumnIndex)) {
+						validSpace = true
+					}
+				}
+			}
+
+			assert(validSpace);
+			checkForSpecialBoardSpace(ctx, finishData.copySpecialSpaceRowIndex, finishData.copySpecialSpaceColumnIndex);
+
+			if (card.cardEffect.chargesUsedTotal >= card.cardEffect.effectChargesCount) {
+				card.cardEffect.isFinished = true;
+				playerState.cardsOnFieldArr.splice(ctx.cardIdx, 1);
+				playerState.cardsInGraveyard.push(card);
+			}
 	  }
 	},
 	rollDiceBoardHook: async (ctx, overwriteParams) => {
@@ -209,37 +298,9 @@ var self = module.exports = {
     let columnIndex = boardPath[currBoardIndex][1];
 
     let onSameBoardSpace = currBoardIndex == gameState.playersState[ctx.session.userData.userId].lastBoardIndex ? true : false;
-    var boardFieldsFuncs = [rollAgain, rollAgainBackwards, cardDraw, cardDiscard];
-    var randNum = utils.getRandomInt(0, boardFieldsFuncs.length - 1);
 
     if (!onSameBoardSpace) {
-	    if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.ROLL_AGAIN_1) {
-	    	rollAgain(ctx, 1);
-	    } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.ROLL_AGAIN_2) {
-	    	rollAgain(ctx, 2);
-	    } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.ROLL_AGAIN_3) {
-	    	rollAgain(ctx, 3);
-	    } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.ROLL_AGAIN_BACKWARDS) {
-	    	rollAgainBackwards(ctx, null);
-	    } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.CARD_DRAW_1) {
-	    	cardDraw(ctx, 1);
-	    } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.CARD_DRAW_2) {
-	    	cardDraw(ctx, 2);
-	    } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.CARD_DRAW_3) {
-	    	cardDraw(ctx, 3);
-	    } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.CARD_DISCARD_1) {
-	    	cardDiscard(ctx, 1);
-	    } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.CARD_DISCARD_2) {
-	    	cardDiscard(ctx, 2);
-	    } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.CARD_DISCARD_3) {
-	    	cardDiscard(ctx, 3);
-	    } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.RANDOM_1) {
-	    	boardFieldsFuncs[randNum](ctx, 1);
-	    } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.RANDOM_2) {
-	    	boardFieldsFuncs[randNum](ctx, 2);
-	    } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.RANDOM_3) {
-	    	boardFieldsFuncs[randNum](ctx, 3);
-	    }
+    	checkForSpecialBoardSpace(ctx, rowIndex, columnIndex);
     }
 
    	if (checkWin(ctx)) {
@@ -302,6 +363,41 @@ let moveBoardBackwards = (ctx, count) => {
 
 	assert(currBoardIndex - count >= 0);
   ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].currBoardIndex = currBoardIndex - count;
+};
+
+let checkForSpecialBoardSpace = (ctx, rowIndex, columnIndex) => {
+	let boardMatrix = ctx.gameplayData.gameState.boardData.boardMatrix;
+
+	var boardFieldsFuncs = [rollAgain, rollAgainBackwards, cardDraw, cardDiscard];
+	var randNum = utils.getRandomInt(0, boardFieldsFuncs.length - 1);
+
+  if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.ROLL_AGAIN_1) {
+  	rollAgain(ctx, 1);
+  } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.ROLL_AGAIN_2) {
+  	rollAgain(ctx, 2);
+  } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.ROLL_AGAIN_3) {
+  	rollAgain(ctx, 3);
+  } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.ROLL_AGAIN_BACKWARDS) {
+  	rollAgainBackwards(ctx, null);
+  } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.CARD_DRAW_1) {
+  	cardDraw(ctx, 1);
+  } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.CARD_DRAW_2) {
+  	cardDraw(ctx, 2);
+  } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.CARD_DRAW_3) {
+  	cardDraw(ctx, 3);
+  } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.CARD_DISCARD_1) {
+  	cardDiscard(ctx, 1);
+  } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.CARD_DISCARD_2) {
+  	cardDiscard(ctx, 2);
+  } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.CARD_DISCARD_3) {
+  	cardDiscard(ctx, 3);
+  } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.RANDOM_1) {
+  	boardFieldsFuncs[randNum](ctx, 1);
+  } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.RANDOM_2) {
+  	boardFieldsFuncs[randNum](ctx, 2);
+  } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.RANDOM_3) {
+  	boardFieldsFuncs[randNum](ctx, 3);
+  }
 };
 
 let rollAgain = (ctx, count) => {

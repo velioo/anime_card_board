@@ -297,6 +297,8 @@ gameController.prototype.processStartGameResponse = function (data) {
 		return;
 	}
 
+	clearTimeout(_self.retryTimeout);
+
 	assert(ajv.validate(startGameResponse, data), 'startGameResponse is invalid' +
   	JSON.stringify(ajv.errors, null, 2));
 
@@ -647,6 +649,8 @@ gameController.prototype.processDrawCardYou = function (data) {
 		return;
 	}
 
+	clearTimeout(_self.retryTimeout);
+
 	assert(ajv.validate(drawCardYouResponse, data), 'drawCardYouResponse is invalid' +
   	JSON.stringify(ajv.errors, null, 2));
 
@@ -705,6 +709,8 @@ gameController.prototype.processDrawPhase = function (data) {
 		return;
 	}
 
+	clearTimeout(_self.retryTimeout);
+
 	assert(ajv.validate(drawPhaseResponse, data), 'drawPhaseResponse is invalid' +
   	JSON.stringify(ajv.errors, null, 2));
 
@@ -740,6 +746,8 @@ gameController.prototype.processStandByPhase = function (data) {
 		return;
 	}
 
+	clearTimeout(_self.retryTimeout);
+
 	assert(ajv.validate(standByPhaseResponse, data), 'standByPhaseResponse is invalid' +
   	JSON.stringify(ajv.errors, null, 2));
 
@@ -774,6 +782,8 @@ gameController.prototype.processMainPhase = function (data) {
 		// _self.showAlertError(data.errors[0].message);
 		return;
 	}
+
+	clearTimeout(_self.retryTimeout);
 
 	assert(ajv.validate(mainPhaseResponse, data), 'mainPhaseResponse is invalid' +
   	JSON.stringify(ajv.errors, null, 2));
@@ -857,10 +867,17 @@ gameController.prototype.summonCard = function (card) {
 		}
 	}
 
+	playerStateYou.cardsOnFieldArr.forEach(function(card, idx) {
+		if (card.cardId == cardId) {
+			retrySummon = true;
+		}
+	});
+
 	if (retrySummon) {
 		_self.enableMainPhaseActions();
 	} else {
 		logger.info("Sending summon card request to server...");
+		_self.disableContinuousCardOnClickListener();
 		_self._lastClientData = { roomId: _self._roomData.id, cardId: cardId, cardIdx: cardIdx };
 		_self.client.summonCard(_self._lastClientData);
 	}
@@ -887,6 +904,8 @@ gameController.prototype.processSummonCard = function (data) {
 		return;
 	}
 
+	clearTimeout(_self.retryTimeout);
+
 	assert(ajv.validate(summonCardResponse, data), 'summonCardResponse is invalid' +
   	JSON.stringify(ajv.errors, null, 2));
 
@@ -895,10 +914,10 @@ gameController.prototype.processSummonCard = function (data) {
 	_self.updateGameStatusInfo();
 
 	if (_self._gameplayData.gameState.playerIdSummonedCard == _self._yourUserId) {
-		_self.summonCardFromHandAnimationYou(_self._gameplayData.gameState.cardSummoned, _self.performCardEffectYou
+		_self.summonCardFromHandAnimationYou(_self._gameplayData.gameState.cardSummoned, _self.performCardEffectInstantYou
 			.bind(_self, _self._gameplayData.gameState.cardSummoned));
 	} else {
-		_self.summonCardFromHandAnimationEnemy(_self._gameplayData.gameState.cardSummoned, _self.performCardEffectEnemy
+		_self.summonCardFromHandAnimationEnemy(_self._gameplayData.gameState.cardSummoned, _self.performCardEffectInstantEnemy
 			.bind(_self, _self._gameplayData.gameState.cardSummoned));
 	}
 };
@@ -923,6 +942,8 @@ gameController.prototype.processRollPhase = function (data) {
 		// _self.showAlertError(data.errors[0].message);
 		return;
 	}
+
+	clearTimeout(_self.retryTimeout);
 
 	assert(ajv.validate(rollPhaseResponse, data), 'rollPhaseResponse is invalid' +
   	JSON.stringify(ajv.errors, null, 2));
@@ -958,6 +979,8 @@ gameController.prototype.processRollDiceBoard = function (data) {
 		// _self.showAlertError(data.errors[0].message);
 		return;
 	}
+
+	clearTimeout(_self.retryTimeout);
 
 	assert(ajv.validate(rollDiceBoardResponse, data), 'rollDiceBoardResponse is invalid' +
   	JSON.stringify(ajv.errors, null, 2));
@@ -1006,6 +1029,8 @@ gameController.prototype.processEndPhase = function (data) {
 		return;
 	}
 
+	clearTimeout(_self.retryTimeout);
+
 	assert(ajv.validate(endPhaseResponse, data), 'endPhaseResponse is invalid' +
   	JSON.stringify(ajv.errors, null, 2));
 
@@ -1050,6 +1075,8 @@ gameController.prototype.processDiscardCard = function (data) {
 		// _self.showAlertError(data.errors[0].message);
 		return;
 	}
+
+	clearTimeout(_self.retryTimeout);
 
 	assert(ajv.validate(discardCardResponse, data), 'discardCardResponse is invalid' +
   	JSON.stringify(ajv.errors, null, 2));
@@ -1105,6 +1132,8 @@ gameController.prototype.processFinishCardEffect = function (data) {
 		return;
 	}
 
+	clearTimeout(_self.retryTimeout);
+
 	assert(ajv.validate(finishCardEffectResponse, data), 'finishCardEffectResponse is invalid' +
   	JSON.stringify(ajv.errors, null, 2));
 
@@ -1113,9 +1142,9 @@ gameController.prototype.processFinishCardEffect = function (data) {
 	_self.updateGameStatusInfo();
 
 	if (_self._gameplayData.gameState.playerIdFinishCard == _self._yourUserId) {
-		_self.performCardEffectYou(_self._gameplayData.gameState.cardFinish);
+		_self.performCardEffectInstantYou(_self._gameplayData.gameState.cardFinish);
 	} else {
-		_self.performCardEffectEnemy(_self._gameplayData.gameState.cardFinish);
+		_self.performCardEffectInstantEnemy(_self._gameplayData.gameState.cardFinish);
 	}
 };
 
@@ -1272,6 +1301,7 @@ gameController.prototype.enableMainPhaseActions = function () {
 			eventInfoText += " " + _self._gameplayData.gameState.playersState[_self._yourUserId].canRollDiceBoardCount + " times";
 		}
 
+		$(_self.PHASE_ROLL_ID).addClass("selectable");
 		_self.showEventsInfo(eventInfoText);
 		_self.enableRollDiceBoard();
 		return;
@@ -1292,17 +1322,16 @@ gameController.prototype.enableMainPhaseActions = function () {
 			_self.hideEventsInfo(null, 0);
 		});
 	} else {
+		$(_self.PHASE_ROLL_ID).addClass("selectable");
+		_self.setUpContinuousCardOnClickListener();
+
 		$(_self.CARDS_IN_HAND_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_YOU_CLASS).on("click", function(e) {
 			_self.disableMainPhaseActions();
-			console.log('SUMMON CARD ON CLICK: ', this);
 			_self.summonCard.call(_self, this);
 		});
 
-		$(_self.PHASE_ROLL_ID).addClass("selectable");
-
 		$(_self.PHASE_ROLL_ID).on("click", function(e) {
 			_self.disableMainPhaseActions();
-			console.log('ROL PHASE CLICK: ', this);
 			_self.startRollPhase();
 		});
 	}
@@ -1314,6 +1343,7 @@ gameController.prototype.disableMainPhaseActions = function () {
 	$(_self.CARDS_IN_HAND_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_YOU_CLASS).off("click");
 	$(_self.PHASE_ROLL_ID).off("click");
 	$(_self.PHASE_ROLL_ID).removeClass("selectable");
+	_self.disableContinuousCardOnClickListener();
 };
 
 gameController.prototype.enableActionsInEnemyPhase = function () {
@@ -1353,7 +1383,7 @@ gameController.prototype.enableActionsInEnemyPhase = function () {
 	}
 };
 
-gameController.prototype.performCardEffectYou = function (card) {
+gameController.prototype.performCardEffectInstantYou = function (card) {
 	var _self = this;
 
 	if (card.cardEffect.instantEffect) {
@@ -1384,6 +1414,59 @@ gameController.prototype.performCardEffectYou = function (card) {
 		} else if (card.cardEffect.moveSpacesBackwardsEnemy) {
 			_self.moveEnemyCharacter(card.cardEffect.moveSpacesBackwardsEnemy,
 				_self.destroyCardAnimationYou.bind(_self, card, _self.checkIfEnemyIsOnSpecialSpace), 0);
+		}
+	} else if (card.cardEffect.continuous) {
+		if (card.cardEffect.continuousEffectType == "onClick") {
+			_self.setUpContinuousCardOnClickListener();
+		}
+	}
+};
+
+gameController.prototype.performCardEffectContinuousYou = function (card) {
+	var _self = this;
+
+	if (card.cardEffect.continuous) {
+		if (card.cardEffect.copySpecialSpacesUpTo) {
+			_self.setBoardSpaceListener(card);
+		}
+	}
+};
+
+gameController.prototype.performCardEffectContinuousEnemy = function (card) {
+	var _self = this;
+
+	if (card.cardEffect.continuous) {
+		if (card.cardEffect.copySpecialSpacesUpTo) {
+			_self.setBoardSpaceListenerEnemy(card);
+		}
+	}
+};
+
+gameController.prototype.performCardEffectContinuousFinishYou = function (card) {
+	var _self = this;
+
+	if (card.cardEffect.continuous) {
+		if (card.cardEffect.copySpecialSpacesUpTo) {
+			if (card.cardEffect.isFinished) {
+				_self.destroyCardAnimationYou(card, _self.enableMainPhaseActions);
+			} else {
+				_self.enableMainPhaseActions();
+			}
+		}
+	}
+};
+
+gameController.prototype.performCardEffectContinuousFinishEnemy = function (card) {
+	var _self = this;
+
+	if (card.cardEffect.continuous) {
+		if (card.cardEffect.copySpecialSpacesUpTo) {
+			$(_self.BOARD_COLUMN_CLASS).removeClass("selectable-enemy");
+			if (card.cardEffect.isFinished) {
+				_self.destroyCardAnimationEnemy(card, _self.waitForEnemyActions);
+			} else {
+				_self.waitForEnemyActions();
+			}
 		}
 	}
 };
@@ -1420,6 +1503,105 @@ gameController.prototype.setBoardSpaceListener = function (card) {
 		_self.setBoardSpaceListenerMoveSpacesBackwardsUpToEnemyYou(card);
 	} else if (card.cardEffect.moveSpacesForwardOrBackwardUpTo) {
 		_self.setBoardSpaceListenerMoveSpacesForwardOrBackwardUpToYou(card);
+	} else if (card.cardEffect.copySpecialSpacesUpTo) {
+		_self.setBoardSpaceListenerCopySpecialSpacesUpToYou(card);
+	}
+};
+
+gameController.prototype.setBoardSpaceListenerCopySpecialSpacesUpToYou = function (card) {
+	var _self = this;
+
+	var boardMatrix = _self._gameplayData.gameState.boardData.boardMatrix;
+	var boardPath = _self._gameplayData.gameState.boardData.boardDataPlayers.boardPath;
+  var currBoardIndex = _self._gameplayData.gameState.playersState[_self._yourUserId].currBoardIndex;
+  var rowIndex;
+  var columnIndex;
+
+  var moveBoardForward = true;
+  if (_self._yourUserId == _self._roomData.player2Id) {
+  	moveBoardForward = false;
+  }
+
+	$(_self.BOARD_ID).css("z-index", 4);
+	for (var i = 0; i < card.cardEffect.copySpecialSpacesUpTo; i++) {
+		if (moveBoardForward) {
+			currBoardIndex++;
+
+			if (!boardPath[currBoardIndex]) {
+				break;
+			}
+		} else {
+			currBoardIndex--;
+
+			if (currBoardIndex < 0) {
+				break;
+			}
+		}
+
+	  rowIndex = boardPath[currBoardIndex][0];
+	  columnIndex = boardPath[currBoardIndex][1];
+
+	  if (boardMatrix[rowIndex][columnIndex] > 0 && boardMatrix[rowIndex][columnIndex] != 1) {
+		  var selectorTd = _self.BOARD_ROW_CLASS + ':nth-child(' + (rowIndex + 1) + ')' + ' ' + _self.BOARD_COLUMN_CLASS
+				+ ':nth-child(' + (columnIndex + 1) + ')';
+		  $(selectorTd).addClass("selectable-you");
+			$(selectorTd).on("click", function () {
+				$(_self.BOARD_COLUMN_CLASS).off("click");
+				$(_self.BOARD_COLUMN_CLASS).removeClass("selectable-you");
+				$(_self.BOARD_ID).css("z-index", 1);
+
+				var finishData = { copySpecialSpaceRowIndex: $(this).closest('tr').index(), copySpecialSpaceColumnIndex: $(this).index() };
+				_self._lastClientData = { roomId: _self._roomData.id, cardId: card.cardId, finishData: finishData };
+				_self.client.finishCardEffectContinuous(_self._lastClientData);
+			});
+		}
+	}
+
+	if (i == 0) {
+		_self._lastClientData = { roomId: _self._roomData.id, cardId: card.cardId,
+			finishData: { copySpecialSpaceRowIndex: -1, copySpecialSpaceColumnIndex: -1 } };
+		_self.client.finishCardEffectContinuous(_self._lastClientData);
+		$(_self.BOARD_ID).css("z-index", 1);
+	}
+};
+
+gameController.prototype.setBoardSpaceListenerCopySpecialSpacesUpToEnemy = function (card) {
+	var _self = this;
+
+	var boardMatrix = _self._gameplayData.gameState.boardData.boardMatrix;
+	var boardPath = _self._gameplayData.gameState.boardData.boardDataPlayers.boardPath;
+  var currBoardIndex = _self._gameplayData.gameState.playersState[_self._enemyUserId].currBoardIndex;
+  var rowIndex;
+  var columnIndex;
+
+  var moveBoardForward = true;
+  if (_self._enemyUserId == _self._roomData.player2Id) {
+  	moveBoardForward = false;
+  }
+
+	for (var i = 0; i < card.cardEffect.copySpecialSpacesUpTo; i++) {
+		if (moveBoardForward) {
+			currBoardIndex++;
+
+			if (!boardPath[currBoardIndex]) {
+				break;
+			}
+		} else {
+			currBoardIndex--;
+
+			if (currBoardIndex < 0) {
+				break;
+			}
+		}
+
+	  rowIndex = boardPath[currBoardIndex][0];
+	  columnIndex = boardPath[currBoardIndex][1];
+
+	  if (boardMatrix[rowIndex][columnIndex] > 0 && boardMatrix[rowIndex][columnIndex] != 1) {
+		  var selectorTd = _self.BOARD_ROW_CLASS + ':nth-child(' + (rowIndex + 1) + ')' + ' ' + _self.BOARD_COLUMN_CLASS
+				+ ':nth-child(' + (columnIndex + 1) + ')';
+		  $(selectorTd).addClass("selectable-enemy");
+		}
 	}
 };
 
@@ -1690,6 +1872,8 @@ gameController.prototype.setBoardSpaceListenerEnemy = function (card) {
 		_self.setBoardSpaceListenerMoveSpacesBackwardsUpToEnemyEnemy(card);
 	} else if (card.cardEffect.moveSpacesForwardOrBackwardUpTo) {
 		_self.setBoardSpaceListenerMoveSpacesForwardOrBackwardUpToEnemy(card);
+	} else if (card.cardEffect.copySpecialSpacesUpTo) {
+		_self.setBoardSpaceListenerCopySpecialSpacesUpToEnemy(card);
 	}
 };
 
@@ -1767,7 +1951,7 @@ gameController.prototype.setBoardSpaceListenerMoveSpacesBackwardsUpToEnemyEnemy 
 	}
 };
 
-gameController.prototype.performCardEffectEnemy = function (card) {
+gameController.prototype.performCardEffectInstantEnemy = function (card) {
 	var _self = this;
 
 	if (card.cardEffect.instantEffect) {
@@ -2405,6 +2589,211 @@ gameController.prototype.summonCardFromHandAnimationYou = function (cardObj, cal
 	assert(cardSuccessfullySummoned);
 };
 
+gameController.prototype.setUpContinuousCardOnClickListener = function () {
+	var _self = this;
+
+	_self.disableContinuousCardOnClickListener();
+	$(_self.CARD_ON_FIELD_CLASS + _self.PLAYER_YOU_CLASS).each(function(idx) {
+		var cardEffect = $(this).data("cardEffect");
+		if (cardEffect.continuous && cardEffect.continuousEffectType == "onClick") {
+			$(this).attr("data-tooltip", "activateEffect");
+			$(this).on("click", function(e) {
+				console.log('Click on card effect');
+				_self.disableContinuousCardOnClickListener();
+				_self.disableMainPhaseActions();
+				_self.activateCardEffect(this);
+			});
+		}
+	});
+};
+
+gameController.prototype.disableContinuousCardOnClickListener = function () {
+	var _self = this;
+
+	$(_self.CARD_ON_FIELD_CLASS + _self.PLAYER_YOU_CLASS).off("click");
+	$(_self.CARD_ON_FIELD_CLASS + _self.PLAYER_YOU_CLASS).removeAttr("data-tooltip");
+};
+
+gameController.prototype.activateCardEffect = function (card) {
+	var _self = this;
+
+	var cardId = $(card).data("cardId");
+	var boardMatrix = _self._gameplayData.gameState.boardData.boardMatrix;
+	var boardPath = _self._gameplayData.gameState.boardData.boardDataPlayers.boardPath;
+  var currBoardIndex = _self._gameplayData.gameState.playersState[_self._yourUserId].currBoardIndex;
+  var playerStateYou = _self._gameplayData.gameState.playersState[_self._yourUserId];
+  var rowIndex;
+  var columnIndex;
+  var retryActivation = false;
+
+	var cardEffect;
+  playerStateYou.cardsOnFieldArr.forEach(function(card, idx) {
+		if (card.cardId == cardId) {
+			cardEffect = card.cardEffect;
+		}
+	});
+
+	if (!cardEffect) {
+		retryActivation = true;
+	}
+
+  if (cardEffect.copySpecialSpacesUpTo) {
+  	var availableSpaces = cardEffect.copySpecialSpacesUpTo;
+	  var moveBoardForward = true;
+	  if (_self._yourUserId == _self._roomData.player2Id) {
+	  	moveBoardForward = false;
+	  }
+
+		for (var i = 0; i < cardEffect.copySpecialSpacesUpTo; i++) {
+			if (moveBoardForward) {
+				currBoardIndex++;
+
+				if (!boardPath[currBoardIndex]) {
+					break;
+				}
+			} else {
+				currBoardIndex--;
+
+				if (currBoardIndex < 0) {
+					break;
+				}
+			}
+
+		  rowIndex = boardPath[currBoardIndex][0];
+		  columnIndex = boardPath[currBoardIndex][1];
+
+		  if (boardMatrix[rowIndex][columnIndex] > 0 && boardMatrix[rowIndex][columnIndex] != 1) {
+		  	availableSpaces--;
+			}
+		}
+
+		if (availableSpaces <= 0) {
+			retryActivation = true;
+		}
+
+		if (playerStateYou.energyPoints < cardEffect.energyPerUse) {
+			retryActivation = true;
+		}
+
+		if (cardEffect.activationsCountThisTurn >= cardEffect.maxUsesPerTurn) {
+			retryActivation = true;
+		}
+
+		if (cardEffect.chargesUsedTotal >= cardEffect.effectChargesCount) {
+			retryActivation = true;
+		}
+	}
+
+	if (retryActivation) {
+		_self.enableMainPhaseActions();
+	} else {
+		_self._lastClientData = { roomId: _self._roomData.id, cardId: cardId };
+		_self.client.activateCardEffect(_self._lastClientData);
+	}
+};
+
+gameController.prototype.processActivateCardEffect = function (data) {
+	console.log('processActivateCardEffect');
+	console.log('processActivateCardEffect data: ', data);
+
+	var _self = this;
+
+	if (!data.isSuccessful) {
+		assert(data.errors.length > 0);
+
+		_self.retryTimeout = setTimeout(function() {
+			if (_self._gameplayData && _self._yourUserId &&
+				_self._gameplayData.gameState.activePlayerId == _self._yourUserId) {
+				_self.client.activateCardEffect(_self._lastClientData);
+			}
+		}, 1000);
+
+		$(_self.GAME_STATUS_CONTENT_CLASS).html(data.errors[0].message);
+		return;
+	}
+
+	clearTimeout(_self.retryTimeout);
+
+	assert(ajv.validate(activateCardEffectResponse, data), 'activateCardEffectResponse is invalid' +
+  	JSON.stringify(ajv.errors, null, 2));
+
+	_self._gameplayData = data.gameplayData;
+	_self._roomData = data.roomData;
+	_self.updateGameStatusInfo();
+
+	if (_self._gameplayData.gameState.playerIdActivatedCard == _self._yourUserId) {
+		_self.activateCardOnFieldAnimationYou(_self._gameplayData.gameState.cardActivated, _self.performCardEffectContinuousYou
+			.bind(_self, _self._gameplayData.gameState.cardActivated));
+	} else {
+		_self.activateCardOnFieldAnimationEnemy(_self._gameplayData.gameState.cardActivated, _self.performCardEffectContinuousEnemy
+			.bind(_self, _self._gameplayData.gameState.cardActivated));
+	}
+};
+
+gameController.prototype.processFinishCardEffectContinuous = function (data) {
+	console.log('processFinishCardEffectContinuous');
+	console.log('processFinishCardEffectContinuous data: ', data);
+
+	var _self = this;
+
+	if (!data.isSuccessful) {
+		assert(data.errors.length > 0);
+
+		_self.retryTimeout = setTimeout(function() {
+			if (_self._gameplayData && _self._yourUserId &&
+				_self._gameplayData.gameState.activePlayerId == _self._yourUserId) {
+				_self.client.finishCardEffectContinuous(_self._lastClientData);
+			}
+		}, 1000);
+
+		$(_self.GAME_STATUS_CONTENT_CLASS).html(data.errors[0].message);
+		return;
+	}
+
+	clearTimeout(_self.retryTimeout);
+
+	assert(ajv.validate(finishCardEffectContinuousResponse, data), 'finishCardEffectContinuousResponse is invalid' +
+  	JSON.stringify(ajv.errors, null, 2));
+
+	_self._gameplayData = data.gameplayData;
+	_self._roomData = data.roomData;
+	_self.updateGameStatusInfo();
+
+	if (_self._gameplayData.gameState.playerIdFinishCardContinuous == _self._yourUserId) {
+		_self.performCardEffectContinuousFinishYou(_self._gameplayData.gameState.cardFinishContinuous);
+	} else {
+		_self.performCardEffectContinuousFinishEnemy(_self._gameplayData.gameState.cardFinishContinuous);
+	}
+};
+
+gameController.prototype.activateCardOnFieldAnimationYou = function (cardObj, callback) {
+	var _self = this;
+
+	var cardId = cardObj.cardId;
+
+	$(_self.CARD_ON_FIELD_CLASS + _self.PLAYER_YOU_CLASS).each(function() {
+		if ($(this).data("cardId") == cardId) {
+			console.log('Activate card effect animatipon you');
+			callback();
+			// do animation then callback
+		}
+	});
+};
+
+gameController.prototype.activateCardOnFieldAnimationEnemy = function (cardObj, callback) {
+	var _self = this;
+
+	var cardId = cardObj.cardId;
+
+	$(_self.CARD_ON_FIELD_CLASS + _self.PLAYER_ENEMY_CLASS).each(function() {
+		if ($(this).data("cardId") == cardId) {
+			console.log('Activate card effect animatipon enemy');
+			callback();
+			// do animation then callback
+		}
+	});
+};
+
 gameController.prototype.summonCardFromHandAnimationEnemy = function (cardObj, callback) {
 	var _self = this;
 
@@ -2698,6 +3087,8 @@ gameController.prototype.updateGameStatusInfo = function () {
 	if (!_self._gameplayData) {
 		return;
 	}
+
+	console.log(_self._gameplayData);
 
 	var gameState = _self._gameplayData.gameState;
 	var playerYouStatus = gameState.playersState[_self._yourUserId];

@@ -447,6 +447,10 @@ const self = module.exports = {
         < playerState.maxCardsOnField);
       assert(playerState.cardsSummonConstraints.cardsCanSummonAny);
 
+      playerState.cardsOnFieldArr.forEach(function(card, idx) {
+        assert(card.cardId != ctx.data.cardId);
+      });
+
       let cardStatus = await utils.selectRowById({ table: 'cards', field: 'id', queryArg: ctx.data.cardId });
       var cardFromDb = {
         cardId: cardStatus.rows[0].id,
@@ -483,11 +487,11 @@ const self = module.exports = {
       assert(cardSelected && (cardSelected.cardId == ctx.data.cardId) && (cardFromDb.cardId == cardSelected.cardId));
 
       gameState.cardSummonedIdxInPlayerHand = ctx.data.cardIdx;
-      gameState.cardSummoned = cardFromDb;
+      playerState.cardsOnFieldArr.push(cardFromDb);
+      gameState.cardSummoned = playerState.cardsOnFieldArr[playerState.cardsOnFieldArr.length - 1];
       playerState.cardsInHandArr.splice(ctx.data.cardIdx, 1);
       playerState.cardsInHand--;
       gameState.playerIdSummonedCard = ctx.session.userData.userId;
-      playerState.cardsOnFieldArr.push(cardFromDb);
 
       await gameCore.summonCardHook(ctx);
       await gameCore.activePlayerHook(ctx);
@@ -797,6 +801,132 @@ const self = module.exports = {
       logger.info('Failed to finish card: %o', err);
     }
   },
+  activateCardEffect: async (ctx, next) => {
+    logger.info('activateCardEffect gameController');
+    ctx.errors = [];
+
+    await pg.pool.query('BEGIN');
+
+    try {
+      // let rand = utils.getRandomInt(0, 1);
+      // assert(rand);
+      ctx.data.roomId = parseInt(ctx.data.roomId);
+      ctx.data.cardId = parseInt(ctx.data.cardId);
+
+      const isSchemaValid = ajv.validate(SCHEMAS.ACTIVATE_CARD_EFFECT, ctx.data);
+      assert(isSchemaValid);
+
+      assert(ctx.session.userData && ctx.session.userData.userId);
+
+      let queryStatus = await utils.lockRowById({ table: 'games', field: 'room_id', queryArg: ctx.data.roomId });
+
+      assert(queryStatus.rows[0].player1_id == ctx.session.userData.userId
+        || queryStatus.rows[0].player2_id == ctx.session.userData.userId);
+
+      ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
+      ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
+
+      let gameState = ctx.gameplayData.gameState;
+      let playerState = gameState.playersState[ctx.session.userData.userId];
+
+      assert(gameState.currPlayerId == ctx.session.userData.userId);
+      assert(gameState.nextPhase == TURN_PHASES.ROLL);
+
+      let cardActivated;
+
+      for (let i = 0; i < playerState.cardsOnFieldArr.length; i++) {
+        if (playerState.cardsOnFieldArr[i].cardId == ctx.data.cardId) {
+          cardActivated = playerState.cardsOnFieldArr[i];
+        }
+      }
+
+      assert(cardActivated);
+      assert((cardActivated.cardId == ctx.data.cardId) && (!cardActivated.cardEffect.isFinished));
+
+      gameState.cardActivated = cardActivated;
+      gameState.playerIdActivatedCard = ctx.session.userData.userId;
+
+      await gameCore.activateCardEffectHook(ctx);
+      await gameCore.activePlayerHook(ctx);
+
+      queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
+        field2: 'room_id', queryArg2: ctx.data.roomId });
+
+      gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
+      gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
+
+      await pg.pool.query('COMMIT');
+    } catch (err) {
+      ctx.errors.push({ dataPath: '/activate_card_effect', message: 'There was a problem while activating card effect. Retrying...' });
+
+      await pg.pool.query('ROLLBACK');
+
+      logger.info('Failed to activate card: %o', err);
+    }
+  },
+  finishCardEffectContinuous: async (ctx, next) => {
+    logger.info('finishCardEffectContinuous gameController');
+    ctx.errors = [];
+
+    await pg.pool.query('BEGIN');
+
+    try {
+      // let rand = utils.getRandomInt(0, 1);
+      // assert(rand);
+      ctx.data.roomId = parseInt(ctx.data.roomId);
+      ctx.data.cardId = parseInt(ctx.data.cardId);
+      assert(ctx.data.finishData);
+
+      const isSchemaValid = ajv.validate(SCHEMAS.FINISH_CARD_CONTINUOUS, ctx.data);
+      assert(isSchemaValid);
+
+      assert(ctx.session.userData && ctx.session.userData.userId);
+
+      let queryStatus = await utils.lockRowById({ table: 'games', field: 'room_id', queryArg: ctx.data.roomId });
+
+      assert(queryStatus.rows[0].player1_id == ctx.session.userData.userId
+        || queryStatus.rows[0].player2_id == ctx.session.userData.userId);
+
+      ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
+      ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
+
+      let gameState = ctx.gameplayData.gameState;
+      let playerState = gameState.playersState[ctx.session.userData.userId];
+
+      let cardFinishContinuous;
+
+      for (let i = 0; i < playerState.cardsOnFieldArr.length; i++) {
+        if (playerState.cardsOnFieldArr[i].cardId == ctx.data.cardId) {
+          cardFinishContinuous = playerState.cardsOnFieldArr[i];
+          ctx.cardIdx = i;
+        }
+      }
+
+      assert(cardFinishContinuous);
+      assert(ctx.cardIdx >= 0);
+      assert((cardFinishContinuous.cardId == ctx.data.cardId) && (!cardFinishContinuous.cardEffect.isFinished));
+
+      gameState.cardFinishContinuous = cardFinishContinuous;
+      gameState.playerIdFinishCardContinuous = ctx.session.userData.userId;
+
+      await gameCore.cardFinishContinuousHook(ctx);
+      await gameCore.activePlayerHook(ctx);
+
+      queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
+        field2: 'room_id', queryArg2: ctx.data.roomId });
+
+      gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
+      gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
+
+      await pg.pool.query('COMMIT');
+    } catch (err) {
+      ctx.errors.push({ dataPath: '/finish_card', message: 'There was a problem while finishing card effect. Retrying...' });
+
+      await pg.pool.query('ROLLBACK');
+
+      logger.info('Failed to finish card: %o', err);
+    }
+  },
   winGameFormally: async (ctx, next) => {
     logger.info('winGameFormally gameController');
     ctx.errors = [];
@@ -890,21 +1020,37 @@ const self = module.exports = {
 
       logger.info('queryStatus: ', queryStatus);
 
+      let playerIdWinGame = null;
       if (queryStatus.rowCount >= 1) {
-        ctx.socket.broadcast('winGame', {
+        playerIdWinGame = userId;
+      }
+
+      if (ctx.roomData && ctx.sessions[ctx.roomData.player1Id] && ctx.sessions[ctx.roomData.player2Id]
+        && ctx.sessions[ctx.roomData.player1Id].socketId && ctx.sessions[ctx.roomData.player2Id].socketId
+        && ctx.io.getSocket(ctx.sessions[ctx.roomData.player1Id].socketId) && ctx.io.getSocket(ctx.sessions[ctx.roomData.player2Id].socketId)) {
+
+        ctx.io.getSocket(ctx.sessions[ctx.roomData.player1Id].socketId).emit('winGame', {
           errors: ctx.errors,
           isSuccessful: true,
           roomData: ctx.roomData,
           roomId: roomId,
-          playerIdWinGame: userId,
+          playerIdWinGame: playerIdWinGame,
+        });
+
+        ctx.io.getSocket(ctx.sessions[ctx.roomData.player2Id].socketId).emit('winGame', {
+          errors: ctx.errors,
+          isSuccessful: true,
+          roomData: ctx.roomData,
+          roomId: roomId,
+          playerIdWinGame: playerIdWinGame,
         });
       } else {
         ctx.socket.broadcast('winGame', {
           errors: ctx.errors,
           isSuccessful: true,
-          roomData: ctx.roomData ? ctx.roomData : { id: roomId },
+          roomData: ctx.roomData,
           roomId: roomId,
-          playerIdWinGame: null,
+          playerIdWinGame: playerIdWinGame,
         });
       }
 
@@ -934,6 +1080,9 @@ let resetTurn = (ctx) => {
     gameState.playersState[playerId].cardsSummonedThisTurnCount.common = 0;
     gameState.playersState[playerId].cardsSummonedThisTurnCount.rare = 0;
     gameState.playersState[playerId].cardsSummonedThisTurnCount.epic = 0;
+    gameState.playersState[playerId].cardsOnFieldArr.forEach(function(card) {
+      card.cardEffect.activationsCountThisTurn = 0;
+    });
   }
   gameState.playerIdDrawnCard = null;
   gameState.playerIdSummonedCard = null;
@@ -962,11 +1111,7 @@ let resetTimers = (ctx) => {
   ctx.sessions[ctx.roomData.player1Id].timerValue = ctx.gameplayData.gameState.timerSeconds + 3;
   ctx.sessions[ctx.roomData.player2Id].timerValue = ctx.gameplayData.gameState.timerSeconds + 3;
 
-  ctx.socket.broadcast('timerValues', {
-    timerValuePlayer1: ctx.sessions[ctx.roomData.player1Id].timerValue,
-    timerValuePlayer2: ctx.sessions[ctx.roomData.player2Id].timerValue,
-    roomId: ctx.roomData.id,
-  });
+  sendTimerValues(ctx);
 
   ctx.sessions[ctx.roomData.player1Id].turnInterval = setInterval(async () => {
     if (ctx.sessions[ctx.roomData.player1Id].pausedTimer) {
@@ -975,11 +1120,7 @@ let resetTimers = (ctx) => {
 
     ctx.sessions[ctx.roomData.player1Id].timerValue--;
 
-    ctx.socket.broadcast('timerValues', {
-      timerValuePlayer1: ctx.sessions[ctx.roomData.player1Id].timerValue,
-      timerValuePlayer2: ctx.sessions[ctx.roomData.player2Id].timerValue,
-      roomId: ctx.roomData.id,
-    });
+    sendTimerValues(ctx);
 
     console.log('Player 1 turn seconds left: ', ctx.sessions[ctx.roomData.player1Id].timerValue);
 
@@ -996,11 +1137,7 @@ let resetTimers = (ctx) => {
 
     ctx.sessions[ctx.roomData.player2Id].timerValue--;
 
-    ctx.socket.broadcast('timerValues', {
-      timerValuePlayer1: ctx.sessions[ctx.roomData.player1Id].timerValue,
-      timerValuePlayer2: ctx.sessions[ctx.roomData.player2Id].timerValue,
-      roomId: ctx.roomData.id,
-    });
+    sendTimerValues(ctx);
 
     console.log('Player 2 turn seconds left: ', ctx.sessions[ctx.roomData.player2Id].timerValue);
 
@@ -1009,4 +1146,29 @@ let resetTimers = (ctx) => {
       await self.winGame(ctx, ctx.roomData.id, ctx.roomData.player1Id);
     }
   }, 1000);
+};
+
+let sendTimerValues = (ctx) => {
+  if (ctx.roomData && ctx.sessions[ctx.roomData.player1Id] && ctx.sessions[ctx.roomData.player2Id]
+    && ctx.sessions[ctx.roomData.player1Id].socketId && ctx.sessions[ctx.roomData.player2Id].socketId
+    && ctx.io.getSocket(ctx.sessions[ctx.roomData.player1Id].socketId) && ctx.io.getSocket(ctx.sessions[ctx.roomData.player2Id].socketId)) {
+
+    ctx.io.getSocket(ctx.sessions[ctx.roomData.player1Id].socketId).emit('timerValues', {
+      timerValuePlayer1: ctx.sessions[ctx.roomData.player1Id].timerValue,
+      timerValuePlayer2: ctx.sessions[ctx.roomData.player2Id].timerValue,
+      roomId: ctx.roomData.id,
+    });
+
+    ctx.io.getSocket(ctx.sessions[ctx.roomData.player2Id].socketId).emit('timerValues', {
+      timerValuePlayer1: ctx.sessions[ctx.roomData.player1Id].timerValue,
+      timerValuePlayer2: ctx.sessions[ctx.roomData.player2Id].timerValue,
+      roomId: ctx.roomData.id,
+    });
+  } else {
+    ctx.socket.broadcast('timerValues', {
+      timerValuePlayer1: ctx.sessions[ctx.roomData.player1Id].timerValue,
+      timerValuePlayer2: ctx.sessions[ctx.roomData.player2Id].timerValue,
+      roomId: ctx.roomData.id,
+    });
+  }
 };

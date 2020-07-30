@@ -26,6 +26,8 @@ gameClient.prototype.initGameSocket = function(socket) {
 	socket.on('finishCardEffect', this.processFinishCardEffect.bind(this));
 	socket.on('timerValues', this.processTimerValues.bind(this));
 	socket.on('winGame', this.processWinGame.bind(this));
+	socket.on('activateCardEffect', this.processActivateCardEffect.bind(this));
+	socket.on('finishCardEffectContinuous', this.processFinishCardEffectContinuous.bind(this));
 	socket.on('winGameFormally', this.processWinGameFormally.bind(this));
 };
 
@@ -43,7 +45,6 @@ gameClient.prototype.processStartGame = function(_data) {
 
 gameClient.prototype.drawCard = function (_data) {
 	logger.info('drawCard');
-
 	var _self = this;
 
 	_self.socket.emit('drawCard', _data);
@@ -51,6 +52,7 @@ gameClient.prototype.drawCard = function (_data) {
 
 gameClient.prototype.processDrawCard = function (_data) {
 	logger.info('processDrawCard');
+	console.log('Draw caard: ');
 
 	var _self = this;
 
@@ -81,6 +83,7 @@ gameClient.prototype.drawPhase = function (_data) {
 
 gameClient.prototype.processDrawPhase = function (_data) {
 	logger.info('processDrawPhase');
+	console.log('processDrawPhase');
 
 	var _self = this;
 
@@ -100,6 +103,7 @@ gameClient.prototype.standByPhase = function (_data) {
 
 gameClient.prototype.processStandByPhase = function (_data) {
 	logger.info('processStandByPhase');
+	console.log('processStandByPhase');
 
 	var _self = this;
 
@@ -119,6 +123,7 @@ gameClient.prototype.mainPhase = function (_data) {
 
 gameClient.prototype.processMainPhase = function (_data) {
 	logger.info('processMainPhase');
+	console.log('processMainPhase');
 
 	var _self = this;
 
@@ -138,6 +143,7 @@ gameClient.prototype.summonCard = function (_data) {
 
 gameClient.prototype.processSummonCard = function (_data) {
 	logger.info('processSummonCard');
+	console.log('processSummonCard');
 
 	var _self = this;
 
@@ -157,6 +163,7 @@ gameClient.prototype.rollPhase = function (_data) {
 
 gameClient.prototype.processRollPhase = function (_data) {
 	logger.info('processRollPhase');
+	console.log('processRollPhase');
 
 	var _self = this;
 
@@ -176,6 +183,7 @@ gameClient.prototype.rollDiceBoard = function (_data) {
 
 gameClient.prototype.processRollDiceBoard = function (_data) {
 	logger.info('processRollDiceBoard');
+	console.log('processRollDiceBoard');
 
 	var _self = this;
 
@@ -195,6 +203,7 @@ gameClient.prototype.endPhase = function (_data) {
 
 gameClient.prototype.processEndPhase = function (_data) {
 	logger.info('processEndPhase');
+	console.log('processEndPhase');
 
 	var _self = this;
 
@@ -214,6 +223,7 @@ gameClient.prototype.discardCard = function (_data) {
 
 gameClient.prototype.processDiscardCard = function (_data) {
 	logger.info('processDiscardCard');
+	console.log('processDiscardCard');
 
 	var _self = this;
 
@@ -233,12 +243,53 @@ gameClient.prototype.finishCardEffect = function (_data) {
 
 gameClient.prototype.processFinishCardEffect = function (_data) {
 	logger.info('processFinishCardEffect');
+	console.log('processFinishCardEffect');
 
 	var _self = this;
 
 	if (_self.generalClient.roomController._roomId && _data.roomId
 		&& _self.generalClient.roomController._roomId == _data.roomId) {
 		_self.gameController.processFinishCardEffect(_data);
+	}
+};
+
+gameClient.prototype.activateCardEffect = function (_data) {
+	logger.info('activateCardEffect');
+
+	var _self = this;
+
+	_self.socket.emit('activateCardEffect', _data);
+};
+
+gameClient.prototype.processActivateCardEffect = function (_data) {
+	logger.info('processActivateCardEffect');
+	console.log('processActivateCardEffect');
+
+	var _self = this;
+
+	if (_self.generalClient.roomController._roomId && _data.roomId
+		&& _self.generalClient.roomController._roomId == _data.roomId) {
+		_self.gameController.processActivateCardEffect(_data);
+	}
+};
+
+gameClient.prototype.finishCardEffectContinuous = function (_data) {
+	logger.info('finishCardEffectContinuous');
+
+	var _self = this;
+
+	_self.socket.emit('finishCardEffectContinuous', _data);
+};
+
+gameClient.prototype.processFinishCardEffectContinuous = function (_data) {
+	logger.info('processFinishCardEffectContinuous');
+	console.log('processFinishCardEffectContinuous');
+
+	var _self = this;
+
+	if (_self.generalClient.roomController._roomId && _data.roomId
+		&& _self.generalClient.roomController._roomId == _data.roomId) {
+		_self.gameController.processFinishCardEffectContinuous(_data);
 	}
 };
 
@@ -253,6 +304,8 @@ gameClient.prototype.winGameFormally = function(_data) {
 
 gameClient.prototype.processTimerValues = function(_data) {
 	var _self = this;
+
+	console.log('processTimerValues');
 
 	if (_self.generalClient.roomController._roomId && _data.roomId
 		&& _self.generalClient.roomController._roomId == _data.roomId) {

@@ -98,6 +98,18 @@ var startGameResponse = {
 							"required": cardObjRequiredFields,
 						},
 						"playerIdFinishCard": { "type": ["integer", "null"] },
+						"cardActivated": {
+							"type": ["object", "null"],
+							"properties": cardObjProperties,
+							"required": cardObjRequiredFields,
+						},
+						"playerIdActivatedCard": { "type": ["integer", "null"] },
+						"cardFinishContinuous": {
+							"type": ["object", "null"],
+							"properties": cardObjProperties,
+							"required": cardObjRequiredFields,
+						},
+						"playerIdFinishCardContinuous": { "type": ["integer", "null"] },
 						"activePlayerId": { "type": "integer" },
 						"playerIdWinGame": { "type": ["integer", "null"] },
 						"playersState": {
@@ -199,6 +211,9 @@ var winGameResponse = {
 		"playerIdWinGame": { "type": ["integer", "null"] },
 	},
 };
+
+var activateCardEffectResponse = startGameResponse;
+var finishCardEffectContinuousResponse = startGameResponse;
 
 var drawCardYouResponse = {
 	"type": "object",
