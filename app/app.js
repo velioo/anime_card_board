@@ -66,7 +66,10 @@ app.use(async (ctx, next) => {
   await next();
 });
 
-io.start(server);
+io.start(server,{
+  pingInterval: 10000,
+  pingTimeout: 5000,
+});
 io.use(KoaSocketSession(app, session));
 
 Validate(app);

@@ -81,24 +81,29 @@ var self = module.exports = {
 
     card.cardEffect.isFinished = false;
 
-		if (card.cardEffect.instantEffect) {
+		if (!card.cardEffect.continuous) {
 			if (card.cardEffect.autoEffect) {
     		playerState.cardsInGraveyard.push(card);
     		playerState.cardsOnFieldArr.pop();
 				card.cardEffect.isFinished = true;
 			}
 
-			if (card.cardEffect.moveSpacesForward) {
-				await self.rollDiceBoardHook(ctx, { rollDiceValue: card.cardEffect.moveSpacesForward, moveIfCan: false });
+			if (card.cardEffect.effect == "moveSpacesForward") {
+				await self.rollDiceBoardHook(ctx, { rollDiceValue: card.cardEffect.effectValue, moveIfCan: false });
 		  }
 
-		  if (card.cardEffect.moveSpacesBackwardsEnemy) {
-		  	await self.rollDiceBoardHook(ctx, { rollDiceValue: card.cardEffect.moveSpacesBackwardsEnemy,
+		  if (card.cardEffect.effect == "moveSpacesBackwardsEnemy") {
+		  	await self.rollDiceBoardHook(ctx, { rollDiceValue: card.cardEffect.effectValue,
 		  		userId: enemyUserId, moveBackwardsOnNextRoll: true, moveIfCan: false });
 		  }
-		} else if (card.cardEffect.copySpecialSpacesUpTo && card.cardEffect.maxUsesPerTurn && card.cardEffect.effectChargesCount > 0) {
-			card.cardEffect.activationsCountThisTurn = 0;
-			card.cardEffect.chargesUsedTotal = 0;
+		} else {
+			if (card.cardEffect.maxUsesPerTurn) {
+				card.cardEffect.activationsCountThisTurn = 0;
+			}
+
+			if (card.cardEffect.effectChargesCount) {
+				card.cardEffect.chargesUsedTotal = 0;
+			}
 		}
 	},
 	cardFinishHook: async (ctx) => {
@@ -112,20 +117,20 @@ var self = module.exports = {
 
 		playerState.cardsInGraveyard.push(card);
 
-		if (card.cardEffect.moveSpacesForwardUpTo) {
-			assert((finishData.moveSpacesForward > 0) && (finishData.moveSpacesForward <= card.cardEffect.moveSpacesForwardUpTo));
-			card.cardEffect.moveSpacesForward = finishData.moveSpacesForward;
-			await self.rollDiceBoardHook(ctx, { rollDiceValue: finishData.moveSpacesForward, moveIfCan: false });
-	  } else if (card.cardEffect.moveSpacesBackwardsUpToEnemy) {
-	  	assert((finishData.moveSpacesBackwardsEnemy > 0) && (finishData.moveSpacesBackwardsEnemy <= card.cardEffect.moveSpacesBackwardsUpToEnemy));
-	  	card.cardEffect.moveSpacesBackwardsEnemy = finishData.moveSpacesBackwardsEnemy;
-	  	await self.rollDiceBoardHook(ctx, { rollDiceValue: finishData.moveSpacesBackwardsEnemy,
+		if (card.cardEffect.effect == "moveSpacesForwardUpTo") {
+			assert((finishData.effectValueChosen > 0) && (finishData.effectValueChosen <= card.cardEffect.effectValue));
+			card.cardEffect.effectValueChosen = finishData.effectValueChosen;
+			await self.rollDiceBoardHook(ctx, { rollDiceValue: card.cardEffect.effectValueChosen, moveIfCan: false });
+	  } else if (card.cardEffect.effect == "moveSpacesBackwardsUpToEnemy") {
+	  	assert((finishData.effectValueChosen > 0) && (finishData.effectValueChosen <= card.cardEffect.effectValue));
+	  	card.cardEffect.effectValueChosen = finishData.effectValueChosen;
+	  	await self.rollDiceBoardHook(ctx, { rollDiceValue: card.cardEffect.effectValueChosen,
 	  		userId: enemyUserId, moveBackwardsOnNextRoll: true, moveIfCan: false });
-	  } else if (card.cardEffect.moveSpacesForwardOrBackwardUpTo) {
-	  	assert((finishData.moveSpaces > 0) && (finishData.moveSpaces <= card.cardEffect.moveSpacesForwardOrBackwardUpTo));
+	  } else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpTo") {
+	  	assert((finishData.effectValueChosen > 0) && (finishData.effectValueChosen <= card.cardEffect.effectValue));
 	  	assert("moveBackward" in finishData);
-	  	card.cardEffect.moveSpaces = finishData.moveSpaces;
-	  	await self.rollDiceBoardHook(ctx, { rollDiceValue: finishData.moveSpaces,
+	  	card.cardEffect.effectValueChosen = finishData.effectValueChosen;
+	  	await self.rollDiceBoardHook(ctx, { rollDiceValue: card.cardEffect.effectValueChosen,
 	  		userId: yourUserId, moveBackwardsOnNextRoll: finishData.moveBackward, moveIfCan: false });
 	  }
 	},
@@ -138,18 +143,23 @@ var self = module.exports = {
 	  let boardMatrix = gameState.boardData.boardMatrix;
 	  let currBoardIndexYou = gameState.playersState[ctx.session.userData.userId].currBoardIndex;
 
-		if (card.cardEffect.copySpecialSpacesUpTo) {
+	  if ("maxUsesPerTurn" in card.cardEffect) {
 			assert(card.cardEffect.activationsCountThisTurn < card.cardEffect.maxUsesPerTurn);
-			assert(card.cardEffect.chargesUsedTotal < card.cardEffect.effectChargesCount);
-			if (card.cardEffect.energyPerUse) {
-				assert(playerState.energyPoints >= card.cardEffect.energyPerUse);
-				playerState.energyPoints -= card.cardEffect.energyPerUse;
-			}
-
 			card.cardEffect.activationsCountThisTurn++;
-			card.cardEffect.chargesUsedTotal++;
+	  }
 
-			let availableSpecialSpaces = card.cardEffect.copySpecialSpacesUpTo;
+	  if ("effectChargesCount" in card.cardEffect) {
+			assert(card.cardEffect.chargesUsedTotal < card.cardEffect.effectChargesCount);
+			card.cardEffect.chargesUsedTotal++;
+	  }
+
+		if (card.cardEffect.energyPerUse) {
+			assert(playerState.energyPoints >= card.cardEffect.energyPerUse);
+			playerState.energyPoints -= card.cardEffect.energyPerUse;
+		}
+
+		if (card.cardEffect.effect == "copySpecialSpacesUpTo") {
+			let availableSpecialSpaces = card.cardEffect.effectValue;
 			if (ctx.session.userData.userId == ctx.roomData.player1Id) {
 				for(let i = 0; i < card.cardEffect.copySpecialSpacesUpTo; i++) {
 					if ((currBoardIndexYou + i) > (boardPath.length - 1)) {
@@ -159,7 +169,7 @@ var self = module.exports = {
 					}
 				}
 			} else {
-				for(let i = 0; i < card.cardEffect.copySpecialSpacesUpTo; i++) {
+				for(let i = 0; i < card.cardEffect.effectValue; i++) {
 					if ((currBoardIndexYou - i) < 0) {
 						availableSpecialSpaces--;
 					} else if (boardMatrix[boardPath[currBoardIndexYou - i][0]][boardPath[currBoardIndexYou - i][1]] <= 1) {
@@ -169,6 +179,8 @@ var self = module.exports = {
 			}
 
 			assert(availableSpecialSpaces > 0);
+		} else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpToEnemy") {
+			// do nothing
 		}
 	},
 	cardFinishContinuousHook: async (ctx) => {
@@ -183,36 +195,44 @@ var self = module.exports = {
     let enemyUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
     let yourUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player1Id : ctx.roomData.player2Id;
 
-		if (card.cardEffect.copySpecialSpacesUpTo) {
-			assert((finishData.copySpecialSpaceRowIndex > 0) && (finishData.copySpecialSpaceColumnIndex > 0));
-			assert(boardMatrix[finishData.copySpecialSpaceRowIndex][finishData.copySpecialSpaceColumnIndex] > 1);
+		if (card.cardEffect.effect == "copySpecialSpacesUpTo") {
+			assert((finishData.rowIndex > 0) && (finishData.columnIndex > 0)
+				&& (finishData.rowIndex <= (boardMatrix.length - 1))
+				&& (finishData.columnIndex <= (boardMatrix[0].length - 1)));
+			assert(boardMatrix[finishData.rowIndex][finishData.columnIndex] > 1);
 
 			let validSpace = false;
 			if (ctx.session.userData.userId == ctx.roomData.player1Id) {
-				for(let i = 1; i <= card.cardEffect.copySpecialSpacesUpTo; i++) {
-					if (((currBoardIndexYou + i) <= (boardPath.length - 1)) && (boardPath[currBoardIndexYou + i][0] == finishData.copySpecialSpaceRowIndex)
-						&& (boardPath[currBoardIndexYou + i][1] == finishData.copySpecialSpaceColumnIndex)) {
+				for(let i = 1; i <= card.cardEffect.effectValue; i++) {
+					if (((currBoardIndexYou + i) <= (boardPath.length - 1)) && (boardPath[currBoardIndexYou + i][0] == finishData.rowIndex)
+						&& (boardPath[currBoardIndexYou + i][1] == finishData.columnIndex)) {
 						validSpace = true
 					}
 				}
 			} else {
-				for(let i = 1; i <= card.cardEffect.copySpecialSpacesUpTo; i++) {
-					if ((currBoardIndexYou - i >= 0) && (boardPath[currBoardIndexYou - i][0] == finishData.copySpecialSpaceRowIndex)
-						&& (boardPath[currBoardIndexYou - i][1] == finishData.copySpecialSpaceColumnIndex)) {
+				for(let i = 1; i <= card.cardEffect.effectValue; i++) {
+					if ((currBoardIndexYou - i >= 0) && (boardPath[currBoardIndexYou - i][0] == finishData.rowIndex)
+						&& (boardPath[currBoardIndexYou - i][1] == finishData.columnIndex)) {
 						validSpace = true
 					}
 				}
 			}
 
 			assert(validSpace);
-			checkForSpecialBoardSpace(ctx, finishData.copySpecialSpaceRowIndex, finishData.copySpecialSpaceColumnIndex);
-
-			if (card.cardEffect.chargesUsedTotal >= card.cardEffect.effectChargesCount) {
-				card.cardEffect.isFinished = true;
-				playerState.cardsOnFieldArr.splice(ctx.cardIdx, 1);
-				playerState.cardsInGraveyard.push(card);
-			}
+			checkForSpecialBoardSpace(ctx, finishData.rowIndex, finishData.columnIndex);
+	  } else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpToEnemy") {
+	  	assert((finishData.effectValueChosen > 0) && (finishData.effectValueChosen <= card.cardEffect.effectValue));
+	  	assert("moveBackward" in finishData);
+	  	card.cardEffect.effectValueChosen = finishData.effectValueChosen;
+	  	await self.rollDiceBoardHook(ctx, { rollDiceValue: card.cardEffect.effectValueChosen,
+	  		userId: enemyUserId, moveBackwardsOnNextRoll: finishData.moveBackward, moveIfCan: false });
 	  }
+
+	  if ("effectChargesCount" in card.cardEffect && card.cardEffect.chargesUsedTotal >= card.cardEffect.effectChargesCount) {
+			card.cardEffect.isFinished = true;
+			playerState.cardsOnFieldArr.splice(ctx.cardIdx, 1);
+			playerState.cardsInGraveyard.push(card);
+		}
 	},
 	rollDiceBoardHook: async (ctx, overwriteParams) => {
 		let gameState = ctx.gameplayData.gameState;

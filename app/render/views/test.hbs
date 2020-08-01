@@ -82,6 +82,15 @@
 		<div class="anime-cb-board-player-label player-enemy">
 			C.C
 		</div>
+		<table class="anime-cb-card-field-charges-status-wrapper player-enemy">
+			<tr>
+				<td class="anime-cb-card-field-charges-status"></td>
+				<td class="anime-cb-card-field-charges-status"></td>
+				<td class="anime-cb-card-field-charges-status"></td>
+				<td class="anime-cb-card-field-charges-status"></td>
+				<td class="anime-cb-card-field-charges-status"></td>
+			</tr>
+		</table>
 		<table class="anime-cb-card-field player-enemy">
 			<tr>
 				<td></td>
@@ -99,10 +108,19 @@
 			<table class="anime-cb-card-field player-you">
 				<tr>
 					<td><img data-tooltip="activateEffect" class="anime-cb-card-onfield hover player-you" data-card-text="This is Saber" data-card-name="Saber" src="imgs/player_cards/Saber.jpg"></td>
+					<td><img data-tooltip="activateEffect" class="anime-cb-card-onfield hover player-you" data-card-text="This is Saber" data-card-name="Saber" src="imgs/player_cards/Saber.jpg"></td>
+					<td><img data-tooltip="activateEffect" class="anime-cb-card-onfield hover player-you" data-card-text="This is Saber" data-card-name="Saber" src="imgs/player_cards/Saber.jpg"></td>
+					<td><img data-tooltip="activateEffect" class="anime-cb-card-onfield hover player-you" data-card-text="This is Saber" data-card-name="Saber" src="imgs/player_cards/Saber.jpg"></td>
 					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
+				</tr>
+			</table>
+			<table class="anime-cb-card-field-charges-status-wrapper player-you">
+				<tr>
+					<td class="anime-cb-card-field-charges-status">3/3</td>
+					<td class="anime-cb-card-field-charges-status">2/3</td>
+					<td class="anime-cb-card-field-charges-status">1/3</td>
+					<td class="anime-cb-card-field-charges-status">2/3</td>
+					<td class="anime-cb-card-field-charges-status">3/3</td>
 				</tr>
 			</table>
 		</div>
@@ -244,6 +262,7 @@
 		</div>
 		<div class="stickystatus"></div>
 	</div>
+	<img class="anime-cb-card-activate-show">
 </div>
 </div>
 </div>
@@ -783,13 +802,18 @@ function decreaseEnemyCardsInHandDensity() {
 // TODO TODO TODO
 // Remove card from field animation
 $('.anime-cb-screen-game').on('click', '.anime-cb-card-onfield.player-you', function(e) {
-  $(this).css("animation", "fade-out 1.5s ease-in both");
-  $(this).css("-webkit-animation", "fade-out 1.5s ease-in both");
-  $(this).removeClass("hover");
+
+	$('.anime-cb-card-activate-show').attr("src", $(this).attr("src"));
+	$('.anime-cb-card-activate-show').css("animation", "vibrate-1 0.3s linear 5 both");
+
+  // $(this).css("animation", "fade-out 1.5s ease-in both");
+  // $(this).css("-webkit-animation", "fade-out 1.5s ease-in both");
+  // $(this).removeClass("hover");
 
   setTimeout(function() {
-  	$(this).remove();
-  }.bind(this), 1600);
+  // 	$(this).remove();
+  $('.anime-cb-card-activate-show').css("animation", "");
+  }.bind(this), 1500);
 });
 //----------------------
 
@@ -823,4 +847,5 @@ $(window).on("click", function(event) {
   }
 });
 //--------------------------------------------
+
 </script>

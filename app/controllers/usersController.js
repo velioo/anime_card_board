@@ -17,7 +17,7 @@ const Validations = require('../helpers/validations');
 const sha256 = require('js-sha256').sha256;
 const Nodemailer = require('nodemailer');
 const Ajv = require('ajv');
-const ajv = new Ajv({ allErrors: true, $data: true, jsonPointers: true });
+const ajv = new Ajv({ allErrors: true, $data: true, jsonPointers: true, format: "full" });
 const ajvErrors = require('ajv-errors')(ajv);
 
 var self = module.exports = {

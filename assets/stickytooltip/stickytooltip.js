@@ -19,7 +19,7 @@ var stickytooltip={
 
 	positiontooltip:function($, $tooltip, e){
 		var x=e.pageX+this.tooltipoffsets[0], y=e.pageY+this.tooltipoffsets[1]
-		var tipw=$tooltip.outerWidth(), tiph=$tooltip.outerHeight(), 
+		var tipw=$tooltip.outerWidth(), tiph=$tooltip.outerHeight(),
 		x=(x+tipw>$(document).scrollLeft()+$(window).width())? x-tipw-(stickytooltip.tooltipoffsets[0]*2) : x
 		y=(y+tiph>$(document).scrollTop()+$(window).height())? $(document).scrollTop()+$(window).height()-tiph-10 : y
 		$tooltip.css({left:x, top:y})
@@ -56,11 +56,9 @@ var stickytooltip={
 				stickytooltip.showbox($, $tooltip, e)
 			})
 			$('body').on('mouseleave', targetselector, function(e){
-				console.log('tooltip mouseleave');
 				stickytooltip.hidebox($, $tooltip)
 			})
 			$('body').on('mousemove', targetselector, function(e){
-				console.log('tooltip mousemove');
 				if (!stickytooltip.isdocked){
 					stickytooltip.positiontooltip($, $tooltip, e)
 				}

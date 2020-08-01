@@ -1,0 +1,9 @@
+"continuous" - does the card stay on the field after summon and after finishing the card effect. The effects of non-continuous cards activate instantly after summon and then the card is removed from the field.
+"autoEffect" - does the player need to click on something to finish the card effect after activation, if yes then autoEffect = true.
+"effect": <string_representing_the_card_effect>
+"effect1Value": <integer> // NOT USABLE FOR NOW
+"effectsCount": <integer> // NOT USABLE FOR NOW
+"energyPerUse": <integer>, this field is only valid for continuous cards. How much energy per use does it cost to activate the continuous card effect.
+"continuousEffectType": <string_representing_continuous_effect_type>, Example: "onClick", "everyStandbyPhase", ...
+"effectChargesCount": <integer>, this field is valid only for continuous cards and represents how many times in total you can activate the cards effect before the card is destroyed. Normally 1 charge is used for every activation of the card. When a charge is used, depends on the "continuousEffectType".
+"maxUsesPerTurn": <integer>, this field is valid only for continuous cards with "continuousEffectType": "onClick", and represents how many times you can activate the card's effect each turn.

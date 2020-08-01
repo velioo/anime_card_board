@@ -461,10 +461,6 @@ roomController.prototype.preSwitchScreenHook = function (screenClass) {
 	} else {
 		_self._inGame = false;
 	}
-
-	if (screenClass == _self.LOBBY_SCREEN_CLASS) {
-		_self.enableElement(_self.START_GAME_BTN_ID);
-	}
 };
 
 roomController.prototype.postSwitchScreenHook = function (screenClass) {

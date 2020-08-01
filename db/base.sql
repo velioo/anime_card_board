@@ -122,16 +122,20 @@ GRANT ALL ON cards TO velioo;
 GRANT ALL ON cards_id_seq TO velioo;
 
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) VALUES (1, 'Misaka', 'Go 6 spaces forward', 'Misaka 3.jpg', 'rare',
-'{"moveSpacesForward":6,"instantEffect":true,"autoEffect":true}', 3);
+'{"effect": "moveSpacesForward", "effectValue": 6, "autoEffect":true, "continuous": false}', 3);
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) VALUES (2, 'Alice', 'Go up to 2 spaces forward',
-'Alice.jpg', 'common', '{"moveSpacesForwardUpTo":2, "instantEffect": true, "autoEffect": false}', 2);
+'Alice.jpg', 'common', '{"effect": "moveSpacesForwardUpTo", "effectValue": 2, "autoEffect": false, "continuous": false}', 2);
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) VALUES (3, 'Okabe', 'Move your opponent up to 2 spaces backward',
-'Okabe.png', 'common', '{"moveSpacesBackwardsUpToEnemy":2,"instantEffect":true,"autoEffect":false}', 2);
+'Okabe.png', 'common', '{"effect": "moveSpacesBackwardsUpToEnemy", "effectValue": 2, "autoEffect":false, "continuous": false}', 2);
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) VALUES (4, 'Kagura', 'Move your opponent 6 spaces backward',
-'Kagura.jpg', 'rare', '{"moveSpacesBackwardsEnemy":6,"instantEffect":true,"autoEffect":true}', 3);
+'Kagura.jpg', 'rare', '{"effect": "moveSpacesBackwardsEnemy", "effectValue": 6, "autoEffect":true, "continuous": false}', 3);
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) VALUES (5, 'Lucy', 'Move 1 space forward or backward',
-'Lucy.png', 'common', '{"moveSpacesForwardOrBackwardUpTo":1,"instantEffect":true,"autoEffect":false}', 2);
+'Lucy.png', 'common', '{"effect": "moveSpacesForwardOrBackwardUpTo", "effectValue": 1, "autoEffect":false, "continuous": false}', 1);
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) VALUES (6, 'Kakashi',
 'Choose a special board space up to 4 spaces forward and apply its effect for yourself. You can use this effect once per turn for maximum 3 turns in total. Each use of this effect consumes 1 Energy.',
 'Kakashi.jpg', 'epic',
-'{"instantEffect":false, "autoEffect":false, "continuous": true, "effectChargesCount": 3, "maxUsesPerTurn": 1, "continuousEffectType": "onClick", "energyPerUse": 1, "copySpecialSpacesUpTo": 4}', 4);
+'{"autoEffect":false, "continuous": true, "effectChargesCount": 3, "maxUsesPerTurn": 1, "continuousEffectType": "onClick", "energyPerUse": 1, "effect": "copySpecialSpacesUpTo", "effectValue": 4}', 4);
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) VALUES (7, 'Lelouch',
+'Move your opponent up to 3 spaces forward or backward. You can use this effect once per turn for maximum 3 turns in total. Each use of this effect consumes 2 Energy.',
+'Lelouch.webp', 'epic',
+'{"autoEffect":false, "continuous": true, "effectChargesCount": 3, "maxUsesPerTurn": 1, "continuousEffectType": "onClick", "energyPerUse": 2, "effect": "moveSpacesForwardOrBackwardUpToEnemy", "effectValue": 3}', 4);
