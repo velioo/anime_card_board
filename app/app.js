@@ -15,6 +15,7 @@ const globalErrHandler = require('./middlewares/errorHandler');
 const hbaHelpers = require('./helpers/handlebars/helpers');
 const hbaPartials = require('./helpers/handlebars/partials');
 const socketRouter = require('./socket/socketRouter.js');
+const roomController = require('./controllers/roomController.js');
 const authenticate = require('./middlewares/authenticate');
 const _ = require('lodash/lang');
 const { routes, allowedMethods } = require('./routes');
@@ -67,8 +68,8 @@ app.use(async (ctx, next) => {
 });
 
 io.start(server,{
-  pingInterval: 10000,
-  pingTimeout: 5000,
+  pingInterval: 6000,
+  pingTimeout: 3000,
 });
 io.use(KoaSocketSession(app, session));
 
@@ -137,3 +138,10 @@ server.listen(PORT, () => {
   logger.info('Server started on port: ' + PORT);
   sessions = {};
 });
+
+setTimeout(async () => {
+  ctx = {};
+  ctx.io = io;
+  ctx.sessions = sessions;
+  await roomController.matchmake(ctx);
+}, 1000);

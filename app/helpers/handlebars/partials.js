@@ -9,6 +9,7 @@ var hbsPartials = {
   browseRooms: '../partials/browse_rooms',
   lobby: '../partials/lobby',
   game: '../partials/game',
+  matchmaking: '../partials/matchmaking',
 };
 
 module.exports = hbsPartials;

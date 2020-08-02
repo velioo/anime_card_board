@@ -9,6 +9,15 @@ const _ = require('lodash/lang');
 var self = module.exports = {
 	renderHomeScreen: async (ctx) => {
     ctx.state.userMessage = ctx.request.query.msg || "";
+
+    const queryStatus = await pg.pool.query(`
+      SELECT id, name FROM boards
+    `);
+
+    assert(queryStatus.rowCount >= 1);
+
+    ctx.state.boards = queryStatus.rows;
+
 		await ctx.render('./views/home.hbs');
 	},
   renderTestGame: async (ctx) => {

@@ -11,6 +11,15 @@
 			    <input type="text" class="form-control" id="room_name" name="room_name">
 			    <div class="errors"></div>
 			  </div>
+			  <div class="form-group">
+			    <label for="board_id">Board:</label>
+			    <select id="board_id" name="board_id" class="selectpicker form-control">
+			    	{{#each boards}}
+				  		<option value="{{id}}" >{{name}}</option>
+				 	{{/each}}
+				</select>
+			    <div class="errors"></div>
+			  </div>
 			  <img class="spinner" src="/imgs/spinner.gif">
 			  <button id="anime-cb-submit-create-room" type="submit" class="btn btn-default">Create Room</button>
 			  <button id="anime-cb-reset-create-room" class="btn btn-default">Reset</button>

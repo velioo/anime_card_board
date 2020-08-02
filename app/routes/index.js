@@ -29,6 +29,7 @@ router
 	.get('/login', renderHomeScreen)
 	.get('/sign-up', renderHomeScreen)
 	.get('/sign-up-success', renderHomeScreen)
+	.get('/matchmaking', renderHomeScreen)
 	.get('/create-room', renderHomeScreen)
 	.get('/browse-rooms', renderHomeScreen)
 	.get('/lobby', renderHomeScreen)

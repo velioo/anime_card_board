@@ -112,7 +112,11 @@ const self = module.exports = {
 
     assert(results.rowCount <= 1);
 
-    return (results.rowCount);
+    if (results.rowCount <= 0) {
+      return false;
+    }
+
+    return results.rows[0];
   },
   generateSalt: (bytes = 32) => {
     return Crypto.randomBytes(bytes).toString('base64');

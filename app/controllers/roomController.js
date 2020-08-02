@@ -18,6 +18,7 @@ var self = module.exports = {
 		await next();
 
 		ctx.errors = [];
+    ctx.request.body.data.board_id = parseInt(ctx.request.body.data.board_id);
 
     const isSchemaValid = ajv.validate(SCHEMAS.CREATE_ROOM, ctx.request.body.data);
 
@@ -33,6 +34,7 @@ var self = module.exports = {
     	roomName: ctx.request.body.data.room_name,
     	player1Name: ctx.session.userData.username,
       roomId: null,
+      boardName: ctx.request.body.data.board_name,
 	  };
 
     if (ctx.errors.length) {
@@ -67,7 +69,7 @@ var self = module.exports = {
 	    queryStatus = await pg.pool.query(`
 
 	    	INSERT INTO rooms (${roomDbFields})
-	      VALUES ($1, $2)
+	      VALUES ($1, $2, $3, $4)
 	      RETURNING id
 
 	    `, roomDbData);
@@ -95,7 +97,7 @@ var self = module.exports = {
     try {
       let queryStatus = await pg.pool.query(`
 
-        SELECT * FROM rooms
+        SELECT * FROM rooms WHERE is_matchmade = false
 
       `);
 
@@ -269,35 +271,110 @@ var self = module.exports = {
 
     return self.sendResponse(ctx, next);
   },
-/*	destroyRoom: async (ctx, next) => {
-		// await next();
-
-		console.log('destroyRoom roomController');
-		ctx.errors = [];
-
-    await pg.pool.query('BEGIN');
-
+  matchmake: async (ctx) => {
     try {
-	    const queryStatus = await pg.pool.query(`
+      let queryStatusMatchmake = await pg.pool.query(`
 
-	    	DELETE FROM rooms
-	    	WHERE player1_id = $1
+        SELECT * FROM matchmaking
+        JOIN users ON users.id = matchmaking.user_id
 
-	    `, [ ctx.session.userData.userId ]);
+      `);
 
-	    console.log('queryStatus: ', queryStatus);
+      for (let i = 0; i < queryStatusMatchmake.rowCount; i++) {
+        if (!queryStatusMatchmake.rows[i]) {
+          break;
+        }
 
-	    await pg.pool.query('COMMIT');
-	  } catch(err) {
-	  	// ctx.errors.push({ dataPath: '/room_name', message: 'There was a problem destroying the room. Please try again later.' });
-      await pg.pool.query('ROLLBACK');
+        let matchmakeSettings1 = JSON.parse(queryStatusMatchmake.rows[i].settings_json);
 
-      logger.info('Failed to destroy room: %o', err);
-	  }
+        for (let k = i + 1; k < queryStatusMatchmake.rowCount; k++) {
+          if (!queryStatusMatchmake.rows[k]) {
+            break;
+          }
 
-	  // return self.sendResponse(ctx, next);
-	},*/
-	 sendResponse: async (ctx, next) => {
+          let matchmakeSettings2 = JSON.parse(queryStatusMatchmake.rows[k].settings_json);
+
+          if (matchmakeSettings1.board_id != matchmakeSettings2.board_id) {
+            continue;
+          }
+
+          await pg.pool.query('BEGIN');
+
+          try {
+            let queryStatus = await pg.pool.query(`
+
+              DELETE FROM rooms
+              WHERE player1_id in ($1, $2)
+
+            `, [ queryStatusMatchmake.rows[i].user_id, queryStatusMatchmake.rows[k].user_id ]);
+
+            queryStatus = await pg.pool.query(`
+
+              UPDATE rooms
+              SET player2_id = null
+              WHERE player2_id in ($1, $2)
+
+            `, [ queryStatusMatchmake.rows[i].user_id, queryStatusMatchmake.rows[k].user_id ]);
+
+            const roomName = utils.generateUniqueId(20);
+            queryStatus = await pg.pool.query(`
+
+              INSERT INTO rooms (name, player1_id, player2_id, settings_json, is_matchmade)
+              VALUES ($1, $2, $3, $4, $5)
+              RETURNING id
+
+            `, [ roomName, queryStatusMatchmake.rows[i].user_id, queryStatusMatchmake.rows[k].user_id,
+              JSON.stringify(matchmakeSettings1), true ]);
+
+            assert(queryStatus.rows[0].id);
+            const roomId = queryStatus.rows[0].id;
+
+            queryStatus = await pg.pool.query(`
+
+              DELETE FROM matchmaking WHERE user_id in ($1, $2)
+
+            `, [ queryStatusMatchmake.rows[i].user_id, queryStatusMatchmake.rows[k].user_id ]);
+
+            let result = {
+              player1Name: queryStatusMatchmake.rows[i].username,
+              player1Id: queryStatusMatchmake.rows[i].user_id,
+              player2Name: queryStatusMatchmake.rows[k].username,
+              player2Id: queryStatusMatchmake.rows[k].user_id,
+              roomId: roomId,
+            };
+
+            logger.info('Sessions: %o', ctx.sessions);
+
+            ctx.io.getSocket(ctx.sessions[result.player1Id].socketId).emit('matchmake', {
+              errors: [],
+              isSuccessful: true,
+              isUserLoggedIn: true,
+              result: result,
+            });
+
+            ctx.io.getSocket(ctx.sessions[result.player2Id].socketId).emit('matchmake', {
+              errors: [],
+              isSuccessful: true,
+              isUserLoggedIn: true,
+              result: result,
+            });
+
+            await pg.pool.query('COMMIT');
+          } catch (err) {
+            await pg.pool.query('ROLLBACK');
+            logger.info('Failed to matchmake players: %o', err);
+          }
+        }
+      }
+    } catch(err) {
+      logger.info('Matchmaker failed: %o', err);
+    }
+
+    setTimeout(async () => {
+      await self.matchmake(ctx);
+    }, 1000);
+  },
+	sendResponse: async (ctx, next) => {
     ctx.body = {
       errors: ctx.errors,
       isSuccessful: ctx.errors.length ? false : true,
@@ -318,11 +395,20 @@ let validateCreateRoomFields = async (ctx) => {
   if (await Validations.roomExists(ctx)) {
     ctx.errors.push({ dataPath: '/room_name', message: 'Room name already exists.' });
   }
+
+  let boardRow = await Validations.boardExists(ctx);
+  if (!boardRow) {
+    ctx.errors.push({ dataPath: '/board_id', message: 'Invalid board !' });
+  } else {
+    ctx.request.body.data.board_name = boardRow.name;
+  }
 };
 
 let getRoomData = (ctx) => {
   return {
     'name': ctx.request.body.data.room_name,
     'player1_id': ctx.session.userData.userId,
+    'settings_json': '{"board_id":' + ctx.request.body.data.board_id + '}',
+    'is_matchmade': false,
   };
 };

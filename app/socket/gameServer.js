@@ -9,6 +9,12 @@ const self = module.exports = {
   leaveRoom: async (ctx, next) => {
   	await roomController.leaveRoom (ctx, next);
   },
+  matchmake: async (ctx, next) => {
+    await roomController.matchmake (ctx, next);
+  },
+  removeFromMatchmaking: async (ctx, next) => {
+    await roomController.removeFromMatchmaking (ctx, next);
+  },
   winGameFormally: async (ctx, next) => {
     await gameController.winGameFormally (ctx, next);
   },

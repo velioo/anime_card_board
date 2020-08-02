@@ -53,14 +53,17 @@ const _CREATE_ROOM = {
   "type": "object",
   "properties": {
     "room_name": { "type": "string", "minLength": MIN_ROOM_NAME_LEN, "maxLength": MAX_ROOM_NAME_LEN },
+    "board_id": { "type": "integer" },
   },
-  "required": [ "room_name" ],
+  "required": [ "room_name", "board_id" ],
   "errorMessage": {
     "properties" : {
       "room_name": `Room name should be between ${MIN_USER_NAME_LEN} and ${MAX_USER_NAME_LEN} characters`,
+      "board_id": `Invalid board !`,
     },
     "required": {
       "room_name": 'You must enter a room name',
+      "board_id": 'Invalid board !',
     },
   }
 };
@@ -189,6 +192,21 @@ const _FINISH_CARD = {
 const _ACTIVATE_CARD_EFFECT = _FINISH_CARD;
 const _FINISH_CARD_CONTINUOUS = _FINISH_CARD;
 const _WIN_GAME_ENEMY_TIMEOUT = _WIN_GAME_FORMALLY;
+const _MATCHMAKE = {
+  "type": "object",
+  "properties": {
+    "board_id": { "type": "integer" },
+  },
+  "required": [ "board_id" ],
+  "errorMessage": {
+    "properties" : {
+      "board_id": `Invalid board !`,
+    },
+    "required": {
+      "board_id": 'Invalid board !',
+    },
+  }
+};
 
 module.exports = {
   SIGN_UP: _SIGN_UP,
@@ -196,6 +214,7 @@ module.exports = {
   CREATE_ROOM: _CREATE_ROOM,
   GET_ROOM_DATA: _GET_ROOM_DATA,
   JOIN_ROOM_DATA: _JOIN_ROOM_DATA,
+  MATCHMAKE: _MATCHMAKE,
   WIN_GAME_FORMALLY: _WIN_GAME_FORMALLY,
   START_GAME: _START_GAME,
   JOIN_ROOM_EVENT: _JOIN_ROOM_EVENT,

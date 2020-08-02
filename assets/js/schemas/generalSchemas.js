@@ -81,7 +81,7 @@ var createRoomResponse = {
 			"properties": {
 				"player1Name": { "type": "string" },
 				"roomName": { "type": "string" },
-				"roomId": { "type": ["integer", "null"] },
+				"roomId": { "type": ["integer"] },
 			},
 			"required": [ "player1Name", "roomName", "roomId" ],
 		},
@@ -176,6 +176,37 @@ var getCurrentRoomDataResponse = {
 			"required": [ "id", "name", "player1Name", "player2Name", "player1Id", "player2Id" ],
 		},
 		"userMessage": { "type": "string" },
+	},
+	"required": [ "errors", "isSuccessful", "isUserLoggedIn", "result" ],
+};
+
+var matchmakeResponse = {
+	"type": "object",
+	"properties": {
+		"errors" : {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"dataPath": { "type": "string", "pattern": "/.+"  },
+					"message": { "type": "string" },
+				},
+				"required": [ "dataPath", "message" ],
+			}
+		},
+		"isSuccessful": { "type": "boolean" },
+		"isUserLoggedIn": { "type": "boolean" },
+		"result": {
+			"type": "object",
+			"properties": {
+				"player1Name": { "type": "string" },
+				"player1Id": { "type": "integer" },
+				"player2Name": { "type": "string" },
+				"player2Id": { "type": "integer" },
+				"roomId": { "type": ["integer"] },
+			},
+			"required": [ "player1Name", "player1Id", "player2Name", "player2Id", "roomId" ],
+		},
 	},
 	"required": [ "errors", "isSuccessful", "isUserLoggedIn", "result" ],
 };

@@ -25,6 +25,10 @@ const self = module.exports = {
 		  	logger.info('Client disconnected: %o', ctx_c.session.userData);
 		  	console.log('Client disconnected: ', ctx_c.session.userData);
 
+		  	if (ctx_c.session.userData && ctx_c.session.userData.userId) {
+		  		await gameServer.removeFromMatchmaking(ctx_c);
+		  	}
+
 		  	if (ctx_c.session.userData && ctx_c.session.userData.userId && ctx_c.sessions[ctx_c.session.userData.userId]) {
 		  		ctx_c.sessions[ctx_c.session.userData.userId].disconnected = true;
 		  	}
@@ -40,7 +44,7 @@ const self = module.exports = {
 		  		// if (ctx_c.session.userData && ctx_c.session.userData.userId && ctx_c.sessions[ctx_c.session.userData.userId]) {
 		  		// 	ctx_c.sessions[ctx_c.session.userData.userId] = null;
 		  		// }
-		  	}, 5000);
+		  	}, 10000);
 	  	} catch(err) {
 	  		socket.emit('serverError', err);
 	  		logger.error('Error: %o', err);
@@ -87,6 +91,38 @@ const self = module.exports = {
 		  	assert(isSchemaValid);
 
 		  	socket.broadcast('joinRoom', ctx_c.data);
+	  	} catch (err) {
+	  		socket.emit('serverError', err);
+	  		logger.error('Error: %o', err);
+	  	}
+	  });
+
+	  socket.on('matchmake', async (ctx) => {
+	  	try {
+	  		let ctx_c = _.clone(ctx);
+
+	  		await gameServer.matchmake(ctx_c, next);
+
+	  		let isSuccessful = ctx_c.errors.length ? false : true;
+
+	  		if (!isSuccessful) {
+	  			socket.emit('matchmake', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+	  			});
+	  		}
+	  	} catch (err) {
+	  		socket.emit('serverError', err);
+	  		logger.error('Error: %o', err);
+	  	}
+	  });
+
+	 	socket.on('removeFromMatchmaking', async (ctx) => {
+	  	try {
+	  		let ctx_c = _.clone(ctx);
+
+	  		await gameServer.removeFromMatchmaking(ctx_c, next);
+
 	  	} catch (err) {
 	  		socket.emit('serverError', err);
 	  		logger.error('Error: %o', err);

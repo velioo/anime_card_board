@@ -10,4 +10,7 @@ module.exports = {
   roomExists: async (ctx) => {
     return Utils.rowExists({ table: 'rooms', field: 'name', queryArg: ctx.request.body.data.room_name });
   },
+  boardExists: async (ctx) => {
+  	return Utils.rowExists({ table: 'boards', field: 'id', queryArg: ctx.request.body.data.board_id });
+  },
 };

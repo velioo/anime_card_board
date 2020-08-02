@@ -232,7 +232,19 @@ var self = module.exports = {
 			card.cardEffect.isFinished = true;
 			playerState.cardsOnFieldArr.splice(ctx.cardIdx, 1);
 			playerState.cardsInGraveyard.push(card);
-		}
+		} else {
+			if ("energyPerUseIncrement" in card.cardEffect) {
+				let operator = card.cardEffect.energyPerUseIncrement.charAt(0);
+				let incrementValue = card.cardEffect.energyPerUseIncrement.substr(1);
+		  	card.cardEffect.energyPerUse = updateFieldValue[operator](card.cardEffect.energyPerUse, incrementValue);
+	  	}
+
+	  	if ("effectValueIncrement" in card.cardEffect) {
+	  		let operator = card.cardEffect.effectValueIncrement.charAt(0);
+				let incrementValue = card.cardEffect.effectValueIncrement.substr(1);
+		  	card.cardEffect.effectValue = updateFieldValue[operator](card.cardEffect.effectValue, incrementValue);
+	  	}
+	  }
 	},
 	rollDiceBoardHook: async (ctx, overwriteParams) => {
 		let gameState = ctx.gameplayData.gameState;
@@ -443,6 +455,12 @@ let cardDiscard = (ctx, count) => {
 		ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsToDiscard
 			= ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsInHand;
 	}
+};
+
+let updateFieldValue = {
+	'+': function (x, y) { return (+x) + (+y); },
+	'-': function (x, y) { return (+x) - (+y); },
+	'x': function (x, y) { return (+x) * (+y); },
 };
 
 let checkWin = (ctx) => {

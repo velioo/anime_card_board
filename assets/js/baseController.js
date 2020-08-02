@@ -2,6 +2,11 @@ var _isBaseControllerStateInited = false;
 var _isBaseControllerListenersInited = false;
 var _lastHistoryState = history.state;
 
+var _lastScreenClass = null;
+if (_lastHistoryState) {
+	_lastScreenClass = history.state.screenClass;
+}
+
 var baseController = function(client) {
 	this.client = client;
 
@@ -34,6 +39,7 @@ baseController.prototype._initConstants = function() {
 	this.BROWSE_ROOMS_SCREEN_CLASS = '.anime-cb-screen-browse-rooms';
 	this.LOBBY_SCREEN_CLASS = '.anime-cb-screen-lobby';
 	this.GAME_SCREEN_CLASS = '.anime-cb-screen-game';
+	this.MATCHMAKING_SCREEN_CLASS = '.anime-cb-screen-matchmaking';
 
 	this.USER_MESSAGE_CLASS = '.user-message';
 
@@ -77,6 +83,7 @@ baseController.prototype._initListeners = function() {
 	window.addEventListener('popstate', function(e) {
 	  var stateObj = e.state;
 
+	  _lastScreenClass = _lastHistoryState.screenClass;
 	  if (history.state) {
 			console.log('History popstate: ', stateObj.screenClass);
 		}
@@ -153,13 +160,9 @@ baseController.prototype.postSwitchScreenHook = function(screenClass) {
 		_self.client.roomController.postSwitchScreenHook(screenClass);
 	}
 
-	if (_self.client.gameController) {
-		window.removeEventListener("beforeunload", _self.client.gameController.beforeUnload);
-		if (screenClass != _self.GAME_SCREEN_CLASS) {
-			_self.client.gameController.resetGameState();
-		}
-	} else if (_self.client.generalClient) {
-		window.removeEventListener("beforeunload", _self.beforeUnload);
+	window.removeEventListener("beforeunload", _self.client.gameController.beforeUnload);
+	if (screenClass != _self.GAME_SCREEN_CLASS) {
+		_self.client.gameController.resetGameState();
 	}
 };
 
@@ -314,6 +317,7 @@ baseController.prototype.processChangeScreen = function(input) {
 	var stateObj = { screenClass: screenClass };
 
 	if (history.state) {
+		_lastScreenClass = history.state.screenClass;
 		console.log('History state: ', history.state.screenClass);
 	}
 

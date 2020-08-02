@@ -1,0 +1,28 @@
+<div class="anime-cb-screen-matchmaking anime-cb-screen">
+	<div class="center-screen">
+		<div class="anime-cb-title-page">
+			<h1>Matchmaking</h1>
+		</div>
+		<div class="user-message"></div>
+		<h2 class="anime-cb-players-matchmaking"></h2>
+		<h2 class="anime-cb-waiting-players matchmaking">Searching for players<span class="dots"><span>.</span><span>.</span><span>.</span></span></h2>
+		<h2 class="anime-cb-matchmaking-match-found">Match found, starting game in: <span class="anime-cb-matchmaking-countdown"></span></h2>
+		<form id="anime-cb-form-matchmaking" class="anime-cb-form" action="#">
+			<div class="anime-cb-box anime-cb-box-matchmaking">
+			  <div class="form-group">
+			    <label for="board_id">Board:</label>
+			    <select id="board_id" name="board_id" class="selectpicker form-control">
+			    	{{#each boards}}
+				  		<option value="{{id}}" >{{name}}</option>
+				 	{{/each}}
+				</select>
+			    <div class="errors"></div>
+			  </div>
+			  <button id="anime-cb-submit-matchmaking" type="submit" class="btn btn-default">Matchmake</button>
+			</div>
+		</form>
+		<div class="anime-cb-screen_footer">
+			<button type="button" class="btn btn-primary anime-cb-button anime-cb-btn-main-menu">Back to Main Menu</button>
+		</div>
+	</div>
+</div>

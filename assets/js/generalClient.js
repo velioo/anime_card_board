@@ -10,35 +10,15 @@ generalClient.prototype.clientConnectToServer = function() {
     "reconnectionDelay": 1000,
     "reconnectionDelayMax" : 1500,
     "reconnectionAttempts": Infinity,
+    "forceNew":true,
   });
 
-  //When we connect, we are not 'connected' until we have a server id
-  //and are placed in a game by the server. The server sends us a message for that.
-
-  // this.socket.on('connect', function(){
-  //     this.players.self.state = 'connecting';
-  // }.bind(this));
-
-	// this.socket.on('signUp', this.processSignUpResponse.bind(this));
-	// this.socket.on('login', this.processLoginResponse.bind(this));
- 	this.socket.on('serverError', this.processServerSocketError.bind(this));
-
-  //Sent when we are disconnected (network, server down, etc)
-  this.socket.on('disconnect', this.processDisconnect.bind(this));
-  this.socket.on('leaveRoom', this.processLeaveRoom.bind(this));
+  this.socket.on('matchmake', this.processMatchmake.bind(this));
   this.socket.on('joinRoom', this.processJoinRoom.bind(this));
+  this.socket.on('leaveRoom', this.processLeaveRoom.bind(this));
   this.socket.on('reconnect', this.sendServerReconnect.bind(this));
-      //Sent each tick of the server simulation. This is our authoritive update
-  // this.socket.on('onserverupdate', this.client_onserverupdate_recieved.bind(this));
-      //Handle when we connect to the server, showing state and storing id's.
-  // this.socket.on('onconnected', this.client_onconnected.bind(this));
-      //On error we just show that we are not connected for now. Can print the data.
-  // this.socket.on('error', this.client_ondisconnect.bind(this));
-      //On message from the server, we parse the commands and send it to the handlers
-  // this.socket.on('message', this.client_onnetmessage.bind(this));
-
-
-	// this.socket.emit('signUp', { username: "velioo", password: "12345678", email: "velioocs@mail.bg", conf_password: "12345678" });
+  this.socket.on('disconnect', this.processDisconnect.bind(this));
+ 	this.socket.on('serverError', this.processServerSocketError.bind(this));
 };
 
 generalClient.prototype.sendServerReconnect = function () {
@@ -108,6 +88,8 @@ generalClient.prototype.sendLeaveRoomRequest = function(_data) {
   _self.roomController._roomId = null;
   _self.roomController._user2Id = null;
   _self.roomController._inGame = false;
+  _self.roomController._matchmaking = false;
+  clearInterval(_self.roomController.matchmakingStartGameCountdownInterval);
 
 	this.socket.emit('leaveRoom', _data);
 };
@@ -157,6 +139,30 @@ generalClient.prototype.processJoinRoom = function (_data) {
   }
 };
 
+generalClient.prototype.matchmake = function (_data) {
+ logger.info('matchmake');
+
+  var _self = this;
+
+  _self.socket.emit('matchmake', _data);
+};
+
+generalClient.prototype.processMatchmake = function (_data) {
+ logger.info('processMatchmake');
+
+  var _self = this;
+
+  _self.roomController.processMatchmake(_data);
+};
+
+generalClient.prototype.removeFromMatchmaking = function () {
+ logger.info('removeFromMatchmaking');
+
+  var _self = this;
+
+  _self.socket.emit('removeFromMatchmaking');
+};
+
 generalClient.prototype.startGame = function(_data) {
   logger.info('startGame');
   console.log('START GAME');
@@ -173,10 +179,20 @@ generalClient.prototype.processServerSocketError = function(_data) {
 
 generalClient.prototype.processDisconnect = function(_data) {
 	logger.info('processDisconnect');
+  console.log('DISCONNECT');
 
 	var _self = this;
 
-  // _self.clientConnectToServer();
+  if (_self.roomController._matchmaking) {
+    var values = {};
+    _self.roomController.$matchmakingInputs.each(function() {
+        values[this.name] = $(this).val();
+    });
+
+    _self.matchmake(values);
+  }
+
+  _self.socket.open();
   _self.socket.emit('player-reconnect');
 };
 

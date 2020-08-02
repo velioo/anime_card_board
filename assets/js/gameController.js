@@ -322,6 +322,7 @@ gameController.prototype.processStartGameResponse = function (data) {
 			_self.hideAllSpinner();
 			_self.hideEventsInfo(null, 2000);
 			_self.drawStartCards();
+			_self.client.generalClient.roomController._matchmaking = false;
 		}
 	}, 500);
 
@@ -1357,6 +1358,7 @@ gameController.prototype.disableMainPhaseActions = function () {
 	var _self = this;
 
 	$(_self.CARDS_IN_HAND_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_YOU_CLASS).off("click");
+	$(_self.CARDS_IN_HAND_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_YOU_CLASS).removeAttr("data-tooltip");
 	$(_self.PHASE_ROLL_ID).off("click");
 	$(_self.PHASE_ROLL_ID).removeClass("selectable");
 	_self.disableContinuousCardOnClickListener();
@@ -2898,7 +2900,7 @@ gameController.prototype.canActivateCard = function (card) {
 	}
 
   if (cardEffect.effect == "copySpecialSpacesUpTo") {
-  	var availableSpaces = cardEffect.effectValue;
+  	var availableSpaces = 0;
 	  var moveBoardForward = true;
 	  if (_self._yourUserId == _self._roomData.player2Id) {
 	  	moveBoardForward = false;
@@ -2922,8 +2924,8 @@ gameController.prototype.canActivateCard = function (card) {
 		  rowIndex = boardPath[currBoardIndex][0];
 		  columnIndex = boardPath[currBoardIndex][1];
 
-		  if (boardMatrix[rowIndex][columnIndex] > 0 && boardMatrix[rowIndex][columnIndex] != 1) {
-		  	availableSpaces--;
+		  if (boardMatrix[rowIndex][columnIndex] > 1) {
+		  	availableSpaces++;
 			}
 		}
 

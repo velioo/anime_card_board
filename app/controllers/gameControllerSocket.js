@@ -68,12 +68,15 @@ const self = module.exports = {
         player2Id: queryStatus.rows[0].player2_id,
       };
 
+      let roomSettings = JSON.parse(queryStatus.rows[0].settings_json);
+      assert(roomSettings.board_id);
+
       let queryStatusBoards = await pg.pool.query(`
 
         SELECT * FROM boards
         WHERE id = $1
 
-      `, [ ctx.data.boardId || 1 ]);
+      `, [ roomSettings.board_id ]);
 
       assert(queryStatusBoards.rows.length == 1);
 

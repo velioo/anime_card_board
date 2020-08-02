@@ -8,6 +8,7 @@
 		{{/if}}
 		<div class="btn-group-vertical anime-cb-btn-group">
 		{{#if session.isUserLoggedIn}}
+			<button type="button" class="btn btn-primary anime-cb-button logged-in anime-cb-btn-matchmaking">Matchmaking</button>
 			<button type="button" class="btn btn-primary anime-cb-button logged-in anime-cb-btn-create-room">Create Room</button>
 		    <button type="button" class="btn btn-primary anime-cb-button logged-in anime-cb-btn-browse-rooms">Browse Rooms</button>
 		    <!-- <button type="button" class="btn btn-primary anime-cb-button logged-in">Settings</button> -->
@@ -16,6 +17,7 @@
 		    <button type="button" class="btn btn-primary anime-cb-button logged-out anime-cb-btn-sign-up" style="display: none;">Sign Up</button>
 		    <button type="button" class="btn btn-primary anime-cb-button logged-out anime-cb-btn-login" style="display: none;">Login</button>
 		{{else}}
+			<button type="button" class="btn btn-primary anime-cb-button logged-in anime-cb-btn-matchmaking" style="display: none;">Matchmaking</button>
 			<button type="button" class="btn btn-primary anime-cb-button logged-in anime-cb-btn-create-room" style="display: none;">Create Room</button>
 		    <button type="button" class="btn btn-primary anime-cb-button logged-in anime-cb-btn-browse-rooms" style="display: none;">Browse Rooms</button>
 		    <!-- <button type="button" class="btn btn-primary anime-cb-button logged-in" style="display: none;">Settings</button> -->

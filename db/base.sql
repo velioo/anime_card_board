@@ -38,6 +38,8 @@ CREATE TABLE "rooms" (
   "name" character varying(20) NOT NULL UNIQUE,
   "player1_id" integer NOT NULL REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE UNIQUE,
   "player2_id" integer REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE UNIQUE,
+  "settings_json" TEXT NOT NULL DEFAULT '{}',
+  "is_matchmade" boolean NOT NULL,
   "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updated_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id)
@@ -45,6 +47,16 @@ CREATE TABLE "rooms" (
 
 GRANT ALL ON rooms TO velioo;
 GRANT ALL ON rooms_id_seq TO velioo;
+
+CREATE TABLE "matchmaking" (
+  "id" serial NOT NULL,
+  "user_id" integer NOT NULL REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE UNIQUE,
+  "settings_json" TEXT NOT NULL DEFAULT '{}',
+  PRIMARY KEY (id)
+);
+
+GRANT ALL ON matchmaking TO velioo;
+GRANT ALL ON matchmaking_id_seq TO velioo;
 
 CREATE TRIGGER update_room_timestamp BEFORE UPDATE ON rooms FOR EACH ROW EXECUTE PROCEDURE update_timestamp();
 
@@ -60,6 +72,7 @@ INSERT INTO gameplay_statuses (id, name) VALUES (1, 'In progress'), (2, 'Finishe
 
 CREATE TABLE "boards" (
   "id" serial NOT NULL,
+  "name" TEXT NOT NULL,
   "board_matrix_json" text NOT NULL,
   "board_data_json" text NOT NULL,
   "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -67,9 +80,12 @@ CREATE TABLE "boards" (
   PRIMARY KEY (id)
 );
 
-INSERT INTO boards (id, board_matrix_json, board_data_json) VALUES (1,
-'[[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[1,1,1,0,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,0,0,0,1,1,2,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]',
+INSERT INTO boards (id, name, board_matrix_json, board_data_json) VALUES (1, 'Test Board',
+'[[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,1,5,6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[1,1,2,0,7,0,1,12,1,14,1,9,8,1,6,1,4,1,2,1],[0,0,0,0,1,9,10,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]',
 '{"player1StartBoardIndex":0,"player2StartBoardIndex":23,"boardPath":[[4,0],[4,1],[4,2],[3,2],[3,3],[3,4],[4,4],[5,4],[5,5],[5,6],[4,6],[4,7],[4,8],[4,9],[4,10],[4,11],[4,12],[4,13],[4,14],[4,15],[4,16],[4,17],[4,18],[4,19]]}');
+INSERT INTO boards (id, name, board_matrix_json, board_data_json) VALUES (2, 'The Snake',
+'[[0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],[1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0],[1,0,0,0,0,0,0,1,1,1,1,1,1,1,0,1,1,1,1,0],[1,1,1,1,1,1,0,1,0,0,0,0,0,1,1,1,0,0,0,0],[0,0,0,0,0,1,0,1,0,1,1,1,1,0,0,0,1,1,1,1],[1,1,1,1,1,1,0,1,1,1,0,0,1,1,1,0,1,0,0,1],[1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,1,1],[1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,0,1,0,1,0],[0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,1,0,1,0],[1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1]]',
+'{"player1StartBoardIndex":0,"player2StartBoardIndex":109,"boardPath":[[9,0],[9,1],[9,2],[9,3],[8,3],[7,3],[7,2],[7,1],[7,0],[6,0],[5,0],[5,1],[5,2],[5,3],[5,4],[5,5],[4,5],[3,5],[3,4],[3,3],[3,2],[3,1],[3,0],[2,0],[1,0],[1,1],[1,2],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[0,8],[0,9],[0,10],[0,11],[0,12],[0,13],[0,14],[0,15],[0,16],[0,17],[0,18],[1,18],[2,18],[2,17],[2,16],[2,15],[3,15],[3,14],[3,13],[2,13],[2,12],[2,11],[2,10],[2,9],[2,8],[2,7],[3,7],[4,7],[5,7],[5,8],[5,9],[4,9],[4,10],[4,11],[4,12],[5,12],[5,13],[5,14],[6,14],[7,14],[7,13],[7,12],[7,11],[7,10],[7,9],[7,8],[7,7],[7,6],[7,5],[8,5],[9,5],[9,6],[9,7],[9,8],[9,9],[9,10],[9,11],[9,12],[9,13],[9,14],[9,15],[9,16],[8,16],[7,16],[6,16],[5,16],[4,16],[4,17],[4,18],[4,19],[5,19],[6,19],[6,18],[7,18],[8,18],[9,18],[9,19]]}');
 
 GRANT ALL ON boards TO velioo;
 GRANT ALL ON boards_id_seq TO velioo;
@@ -132,10 +148,10 @@ INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) V
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) VALUES (5, 'Lucy', 'Move 1 space forward or backward',
 'Lucy.png', 'common', '{"effect": "moveSpacesForwardOrBackwardUpTo", "effectValue": 1, "autoEffect":false, "continuous": false}', 1);
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) VALUES (6, 'Kakashi',
-'Choose a special board space up to 4 spaces forward and apply its effect for yourself. You can use this effect once per turn for maximum 3 turns in total. Each use of this effect consumes 1 Energy.',
+'Choose a special board space up to 4, 8 or 12 spaces forward according to the number of turns this card has been on the field (1, 2 or 3) and apply its effect for yourself. You can use this effect once per turn for maximum 3 turns in total. Each use of this effect consumes 1, 2 or 3 Energy according to the number of turns this card has been on the field (1, 2 or 3).',
 'Kakashi.jpg', 'epic',
-'{"autoEffect":false, "continuous": true, "effectChargesCount": 3, "maxUsesPerTurn": 1, "continuousEffectType": "onClick", "energyPerUse": 1, "effect": "copySpecialSpacesUpTo", "effectValue": 4}', 4);
+'{"autoEffect":false, "continuous": true, "effectChargesCount": 3, "maxUsesPerTurn": 1, "continuousEffectType": "onClick", "energyPerUse": 1, "effect": "copySpecialSpacesUpTo", "effectValue": 3, "energyPerUseIncrement": "+1", "effectValueIncrement": "+4"}', 3);
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) VALUES (7, 'Lelouch',
-'Move your opponent up to 3 spaces forward or backward. You can use this effect once per turn for maximum 3 turns in total. Each use of this effect consumes 2 Energy.',
+'Move your opponent up to 2, 4 or 8 spaces forward or backward according to the number of turns this card has been on the field (1, 2 or 3). You can use this effect once per turn for maximum 3 turns in total. Each use of this effect consumes 1, 2 or 3 Energy according to the number of turns this card has been on the field (1, 2 or 3).',
 'Lelouch.webp', 'epic',
-'{"autoEffect":false, "continuous": true, "effectChargesCount": 3, "maxUsesPerTurn": 1, "continuousEffectType": "onClick", "energyPerUse": 2, "effect": "moveSpacesForwardOrBackwardUpToEnemy", "effectValue": 3}', 4);
+'{"autoEffect":false, "continuous": true, "effectChargesCount": 3, "maxUsesPerTurn": 1, "continuousEffectType": "onClick", "energyPerUse": 1, "effect": "moveSpacesForwardOrBackwardUpToEnemy", "effectValue": 2, "energyPerUseIncrement": "+1", "effectValueIncrement": "x2"}', 3);
