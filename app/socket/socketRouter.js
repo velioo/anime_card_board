@@ -150,6 +150,7 @@ const self = module.exports = {
 			  		errors: ctx_c.errors,
 				  	isSuccessful: isSuccessful,
 				  	gameplayData: ctx_c.gameplayData,
+				  	cardsInHandArr: ctx_c.cardsInHandArrPlayer1,
 				  	roomData: ctx_c.roomData,
 				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 				  });
@@ -158,17 +159,18 @@ const self = module.exports = {
 			  		errors: ctx_c.errors,
 				  	isSuccessful: isSuccessful,
 				  	gameplayData: ctx_c.gameplayData,
+				  	cardsInHandArr: ctx_c.cardsInHandArrPlayer2,
 				  	roomData: ctx_c.roomData,
 				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 				  });
 		  	} else {
-			  	socket.broadcast('startGame', {
-			  		errors: ctx_c.errors,
-				  	isSuccessful: isSuccessful,
-				  	gameplayData: ctx_c.gameplayData,
-				  	roomData: ctx_c.roomData,
-				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
-				  });
+			  	// socket.broadcast('startGame', {
+			  	// 	errors: ctx_c.errors,
+				  // 	isSuccessful: isSuccessful,
+				  // 	gameplayData: ctx_c.gameplayData,
+				  // 	roomData: ctx_c.roomData,
+				  // 	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  // });
 		  	}
 	  	} catch (err) {
 	  		socket.emit('serverError', err);
@@ -201,6 +203,7 @@ const self = module.exports = {
 			  		errors: ctx_c.errors,
 				  	isSuccessful: isSuccessful,
 				  	gameplayData: ctx_c.gameplayData,
+				  	cardsInHandArr: ctx_c.cardsInHandArrPlayer1,
 				  	roomData: ctx_c.roomData,
 				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 				  });
@@ -209,17 +212,18 @@ const self = module.exports = {
 			  		errors: ctx_c.errors,
 				  	isSuccessful: isSuccessful,
 				  	gameplayData: ctx_c.gameplayData,
+				  	cardsInHandArr: ctx_c.cardsInHandArrPlayer2,
 				  	roomData: ctx_c.roomData,
 				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 				  });
 		  	} else {
-			  	socket.broadcast('drawCard', {
-			  		errors: ctx_c.errors,
-				  	isSuccessful: isSuccessful,
-				  	gameplayData: ctx_c.gameplayData,
-				  	roomData: ctx_c.roomData,
-				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
-				  });
+			  	// socket.broadcast('drawCard', {
+			  	// 	errors: ctx_c.errors,
+				  // 	isSuccessful: isSuccessful,
+				  // 	gameplayData: ctx_c.gameplayData,
+				  // 	roomData: ctx_c.roomData,
+				  // 	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  // });
 		  	}
 	  	} catch (err) {
 	  		socket.emit('serverError', err);
@@ -244,6 +248,7 @@ const self = module.exports = {
 			  		errors: ctx_c.errors,
 				  	isSuccessful: isSuccessful,
 				  	gameplayData: ctx_c.gameplayData,
+				  	cardsInHandArr: ctx_c.cardsInHandArrPlayer1,
 				  	roomData: ctx_c.roomData,
 				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 				  });
@@ -252,17 +257,18 @@ const self = module.exports = {
 			  		errors: ctx_c.errors,
 				  	isSuccessful: isSuccessful,
 				  	gameplayData: ctx_c.gameplayData,
+				  	cardsInHandArr: ctx_c.cardsInHandArrPlayer2,
 				  	roomData: ctx_c.roomData,
 				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 				  });
 		  	} else {
-					socket.broadcast('discardCard', {
-			  		errors: ctx_c.errors,
-				  	isSuccessful: isSuccessful,
-				  	gameplayData: ctx_c.gameplayData,
-				  	roomData: ctx_c.roomData,
-				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
-				  });
+					// socket.broadcast('discardCard', {
+			  // 		errors: ctx_c.errors,
+				 //  	isSuccessful: isSuccessful,
+				 //  	gameplayData: ctx_c.gameplayData,
+				 //  	roomData: ctx_c.roomData,
+				 //  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				 //  });
 		  	}
 	  	} catch (err) {
 	  		socket.emit('serverError', err);
@@ -289,6 +295,7 @@ const self = module.exports = {
 			  		errors: ctx_c.errors,
 				  	isSuccessful: isSuccessful,
 				  	gameplayData: ctx_c.gameplayData,
+				  	cardsInHandArr: ctx_c.cardsInHandArrPlayer1,
 				  	roomData: ctx_c.roomData,
 				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 				  });
@@ -297,17 +304,18 @@ const self = module.exports = {
 			  		errors: ctx_c.errors,
 				  	isSuccessful: isSuccessful,
 				  	gameplayData: ctx_c.gameplayData,
+				  	cardsInHandArr: ctx_c.cardsInHandArrPlayer2,
 				  	roomData: ctx_c.roomData,
 				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 				  });
 		  	} else {
-					socket.broadcast('drawPhase', {
-			  		errors: ctx_c.errors,
-				  	isSuccessful: isSuccessful,
-				  	gameplayData: ctx_c.gameplayData,
-				  	roomData: ctx_c.roomData,
-				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
-				  });
+					// socket.broadcast('drawPhase', {
+			  // 		errors: ctx_c.errors,
+				 //  	isSuccessful: isSuccessful,
+				 //  	gameplayData: ctx_c.gameplayData,
+				 //  	roomData: ctx_c.roomData,
+				 //  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				 //  });
 		  	}
 	  	} catch (err) {
 	  		socket.emit('serverError', err);
@@ -332,6 +340,7 @@ const self = module.exports = {
 			  		errors: ctx_c.errors,
 				  	isSuccessful: isSuccessful,
 				  	gameplayData: ctx_c.gameplayData,
+				  	cardsInHandArr: ctx_c.cardsInHandArrPlayer1,
 				  	roomData: ctx_c.roomData,
 				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 				  });
@@ -340,17 +349,18 @@ const self = module.exports = {
 			  		errors: ctx_c.errors,
 				  	isSuccessful: isSuccessful,
 				  	gameplayData: ctx_c.gameplayData,
+				  	cardsInHandArr: ctx_c.cardsInHandArrPlayer2,
 				  	roomData: ctx_c.roomData,
 				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 				  });
 		  	} else {
-					socket.broadcast('standByPhase', {
-			  		errors: ctx_c.errors,
-				  	isSuccessful: isSuccessful,
-				  	gameplayData: ctx_c.gameplayData,
-				  	roomData: ctx_c.roomData,
-				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
-				  });
+					// socket.broadcast('standByPhase', {
+			  // 		errors: ctx_c.errors,
+				 //  	isSuccessful: isSuccessful,
+				 //  	gameplayData: ctx_c.gameplayData,
+				 //  	roomData: ctx_c.roomData,
+				 //  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				 //  });
 		  	}
 	  	} catch (err) {
 	  		socket.emit('serverError', err);
@@ -375,6 +385,7 @@ const self = module.exports = {
 			  		errors: ctx_c.errors,
 				  	isSuccessful: isSuccessful,
 				  	gameplayData: ctx_c.gameplayData,
+				  	cardsInHandArr: ctx_c.cardsInHandArrPlayer1,
 				  	roomData: ctx_c.roomData,
 				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 				  });
@@ -383,17 +394,18 @@ const self = module.exports = {
 			  		errors: ctx_c.errors,
 				  	isSuccessful: isSuccessful,
 				  	gameplayData: ctx_c.gameplayData,
+				  	cardsInHandArr: ctx_c.cardsInHandArrPlayer2,
 				  	roomData: ctx_c.roomData,
 				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 				  });
 		  	} else {
-					socket.broadcast('mainPhase', {
-			  		errors: ctx_c.errors,
-				  	isSuccessful: isSuccessful,
-				  	gameplayData: ctx_c.gameplayData,
-				  	roomData: ctx_c.roomData,
-				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
-				  });
+					// socket.broadcast('mainPhase', {
+			  // 		errors: ctx_c.errors,
+				 //  	isSuccessful: isSuccessful,
+				 //  	gameplayData: ctx_c.gameplayData,
+				 //  	roomData: ctx_c.roomData,
+				 //  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				 //  });
 		  	}
 	  	} catch (err) {
 	  		socket.emit('serverError', err);
@@ -418,6 +430,7 @@ const self = module.exports = {
 			  		errors: ctx_c.errors,
 				  	isSuccessful: isSuccessful,
 				  	gameplayData: ctx_c.gameplayData,
+				  	cardsInHandArr: ctx_c.cardsInHandArrPlayer1,
 				  	roomData: ctx_c.roomData,
 				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 				  });
@@ -426,17 +439,18 @@ const self = module.exports = {
 			  		errors: ctx_c.errors,
 				  	isSuccessful: isSuccessful,
 				  	gameplayData: ctx_c.gameplayData,
+				  	cardsInHandArr: ctx_c.cardsInHandArrPlayer2,
 				  	roomData: ctx_c.roomData,
 				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 				  });
 		  	} else {
-					socket.broadcast('summonCard', {
-			  		errors: ctx_c.errors,
-				  	isSuccessful: isSuccessful,
-				  	gameplayData: ctx_c.gameplayData,
-				  	roomData: ctx_c.roomData,
-				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
-				  });
+					// socket.broadcast('summonCard', {
+			  // 		errors: ctx_c.errors,
+				 //  	isSuccessful: isSuccessful,
+				 //  	gameplayData: ctx_c.gameplayData,
+				 //  	roomData: ctx_c.roomData,
+				 //  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				 //  });
 		  	}
 	  	} catch (err) {
 	  		socket.emit('serverError', err);
@@ -461,6 +475,7 @@ const self = module.exports = {
 			  		errors: ctx_c.errors,
 				  	isSuccessful: isSuccessful,
 				  	gameplayData: ctx_c.gameplayData,
+				  	cardsInHandArr: ctx_c.cardsInHandArrPlayer1,
 				  	roomData: ctx_c.roomData,
 				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 				  });
@@ -469,17 +484,18 @@ const self = module.exports = {
 			  		errors: ctx_c.errors,
 				  	isSuccessful: isSuccessful,
 				  	gameplayData: ctx_c.gameplayData,
+				  	cardsInHandArr: ctx_c.cardsInHandArrPlayer2,
 				  	roomData: ctx_c.roomData,
 				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 				  });
 		  	} else {
-					socket.broadcast('finishCardEffect', {
-			  		errors: ctx_c.errors,
-				  	isSuccessful: isSuccessful,
-				  	gameplayData: ctx_c.gameplayData,
-				  	roomData: ctx_c.roomData,
-				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
-				  });
+					// socket.broadcast('finishCardEffect', {
+			  // 		errors: ctx_c.errors,
+				 //  	isSuccessful: isSuccessful,
+				 //  	gameplayData: ctx_c.gameplayData,
+				 //  	roomData: ctx_c.roomData,
+				 //  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				 //  });
 		  	}
 	  	} catch (err) {
 	  		socket.emit('serverError', err);
@@ -504,6 +520,7 @@ const self = module.exports = {
 			  		errors: ctx_c.errors,
 				  	isSuccessful: isSuccessful,
 				  	gameplayData: ctx_c.gameplayData,
+				  	cardsInHandArr: ctx_c.cardsInHandArrPlayer1,
 				  	roomData: ctx_c.roomData,
 				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 				  });
@@ -512,17 +529,18 @@ const self = module.exports = {
 			  		errors: ctx_c.errors,
 				  	isSuccessful: isSuccessful,
 				  	gameplayData: ctx_c.gameplayData,
+				  	cardsInHandArr: ctx_c.cardsInHandArrPlayer2,
 				  	roomData: ctx_c.roomData,
 				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 				  });
 		  	} else {
-					socket.broadcast('activateCardEffect', {
-			  		errors: ctx_c.errors,
-				  	isSuccessful: isSuccessful,
-				  	gameplayData: ctx_c.gameplayData,
-				  	roomData: ctx_c.roomData,
-				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
-				  });
+					// socket.broadcast('activateCardEffect', {
+			  // 		errors: ctx_c.errors,
+				 //  	isSuccessful: isSuccessful,
+				 //  	gameplayData: ctx_c.gameplayData,
+				 //  	roomData: ctx_c.roomData,
+				 //  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				 //  });
 		  	}
 	  	} catch (err) {
 	  		socket.emit('serverError', err);
@@ -547,6 +565,7 @@ const self = module.exports = {
 			  		errors: ctx_c.errors,
 				  	isSuccessful: isSuccessful,
 				  	gameplayData: ctx_c.gameplayData,
+				  	cardsInHandArr: ctx_c.cardsInHandArrPlayer1,
 				  	roomData: ctx_c.roomData,
 				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 				  });
@@ -555,17 +574,18 @@ const self = module.exports = {
 			  		errors: ctx_c.errors,
 				  	isSuccessful: isSuccessful,
 				  	gameplayData: ctx_c.gameplayData,
+				  	cardsInHandArr: ctx_c.cardsInHandArrPlayer2,
 				  	roomData: ctx_c.roomData,
 				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 				  });
 		  	} else {
-					socket.broadcast('finishCardEffectContinuous', {
-			  		errors: ctx_c.errors,
-				  	isSuccessful: isSuccessful,
-				  	gameplayData: ctx_c.gameplayData,
-				  	roomData: ctx_c.roomData,
-				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
-				  });
+					// socket.broadcast('finishCardEffectContinuous', {
+			  // 		errors: ctx_c.errors,
+				 //  	isSuccessful: isSuccessful,
+				 //  	gameplayData: ctx_c.gameplayData,
+				 //  	roomData: ctx_c.roomData,
+				 //  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				 //  });
 		  	}
 	  	} catch (err) {
 	  		socket.emit('serverError', err);
@@ -590,6 +610,7 @@ const self = module.exports = {
 			  		errors: ctx_c.errors,
 				  	isSuccessful: isSuccessful,
 				  	gameplayData: ctx_c.gameplayData,
+				  	cardsInHandArr: ctx_c.cardsInHandArrPlayer1,
 				  	roomData: ctx_c.roomData,
 				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 				  });
@@ -598,17 +619,18 @@ const self = module.exports = {
 			  		errors: ctx_c.errors,
 				  	isSuccessful: isSuccessful,
 				  	gameplayData: ctx_c.gameplayData,
+				  	cardsInHandArr: ctx_c.cardsInHandArrPlayer2,
 				  	roomData: ctx_c.roomData,
 				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 				  });
 		  	} else {
-					socket.broadcast('rollPhase', {
-			  		errors: ctx_c.errors,
-				  	isSuccessful: isSuccessful,
-				  	gameplayData: ctx_c.gameplayData,
-				  	roomData: ctx_c.roomData,
-				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
-				  });
+					// socket.broadcast('rollPhase', {
+			  // 		errors: ctx_c.errors,
+				 //  	isSuccessful: isSuccessful,
+				 //  	gameplayData: ctx_c.gameplayData,
+				 //  	roomData: ctx_c.roomData,
+				 //  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				 //  });
 		  	}
 	  	} catch (err) {
 	  		socket.emit('serverError', err);
@@ -633,6 +655,7 @@ const self = module.exports = {
 			  		errors: ctx_c.errors,
 				  	isSuccessful: isSuccessful,
 				  	gameplayData: ctx_c.gameplayData,
+				  	cardsInHandArr: ctx_c.cardsInHandArrPlayer1,
 				  	roomData: ctx_c.roomData,
 				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 				  });
@@ -641,17 +664,18 @@ const self = module.exports = {
 			  		errors: ctx_c.errors,
 				  	isSuccessful: isSuccessful,
 				  	gameplayData: ctx_c.gameplayData,
+				  	cardsInHandArr: ctx_c.cardsInHandArrPlayer2,
 				  	roomData: ctx_c.roomData,
 				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 				  });
 		  	} else {
-					socket.broadcast('rollDiceBoard', {
-			  		errors: ctx_c.errors,
-				  	isSuccessful: isSuccessful,
-				  	gameplayData: ctx_c.gameplayData,
-				  	roomData: ctx_c.roomData,
-				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
-				  });
+					// socket.broadcast('rollDiceBoard', {
+			  // 		errors: ctx_c.errors,
+				 //  	isSuccessful: isSuccessful,
+				 //  	gameplayData: ctx_c.gameplayData,
+				 //  	roomData: ctx_c.roomData,
+				 //  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				 //  });
 		  	}
 	  	} catch (err) {
 	  		socket.emit('serverError', err);
@@ -676,6 +700,7 @@ const self = module.exports = {
 			  		errors: ctx_c.errors,
 				  	isSuccessful: isSuccessful,
 				  	gameplayData: ctx_c.gameplayData,
+				  	cardsInHandArr: ctx_c.cardsInHandArrPlayer1,
 				  	roomData: ctx_c.roomData,
 				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 				  });
@@ -684,17 +709,18 @@ const self = module.exports = {
 			  		errors: ctx_c.errors,
 				  	isSuccessful: isSuccessful,
 				  	gameplayData: ctx_c.gameplayData,
+				  	cardsInHandArr: ctx_c.cardsInHandArrPlayer2,
 				  	roomData: ctx_c.roomData,
 				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 				  });
 		  	} else {
-			  	socket.broadcast('endPhase', {
-			  		errors: ctx_c.errors,
-				  	isSuccessful: isSuccessful,
-				  	gameplayData: ctx_c.gameplayData,
-				  	roomData: ctx_c.roomData,
-				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
-				  });
+			  	// socket.broadcast('endPhase', {
+			  	// 	errors: ctx_c.errors,
+				  // 	isSuccessful: isSuccessful,
+				  // 	gameplayData: ctx_c.gameplayData,
+				  // 	roomData: ctx_c.roomData,
+				  // 	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  // });
 		  	}
 	  	} catch (err) {
 	  		socket.emit('serverError', err);

@@ -47,6 +47,7 @@ roomController.prototype.initElements = function() {
 	this._inGame = false;
 	this._user2Id = null;
 	this._matchmaking = null;
+	this._matchFound = false;
 };
 
 roomController.prototype.initListeners = function() {
@@ -173,7 +174,7 @@ roomController.prototype.processGetCurrentRoomDataResponse = function (data) {
 			} else if ($(_self.LOBBY_SCREEN_CLASS).is(':visible')) {
 				window.alert("The host has left the room.");
 				_self.processChangeScreen(this.MAIN_MENU_SCREEN_CLASS);
-			} else if ($(_self.MATCHMAKING_SCREEN_CLASS).is(':visible')) {
+			} else if ($(_self.MATCHMAKING_SCREEN_CLASS).is(':visible') && _self._matchmaking) {
 				window.alert('The other player left matchmaking, please matchmake again.');
 				_self.processChangeScreen(this.MAIN_MENU_SCREEN_CLASS);
 			}
@@ -195,7 +196,7 @@ roomController.prototype.processGetCurrentRoomDataResponse = function (data) {
 				logger.info('Player 2 is no longer in the room, winGameFormally: %o', data);
 				_self._inGame = false;
 				_self.client.gameClient.winGameFormally({ roomId: _self._roomId });
-			} else if (!_self._inGame && $(_self.MATCHMAKING_SCREEN_CLASS).is(':visible')) {
+			} else if (!_self._inGame && $(_self.MATCHMAKING_SCREEN_CLASS).is(':visible') && _self._matchmaking) {
 				window.alert('The other player left matchmaking, please matchmake again.');
 				_self.processChangeScreen(this.MAIN_MENU_SCREEN_CLASS);
 			}
@@ -293,6 +294,7 @@ roomController.prototype.resetRoomState = function () {
 	_self._inGame = false;
 	_self._user2Id = null;
 	_self._matchmaking = false;
+	_self._matchFound = false;
 };
 
 roomController.prototype.processCreateRoomResponse = function(data) {
@@ -488,6 +490,7 @@ roomController.prototype.showMatchmakingSuccess = function(data) {
 	_self.matchmakingCountdownValue = 5;
 	$(_self.MATCHMAKING_COUNTDOWN_CLASS).text(_self.matchmakingCountdownValue);
 	$(_self.MATCHMAKING_MATCH_FOUND).show();
+	_self._matchFound = true;
 
 	_self.matchmakingStartGameCountdownInterval = setInterval(function() {
 		_self.matchmakingCountdownValue--;
@@ -582,8 +585,9 @@ roomController.prototype.postSwitchScreenHook = function (screenClass) {
 		_self._creatingRoom = false;
 	}
 
-	if ((screenClass !== _self.MATCHMAKING_SCREEN_CLASS) && (screenClass !== _self.GAME_SCREEN_CLASS)) {
+	if (screenClass !== _self.GAME_SCREEN_CLASS) {
 		_self._matchmaking = false;
+		_self._matchFound = false;
 		_self.client.removeFromMatchmaking();
 	}
 

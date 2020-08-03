@@ -111,6 +111,10 @@ const self = module.exports = {
           cardDiscarded: null,
           playerIdFinishCard: null,
           cardFinish: null,
+          playerIdActivatedCard: null,
+          cardActivated: null,
+          playerIdFinishCardContinuous: null,
+          cardFinishContinuous: null,
           playerIdWinGame: null,
           playersState: {
             [ctx.roomData.player1Id]: {
@@ -142,7 +146,8 @@ const self = module.exports = {
               moveBackwards: null,
               cardsInGraveyard: [],
               energyPoints: 0,
-              maxEnergyPoints: 5,
+              maxEnergyPoints: 10,
+              energyPerTurnGain: 5,
             },
             [ctx.roomData.player2Id]: {
               name: ctx.roomData.player2Name,
@@ -173,7 +178,8 @@ const self = module.exports = {
               moveBackwards: null,
               cardsInGraveyard: [],
               energyPoints: 0,
-              maxEnergyPoints: 5,
+              maxEnergyPoints: 10,
+              energyPerTurnGain: 5,
             },
           },
         },
@@ -196,6 +202,9 @@ const self = module.exports = {
 
       ctx.sessions[ctx.roomData.player1Id].roomId = ctx.roomData.id;
       ctx.sessions[ctx.roomData.player2Id].roomId = ctx.roomData.id;
+
+      ctx.cardsInHandArrPlayer1 = [];
+      ctx.cardsInHandArrPlayer2 = [];
 
       await pg.pool.query('COMMIT');
     } catch (err) {
@@ -251,6 +260,9 @@ const self = module.exports = {
       queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
         field2: 'room_id', queryArg2: ctx.data.roomId });
 
+      ctx.cardsInHandArrPlayer1 = gameState.playersState[ctx.roomData.player1Id].cardsInHandArr;
+      ctx.cardsInHandArrPlayer2 = gameState.playersState[ctx.roomData.player2Id].cardsInHandArr;
+
       gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
       gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
 
@@ -302,6 +314,9 @@ const self = module.exports = {
 
       queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
         field2: 'room_id', queryArg2: ctx.data.roomId });
+
+      ctx.cardsInHandArrPlayer1 = gameState.playersState[ctx.roomData.player1Id].cardsInHandArr;
+      ctx.cardsInHandArrPlayer2 = gameState.playersState[ctx.roomData.player2Id].cardsInHandArr;
 
       gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
       gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
@@ -355,6 +370,9 @@ const self = module.exports = {
       queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
         field2: 'room_id', queryArg2: ctx.data.roomId });
 
+      ctx.cardsInHandArrPlayer1 = gameState.playersState[ctx.roomData.player1Id].cardsInHandArr;
+      ctx.cardsInHandArrPlayer2 = gameState.playersState[ctx.roomData.player2Id].cardsInHandArr;
+
       gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
       gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
 
@@ -405,6 +423,9 @@ const self = module.exports = {
       queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
         field2: 'room_id', queryArg2: ctx.data.roomId });
 
+      ctx.cardsInHandArrPlayer1 = gameState.playersState[ctx.roomData.player1Id].cardsInHandArr;
+      ctx.cardsInHandArrPlayer2 = gameState.playersState[ctx.roomData.player2Id].cardsInHandArr;
+
       gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
       gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
 
@@ -454,21 +475,13 @@ const self = module.exports = {
         assert(card.cardId != ctx.data.cardId);
       });
 
-      let cardStatus = await utils.selectRowById({ table: 'cards', field: 'id', queryArg: ctx.data.cardId });
-      var cardFromDb = {
-        cardId: cardStatus.rows[0].id,
-        cardName: cardStatus.rows[0].name,
-        cardText: cardStatus.rows[0].description,
-        cardImg: cardStatus.rows[0].image,
-        cardRarity: cardStatus.rows[0].rarity_id,
-        cardEffect: JSON.parse(cardStatus.rows[0].effect_json),
-        cardCost: cardStatus.rows[0].cost,
-      };
+      let cardSelected = playerState.cardsInHandArr[ctx.data.cardIdx];
+      assert(cardSelected && (cardSelected.cardId == ctx.data.cardId));
 
-      assert(playerState.energyPoints >= cardFromDb.cardCost);
-      playerState.energyPoints -= cardFromDb.cardCost;
+      assert(playerState.energyPoints >= cardSelected.cardCost);
+      playerState.energyPoints -= cardSelected.cardCost;
 
-      switch(cardFromDb.cardRarity) {
+      switch(cardSelected.cardRarity) {
         case CARD_RARITIES.COMMON:
           assert(playerState.cardsSummonConstraints.cardsCanSummonCommon);
           playerState.cardsSummonedThisTurnCount.common++;
@@ -486,11 +499,9 @@ const self = module.exports = {
           break;
       }
 
-      let cardSelected = playerState.cardsInHandArr[ctx.data.cardIdx];
-      assert(cardSelected && (cardSelected.cardId == ctx.data.cardId) && (cardFromDb.cardId == cardSelected.cardId));
 
       gameState.cardSummonedIdxInPlayerHand = ctx.data.cardIdx;
-      playerState.cardsOnFieldArr.push(cardFromDb);
+      playerState.cardsOnFieldArr.push(cardSelected);
       gameState.cardSummoned = playerState.cardsOnFieldArr[playerState.cardsOnFieldArr.length - 1];
       playerState.cardsInHandArr.splice(ctx.data.cardIdx, 1);
       playerState.cardsInHand--;
@@ -501,6 +512,9 @@ const self = module.exports = {
 
       queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
         field2: 'room_id', queryArg2: ctx.data.roomId });
+
+      ctx.cardsInHandArrPlayer1 = gameState.playersState[ctx.roomData.player1Id].cardsInHandArr;
+      ctx.cardsInHandArrPlayer2 = gameState.playersState[ctx.roomData.player2Id].cardsInHandArr;
 
       gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
       gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
@@ -551,6 +565,9 @@ const self = module.exports = {
 
       queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
         field2: 'room_id', queryArg2: ctx.data.roomId });
+
+      ctx.cardsInHandArrPlayer1 = gameState.playersState[ctx.roomData.player1Id].cardsInHandArr;
+      ctx.cardsInHandArrPlayer2 = gameState.playersState[ctx.roomData.player2Id].cardsInHandArr;
 
       gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
       gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
@@ -605,6 +622,9 @@ const self = module.exports = {
 
       queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
         field2: 'room_id', queryArg2: ctx.data.roomId });
+
+      ctx.cardsInHandArrPlayer1 = gameState.playersState[ctx.roomData.player1Id].cardsInHandArr;
+      ctx.cardsInHandArrPlayer2 = gameState.playersState[ctx.roomData.player2Id].cardsInHandArr;
 
       gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
       gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
@@ -664,6 +684,9 @@ const self = module.exports = {
       queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
         field2: 'room_id', queryArg2: ctx.data.roomId });
 
+      ctx.cardsInHandArrPlayer1 = gameState.playersState[ctx.roomData.player1Id].cardsInHandArr;
+      ctx.cardsInHandArrPlayer2 = gameState.playersState[ctx.roomData.player2Id].cardsInHandArr;
+
       gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
       gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
 
@@ -713,6 +736,7 @@ const self = module.exports = {
       assert(cardSelected && cardSelected.cardId == ctx.data.cardId);
 
       gameState.cardDiscarded = cardSelected;
+      gameState.cardDiscarded.cardInHandIdx = ctx.data.cardIdx;
       playerState.cardsInHandArr.splice(ctx.data.cardIdx, 1);
       playerState.cardsInHand--;
       gameState.playerIdDiscardedCard = ctx.session.userData.userId;
@@ -724,6 +748,9 @@ const self = module.exports = {
 
       queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
         field2: 'room_id', queryArg2: ctx.data.roomId });
+
+      ctx.cardsInHandArrPlayer1 = gameState.playersState[ctx.roomData.player1Id].cardsInHandArr;
+      ctx.cardsInHandArrPlayer2 = gameState.playersState[ctx.roomData.player2Id].cardsInHandArr;
 
       gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
       gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
@@ -792,6 +819,9 @@ const self = module.exports = {
       queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
         field2: 'room_id', queryArg2: ctx.data.roomId });
 
+      ctx.cardsInHandArrPlayer1 = gameState.playersState[ctx.roomData.player1Id].cardsInHandArr;
+      ctx.cardsInHandArrPlayer2 = gameState.playersState[ctx.roomData.player2Id].cardsInHandArr;
+
       gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
       gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
 
@@ -855,6 +885,9 @@ const self = module.exports = {
       queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
         field2: 'room_id', queryArg2: ctx.data.roomId });
 
+      ctx.cardsInHandArrPlayer1 = gameState.playersState[ctx.roomData.player1Id].cardsInHandArr;
+      ctx.cardsInHandArrPlayer2 = gameState.playersState[ctx.roomData.player2Id].cardsInHandArr;
+
       gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
       gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
 
@@ -917,6 +950,9 @@ const self = module.exports = {
 
       queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
         field2: 'room_id', queryArg2: ctx.data.roomId });
+
+      ctx.cardsInHandArrPlayer1 = gameState.playersState[ctx.roomData.player1Id].cardsInHandArr;
+      ctx.cardsInHandArrPlayer2 = gameState.playersState[ctx.roomData.player2Id].cardsInHandArr;
 
       gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
       gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
@@ -1076,7 +1112,6 @@ let resetTurn = (ctx) => {
   let gameState = ctx.gameplayData.gameState;
 
   for (let playerId in gameState.playersState) {
-    gameState.playersState[playerId].cardsSummonConstraints.energyPoints = 0;
     gameState.playersState[playerId].rollAgain = false;
     gameState.playersState[playerId].moveBackwardsOnNextRoll = null;
     gameState.playersState[playerId].moveBackwards = null;
@@ -1091,6 +1126,8 @@ let resetTurn = (ctx) => {
   gameState.playerIdSummonedCard = null;
   gameState.playerIdDiscardedCard = null;
   gameState.playerIdFinishCard = null;
+  gameState.playerIdActivatedCard = null;
+  gameState.playerIdFinishCardContinuous = null;
   gameState.cardSummoned = null;
   gameState.cardSummonedIdxInPlayerHand = null;
   gameState.rollDiceBoard = {
@@ -1104,6 +1141,8 @@ let resetTurn = (ctx) => {
   };
   gameState.cardDiscarded = null;
   gameState.cardFinish = null;
+  gameState.cardActivated = null;
+  gameState.cardFinishContinuous = null;
 };
 
 let resetTimers = (ctx) => {

@@ -137,21 +137,25 @@ CREATE table "cards" (
 GRANT ALL ON cards TO velioo;
 GRANT ALL ON cards_id_seq TO velioo;
 
-INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) VALUES (1, 'Misaka', 'Go 6 spaces forward', 'Misaka 3.jpg', 'rare',
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) VALUES (1, 'Misaka', 'Go 6 spaces forward.', 'Misaka 3.jpg', 'rare',
 '{"effect": "moveSpacesForward", "effectValue": 6, "autoEffect":true, "continuous": false}', 3);
-INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) VALUES (2, 'Alice', 'Go up to 2 spaces forward',
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) VALUES (2, 'Alice', 'Go up to 2 spaces forward.',
 'Alice.jpg', 'common', '{"effect": "moveSpacesForwardUpTo", "effectValue": 2, "autoEffect": false, "continuous": false}', 2);
-INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) VALUES (3, 'Okabe', 'Move your opponent up to 2 spaces backward',
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) VALUES (3, 'Okabe', 'Move your opponent up to 2 spaces backward.',
 'Okabe.png', 'common', '{"effect": "moveSpacesBackwardsUpToEnemy", "effectValue": 2, "autoEffect":false, "continuous": false}', 2);
-INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) VALUES (4, 'Kagura', 'Move your opponent 6 spaces backward',
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) VALUES (4, 'Kagura', 'Move your opponent 6 spaces backward.',
 'Kagura.jpg', 'rare', '{"effect": "moveSpacesBackwardsEnemy", "effectValue": 6, "autoEffect":true, "continuous": false}', 3);
-INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) VALUES (5, 'Lucy', 'Move 1 space forward or backward',
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) VALUES (5, 'Lucy', 'Move 1 space forward or backward.',
 'Lucy.png', 'common', '{"effect": "moveSpacesForwardOrBackwardUpTo", "effectValue": 1, "autoEffect":false, "continuous": false}', 1);
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) VALUES (6, 'Kakashi',
-'Choose a special board space up to 4, 8 or 12 spaces forward according to the number of turns this card has been on the field (1, 2 or 3) and apply its effect for yourself. You can use this effect once per turn for maximum 3 turns in total. Each use of this effect consumes 1, 2 or 3 Energy according to the number of turns this card has been on the field (1, 2 or 3).',
+'Choose a special board space up to <span style="color:rgb(65, 105, 225); font-weight: 700;">|X|</span> spaces forward and apply its effect for yourself. The number of spaces you can choose up to increases by 4 every time you use this card. You can use this effect once per turn for maximum 3 turns in total. Each use of this effect consumes 1, 2 or 3 Energy according number of times you have used this card (0, 1 or 2).',
 'Kakashi.jpg', 'epic',
-'{"autoEffect":false, "continuous": true, "effectChargesCount": 3, "maxUsesPerTurn": 1, "continuousEffectType": "onClick", "energyPerUse": 1, "effect": "copySpecialSpacesUpTo", "effectValue": 3, "energyPerUseIncrement": "+1", "effectValueIncrement": "+4"}', 3);
+'{"autoEffect":false, "continuous": true, "effectChargesCount": 3, "maxUsesPerTurn": 1, "continuousEffectType": "onClick", "energyPerUse": 1, "effect": "copySpecialSpacesUpTo", "effectValue": 4, "energyPerUseIncrement": "+1", "energyPerUseIncrementCondition": "totalUsedCharges", "energyPerUseIncrementConditionFilter": "every1", "effectValueIncrement": "+4", "effectValueIncrementCondition": "totalUsedCharges", "effectValueIncrementConditionFilter": "every1"}', 3);
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) VALUES (7, 'Lelouch',
-'Move your opponent up to 2, 4 or 8 spaces forward or backward according to the number of turns this card has been on the field (1, 2 or 3). You can use this effect once per turn for maximum 3 turns in total. Each use of this effect consumes 1, 2 or 3 Energy according to the number of turns this card has been on the field (1, 2 or 3).',
+'Move your opponent up to <span style="color:rgb(171, 33, 33); font-weight: 700;">|X|</span> spaces forward or backward. The number of spaces you can choose up to increases x2 every time you use this card. You can use this effect once per turn for maximum 3 turns in total. Each use of this effect consumes 1, 2 or 3 Energy according to the number of times you have used this card (0, 1 or 2).',
 'Lelouch.webp', 'epic',
-'{"autoEffect":false, "continuous": true, "effectChargesCount": 3, "maxUsesPerTurn": 1, "continuousEffectType": "onClick", "energyPerUse": 1, "effect": "moveSpacesForwardOrBackwardUpToEnemy", "effectValue": 2, "energyPerUseIncrement": "+1", "effectValueIncrement": "x2"}', 3);
+'{"autoEffect":false, "continuous": true, "effectChargesCount": 3, "maxUsesPerTurn": 1, "continuousEffectType": "onClick", "energyPerUse": 1, "effect": "moveSpacesForwardOrBackwardUpToEnemy", "effectValue": 2, "energyPerUseIncrement": "+1", "energyPerUseIncrementCondition": "totalUsedCharges", "energyPerUseIncrementConditionFilter": "every1", "effectValueIncrement": "x2", "effectValueIncrementCondition": "totalUsedCharges", "effectValueIncrementConditionFilter": "every1"}', 3);
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) VALUES (8, 'Edward', 'Choose an empty board space up to 10 spaces forward and create a Tier 1 special board space on its location.',
+'Edward.png', 'common', '{"effect": "createSpecialBoardSpaceForwardTier1", "effectValue": 10, "autoEffect": false, "continuous": false}', 2);
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) VALUES (9, 'Saber', 'Go up to <span style="color:rgb(65, 105, 225); font-weight: 700;">|X|</span> spaces forward (for every 5 cards in your graveyard you can go up to 1 more space forward).',
+'Saber.gif', 'rare', '{"effect": "moveSpacesForwardUpTo", "effectValue": 1, "autoEffect": false, "continuous": false, "effectValueIncrement": "+1", "effectValueIncrementCondition": "cardsInYourGraveyard", "effectValueIncrementConditionFilter": "every5"}', 2);

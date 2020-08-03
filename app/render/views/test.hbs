@@ -82,29 +82,32 @@
 		<div class="anime-cb-board-player-label player-enemy">
 			C.C
 		</div>
-		<table class="anime-cb-card-field-charges-status-wrapper player-enemy">
-			<tr>
-				<td class="anime-cb-card-field-charges-status"></td>
-				<td class="anime-cb-card-field-charges-status"></td>
-				<td class="anime-cb-card-field-charges-status"></td>
-				<td class="anime-cb-card-field-charges-status"></td>
-				<td class="anime-cb-card-field-charges-status"></td>
-			</tr>
-		</table>
-		<table class="anime-cb-card-field player-enemy">
-			<tr>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-			</tr>
-		</table>
+		<div class="anime-cb-card-field-wrapper">
+			<div class="anime-cb-card-field-charges-label player-enemy">Charges Left | Energy Cost</div>
+			<table class="anime-cb-card-field-charges-status-wrapper player-enemy">
+				<tr>
+					<td class="anime-cb-card-field-charges-status">1/3 | <span class="anime-cb-card-field-energy-cost">5</span></td>
+					<td class="anime-cb-card-field-charges-status">1/3 | <span class="anime-cb-card-field-energy-cost">5</span></td>
+					<td class="anime-cb-card-field-charges-status">1/3 | <span class="anime-cb-card-field-energy-cost">5</span></td>
+					<td class="anime-cb-card-field-charges-status">2/3 | <span class="anime-cb-card-field-energy-cost">5</span></td>
+					<td class="anime-cb-card-field-charges-status">3/3 | <span class="anime-cb-card-field-energy-cost">5</span></td>
+				</tr>
+			</table>
+			<table class="anime-cb-card-field player-enemy">
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+			</table>
+		</div>
 		<div id="anime-cb-board-wrapper">
 			<table id="anime-cb-board">
 			</table>
 		</div>
-		<div>
+		<div class="anime-cb-card-field-wrapper">
 			<table class="anime-cb-card-field player-you">
 				<tr>
 					<td><img data-tooltip="activateEffect" class="anime-cb-card-onfield hover player-you" data-card-text="This is Saber" data-card-name="Saber" src="imgs/player_cards/Saber.jpg"></td>
@@ -116,13 +119,14 @@
 			</table>
 			<table class="anime-cb-card-field-charges-status-wrapper player-you">
 				<tr>
-					<td class="anime-cb-card-field-charges-status">3/3</td>
-					<td class="anime-cb-card-field-charges-status">2/3</td>
-					<td class="anime-cb-card-field-charges-status">1/3</td>
-					<td class="anime-cb-card-field-charges-status">2/3</td>
-					<td class="anime-cb-card-field-charges-status">3/3</td>
+					<td class="anime-cb-card-field-charges-status">1/3 | <span class="anime-cb-card-field-energy-cost">5</span></td>
+					<td class="anime-cb-card-field-charges-status">2/3 | <span class="anime-cb-card-field-energy-cost">5</span></td>
+					<td class="anime-cb-card-field-charges-status">1/3 | <span class="anime-cb-card-field-energy-cost">5</span></td>
+					<td class="anime-cb-card-field-charges-status">3/3 | <span class="anime-cb-card-field-energy-cost">5</span></td>
+					<td class="anime-cb-card-field-charges-status">1/3 | <span class="anime-cb-card-field-energy-cost">5</span></td>
 				</tr>
 			</table>
+			<div class="anime-cb-card-field-charges-label player-you">Charges Left | Energy Cost</div>
 		</div>
 		<div class="anime-cb-board-player-label player-you">
 			Lelouch
@@ -263,6 +267,18 @@
 		<div class="stickystatus"></div>
 	</div>
 	<img class="anime-cb-card-activate-show">
+	<div class="center-screen anime-cb-choose-card-effect">
+		<div>
+			<img class="anime-cb-choose-card-effect-choice" src="/imgs/roll_again_1.png" style="width: 100px;
+  height: 100px;">
+			<img class="anime-cb-choose-card-effect-choice" src="/imgs/roll_again_back_1.png" style="width: 100px;
+  height: 100px;">
+			<img class="anime-cb-choose-card-effect-choice" src="/imgs/card_draw_1.png" style="width: 100px;
+  height: 100px;">
+			<img class="anime-cb-choose-card-effect-choice" src="/imgs/card_discard_1.png" style="width: 100px;
+  height: 100px;">
+		</div>
+	</div>
 </div>
 </div>
 </div>

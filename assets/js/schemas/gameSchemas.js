@@ -1,6 +1,7 @@
 var cardObjProperties = {
   "cardName": { "type": "string" },
   "cardText": { "type": "string" },
+  "cardTextOriginal": { "type": "string" },
   "cardImg": { "type": "string" },
   "cardId": { "type": "integer" },
   "cardRarity": { "type": "string" },
@@ -157,6 +158,7 @@ var startGameResponse = {
 									},
 									"energyPoints": { "type": "integer" },
 									"maxEnergyPoints": { "type": "integer" },
+									"energyPerTurnGain": { "type": "integer" },
 								},
 							},
 							"additionalProperties": false,
@@ -167,8 +169,12 @@ var startGameResponse = {
 			},
 			"required": [ "gameState" ],
 		},
+		"cardsInHandArr": {
+			"type": "array",
+			"items": cardObj,
+		},
 	},
-	"required": [ "errors", "isSuccessful", "gameplayData", "roomData" ],
+	"required": [ "errors", "isSuccessful", "gameplayData", "roomData", "cardsInHandArr" ],
 };
 
 var drawCardResponse = startGameResponse;

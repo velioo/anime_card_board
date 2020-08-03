@@ -67,6 +67,8 @@ gameController.prototype.initConstants = function() {
 	_self.ENERGY_POINTS_TEXT_CLASS = '.anime-cb-energy-points-text';
 	_self.CARD_FIELD_CHARGES_WRAPPER_CLASS = '.anime-cb-card-field-charges-status-wrapper';
 	_self.CARD_FIELD_CHARGES_CLASS = '.anime-cb-card-field-charges-status';
+	_self.CHOOSE_CARD_EFFECT_CLASS = '.anime-cb-choose-card-effect';
+	_self.CHOOSE_CARD_EFFECT_CHOICE_CLASS = '.anime-cb-choose-card-effect-choice';
 };
 
 gameController.prototype.initElements = function() {
@@ -91,7 +93,7 @@ gameController.prototype.initElements = function() {
 	  ROLL_AGAIN_1: 2,
 	  ROLL_AGAIN_2: 3,
 	  ROLL_AGAIN_3: 4,
-	  ROLL_AGAIN_BACKWARDS: 5,
+	  ROLL_AGAIN_BACKWARDS_1: 5,
 	  CARD_DRAW_1: 6,
 	  CARD_DRAW_2: 7,
 	  CARD_DRAW_3: 8,
@@ -101,6 +103,23 @@ gameController.prototype.initElements = function() {
 	  RANDOM_1: 12,
 	  RANDOM_2: 13,
 	  RANDOM_3: 14,
+	};
+
+	_self.BOARD_FIELDS_IMGS = {
+	  NORMAL: "",
+	  ROLL_AGAIN_1: "roll_again_1.png",
+	  ROLL_AGAIN_2: "roll_again_2.png",
+	  ROLL_AGAIN_3: "roll_again_3.png",
+	  ROLL_AGAIN_BACKWARDS_1: "roll_again_back_1.png",
+	  CARD_DRAW_1: "card_draw_1.png",
+	  CARD_DRAW_2: "card_draw_2.png",
+	  CARD_DRAW_3: "card_draw_3.png",
+	  CARD_DISCARD_1: "card_discard_1.png",
+	  CARD_DISCARD_2: "card_discard_2.png",
+	  CARD_DISCARD_3: "card_discard_3.png",
+	  RANDOM_1: "random_1.png",
+	  RANDOM_2: "random_2.png",
+	  RANDOM_3: "random_3.png",
 	};
 };
 
@@ -176,6 +195,7 @@ gameController.prototype.resetGameState = function () {
 
 	_self._gameplayData = null;
 	_self._roomData = null;
+	_self._cardsInHandArr = [];
 	_self._yourName = null;
 	_self._enemyName = null;
 	_self._enemyUserId = null;
@@ -357,7 +377,7 @@ gameController.prototype.showEventsInfo = function (infoText) {
 gameController.prototype.renderGameField = function () {
 	var _self = this;
 
-	$(_self.GAME_SCREEN_CLASS).html('<div class="anime-cb-title-page-game"><p id="anime-cb-title-page-game-room-name"></p></div><div id="anime-cb-card-info-card-name"></div><div id="anime-cb-card-info-wrapper"><div id="anime-cb-card-info-subwrapper"><img id="anime-cb-card-info-card" src="/imgs/player_cards/card_back.png"></div></div><div id="anime-cb-card-info-text"></div><div class="anime-cb-card-graveyard-wrapper player-enemy"><p class="anime-cb-card-graveyard-text player-enemy">Enemy Graveyard</p><img class="anime-cb-card-graveyard-deck player-enemy bottom"><img class="anime-cb-card-graveyard-deck player-enemy top"></div><div id="anime-cb-card-global-deck-wrapper"><img id="anime-cb-card-global-deck" src="/imgs/player_cards/card_back.png"><p id="anime-cb-card-global-deck-text">Global Deck</p></div><div id="anime-cb-game-events-info"><p id="anime-cb-game-events-info-text"></p></div><div class="anime-cb-turn-timer player-enemy"><p class="anime-cb-turn-timer-text player-enemy"></p></div><div class="anime-cb-turn-timer player-you"><p class="anime-cb-turn-timer-text player-you"></p></div><div class="anime-cb-energy-points-wrapper player-you"><p class="anime-cb-energy-points-title player-you">Energy</p><p class="anime-cb-energy-points-text player-you"></p></div><div class="anime-cb-energy-points-wrapper player-enemy"><p class="anime-cb-energy-points-title player-enemy">Energy</p><p class="anime-cb-energy-points-text player-enemy"></p></div><table id="anime-cb-phases-wrapper"><tr class="anime-cb-phase-row"><td id="anime-cb-phase-draw" class="anime-cb-phase-column next" data-phase-text="Draw Phase">DP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-standby" class="anime-cb-phase-column next" data-phase-text="Standby Phase">SP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-main" class="anime-cb-phase-column next" data-phase-text="Main Phase">MP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-roll" class="anime-cb-phase-column next" data-phase-text="Roll Phase">RP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-end" class="anime-cb-phase-column next" data-phase-text="End Phase">EP</td></tr></table><div class="center-screen"><div class="anime-cb-cards-in-hand-wrapper player-enemy"><div class="anime-cb-cards-in-hand player-enemy"></div></div><div class="anime-cb-board-player-label player-enemy"></div><div class="anime-cb-card-field-wrapper"><table class="anime-cb-card-field-charges-status-wrapper player-enemy"><tr><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td></tr></table><table class="anime-cb-card-field player-enemy"><tr><td></td><td></td><td></td><td></td><td></td></tr></table></div><div id="anime-cb-board-wrapper"><table id="anime-cb-board"></table></div><div class="anime-cb-card-field-wrapper"><table class="anime-cb-card-field player-you"><tr><td></td><td></td><td></td><td></td><td></td></tr></table><table class="anime-cb-card-field-charges-status-wrapper player-you"><tr><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td></tr></table></div><div class="anime-cb-board-player-label player-you"></div><div class="anime-cb-cards-in-hand-wrapper player-you"><div class="anime-cb-cards-in-hand player-you"></div></div></div><div class="anime-cb-card-graveyard-wrapper player-you"><img class="anime-cb-card-graveyard-deck player-you bottom"><img class="anime-cb-card-graveyard-deck player-you top"><p class="anime-cb-card-graveyard-text player-you">Your Graveyard</p></div><div class="anime-cb-screen_footer-game"><button id="anime-cb-surrender" type="button" class="btn btn-primary anime-cb-button-stateless anime-cb-btn-main-menu">Surrender</button></div><div class="anime-cb-player-status-wrapper"><p class="anime-cb-player-status-title">Game Status</p><div class="anime-cb-player-status-content"></div></div><div id="anime-cb-dice-wrapper-player-you"></div><div id="anime-cb-dice-wrapper-player-enemy"></div><div class="modal graveyard-modal player-you"> <div class="modal-content"> <div class="modal-header player-you"> <span class="close">&times;</span> <h2>Your Graveyard</h2> </div> <div class="modal-body"> </div> <div class="modal-footer player-you"> <h3>Your Graveyard</h3> </div> </div></div><div class="modal graveyard-modal player-enemy"> <div class="modal-content"> <div class="modal-header player-enemy"> <span class="close">&times;</span> <h2>Enemy Graveyard</h2> </div> <div class="modal-body"> </div> <div class="modal-footer player-enemy"> <h3>Enemy Graveyard</h3> </div> </div></div><img class="anime-cb-card-activate-show">');
+	$(_self.GAME_SCREEN_CLASS).html('<div class="anime-cb-title-page-game"><p id="anime-cb-title-page-game-room-name"></p></div><div id="anime-cb-card-info-card-name"></div><div id="anime-cb-card-info-wrapper"><div id="anime-cb-card-info-subwrapper"><img id="anime-cb-card-info-card" src="/imgs/player_cards/card_back.png"></div></div><div id="anime-cb-card-info-text"></div><div class="anime-cb-card-graveyard-wrapper player-enemy"><p class="anime-cb-card-graveyard-text player-enemy">Enemy Graveyard</p><img class="anime-cb-card-graveyard-deck player-enemy bottom"><img class="anime-cb-card-graveyard-deck player-enemy top"></div><div id="anime-cb-card-global-deck-wrapper"><img id="anime-cb-card-global-deck" src="/imgs/player_cards/card_back.png"><p id="anime-cb-card-global-deck-text">Global Deck</p></div><div id="anime-cb-game-events-info"><p id="anime-cb-game-events-info-text"></p></div><div class="anime-cb-turn-timer player-enemy"><p class="anime-cb-turn-timer-text player-enemy"></p></div><div class="anime-cb-turn-timer player-you"><p class="anime-cb-turn-timer-text player-you"></p></div><div class="anime-cb-energy-points-wrapper player-you"><p class="anime-cb-energy-points-title player-you">Energy</p><p class="anime-cb-energy-points-text player-you"></p></div><div class="anime-cb-energy-points-wrapper player-enemy"><p class="anime-cb-energy-points-title player-enemy">Energy</p><p class="anime-cb-energy-points-text player-enemy"></p></div><table id="anime-cb-phases-wrapper"><tr class="anime-cb-phase-row"><td id="anime-cb-phase-draw" class="anime-cb-phase-column next" data-phase-text="Draw Phase">DP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-standby" class="anime-cb-phase-column next" data-phase-text="Standby Phase">SP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-main" class="anime-cb-phase-column next" data-phase-text="Main Phase">MP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-roll" class="anime-cb-phase-column next" data-phase-text="Roll Phase">RP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-end" class="anime-cb-phase-column next" data-phase-text="End Phase">EP</td></tr></table><div class="center-screen"><div class="anime-cb-cards-in-hand-wrapper player-enemy"><div class="anime-cb-cards-in-hand player-enemy"></div></div><div class="anime-cb-board-player-label player-enemy"></div><div class="anime-cb-card-field-wrapper"><div class="anime-cb-card-field-charges-label player-enemy">Charges Left | Energy Cost</div><table class="anime-cb-card-field-charges-status-wrapper player-enemy"><tr><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td></tr></table><table class="anime-cb-card-field player-enemy"><tr><td></td><td></td><td></td><td></td><td></td></tr></table></div><div id="anime-cb-board-wrapper"><table id="anime-cb-board"></table></div><div class="anime-cb-card-field-wrapper"><table class="anime-cb-card-field player-you"><tr><td></td><td></td><td></td><td></td><td></td></tr></table><table class="anime-cb-card-field-charges-status-wrapper player-you"><tr><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td></tr></table><div class="anime-cb-card-field-charges-label player-you">Charges Left | Energy Cost</div></div><div class="anime-cb-board-player-label player-you"></div><div class="anime-cb-cards-in-hand-wrapper player-you"><div class="anime-cb-cards-in-hand player-you"></div></div></div><div class="anime-cb-card-graveyard-wrapper player-you"><img class="anime-cb-card-graveyard-deck player-you bottom"><img class="anime-cb-card-graveyard-deck player-you top"><p class="anime-cb-card-graveyard-text player-you">Your Graveyard</p></div><div class="anime-cb-screen_footer-game"><button id="anime-cb-surrender" type="button" class="btn btn-primary anime-cb-button-stateless anime-cb-btn-main-menu">Surrender</button></div><div class="anime-cb-player-status-wrapper"><p class="anime-cb-player-status-title">Game Status</p><div class="anime-cb-player-status-content"></div></div><div id="anime-cb-dice-wrapper-player-you"></div><div id="anime-cb-dice-wrapper-player-enemy"></div><div class="modal graveyard-modal player-you"> <div class="modal-content"> <div class="modal-header player-you"> <span class="close">&times;</span> <h2>Your Graveyard</h2> </div> <div class="modal-body"> </div> <div class="modal-footer player-you"> <h3>Your Graveyard</h3> </div> </div></div><div class="modal graveyard-modal player-enemy"> <div class="modal-content"> <div class="modal-header player-enemy"> <span class="close">&times;</span> <h2>Enemy Graveyard</h2> </div> <div class="modal-body"> </div> <div class="modal-footer player-enemy"> <h3>Enemy Graveyard</h3> </div> </div></div><img class="anime-cb-card-activate-show"><div class="center-screen anime-cb-choose-card-effect"><div></div></div>');
 };
 
 gameController.prototype.initGameData = function (data) {
@@ -369,6 +389,7 @@ gameController.prototype.initGameData = function (data) {
 
 	_self._gameplayData = data.gameplayData;
 	_self._roomData = data.roomData;
+	_self._cardsInHandArr = data.cardsInHandArr;
 
 	console.log('Gameplay Data: ', _self._gameplayData);
 
@@ -446,7 +467,7 @@ gameController.prototype.renderBoard = function () {
       		boardRowHtml += '<td class="anime-cb-column active roll-again-2"><img class="anime-cb-board-img" src="/imgs/roll_again_2.png"></td>';
       	} else if (boardColumn == _self.BOARD_FIELDS.ROLL_AGAIN_3) {
       		boardRowHtml += '<td class="anime-cb-column active roll-again-3"><img class="anime-cb-board-img" src="/imgs/roll_again_3.png"></td>';
-      	} else if (boardColumn == _self.BOARD_FIELDS.ROLL_AGAIN_BACKWARDS) {
+      	} else if (boardColumn == _self.BOARD_FIELDS.ROLL_AGAIN_BACKWARDS_1) {
       		boardRowHtml += '<td class="anime-cb-column active roll-again-back-1"><img class="anime-cb-board-img" src="/imgs/roll_again_back_1.png"></td>';
       	} else if (boardColumn == _self.BOARD_FIELDS.CARD_DRAW_1) {
       		boardRowHtml += '<td class="anime-cb-column active card-draw-1"><img class="anime-cb-board-img" src="/imgs/card_draw_1.png"></td>';
@@ -582,6 +603,7 @@ gameController.prototype.processDrawCard = function (data) {
 
 	_self._gameplayData = data.gameplayData;
 	_self._roomData = data.roomData;
+	_self._cardsInHandArr = data.cardsInHandArr;
 	_self.updateGameStatusInfo();
 
 	if (_self._yourUserId == _self._gameplayData.gameState.playerIdDrawnCard) {
@@ -719,6 +741,7 @@ gameController.prototype.processDrawPhase = function (data) {
 
 	_self._gameplayData = data.gameplayData;
 	_self._roomData = data.roomData;
+	_self._cardsInHandArr = data.cardsInHandArr;
 	_self.updateGameStatusInfo();
 
 	if (_self._gameplayData.gameState.currPlayerId == _self._yourUserId) {
@@ -756,6 +779,7 @@ gameController.prototype.processStandByPhase = function (data) {
 
 	_self._gameplayData = data.gameplayData;
 	_self._roomData = data.roomData;
+	_self._cardsInHandArr = data.cardsInHandArr;
 	_self.updateGameStatusInfo();
 
 	if (_self._gameplayData.gameState.currPlayerId == _self._yourUserId) {
@@ -793,6 +817,7 @@ gameController.prototype.processMainPhase = function (data) {
 
 	_self._gameplayData = data.gameplayData;
 	_self._roomData = data.roomData;
+	_self._cardsInHandArr = data.cardsInHandArr;
 	_self.updateGameStatusInfo();
 
 	if (_self._gameplayData.gameState.currPlayerId == _self._yourUserId) {
@@ -915,6 +940,7 @@ gameController.prototype.processSummonCard = function (data) {
 
 	_self._gameplayData = data.gameplayData;
 	_self._roomData = data.roomData;
+	_self._cardsInHandArr = data.cardsInHandArr;
 	_self.updateGameStatusInfo();
 
 	if (_self._gameplayData.gameState.playerIdSummonedCard == _self._yourUserId) {
@@ -954,6 +980,7 @@ gameController.prototype.processRollPhase = function (data) {
 
 	_self._gameplayData = data.gameplayData;
 	_self._roomData = data.roomData;
+	_self._cardsInHandArr = data.cardsInHandArr;
 	_self.updateGameStatusInfo();
 
 	if (_self._gameplayData.gameState.currPlayerId == _self._yourUserId) {
@@ -991,6 +1018,7 @@ gameController.prototype.processRollDiceBoard = function (data) {
 
 	_self._gameplayData = data.gameplayData;
 	_self._roomData = data.roomData;
+	_self._cardsInHandArr = data.cardsInHandArr;
 	_self.updateGameStatusInfo();
 
 	if (_self._gameplayData.gameState.rollDiceBoard.playerIdRollDice == _self._yourUserId) {
@@ -1040,6 +1068,8 @@ gameController.prototype.processEndPhase = function (data) {
 
 	_self._gameplayData = data.gameplayData;
 	_self._roomData = data.roomData;
+	_self._cardsInHandArr = data.cardsInHandArr;
+	_self.updateCardsStatusText();
 	_self.updateGameStatusInfo();
 
 	_self.startEndPhaseAnimation(_self.nextTurn);
@@ -1054,7 +1084,6 @@ gameController.prototype.discardCard = function (card) {
 	var cardIdx = $(card).index();
 
 	logger.info("Sending discard card request to server...");
-	_self.discardCardFromHandYou(card);
 	_self._lastClientData = { roomId: _self._roomData.id, cardId: cardId, cardIdx: cardIdx };
 	_self.client.discardCard(_self._lastClientData);
 };
@@ -1087,9 +1116,11 @@ gameController.prototype.processDiscardCard = function (data) {
 
 	_self._gameplayData = data.gameplayData;
 	_self._roomData = data.roomData;
+	_self._cardsInHandArr = data.cardsInHandArr;
 	_self.updateGameStatusInfo();
 
 	if (_self._gameplayData.gameState.playerIdDiscardedCard == _self._yourUserId) {
+		_self.discardCardFromHandYou(_self._gameplayData.gameState.cardDiscarded);
 		if (_self._gameplayData.gameState.currPlayerId == _self._yourUserId) {
 			_self.discardCardTimeout = setTimeout(function() {
 				if (_self._gameplayData.gameState.nextPhase == _self.TURN_PHASES.ROLL) {
@@ -1143,6 +1174,7 @@ gameController.prototype.processFinishCardEffect = function (data) {
 
 	_self._gameplayData = data.gameplayData;
 	_self._roomData = data.roomData;
+	_self._cardsInHandArr = data.cardsInHandArr;
 	_self.updateGameStatusInfo();
 
 	if (_self._gameplayData.gameState.playerIdFinishCard == _self._yourUserId) {
@@ -1296,6 +1328,7 @@ gameController.prototype.enableMainPhaseActions = function () {
 	var _self = this;
 
 	_self.updateCardChargesStatuses();
+	_self.updateCardsStatusText();
 
 	if (_self._gameplayData.gameState.playersState[_self._yourUserId].canRollDiceBoardInRollPhase
 		&& _self._gameplayData.gameState.playersState[_self._yourUserId].canRollDiceBoardCount > 0) {
@@ -1367,6 +1400,8 @@ gameController.prototype.disableMainPhaseActions = function () {
 gameController.prototype.enableActionsInEnemyPhase = function () {
 	var _self = this;
 
+	_self.updateCardsStatusText();
+
 	if (_self._gameplayData.gameState.playersState[_self._yourUserId].canRollDiceBoardInRollPhase
 		&& _self._gameplayData.gameState.playersState[_self._yourUserId].canRollDiceBoardCount > 0) {
 		var eventInfoText = "Roll dice";
@@ -1432,6 +1467,13 @@ gameController.prototype.performCardEffectInstantYou = function (card) {
 		} else if (card.cardEffect.effect == "moveSpacesBackwardsEnemy") {
 			_self.moveEnemyCharacter(card.cardEffect.effectValue,
 				_self.destroyCardAnimationYou.bind(_self, card, _self.checkIfEnemyIsOnSpecialSpace), 0);
+		} else if (card.cardEffect.effect.match("createSpecialBoardSpaceForwardTier")) {
+			if (card.cardEffect.isFinished) {
+				_self.createNewSpecialBoardSpaceAnimation(card.finishData,
+					_self.destroyCardAnimationYou.bind(_self, card, _self.enableMainPhaseActions));
+			} else {
+				_self.setBoardSpaceListener(card);
+			}
 		}
 	} else if (card.cardEffect.continuous) {
 		_self.enableMainPhaseActions();
@@ -1542,6 +1584,128 @@ gameController.prototype.setBoardSpaceListener = function (card) {
 		_self.setBoardSpaceListenerCopySpecialSpacesUpToYou(card);
 	} else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpToEnemy") {
 		_self.setBoardSpaceListenerMoveSpacesForwardOrBackwardUpToEnemyYou(card);
+	} else if (card.cardEffect.effect.match("createSpecialBoardSpaceForwardTier")) {
+		_self.setBoardSpaceListenerCreateSpecialBoardSpaceForwardTierYou(card);
+	}
+};
+
+gameController.prototype.setBoardSpaceListenerCreateSpecialBoardSpaceForwardTierYou = function (card) {
+	var _self = this;
+
+	var boardMatrix = _self._gameplayData.gameState.boardData.boardMatrix;
+	var boardPath = _self._gameplayData.gameState.boardData.boardDataPlayers.boardPath;
+  var currBoardIndex = _self._gameplayData.gameState.playersState[_self._yourUserId].currBoardIndex;
+  var rowIndex;
+  var columnIndex;
+  var cardTier = (+card.cardEffect.effect.slice(-1));
+
+  var moveBoardForward = true;
+  if (_self._yourUserId == _self._roomData.player2Id) {
+  	moveBoardForward = false;
+  }
+
+	$(_self.BOARD_ID).css("z-index", 4);
+	for (var i = 0; i < card.cardEffect.effectValue; i++) {
+		if (moveBoardForward) {
+			currBoardIndex++;
+
+			if (!boardPath[currBoardIndex]) {
+				break;
+			}
+		} else {
+			currBoardIndex--;
+
+			if (currBoardIndex < 0) {
+				break;
+			}
+		}
+
+	  rowIndex = boardPath[currBoardIndex][0];
+	  columnIndex = boardPath[currBoardIndex][1];
+
+	  if (boardMatrix[rowIndex][columnIndex] == 1) {
+		  var selectorTd = _self.BOARD_ROW_CLASS + ':nth-child(' + (rowIndex + 1) + ')' + ' ' + _self.BOARD_COLUMN_CLASS
+				+ ':nth-child(' + (columnIndex + 1) + ')';
+		  $(selectorTd).addClass("selectable-you");
+			$(selectorTd).on("click", function () {
+				$(_self.BOARD_COLUMN_CLASS).off("click");
+				$(_self.BOARD_COLUMN_CLASS).removeClass("selectable-you");
+				$(_self.BOARD_ID).css("z-index", 1);
+
+				var boardSpaceTd = this;
+
+				$(_self.CHOOSE_CARD_EFFECT_CLASS + ' div:first-child').html("");
+
+				for (var spaceType in _self.BOARD_FIELDS) {
+					if (spaceType.endsWith("_" + cardTier)) {
+						$(_self.CHOOSE_CARD_EFFECT_CLASS + ' div:first-child').append('<img class="anime-cb-choose-card-effect-choice"\
+							src="/imgs/' + _self.BOARD_FIELDS_IMGS[spaceType] + '" data-special-space-type="'
+							+ _self.BOARD_FIELDS[spaceType] +  '" style="width: 100px; height: 100px;">');
+					}
+				}
+
+				$(_self.CHOOSE_CARD_EFFECT_CLASS).css("opacity", 1);
+				$(_self.CHOOSE_CARD_EFFECT_CLASS).css("z-index", 1000);
+
+				$(_self.CHOOSE_CARD_EFFECT_CLASS).on('click', _self.CHOOSE_CARD_EFFECT_CHOICE_CLASS, function() {
+					$(_self.CHOOSE_CARD_EFFECT_CLASS).off("click");
+					$(_self.CHOOSE_CARD_EFFECT_CLASS).css("opacity", 0);
+					$(_self.CHOOSE_CARD_EFFECT_CLASS).css("z-index", -1);
+
+					var finishData = { rowIndex: $(boardSpaceTd).closest('tr').index(),
+						columnIndex: $(boardSpaceTd).index(), specialSpaceType: $(this).data("specialSpaceType") };
+					_self._lastClientData = { roomId: _self._roomData.id, cardId: card.cardId, finishData: finishData };
+					_self.client.finishCardEffect(_self._lastClientData);
+				});
+			});
+		}
+	}
+
+	if (i == 0) {
+		_self._lastClientData = { roomId: _self._roomData.id, cardId: card.cardId,
+			finishData: { rowIndex: -1, columnIndex: -1, specialSpaceType: -1 } };
+		_self.client.finishCardEffect(_self._lastClientData);
+		$(_self.BOARD_ID).css("z-index", 1);
+	}
+};
+
+gameController.prototype.setBoardSpaceListenerCreateSpecialBoardSpaceForwardTierEnemy = function (card) {
+	var _self = this;
+
+	var boardMatrix = _self._gameplayData.gameState.boardData.boardMatrix;
+	var boardPath = _self._gameplayData.gameState.boardData.boardDataPlayers.boardPath;
+  var currBoardIndex = _self._gameplayData.gameState.playersState[_self._enemyUserId].currBoardIndex;
+  var rowIndex;
+  var columnIndex;
+
+  var moveBoardForward = true;
+  if (_self._enemyUserId == _self._roomData.player2Id) {
+  	moveBoardForward = false;
+  }
+
+	for (var i = 0; i < card.cardEffect.effectValue; i++) {
+		if (moveBoardForward) {
+			currBoardIndex++;
+
+			if (!boardPath[currBoardIndex]) {
+				break;
+			}
+		} else {
+			currBoardIndex--;
+
+			if (currBoardIndex < 0) {
+				break;
+			}
+		}
+
+	  rowIndex = boardPath[currBoardIndex][0];
+	  columnIndex = boardPath[currBoardIndex][1];
+
+	  if (boardMatrix[rowIndex][columnIndex] == 1) {
+		  var selectorTd = _self.BOARD_ROW_CLASS + ':nth-child(' + (rowIndex + 1) + ')' + ' ' + _self.BOARD_COLUMN_CLASS
+				+ ':nth-child(' + (columnIndex + 1) + ')';
+		  $(selectorTd).addClass("selectable-enemy");
+		}
 	}
 };
 
@@ -2000,6 +2164,8 @@ gameController.prototype.setBoardSpaceListenerEnemy = function (card) {
 		_self.setBoardSpaceListenerCopySpecialSpacesUpToEnemy(card);
 	} else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpToEnemy") {
 		_self.setBoardSpaceListenerMoveSpacesForwardOrBackwardUpToEnemyEnemy(card);
+	} else if (card.cardEffect.effect.match("createSpecialBoardSpaceForwardTier")) {
+		_self.setBoardSpaceListenerCreateSpecialBoardSpaceForwardTierEnemy(card);
 	}
 };
 
@@ -2169,6 +2335,13 @@ gameController.prototype.performCardEffectInstantEnemy = function (card) {
 		} else if (card.cardEffect.effect == "moveSpacesBackwardsEnemy") {
 			_self.moveYourCharacter(card.cardEffect.effectValue,
 				_self.destroyCardAnimationEnemy.bind(_self, card, _self.checkIfYouAreOnSpecialSpace), 0);
+		} else if (card.cardEffect.effect.match("createSpecialBoardSpaceForwardTier")) {
+			if (card.cardEffect.isFinished) {
+				_self.createNewSpecialBoardSpaceAnimation(card.finishData,
+					_self.destroyCardAnimationEnemy.bind(_self, card, _self.waitForEnemyActions));
+			} else {
+				_self.setBoardSpaceListenerEnemy(card);
+			}
 		}
 	} else {
 		_self.waitForEnemyActions();
@@ -2237,6 +2410,37 @@ gameController.prototype.destroyCardAnimationEnemy = function (card, callback) {
   }, 1500);
 };
 
+gameController.prototype.createNewSpecialBoardSpaceAnimation = function(spaceData, callback) {
+	var _self = this;
+
+	console.log('Space Data: ', spaceData);
+
+	var spaceImg = _self.BOARD_FIELDS_IMGS[spaceData.spaceType];
+	var boardSpaceTd = $(_self.BOARD_ROW_CLASS + ':nth-child(' + (spaceData.rowIndex + 1) + ') '
+		+ _self.BOARD_COLUMN_CLASS + ':nth-child(' + (spaceData.columnIndex + 1) + ')');
+
+	boardSpaceTd.find('img').remove();
+	boardSpaceTd.prepend('<img class="anime-cb-board-img" src="/imgs/' + spaceImg + '">');
+
+	if (_self._yourUserId == _self._roomData.player2Id) {
+		_self.setBoardPiecesRotated();
+		boardSpaceTd.find('img').css("animation", "create-board-space-rotated 0.6s ease-out both");
+		boardSpaceTd.find('img').css("-webkit-animation", "create-board-space-rotated 0.6s ease-out both");
+	} else {
+		boardSpaceTd.find('img').css("animation", "create-board-space 0.6s ease-out both");
+		boardSpaceTd.find('img').css("-webkit-animation", "create-board-space 0.6s ease-out both");
+	}
+
+	setTimeout(function() {
+		boardSpaceTd.find('img').css("animation", "");
+		boardSpaceTd.find('img').css("-webkit-animation", "");
+
+		if (typeof callback === "function") {
+			callback();
+		}
+	}, 650);
+};
+
 gameController.prototype.enableRollPhaseActions = function () {
 	var _self = this;
 
@@ -2291,6 +2495,8 @@ gameController.prototype.waitForEnemyActions = function () {
 	var _self = this;
 
 	_self.updateCardChargesStatuses();
+	_self.updateCardsStatusText();
+
 	var enemyState = _self._gameplayData.gameState.playersState[_self._enemyUserId];
 	$(_self.BOARD_COLUMN_CLASS).removeClass("selectable-enemy");
 
@@ -2410,9 +2616,12 @@ gameController.prototype.fillInfoCard = function (card) {
 	cardRarity = cardRarity ? cardRarity.toUpperCase() : cardRarity;
 	cardCost = cardCost ? "[" + cardCost + "]: " : cardCost;
 
-  $(_self.CARD_INFO_IMG_ID).attr("src", $(card).attr("src"));
+	if ($(card).attr("src") != $(_self.CARD_INFO_IMG_ID).attr("src")) {
+  	$(_self.CARD_INFO_IMG_ID).attr("src", $(card).attr("src"));
+	}
+
   $(_self.CARD_INFO_IMG_ID).css("border", "1px solid white");
-  $(_self.CARD_INFO_TEXT_ID).text(cardRarity + cardCost + cardText);
+  $(_self.CARD_INFO_TEXT_ID).html(cardRarity + cardCost + cardText);
   $(_self.CARD_INFO_NAME_ID).text($(card).data("cardName") || "");
 };
 
@@ -2764,6 +2973,7 @@ gameController.prototype.summonCardFromHandAnimationYou = function (cardObj, cal
 			cardSuccessfullySummoned = true;
 
 			_self.decreaseYourCardsInHandDensity();
+			_self.updateCardsStatusText();
 
 			setTimeout(function() {
 				$(this).css("animation", "");
@@ -2837,7 +3047,8 @@ gameController.prototype.updateCardChargesStatus = function (cardObj, playerSele
 		var cardTd = $(this).parent();
 		if ($(this).data("cardId") == cardObj.cardId) {
 			$(_self.CARD_FIELD_CHARGES_WRAPPER_CLASS + playerSelectorClass + ' td:nth-child(' + (cardTd.index() + 1) + ')')
-				.text((cardEffect.effectChargesCount - cardEffect.chargesUsedTotal) + '/' + cardEffect.effectChargesCount);
+				.html((cardEffect.effectChargesCount - cardEffect.chargesUsedTotal) + '/' + cardEffect.effectChargesCount
+					+ ' | ' + '<span class="anime-cb-card-field-energy-cost">' + cardObj.cardEffect.energyPerUse + '</span>');
 		}
 	});
 };
@@ -2985,6 +3196,7 @@ gameController.prototype.processActivateCardEffect = function (data) {
 
 	_self._gameplayData = data.gameplayData;
 	_self._roomData = data.roomData;
+	_self._cardsInHandArr = data.cardsInHandArr;
 	_self.updateGameStatusInfo();
 
 	if (_self._gameplayData.gameState.playerIdActivatedCard == _self._yourUserId) {
@@ -3023,6 +3235,7 @@ gameController.prototype.processFinishCardEffectContinuous = function (data) {
 
 	_self._gameplayData = data.gameplayData;
 	_self._roomData = data.roomData;
+	_self._cardsInHandArr = data.cardsInHandArr;
 	_self.updateGameStatusInfo();
 
 	if (_self._gameplayData.gameState.playerIdFinishCardContinuous == _self._yourUserId) {
@@ -3064,6 +3277,7 @@ gameController.prototype.summonCardFromHandAnimationEnemy = function (cardObj, c
 			$(card).remove();
 
 			_self.decreaseEnemyCardsInHandDensity();
+			_self.updateCardsStatusText();
 
 			setTimeout(function() {
 				$(this).css("animation", "");
@@ -3126,6 +3340,7 @@ gameController.prototype.drawCardFromDeckYouAnimation = function (card) {
   $card.data("cardCost", cardCost);
 
   _self.increaseYourCardsInHandDensity();
+  _self.updateCardsStatusText();
 
   clearTimeout(_self.drawCardFromDeckYouAnimationTimeout);
 
@@ -3176,6 +3391,7 @@ gameController.prototype.drawCardFromDeckEnemyAnimation = function(card) {
   		+ 'src="/imgs/player_cards/card_back.png">');
 
   _self.increaseEnemyCardsInHandDensity();
+  _self.updateCardsStatusText();
 
 	clearTimeout(_self.drawCardFromDeckEnemyAnimationTimeout);
 
@@ -3196,7 +3412,6 @@ gameController.prototype.drawCardFromDeckEnemyAnimation = function(card) {
 gameController.prototype.discardCardFromHandYou = function (card) {
 	var _self = this;
 
-
 	$(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_YOU_CLASS + '.bottom')
 		.attr("src", $(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_YOU_CLASS + '.top').attr("src"));
 	$(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_YOU_CLASS + '.top')
@@ -3205,19 +3420,21 @@ gameController.prototype.discardCardFromHandYou = function (card) {
 		.css("animation", "discard-card-from-hand-you 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both");
 
 	var $graveyardTopCard = $(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_YOU_CLASS + '.top');
-	$graveyardTopCard.attr("src", $(card).attr("src"));
-	$graveyardTopCard.data("cardId", $(card).data("cardId"));
-	$graveyardTopCard.data("cardName", $(card).data("cardName"));
-	$graveyardTopCard.data("cardText", $(card).data("cardText"));
-	$graveyardTopCard.data("cardRarity", $(card).data("cardRarity"));
-	$graveyardTopCard.data("cardEffect", $(card).data("cardEffect"));
-	$graveyardTopCard.data("cardCost", $(card).data("cardCost"));
+	$graveyardTopCard.attr("src", "/imgs/player_cards/" + card.cardImg);
+	$graveyardTopCard.data("cardId", card.cardId);
+	$graveyardTopCard.data("cardName", card.cardName);
+	$graveyardTopCard.data("cardText", card.cardText);
+	$graveyardTopCard.data("cardRarity", card.cardRarity);
+	$graveyardTopCard.data("cardEffect", card.cardEffect);
+	$graveyardTopCard.data("cardCost", card.cardCost);
 
-	$(card).remove();
-
+	console.log('card: ', card);
+	console.log('card.cardInHandIdx: ', card.cardInHandIdx);
+	$(_self.CARDS_IN_HAND_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_YOU_CLASS + ':nth-child(' + (card.cardInHandIdx + 1) + ')').remove();
 	$(_self.CARDS_IN_HAND_CLASS).css("overflow", "hidden");
 
 	_self.decreaseYourCardsInHandDensity();
+	_self.updateCardsStatusText();
 
 	setTimeout(function() {
 		$(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_YOU_CLASS + '.top').css("animation", "");
@@ -3227,7 +3444,6 @@ gameController.prototype.discardCardFromHandYou = function (card) {
 
 gameController.prototype.discardCardFromHandEnemy = function (card) {
 	var _self = this;
-
 
 	$(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_ENEMY_CLASS + '.bottom')
 		.attr("src", $(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_ENEMY_CLASS + '.top').attr("src"));
@@ -3249,6 +3465,7 @@ gameController.prototype.discardCardFromHandEnemy = function (card) {
 	$(_self.CARDS_IN_HAND_CLASS).css("overflow", "hidden");
 
 	_self.decreaseEnemyCardsInHandDensity();
+	_self.updateCardsStatusText();
 
 	setTimeout(function() {
 		$(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_ENEMY_CLASS + '.top').css("animation", "");
@@ -3361,4 +3578,30 @@ gameController.prototype.updateGameStatusInfo = function () {
 	statusContent += "- Can summon epic: " + (playerEnemyStatus.cardsSummonConstraints.cardsCanSummonEpic ? "Yes" : "No") + "<br>";
 
 	$(_self.GAME_STATUS_CONTENT_CLASS).html(statusContent);
+};
+
+gameController.prototype.updateCardsStatusText = function () {
+	var _self = this;
+
+	$(_self.CARDS_IN_HAND_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_YOU_CLASS).each(function() {
+		$(this).data("cardText", _self._cardsInHandArr[ $(this).index() ].cardText);
+	});
+
+	$(_self.CARD_ON_FIELD_CLASS + _self.PLAYER_YOU_CLASS).each(function() {
+		var cardEl = this;
+		_self._gameplayData.gameState.playersState[_self._yourUserId].cardsOnFieldArr.forEach(function(card) {
+			if ($(cardEl).data("cardId") == card.cardId) {
+				$(cardEl).data("cardText", card.cardText);
+			}
+		});
+	});
+
+	$(_self.CARD_ON_FIELD_CLASS + _self.PLAYER_ENEMY_CLASS).each(function() {
+		var cardEl = this;
+		_self._gameplayData.gameState.playersState[_self._enemyUserId].cardsOnFieldArr.forEach(function(card) {
+			if ($(cardEl).data("cardId") == card.cardId) {
+				$(cardEl).data("cardText", card.cardText);
+			}
+		});
+	});
 };

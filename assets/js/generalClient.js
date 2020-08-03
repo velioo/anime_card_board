@@ -183,7 +183,10 @@ generalClient.prototype.processDisconnect = function(_data) {
 
 	var _self = this;
 
-  if (_self.roomController._matchmaking) {
+  _self.socket.open();
+  _self.socket.emit('player-reconnect');
+
+  if (_self.roomController._matchmaking && !_self.roomController._matchFound) {
     var values = {};
     _self.roomController.$matchmakingInputs.each(function() {
         values[this.name] = $(this).val();
@@ -191,9 +194,6 @@ generalClient.prototype.processDisconnect = function(_data) {
 
     _self.matchmake(values);
   }
-
-  _self.socket.open();
-  _self.socket.emit('player-reconnect');
 };
 
 generalClient.prototype.processLeaveRoom = function(_data) {
