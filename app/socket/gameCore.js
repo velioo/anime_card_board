@@ -70,6 +70,7 @@ var self = module.exports = {
     };
 
     ctx.cardDrawn.cardEffect.effectValueOriginal = ctx.cardDrawn.cardEffect.effectValue;
+    ctx.cardDrawn.cardCostOriginal = ctx.cardDrawn.cardCost;
 
     if (ctx.cardDrawn.cardEffect.continuous) {
     	ctx.cardDrawn.cardEffect.energyPerUseOriginal = ctx.cardDrawn.cardEffect.energyPerUse;
@@ -642,6 +643,7 @@ let updateCardEffectValueStatus = (card, playerState) => {
 	if ("effectValueIncrement" in card.cardEffect) {
   	assert(card.cardEffect.effectValueIncrement.match(/[+\-x]\d+/));
 		assert("effectValueOriginal" in card.cardEffect);
+		assert("effectValueMax" in card.cardEffect);
   	assert("effectValueIncrementCondition" in card.cardEffect);
 		assert("effectValueIncrementConditionFilter" in card.cardEffect);
 
@@ -664,7 +666,13 @@ let updateCardEffectValueStatus = (card, playerState) => {
 			if (operator == "x" && resultValue == 0) {
 				resultValue = 1;
 			}
+
 			card.cardEffect.effectValue = updateFieldValue[operator](card.cardEffect.effectValueOriginal, resultValue);
+
+			if (card.cardEffect.effectValue > card.cardEffect.effectValueMax) {
+				card.cardEffect.effectValue = card.cardEffect.effectValueMax;
+			}
+
 			card.cardText = card.cardTextOriginal.replace(/\|X\|/, card.cardEffect.effectValue);
 		}
 	}
@@ -672,6 +680,7 @@ let updateCardEffectValueStatus = (card, playerState) => {
 	if ("energyPerUseIncrement" in card.cardEffect) {
 		assert(card.cardEffect.effectValueIncrement.match(/[+\-x]\d+/));
 		assert("energyPerUseOriginal" in card.cardEffect);
+		assert("energyPerUseMax" in card.cardEffect);
 		assert("energyPerUseIncrementCondition" in card.cardEffect);
 		assert("energyPerUseIncrementConditionFilter" in card.cardEffect);
 
@@ -694,6 +703,43 @@ let updateCardEffectValueStatus = (card, playerState) => {
 			}
 
 			card.cardEffect.energyPerUse = updateFieldValue[operator](card.cardEffect.energyPerUseOriginal, resultValue);
+
+			if (card.cardEffect.energyPerUse > card.cardEffect.energyPerUseMax) {
+				card.cardEffect.energyPerUse = card.cardEffect.energyPerUseMax;
+			}
+		}
+	}
+
+	if ("costIncrement" in card.cardEffect) {
+		assert(card.cardEffect.costIncrement.match(/[+\-x]\d+/));
+		assert("cardCostOriginal" in card);
+		assert("costMax" in card.cardEffect);
+		assert("costIncrementCondition" in card.cardEffect);
+		assert("costIncrementConditionFilter" in card.cardEffect);
+
+		let operator = card.cardEffect.costIncrement.charAt(0);
+		let incrementValue = card.cardEffect.costIncrement.substr(1);
+
+  	let forEveryCount;
+  	if (card.cardEffect.costIncrementCondition == "cardsInYourGraveyard") {
+  		forEveryCount = playerState.cardsInGraveyard.length;
+  	}
+
+  	assert((forEveryCount !== null) && (forEveryCount !== undefined));
+
+		if (card.cardEffect.costIncrementConditionFilter.match(/every\d+/)) {
+			let everyCount = card.cardEffect.costIncrementConditionFilter.substr(5);
+			let resultValue = (Math.floor(forEveryCount / everyCount)) * incrementValue;
+
+			if (operator == "x" && resultValue == 0) {
+				resultValue = 1;
+			}
+
+			card.cardCost = updateFieldValue[operator](card.cardCostOriginal, resultValue);
+
+			if (card.cardCost > card.cardEffect.costMax) {
+				card.cardCost = card.cardEffect.costMax;
+			}
 		}
 	}
 };

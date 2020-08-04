@@ -2916,7 +2916,7 @@ gameController.prototype.rollDiceYou = function (diceValue, callback, callback2)
     numberOfDice: 1,
     delay: 1500,
     values: [diceValue],
-    noSound: true,
+    noSound: !_self.client.generalClient.logInSignUpController._settings.sound,
     callback: callback.bind(_self, diceValue, callback2, 2000)
   };
 
@@ -2932,7 +2932,7 @@ gameController.prototype.rollDiceEnemy = function (diceValue, callback, callback
     numberOfDice: 1,
     delay: 1500,
     values: [diceValue],
-    noSound: true,
+    noSound: !_self.client.generalClient.logInSignUpController._settings.sound,
     callback: callback.bind(_self, diceValue, callback2, 2000)
   };
 

@@ -59,6 +59,16 @@ generalClient.prototype.sendLogOutRequest = function() {
   }).fail(_self.failHandler.bind(_self));
 };
 
+generalClient.prototype.sendSettingsData = function (_data) {
+  logger.info('sendSettingsData');
+
+  var _self = this;
+
+  $.post('/settings', { data: _data }, function (data, status) {
+    _self.logInSignUpController.processSettingsResponse(data);
+  }).fail(_self.failHandler.bind(_self));
+};
+
 generalClient.prototype.checkIfUserIsLoggedIn = function() {
 	//logger.info('checkIfUserIsLoggedIn');
 

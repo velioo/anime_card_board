@@ -20,19 +20,23 @@ Object.defineProperty(logInSignUpController.prototype, 'constructor', {
 logInSignUpController.prototype.initConstants = function() {
 	this.SIGN_UP_FORM_ID = '#anime-cb-form-sign-up';
 	this.LOGIN_FORM_ID = '#anime-cb-form-login';
+	this.SETTINGS_FORM_ID = '#anime-cb-form-settings';
 
 	this.SIGN_UP_SUBMIT_BTN_ID = '#anime-cb-submit-sign-up';
 	this.RESET_SIGN_UP_BTN_ID = '#anime-cb-reset-sign-up';
 	this.LOGIN_SUBMIT_BTN_ID = '#anime-cb-submit-login';
 	this.RESET_LOGIN_BTN_ID = '#anime-cb-reset-login';
 	this.SIGN_OUT_BTN_ID = '#anime-cb-logout-btn';
+	this.SETTINGS_SUBMIT_BTN_ID = '#anime-cb-submit-settings';
 };
 
 logInSignUpController.prototype.initElements = function() {
 	this.$signUpInputs = $(this.SIGN_UP_FORM_ID).find('input');
 	this.$loginInputs = $(this.LOGIN_FORM_ID).find('input');
+	this.$settingsInputs = $(this.SETTINGS_FORM_ID).find('input');
 	this._userId = null;
 	this._username = null;
+	this._settings = {};
 };
 
 logInSignUpController.prototype.initListeners = function() {
@@ -91,6 +95,8 @@ logInSignUpController.prototype.initListeners = function() {
 	  _self.clearLoginErrors();
 	  _self.hideLoginErrors();
 	});
+
+	_self.reEnableSettingsSubmit();
 };
 
 logInSignUpController.prototype.initIntervals = function() {
@@ -147,14 +153,13 @@ logInSignUpController.prototype.processLoginResponse = function(data) {
   	JSON.stringify(ajv.errors, null, 2));
 
 	if (data.isSuccessful) {
-		logger.info('Data is valid');
 		_self.setIsUserLoggedIn(true);
 		_self._userId = data.userId;
 		_self._username = data.username;
 		_self.showLoginSuccess(data);
+		_self.updateSettingsStatus(data.settings);
 	} else {
 		assert(data.errors.length > 0);
-		logger.info('There are validation errors');
 		_self.renderLoginErrors(data);
 	}
 
@@ -171,19 +176,41 @@ logInSignUpController.prototype.processLogoutResponse = function(data) {
   	JSON.stringify(ajv.errors, null, 2));
 
 	if (data.isSuccessful) {
-		logger.info('Data is valid');
 		_self.resetSessionState();
 		_self.showLogOutSuccess(data);
 		window.removeEventListener("beforeunload", _self.client.gameController.beforeUnload);
 	} else {
 		assert(data.errors.length > 0);
-		logger.info('There are validation errors');
 		_self.showAlertError();
+	}
+};
+
+logInSignUpController.prototype.processSettingsResponse = function(data) {
+	logger.info('processSettingsResponse');
+	logger.info('To validate: ', JSON.stringify(data));
+	console.log('To validate: ', data);
+
+	var _self = this;
+
+	_self.reEnableSettingsSubmit();
+	_self.enableElement(_self.SETTINGS_SUBMIT_BTN_ID);
+	_self.hideAllSpinner();
+
+  assert(ajv.validate(settingsResponse, data), 'settingsResponse is invalid' +
+  	JSON.stringify(ajv.errors, null, 2));
+
+	if (data.isSuccessful) {
+		_self.showSettingsSuccess(data);
+		_self.updateSettingsStatus(data.settings);
+	} else {
+		assert(data.errors.length > 0);
+		_self.renderSettingsErrors(data);
 	}
 };
 
 logInSignUpController.prototype.processIsUserLoggedInResponse = function(data) {
 	//logger.info('processIsUserLoggedInResponse');
+	console.log(data);
 
 	var _self = this;
 
@@ -195,6 +222,7 @@ logInSignUpController.prototype.processIsUserLoggedInResponse = function(data) {
 			_self.setIsUserLoggedIn(true);
 			_self._userId = data.userId;
 			_self._username = data.username;
+			_self.updateSettingsStatus(data.settings);
 		} else {
 			// _self.processSessionExpired();
 		}
@@ -239,6 +267,30 @@ logInSignUpController.prototype.resetUserState = function () {
 	_self._username = null;
 };
 
+logInSignUpController.prototype.reEnableSettingsSubmit = function () {
+	var _self = this;
+
+	$(_self.SETTINGS_SUBMIT_BTN_ID).one('click', function(e) {
+		e.preventDefault();
+
+	  var values = {};
+	  _self.$settingsInputs.each(function() {
+	  	if ($(this).attr("type") == "checkbox") {
+	  		values[this.name] = $(this).is(':checked');
+	  	} else {
+	      values[this.name] = $(this).val();
+	  	}
+	  });
+
+	  logger.info('Form settings values: ', JSON.stringify(values));
+
+	  _self.showSettingsSpinner();
+	  _self.disableElement(_self.SETTINGS_SUBMIT_BTN_ID);
+
+	  _self.client.sendSettingsData(values);
+	});
+};
+
 logInSignUpController.prototype.renderSignUpErrors = function(data) {
 	logger.info('renderSignUpErrors');
 	var _self = this;
@@ -281,6 +333,21 @@ logInSignUpController.prototype.renderLoginErrors = function(data) {
 	_self.hideAllSpinner();
 };
 
+logInSignUpController.prototype.renderSettingsErrors = function(data) {
+	logger.info('renderSettingsErrors');
+
+	var _self = this;
+
+	_self.clearSettingsErrors();
+	_self.hideSettingsErrors();
+
+	$(_self.SETTINGS_SCREEN_CLASS).find(_self.INPUT_ERRORS_CLASS).append('<span>' + data.userMessage + '</span>');
+
+	$(_self.SETTINGS_SCREEN_CLASS).find(_self.INPUT_ERRORS_CLASS).show();
+	_self.enableElement(_self.SETTINGS_SUBMIT_BTN_ID);
+	_self.hideAllSpinner();
+};
+
 logInSignUpController.prototype.showSignUpSuccess = function(data) {
 	logger.info('showSignUpSuccess');
 
@@ -302,6 +369,44 @@ logInSignUpController.prototype.showLogOutSuccess = function(data) {
 
 	this.hideAllPreSpinner();
 	this.switchMainMenuToLoggedOut();
+};
+
+logInSignUpController.prototype.showSettingsSuccess = function(data) {
+	var _self = this;
+
+	_self.clearSettingsErrors();
+	_self.hideSettingsErrors();
+	_self.enableElement(_self.SETTINGS_SUBMIT_BTN_ID);
+
+	$(_self.USER_MESSAGE_CLASS).html('<span>' + data.userMessage + '</span>');
+};
+
+logInSignUpController.prototype.updateSettingsStatus = function (settings) {
+	var _self = this;
+
+	if (!settings) {
+		return;
+	}
+
+	for (setting in settings) {
+		_self._settings[setting] = settings[setting];
+
+		var $input = $(_self.SETTINGS_FORM_ID).find('input[name="' + setting + '"]');
+
+		if ($input.attr("type") != "checkbox") {
+			$input.val(settings[setting]);
+		} else {
+			$input.prop("checked", settings[setting]);
+		}
+	}
+};
+
+logInSignUpController.prototype.preSwitchScreenHookLogInSignUpController = function (screenClass) {
+	var _self = this;
+
+	if (screenClass === _self.SETTINGS_SCREEN_CLASS) {
+		_self.updateSettingsStatus(_self._settings);
+	}
 };
 
 logInSignUpController.prototype.switchMainMenuToLoggedIn = function() {
@@ -356,4 +461,16 @@ logInSignUpController.prototype.showSignUpSpinner = function() {
 
 logInSignUpController.prototype.showLogOutSpinner = function() {
 	$(this.MAIN_MENU_SCREEN_CLASS).find(this.PRE_SCREEN_SPINNER_CLASS).show();
+};
+
+logInSignUpController.prototype.showSettingsSpinner = function () {
+	$(this.SETTINGS_FORM_ID).find(this.SPINNER_CLASS).show();
+};
+
+logInSignUpController.prototype.clearSettingsErrors = function() {
+	$(this.SETTINGS_SCREEN_CLASS).find(this.INPUT_ERRORS_CLASS).html('');
+};
+
+logInSignUpController.prototype.hideSettingsErrors = function() {
+	$(this.SETTINGS_SCREEN_CLASS).find(this.INPUT_ERRORS_CLASS).hide();
 };

@@ -9,6 +9,7 @@ const {
 	signUp,
 	logOut,
 	isUserLoggedIn,
+	settings,
 } = require('../controllers/usersController');
 const {
 	createRoom,
@@ -30,6 +31,7 @@ router
 	.get('/sign-up', renderHomeScreen)
 	.get('/sign-up-success', renderHomeScreen)
 	.get('/matchmaking', renderHomeScreen)
+	.get('/settings', renderHomeScreen)
 	.get('/create-room', renderHomeScreen)
 	.get('/browse-rooms', renderHomeScreen)
 	.get('/lobby', renderHomeScreen)
@@ -37,6 +39,7 @@ router
 	.post('/log_in', new KoaBody(), logIn)
 	.post('/sign_up', new KoaBody(), signUp)
 	.post('/log_out', new KoaBody(), logOut)
+	.post('/settings', new KoaBody(), settings)
 	.post('/is_user_logged_in', isUserLoggedIn)
 	.post('/create_room', new KoaBody(), createRoom)
 	.post('/browse_rooms', new KoaBody(), browseRooms)

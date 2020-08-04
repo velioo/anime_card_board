@@ -208,6 +208,14 @@ const _MATCHMAKE = {
   }
 };
 
+const _SETTINGS = {
+  "type": "object",
+  "properties": {
+    "sound": { "type": "boolean" },
+  },
+  "required": [ "sound" ],
+};
+
 module.exports = {
   SIGN_UP: _SIGN_UP,
   LOGIN: _LOGIN,
@@ -230,4 +238,5 @@ module.exports = {
   WIN_GAME_ENEMY_TIMEOUT: _WIN_GAME_ENEMY_TIMEOUT,
   FINISH_CARD_CONTINUOUS: _FINISH_CARD_CONTINUOUS,
   ACTIVATE_CARD_EFFECT: _ACTIVATE_CARD_EFFECT,
+  SETTINGS: _SETTINGS,
 };

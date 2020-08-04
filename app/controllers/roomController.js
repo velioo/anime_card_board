@@ -20,37 +20,39 @@ var self = module.exports = {
 		ctx.errors = [];
     ctx.request.body.data.board_id = parseInt(ctx.request.body.data.board_id);
 
-    const isSchemaValid = ajv.validate(SCHEMAS.CREATE_ROOM, ctx.request.body.data);
-
-    if (!isSchemaValid) {
-      ajv.errors.forEach((el) => {
-        ctx.errors.push(el);
-      })
-    }
-
-    await validateCreateRoomFields(ctx);
-
-    ctx.result = {
-    	roomName: ctx.request.body.data.room_name,
-    	player1Name: ctx.session.userData.username,
-      roomId: null,
-      boardName: ctx.request.body.data.board_name,
-	  };
-
-    if (ctx.errors.length) {
-      return self.sendResponse(ctx, next);
-    }
-
-   	const roomData = getRoomData(ctx);
-
-    logger.info('Room Data = %o', roomData);
-
-    const roomDbData = Object.keys(roomData).map((fieldName) => roomData[ fieldName ]);
-    const roomDbFields = Object.keys(roomData).join(', ');
-
-    await pg.pool.query('BEGIN');
-
     try {
+      const isSchemaValid = ajv.validate(SCHEMAS.CREATE_ROOM, ctx.request.body.data);
+
+      if (!isSchemaValid) {
+        ajv.errors.forEach((el) => {
+          ctx.errors.push(el);
+        })
+
+        return self.sendResponse(ctx, next);
+      }
+
+      await validateCreateRoomFields(ctx);
+
+      ctx.result = {
+      	roomName: ctx.request.body.data.room_name,
+      	player1Name: ctx.session.userData.username,
+        roomId: null,
+        boardName: ctx.request.body.data.board_name,
+  	  };
+
+      if (ctx.errors.length) {
+        return self.sendResponse(ctx, next);
+      }
+
+     	const roomData = getRoomData(ctx);
+
+      logger.info('Room Data = %o', roomData);
+
+      const roomDbData = Object.keys(roomData).map((fieldName) => roomData[ fieldName ]);
+      const roomDbFields = Object.keys(roomData).join(', ');
+
+      await pg.pool.query('BEGIN');
+
     	let queryStatus = await pg.pool.query(`
 
         DELETE FROM rooms
@@ -275,8 +277,8 @@ var self = module.exports = {
     try {
       let queryStatusMatchmake = await pg.pool.query(`
 
-        SELECT * FROM matchmaking
-        JOIN users ON users.id = matchmaking.user_id
+        SELECT M.*, U.username FROM matchmaking M
+        JOIN users U ON U.id = M.user_id
 
       `);
 

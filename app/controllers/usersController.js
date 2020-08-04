@@ -50,7 +50,7 @@ var self = module.exports = {
       const queryStatus = await pg.pool.query(`
 
         INSERT INTO users (${userDbFields})
-        VALUES ($1, $2, $3, $4)
+        VALUES ($1, $2, $3, $4, $5)
         RETURNING id
 
       `, userDbData);
@@ -82,6 +82,7 @@ var self = module.exports = {
   },
   logIn: async (ctx, next) => {
     ctx.errors = [];
+    ctx.settings = null;
 
     const isSchemaValid = ajv.validate(SCHEMAS.LOGIN, ctx.request.body.data);
 
@@ -98,7 +99,7 @@ var self = module.exports = {
     try {
       const userData = await pg.pool.query(`
 
-        SELECT username, password, salt, id, is_confirmed
+        SELECT username, password, salt, id, is_confirmed, settings_json
         FROM users
         WHERE
           username = $1
@@ -111,12 +112,15 @@ var self = module.exports = {
         if (isAccountConfirmed(userData.rows[0])) {
           ctx.session.userData = { userId: userData.rows[0].id, username: userData.rows[0].username };
           ctx.session.isUserLoggedIn = true;
+          ctx.session.userData.settings = JSON.parse(userData.rows[0].settings_json);
         } else {
           ctx.errors.push({ dataPath: '/username', message: 'You must confirm your email before logging in.' });
         }
       } else {
         ctx.errors.push({ dataPath: '/username', message: 'Wrong username or password.' });
       }
+
+      ctx.settings = ctx.session.settings;
     } catch(err) {
       ctx.errors.push({ dataPath: '/username', message: 'There was a problem while logging in. Please try again later.' });
 
@@ -128,8 +132,9 @@ var self = module.exports = {
   isUserLoggedIn: async (ctx, next) => {
     ctx.body = {
       isUserLoggedIn: ctx.session.isUserLoggedIn,
-      userId: ctx.session.userData ? ctx.session.userData.userId : null,
-      username: ctx.session.userData ? ctx.session.userData.username : null,
+      userId: ctx.session.userData ? ctx.session.userData.userId || null : null,
+      username: ctx.session.userData ? ctx.session.userData.username || null : null,
+      settings: ctx.session.userData ? ctx.session.userData.settings || null : null,
       isSuccessful: true,
     };
   },
@@ -141,6 +146,10 @@ var self = module.exports = {
 
     if (ctx.userMessage) {
       ctx.body.userMessage = ctx.userMessage;
+    }
+
+    if ("settings" in ctx) {
+      ctx.body.settings = ctx.settings;
     }
 
     ctx.body.userId = ctx.session.userData ? ctx.session.userData.userId : null;
@@ -157,6 +166,54 @@ var self = module.exports = {
     }
 
     self.sendResponse(ctx, next);
+  },
+  settings: async (ctx, next) => {
+    ctx.errors = [];
+    ctx.userMessage = "There was a problem while saving your settings. Please try again later.";
+    ctx.settings = {};
+
+    try {
+      assert(ctx.session.userData && ctx.session.userData.username);
+
+      ctx.request.body.data.sound = (ctx.request.body.data.sound == 'true');
+      const isSchemaValid = ajv.validate(SCHEMAS.SETTINGS, ctx.request.body.data);
+
+      if (!isSchemaValid) {
+        ajv.errors.forEach((el) => {
+          ctx.errors.push(el);
+        })
+      }
+
+      if (ctx.errors.length) {
+        return self.sendResponse(ctx, next);
+      }
+
+      let settingsJson = {
+        sound: ctx.request.body.data.sound,
+      };
+
+      const queryStatus = await pg.pool.query(`
+
+        UPDATE users
+        SET settings_json = $1
+        WHERE username = $2
+        RETURNING id
+
+      `, [ JSON.stringify(settingsJson), ctx.session.userData.username ]);
+
+      assert(queryStatus.rowCount == 1);
+
+      ctx.userMessage = "Settings successfully saved.";
+      ctx.settings = settingsJson;
+      ctx.session.userData.settings = settingsJson;
+
+    } catch(err) {
+      ctx.errors.push({ dataPath: '/settings', message: 'There was a problem while saving your settings. Please try again later.' });
+
+      logger.info('Failed to save setttings: %o', err);
+    }
+
+    return self.sendResponse(ctx, next);
   },
 };
 
@@ -185,6 +242,9 @@ let getUserData = (ctx) => {
     'email': ctx.request.body.data.email,
     'password': sha256(ctx.request.body.data.password + salt),
     'salt': salt,
+    'settings_json': JSON.stringify({
+      sound: false,
+    }),
   };
 };
 

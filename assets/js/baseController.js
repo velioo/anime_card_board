@@ -8,13 +8,15 @@ if (_lastHistoryState) {
 }
 
 var baseController = function(client) {
-	this.client = client;
+	var _self = this;
 
-	this._initConstants();
-	this._initElements();
+	_self.client = client;
+
+	_self._initConstants();
+	_self._initElements();
 
 	if (!_isBaseControllerListenersInited) {
-		this._initListeners();
+		_self._initListeners();
 		_isBaseControllerListenersInited = true;
 	}
 
@@ -22,50 +24,53 @@ var baseController = function(client) {
 };
 
 baseController.prototype._initConstants = function() {
-	this.FORM_CLASS = '.anime-cb-form';
-	this.MAIN_WRAPPER_ID = '#acb-main-wrapper';
-	this.SUBMAIN_WRAPPER_ID = '#acb-submain-wrapper'
+	var _self = this;
 
-	this.CHANGE_SCREEN_BTNS_CLASS = '.anime-cb-button';
+	_self.FORM_CLASS = '.anime-cb-form';
+	_self.MAIN_WRAPPER_ID = '#acb-main-wrapper';
+	_self.SUBMAIN_WRAPPER_ID = '#acb-submain-wrapper'
 
-	this.SCREEN_CLASS_PREFIX = '.anime-cb-screen-';
-	this.SCREENS_CLASS = '.anime-cb-screen';
-	this.SCREEN_BTN_PREFIX = 'anime-cb-btn-';
-	this.MAIN_MENU_SCREEN_CLASS = '.anime-cb-screen-main-menu';
-	this.LOGIN_SCREEN_CLASS = '.anime-cb-screen-login';
-	this.SIGN_UP_SCREEN_CLASS = '.anime-cb-screen-sign-up';
-	this.SIGN_UP_SUCCESS_SCREEN_CLASS = '.anime-cb-screen-sign-up-success';
-	this.CREATE_ROOM_SCREEN_CLASS = '.anime-cb-screen-create-room';
-	this.BROWSE_ROOMS_SCREEN_CLASS = '.anime-cb-screen-browse-rooms';
-	this.LOBBY_SCREEN_CLASS = '.anime-cb-screen-lobby';
-	this.GAME_SCREEN_CLASS = '.anime-cb-screen-game';
-	this.MATCHMAKING_SCREEN_CLASS = '.anime-cb-screen-matchmaking';
+	_self.CHANGE_SCREEN_BTNS_CLASS = '.anime-cb-button';
 
-	this.USER_MESSAGE_CLASS = '.user-message';
+	_self.SCREEN_CLASS_PREFIX = '.anime-cb-screen-';
+	_self.SCREENS_CLASS = '.anime-cb-screen';
+	_self.SCREEN_BTN_PREFIX = 'anime-cb-btn-';
+	_self.MAIN_MENU_SCREEN_CLASS = '.anime-cb-screen-main-menu';
+	_self.LOGIN_SCREEN_CLASS = '.anime-cb-screen-login';
+	_self.SIGN_UP_SCREEN_CLASS = '.anime-cb-screen-sign-up';
+	_self.SIGN_UP_SUCCESS_SCREEN_CLASS = '.anime-cb-screen-sign-up-success';
+	_self.CREATE_ROOM_SCREEN_CLASS = '.anime-cb-screen-create-room';
+	_self.BROWSE_ROOMS_SCREEN_CLASS = '.anime-cb-screen-browse-rooms';
+	_self.LOBBY_SCREEN_CLASS = '.anime-cb-screen-lobby';
+	_self.GAME_SCREEN_CLASS = '.anime-cb-screen-game';
+	_self.MATCHMAKING_SCREEN_CLASS = '.anime-cb-screen-matchmaking';
+	_self.SETTINGS_SCREEN_CLASS = '.anime-cb-screen-settings';
 
-	this.SPINNER_CLASS = '.spinner';
-	this.MAIN_SPINNER_CLASS = '.main.spinner';
-	this.PRE_SCREEN_SPINNER_CLASS = '.pre-screen-spinner';
-	this.SCREEN_FOOTER_CLASS = '.anime-cb-screen_footer';
+	_self.USER_MESSAGE_CLASS = '.user-message';
 
-	this.INPUT_ERRORS_CLASS = '.errors';
+	_self.SPINNER_CLASS = '.spinner';
+	_self.MAIN_SPINNER_CLASS = '.main.spinner';
+	_self.PRE_SCREEN_SPINNER_CLASS = '.pre-screen-spinner';
+	_self.SCREEN_FOOTER_CLASS = '.anime-cb-screen_footer';
 
-	this.LOGGED_IN_BLACKLISTED_SCREENS = [
-		this.LOGIN_SCREEN_CLASS,
-		this.SIGN_UP_SCREEN_CLASS,
-		this.SIGN_UP_SUCCESS_SCREEN_CLASS,
+	_self.INPUT_ERRORS_CLASS = '.errors';
+
+	_self.LOGGED_IN_BLACKLISTED_SCREENS = [
+		_self.LOGIN_SCREEN_CLASS,
+		_self.SIGN_UP_SCREEN_CLASS,
+		_self.SIGN_UP_SUCCESS_SCREEN_CLASS,
 	];
 
-	this.LOGGED_OUT_WHITELISTED_SCREENS = [
-		this.MAIN_MENU_SCREEN_CLASS,
-		this.LOGIN_SCREEN_CLASS,
-		this.SIGN_UP_SCREEN_CLASS,
-		this.SIGN_UP_SUCCESS_SCREEN_CLASS,
+	_self.LOGGED_OUT_WHITELISTED_SCREENS = [
+		_self.MAIN_MENU_SCREEN_CLASS,
+		_self.LOGIN_SCREEN_CLASS,
+		_self.SIGN_UP_SCREEN_CLASS,
+		_self.SIGN_UP_SUCCESS_SCREEN_CLASS,
 	];
 
-	this.IGNORE_SCREENS = [
-		this.LOBBY_SCREEN_CLASS,
-		this.GAME_SCREEN_CLASS,
+	_self.IGNORE_SCREENS = [
+		_self.LOBBY_SCREEN_CLASS,
+		_self.GAME_SCREEN_CLASS,
 	];
 };
 
@@ -98,14 +103,15 @@ baseController.prototype._initListeners = function() {
 
 baseController.prototype._initState = function() {
   var stateObj = history.state;
+  var _self = this;
 
 	if (stateObj !== null) {
-		if (!this.IGNORE_SCREENS.includes(stateObj.screenClass)) {
-	  	this.switchToScreen(stateObj.screenClass);
+		if (!_self.IGNORE_SCREENS.includes(stateObj.screenClass)) {
+	  	_self.switchToScreen(stateObj.screenClass);
 		}
 	}
 
-	$(this.SUBMAIN_WRAPPER_ID).show();
+	$(_self.SUBMAIN_WRAPPER_ID).show();
 
 	_isBaseControllerStateInited = true;
 };
@@ -115,38 +121,44 @@ baseController.prototype.switchToScreen = function(screenClass) {
 		'screenClass must be a valid css selector: ' + screenClass);
 
 	logger.info('Switching to screen: ', screenClass);
+	var _self = this;
 
-	this.preSwitchScreenHook(screenClass);
+	_self.preSwitchScreenHook(screenClass);
 
-  this.hideScreens();
-	this.resetAllScreens();
+  _self.hideScreens();
+	_self.resetAllScreens();
 
 	console.log('switchToScreen: ', screenClass);
 
-	if (this.client.logInSignUpController.isUserLoggedIn()) {
-		if (this.LOGGED_IN_BLACKLISTED_SCREENS.includes(screenClass)) {
-			$(this.MAIN_MENU_SCREEN_CLASS).show();
+	if (_self.client.logInSignUpController.isUserLoggedIn()) {
+		if (_self.LOGGED_IN_BLACKLISTED_SCREENS.includes(screenClass)) {
+			$(_self.MAIN_MENU_SCREEN_CLASS).show();
 		} else {
 			$(screenClass).show();
 		}
 	} else {
-		if (this.LOGGED_OUT_WHITELISTED_SCREENS.includes(screenClass)) {
+		if (_self.LOGGED_OUT_WHITELISTED_SCREENS.includes(screenClass)) {
 			$(screenClass).show();
 		} else {
-			$(this.MAIN_MENU_SCREEN_CLASS).show();
+			$(_self.MAIN_MENU_SCREEN_CLASS).show();
 		}
 	}
 
-	this.postSwitchScreenHook(screenClass);
+	_self.postSwitchScreenHook(screenClass);
 };
 
 baseController.prototype.preSwitchScreenHook = function(screenClass) {
 	logger.info('preSwitchScreenHook');
 	console.log('preSwitchScreenHook');
 	console.log(_lastHistoryState);
+	var _self = this;
 
-	if (typeof this.client.roomController.preSwitchScreenHook === "function") {
-		this.client.roomController.preSwitchScreenHook(screenClass);
+	if (typeof _self.client.roomController.preSwitchScreenHookRoomController === "function") {
+		_self.client.roomController.preSwitchScreenHookRoomController(screenClass);
+	}
+
+	if (typeof _self.client.logInSignUpController.preSwitchScreenHookLogInSignUpController === "function") {
+		_self.client.logInSignUpController.preSwitchScreenHookLogInSignUpController(screenClass);
 	}
 };
 
@@ -156,8 +168,8 @@ baseController.prototype.postSwitchScreenHook = function(screenClass) {
 
 	var _self = this;
 
-	if (typeof _self.client.roomController.postSwitchScreenHook === "function") {
-		_self.client.roomController.postSwitchScreenHook(screenClass);
+	if (typeof _self.client.roomController.postSwitchScreenHookRoomController === "function") {
+		_self.client.roomController.postSwitchScreenHookRoomController(screenClass);
 	}
 
 	window.removeEventListener("beforeunload", _self.client.gameController.beforeUnload);
@@ -167,11 +179,13 @@ baseController.prototype.postSwitchScreenHook = function(screenClass) {
 };
 
 baseController.prototype.resetAllScreens = function() {
-	this.clearAllInputs();
-	this.clearAllErrors();
-	this.hideAllErrors();
-	this.clearAllUserMessages();
-	this.hideAllSpinner();
+	var _self = this;
+
+	_self.clearAllInputs();
+	_self.clearAllErrors();
+	_self.hideAllErrors();
+	_self.clearAllUserMessages();
+	_self.hideAllSpinner();
 };
 
 baseController.prototype.clearAllUserMessages = function() {
@@ -253,11 +267,12 @@ baseController.prototype.hideElement = function (el) {
 // };
 
 baseController.prototype.extractBaseScreenClass = function(btn) {
+	var _self = this;
 	var btnScreenClass = null;
 	var classes = btn.classList;
 
   for (var i = 0; i < classes.length; i++) {
-  	if (classes[i].startsWith(this.SCREEN_BTN_PREFIX)) {
+  	if (classes[i].startsWith(_self.SCREEN_BTN_PREFIX)) {
 			btnScreenClass = classes[i];
 			break;
 		}
@@ -267,7 +282,7 @@ baseController.prototype.extractBaseScreenClass = function(btn) {
   	return null;
   }
 
-  var splittedClass = btnScreenClass.split(this.SCREEN_BTN_PREFIX);
+  var splittedClass = btnScreenClass.split(_self.SCREEN_BTN_PREFIX);
   assert(splittedClass.length > 1, 'Screen btn class name is invalid: ' + splittedClass[0]);
 
   var baseScreenClass = splittedClass[1];
@@ -276,7 +291,8 @@ baseController.prototype.extractBaseScreenClass = function(btn) {
 };
 
 baseController.prototype.createUrlFromScreenClass = function(screenClass) {
-	var splittedClass = screenClass.split(this.SCREEN_CLASS_PREFIX);
+	var _self = this;
+	var splittedClass = screenClass.split(_self.SCREEN_CLASS_PREFIX);
 
 	assert(splittedClass.length > 1, 'Screen class name is invalid: ' + splittedClass[0]);
 
@@ -294,17 +310,19 @@ Then url will be assigned to baseClass.
 assigned to it and 'sign-up' will be assgiend to the url of the page.
 */
 baseController.prototype.processChangeScreen = function(input) {
-	this.resetAllScreens();
+	var _self = this;
+
+	_self.resetAllScreens();
 
 	var screenClass = null;
 	var baseScreenClass = null;
 
 	if (typeof input === 'object') {
-		baseScreenClass = this.extractBaseScreenClass(input);
+		baseScreenClass = _self.extractBaseScreenClass(input);
 
 		assert(baseScreenClass !== null, 'Failed to get base screen class');
 
-		screenClass = this.SCREEN_CLASS_PREFIX + baseScreenClass;
+		screenClass = _self.SCREEN_CLASS_PREFIX + baseScreenClass;
 	} else if (typeof input === 'string') {
 		screenClass = input;
 	} else {
@@ -313,7 +331,7 @@ baseController.prototype.processChangeScreen = function(input) {
 
 	logger.info('Pushing to history screen class: ', screenClass);
 
-	var url = baseScreenClass !== null ? baseScreenClass : this.createUrlFromScreenClass(screenClass);
+	var url = baseScreenClass !== null ? baseScreenClass : _self.createUrlFromScreenClass(screenClass);
 	var stateObj = { screenClass: screenClass };
 
 	if (history.state) {
@@ -325,5 +343,5 @@ baseController.prototype.processChangeScreen = function(input) {
 
 	_lastHistoryState = history.state;
 
-	this.switchToScreen(screenClass);
+	_self.switchToScreen(screenClass);
 };

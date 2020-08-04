@@ -10,6 +10,7 @@ var hbsPartials = {
   lobby: '../partials/lobby',
   game: '../partials/game',
   matchmaking: '../partials/matchmaking',
+  settings: '../partials/settings',
 };
 
 module.exports = hbsPartials;

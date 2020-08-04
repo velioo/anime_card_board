@@ -541,8 +541,10 @@ roomController.prototype.showJoinRoomSuccess = function(data) {
 	_self._connectingToRoom = false;
 };
 
-roomController.prototype.preSwitchScreenHook = function (screenClass) {
+roomController.prototype.preSwitchScreenHookRoomController = function (screenClass) {
 	var _self = this;
+
+	console.log('_lastScreenClass: ', _lastScreenClass);
 
 	if (_self._roomId && ((_lastScreenClass == _self.GAME_SCREEN_CLASS)
 		|| (_lastScreenClass == _self.MATCHMAKING_SCREEN_CLASS && screenClass != _self.GAME_SCREEN_CLASS))) {
@@ -577,7 +579,7 @@ roomController.prototype.preSwitchScreenHook = function (screenClass) {
 	}
 };
 
-roomController.prototype.postSwitchScreenHook = function (screenClass) {
+roomController.prototype.postSwitchScreenHookRoomController = function (screenClass) {
 	var _self = this;
 
 	if (screenClass !== _self.BROWSE_ROOMS_SCREEN_CLASS) {
@@ -597,7 +599,15 @@ roomController.prototype.postSwitchScreenHook = function (screenClass) {
 };
 
 roomController.prototype.clearCreateRoomInputs = function() {
-	this.$createRoomInputs.val('');
+	var _self = this;
+
+	_self.$createRoomInputs.each(function() {
+		if ($(this).prop("nodeName").toLowerCase() == "select") {
+			$(this).val($(this).find("option:first").val());
+		} else {
+			$(this).val('');
+		}
+	});
 };
 
 roomController.prototype.clearCreateRoomErrors = function() {

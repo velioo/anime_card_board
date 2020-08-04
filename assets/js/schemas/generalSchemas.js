@@ -36,8 +36,9 @@ var logInResponse = {
 		"userMessage": { "type": "string" },
 		"userId": { "type": ["integer", "null"] },
 		"username": { "type": ["string", "null"] },
+		"settings": { "type": ["object", "null"] },
 	},
-	"required": [ "errors", "isSuccessful", "userId", "username" ],
+	"required": [ "errors", "isSuccessful", "userId", "username", "settings" ],
 };
 
 var logOutResponse = {
@@ -56,8 +57,9 @@ var isUserLoggedInResponse = {
 		"isUserLoggedIn": { "type": "boolean" },
 		"userId": { "type": ["integer", "null"] },
 		"username": { "type": ["string", "null"] },
+		"settings": { "type": ["object", "null"] },
 	},
-	"required": [ "isSuccessful", "isUserLoggedIn", "userId", "username" ],
+	"required": [ "isSuccessful", "isUserLoggedIn", "userId", "username", "settings" ],
 };
 
 var createRoomResponse = {
@@ -209,6 +211,27 @@ var matchmakeResponse = {
 		},
 	},
 	"required": [ "errors", "isSuccessful", "isUserLoggedIn", "result" ],
+};
+
+var settingsResponse = {
+	"type": "object",
+	"properties": {
+		"errors" : {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"dataPath": { "type": "string", "pattern": "/.+"  },
+					"message": { "type": "string" },
+				},
+				"required": [ "dataPath", "message" ]
+			}
+		},
+		"isSuccessful": { "type": "boolean" },
+		"userMessage": { "type": "string" },
+		"settings": { "type": ["object", "null"] },
+	},
+	"required": [ "errors", "isSuccessful", "userMessage", "settings" ],
 };
 
 var joinRoomResponse = getCurrentRoomDataResponse;
