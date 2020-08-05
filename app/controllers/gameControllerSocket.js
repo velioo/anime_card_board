@@ -125,6 +125,8 @@ const self = module.exports = {
               maxCardsInHand: 6,
               cardsToDiscard: 0,
               cardsToDraw: 5,
+              cardsToDrawFromEnemyHand: 0,
+              cardsToDestroyFromEnemyField: 0,
               cardsSummonConstraints: {
                 cardsCanSummonAny: false,
                 cardsCanSummonCommon: true,
@@ -157,6 +159,8 @@ const self = module.exports = {
               maxCardsInHand: 6,
               cardsToDiscard: 0,
               cardsToDraw: 5,
+              cardsToDrawFromEnemyHand: 0,
+              cardsToDestroyFromEnemyField: 0,
               cardsSummonConstraints: {
                 cardsCanSummonAny: false,
                 cardsCanSummonCommon: true,
@@ -528,6 +532,137 @@ const self = module.exports = {
       logger.info('Failed to summon card: %o', err);
     }
   },
+  drawCardFromEnemyHand: async (ctx, next) => {
+    logger.info('drawCardFromEnemyHand gameController');
+    ctx.errors = [];
+
+    await pg.pool.query('BEGIN');
+
+    try {
+      ctx.data.roomId = parseInt(ctx.data.roomId);
+      ctx.data.cardIdx = parseInt(ctx.data.cardIdx);
+
+      const isSchemaValid = ajv.validate(SCHEMAS.DRAW_CARD_FROM_ENEMY_HAND, ctx.data);
+      assert(isSchemaValid);
+
+      assert(ctx.session.userData && ctx.session.userData.userId);
+
+      let queryStatus = await utils.lockRowById({ table: 'games', field: 'room_id', queryArg: ctx.data.roomId });
+
+      assert(queryStatus.rows[0].player1_id == ctx.session.userData.userId
+        || queryStatus.rows[0].player2_id == ctx.session.userData.userId);
+
+      ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
+      ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
+
+      let gameState = ctx.gameplayData.gameState;
+      let playerState = gameState.playersState[ctx.session.userData.userId];
+      let enemyUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
+      let playerStateEnemy = gameState.playersState[enemyUserId];
+
+      assert(playerState.cardsToDrawFromEnemyHand > 0);
+      assert((ctx.data.cardIdx >= 0) && (ctx.data.cardIdx < playerStateEnemy.cardsInHandArr.length));
+
+      gameState.playerIdDrawnCardFromEnemyHand = ctx.session.userData.userId;
+      gameState.cardDrawnFromEnemyHand = playerStateEnemy.cardsInHandArr[ctx.data.cardIdx];
+      gameState.cardDrawnFromEnemyHand.cardInHandIdx = ctx.data.cardIdx;
+      playerState.cardsInHandArr.push(playerStateEnemy.cardsInHandArr[ctx.data.cardIdx]);
+      playerStateEnemy.cardsInHandArr.splice(ctx.data.cardIdx, 1);
+      playerState.cardsToDrawFromEnemyHand--;
+      playerState.cardsInHand++;
+      playerStateEnemy.cardsInHand--;
+
+      await gameCore.drawCardFromEnemyHandHook(ctx);
+      await gameCore.activePlayerHook(ctx);
+
+      queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
+        field2: 'room_id', queryArg2: ctx.data.roomId });
+
+      ctx.cardsInHandArrPlayer1 = gameState.playersState[ctx.roomData.player1Id].cardsInHandArr;
+      ctx.cardsInHandArrPlayer2 = gameState.playersState[ctx.roomData.player2Id].cardsInHandArr;
+
+      gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
+      gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
+
+      await pg.pool.query('COMMIT');
+    } catch (err) {
+      ctx.errors.push({ dataPath: '/draw_card_from_enemy_hand', message: 'There was a problem while drawing card from enemy hand. Retrying...' });
+
+      await pg.pool.query('ROLLBACK');
+
+      logger.info('Failed to draw card from enemy hand: %o', err);
+    }
+  },
+  destroyCardFromEnemyField: async (ctx, next) => {
+    logger.info('destroyCardFromEnemyField gameController');
+    ctx.errors = [];
+
+    await pg.pool.query('BEGIN');
+
+    try {
+      ctx.data.roomId = parseInt(ctx.data.roomId);
+      ctx.data.cardId = parseInt(ctx.data.cardId);
+
+      const isSchemaValid = ajv.validate(SCHEMAS.DESTROY_CARD_FROM_ENEMY_FIELD, ctx.data);
+      assert(isSchemaValid);
+
+      assert(ctx.session.userData && ctx.session.userData.userId);
+
+      let queryStatus = await utils.lockRowById({ table: 'games', field: 'room_id', queryArg: ctx.data.roomId });
+
+      assert(queryStatus.rows[0].player1_id == ctx.session.userData.userId
+        || queryStatus.rows[0].player2_id == ctx.session.userData.userId);
+
+      ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
+      ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
+
+      let gameState = ctx.gameplayData.gameState;
+      let playerState = gameState.playersState[ctx.session.userData.userId];
+      let enemyUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
+      let playerStateEnemy = gameState.playersState[enemyUserId];
+
+      assert(playerState.cardsToDestroyFromEnemyField > 0);
+      assert(playerStateEnemy.cardsOnFieldArr.length > 0);
+
+      let cardToDestroy;
+      let cardIdx;
+      for (let i = 0; i < playerStateEnemy.cardsOnFieldArr.length; i++) {
+        if (playerStateEnemy.cardsOnFieldArr[i].cardId == ctx.data.cardId) {
+          cardToDestroy = playerStateEnemy.cardsOnFieldArr[i];
+          cardIdx = i;
+          break;
+        }
+      }
+
+      assert(cardToDestroy && cardIdx >= 0);
+
+      gameState.playerIdDestroyedCardFromEnemyField = ctx.session.userData.userId;
+      gameState.cardDestroyedFromEnemyField = cardToDestroy;
+      playerStateEnemy.cardsOnFieldArr.splice(cardIdx, 1);
+      playerStateEnemy.cardsInGraveyard.push(cardToDestroy);
+      playerState.cardsToDestroyFromEnemyField--;
+
+      await gameCore.destroyCardFromEnemyFieldHook(ctx);
+      await gameCore.activePlayerHook(ctx);
+
+      queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
+        field2: 'room_id', queryArg2: ctx.data.roomId });
+
+      ctx.cardsInHandArrPlayer1 = gameState.playersState[ctx.roomData.player1Id].cardsInHandArr;
+      ctx.cardsInHandArrPlayer2 = gameState.playersState[ctx.roomData.player2Id].cardsInHandArr;
+
+      gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
+      gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
+
+      await pg.pool.query('COMMIT');
+    } catch (err) {
+      ctx.errors.push({ dataPath: '/destroy_card_from_enemy_field', message: 'There was a problem while destroying card from enemy field. Retrying...' });
+
+      await pg.pool.query('ROLLBACK');
+
+      logger.info('Failed to destroy card from enemy field: %o', err);
+    }
+  },
   rollPhase: async (ctx, next) => {
     logger.info('rollPhase gameController');
     ctx.errors = [];
@@ -870,6 +1005,7 @@ const self = module.exports = {
       for (let i = 0; i < playerState.cardsOnFieldArr.length; i++) {
         if (playerState.cardsOnFieldArr[i].cardId == ctx.data.cardId) {
           cardActivated = playerState.cardsOnFieldArr[i];
+          break;
         }
       }
 

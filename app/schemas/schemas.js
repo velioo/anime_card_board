@@ -216,6 +216,24 @@ const _SETTINGS = {
   "required": [ "sound" ],
 };
 
+const _DRAW_CARD_FROM_ENEMY_HAND = {
+  "type": "object",
+  "properties": {
+    "roomId": { "type": "integer" },
+    "cardIdx": { "type": "integer" },
+  },
+  "required": [ "roomId", "cardIdx" ],
+};
+
+const _DESTROY_CARD_FROM_ENEMY_FIELD = {
+  "type": "object",
+  "properties": {
+    "roomId": { "type": "integer" },
+    "cardId": { "type": "integer" },
+  },
+  "required": [ "roomId", "cardId" ],
+};
+
 module.exports = {
   SIGN_UP: _SIGN_UP,
   LOGIN: _LOGIN,
@@ -239,4 +257,6 @@ module.exports = {
   FINISH_CARD_CONTINUOUS: _FINISH_CARD_CONTINUOUS,
   ACTIVATE_CARD_EFFECT: _ACTIVATE_CARD_EFFECT,
   SETTINGS: _SETTINGS,
+  DRAW_CARD_FROM_ENEMY_HAND: _DRAW_CARD_FROM_ENEMY_HAND,
+  DESTROY_CARD_FROM_ENEMY_FIELD: _DESTROY_CARD_FROM_ENEMY_FIELD,
 };

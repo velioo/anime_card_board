@@ -36,6 +36,12 @@ const self = module.exports = {
   summonCard: async (ctx, next) => {
     await gameController.summonCard (ctx, next);
   },
+  drawCardFromEnemyHand: async (ctx, next) => {
+    await gameController.drawCardFromEnemyHand (ctx, next);
+  },
+  destroyCardFromEnemyField: async (ctx, next) => {
+    await gameController.destroyCardFromEnemyField (ctx, next);
+  },
   rollPhase: async (ctx, next) => {
     await gameController.rollPhase (ctx, next);
   },

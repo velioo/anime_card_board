@@ -49,6 +49,8 @@ var self = module.exports = {
     assert(playerState.canRollDiceBoardCount == 0);
     assert(playerState.cardsToDiscard == 0);
     assert(playerState.cardsToDraw == 0);
+    assert(playerState.cardsToDrawFromEnemyHand == 0);
+    assert(playerState.cardsToDestroyFromEnemyField == 0);
 	},
 	drawCardHook: async (ctx) => {
 		let gameState = ctx.gameplayData.gameState;
@@ -138,6 +140,28 @@ var self = module.exports = {
 				}
 
 				assert(availableSpaces);
+		  }
+
+		  if (card.cardEffect.effect == "drawCardFromEnemyHand") {
+		  	assert(playerStateEnemy.cardsInHandArr.length > 0);
+
+		  	playerState.cardsToDrawFromEnemyHand = playerState.cardsToDrawFromEnemyHand ? playerState.cardsToDrawFromEnemyHand : 0;
+		  	if (playerStateEnemy.cardsInHandArr.length < (card.cardEffect.effectValue + playerState.cardsToDrawFromEnemyHand)) {
+		  		playerState.cardsToDrawFromEnemyHand = playerStateEnemy.cardsInHandArr.length;
+		  	} else {
+		  		playerState.cardsToDrawFromEnemyHand += card.cardEffect.effectValue;
+		  	}
+		  }
+
+		  if (card.cardEffect.effect == "destroyCardFromEnemyField") {
+		  	assert(playerStateEnemy.cardsOnFieldArr.length > 0);
+
+		  	playerState.cardsToDestroyFromEnemyField = playerState.cardsToDestroyFromEnemyField ? playerState.cardsToDestroyFromEnemyField : 0;
+		  	if (playerStateEnemy.cardsOnFieldArr.length < (card.cardEffect.effectValue + playerState.cardsToDestroyFromEnemyField)) {
+		  		playerState.cardsToDestroyFromEnemyField = playerStateEnemy.cardsOnFieldArr.length;
+		  	} else {
+		  		playerState.cardsToDestroyFromEnemyField += card.cardEffect.effectValue;
+		  	}
 		  }
 		} else {
 			if (card.cardEffect.maxUsesPerTurn) {
@@ -531,6 +555,8 @@ var self = module.exports = {
 		if (gameState.playersState[notCurrPlayerId].canRollDiceBoardCount > 0
 			|| gameState.playersState[notCurrPlayerId].cardsToDraw > 0
 			|| gameState.playersState[notCurrPlayerId].cardsToDiscard > 0
+			|| gameState.playersState[notCurrPlayerId].cardsToDrawFromEnemyHand > 0
+			|| gameState.playersState[notCurrPlayerId].cardsToDestroyFromEnemyField > 0
 			|| gameState.playersState[notCurrPlayerId].cardsSummonConstraints.cardsCanSummonAny) {
 			ctx.gameplayData.gameState.activePlayerId = notCurrPlayerId;
 			ctx.sessions[notCurrPlayerId].pausedTimer = false;
@@ -540,6 +566,50 @@ var self = module.exports = {
 			ctx.sessions[notCurrPlayerId].pausedTimer = true;
 			ctx.sessions[currPlayerId].pausedTimer = false;
 		}
+	},
+	drawCardFromEnemyHandHook: async (ctx) => {
+		let gameState = ctx.gameplayData.gameState;
+		let playerState = gameState.playersState[ctx.session.userData.userId];
+		let enemyUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
+		let playerStateEnemy = gameState.playersState[enemyUserId];
+
+		playerState.cardsInHandArr.forEach(function(card) {
+    	updateCardEffectValueStatus(card, playerState);
+		});
+
+		playerStateEnemy.cardsInHandArr.forEach(function(card) {
+    	updateCardEffectValueStatus(card, playerStateEnemy);
+		});
+
+		playerState.cardsOnFieldArr.forEach(function(card) {
+    	updateCardEffectValueStatus(card, playerState);
+		});
+
+		playerStateEnemy.cardsOnFieldArr.forEach(function(card) {
+    	updateCardEffectValueStatus(card, playerStateEnemy);
+		});
+	},
+	destroyCardFromEnemyFieldHook: async (ctx) => {
+		let gameState = ctx.gameplayData.gameState;
+		let playerState = gameState.playersState[ctx.session.userData.userId];
+		let enemyUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
+		let playerStateEnemy = gameState.playersState[enemyUserId];
+
+		playerState.cardsInHandArr.forEach(function(card) {
+    	updateCardEffectValueStatus(card, playerState);
+		});
+
+		playerStateEnemy.cardsInHandArr.forEach(function(card) {
+    	updateCardEffectValueStatus(card, playerStateEnemy);
+		});
+
+		playerState.cardsOnFieldArr.forEach(function(card) {
+    	updateCardEffectValueStatus(card, playerState);
+		});
+
+		playerStateEnemy.cardsOnFieldArr.forEach(function(card) {
+    	updateCardEffectValueStatus(card, playerStateEnemy);
+		});
 	},
 };
 

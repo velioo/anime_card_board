@@ -711,9 +711,74 @@ var turnTimer = setInterval(function() {
 
 // Draw card---------------------------
 $('#anime-cb-card-global-deck').on('click', function(e) {
-	drawCardFromDeckEnemy();
+	drawCardFromEnemyHandEnemy();
 	drawCardFromDeckYou();
+	// drawCardFromEnemyHandYou();
 });
+
+function drawCardFromEnemyHandYou() {
+  // $('.anime-cb-cards-in-hand.player-you').attr("style", "");
+  var cardsInHandCount = $('.anime-cb-cards-in-hand.player-you .anime-cb-card.player-you').length;
+  var drawFromDeckAnimationCount = cardsInHandCount + 1;
+
+  if (cardsInHandCount >= 10 && cardsInHandCount <= 15) {
+  	drawFromDeckAnimationCount = 10;
+  } else if (cardsInHandCount > 15) {
+  	drawFromDeckAnimationCount = 11;
+  }
+
+  $('.anime-cb-cards-in-hand.player-you').css("overflow", "visible");
+  $('.anime-cb-cards-in-hand.player-you').append('<img style="animation: draw-from-enemy-hand-you-' + drawFromDeckAnimationCount + ' 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both; -webkit-animation: draw-from-enemy-hand-you-' + drawFromDeckAnimationCount + ' 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;" class="anime-cb-card player-you" data-card-text="This is Misaka" data-card-name="Misaka" src="imgs/player_cards/Misaka.jpg">');
+
+  increaseYourCardsInHandDensity();
+
+  $('*').on('DOMMouseScroll mousewheel', function(e) {
+    e.stopPropagation();
+    e.preventDefault();
+    e.returnValue = false;
+    return false;
+  });
+
+  setTimeout(function() {
+  	$('*').off('DOMMouseScroll mousewheel');
+  	$('.anime-cb-cards-in-hand').on('DOMMouseScroll mousewheel', noScrollOnCardHover);
+  	$('.anime-cb-card.player-you').css("animation", "");
+  	$('.anime-cb-card.player-you').css("-webkit-animation", "");
+  	$('.anime-cb-cards-in-hand.player-you').css("overflow", "hidden");
+  }, 600);
+};
+
+function drawCardFromEnemyHandEnemy() {
+  // $('.anime-cb-cards-in-hand.player-you').attr("style", "");
+  var cardsInHandCount = $('.anime-cb-cards-in-hand.player-enemy .anime-cb-card.player-enemy').length;
+  var drawFromDeckAnimationCount = cardsInHandCount + 1;
+
+  if (cardsInHandCount >= 10 && cardsInHandCount <= 15) {
+  	drawFromDeckAnimationCount = 10;
+  } else if (cardsInHandCount > 15) {
+  	drawFromDeckAnimationCount = 11;
+  }
+
+  $('.anime-cb-cards-in-hand.player-enemy').css("overflow", "visible");
+  $('.anime-cb-cards-in-hand.player-enemy').append('<img style="animation: draw-from-enemy-hand-enemy-' + drawFromDeckAnimationCount + ' 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both; -webkit-animation: draw-from-enemy-hand-enemy-' + drawFromDeckAnimationCount + ' 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;" class="anime-cb-card player-enemy" src="imgs/player_cards/card_back.png">');
+
+  increaseEnemyCardsInHandDensity();
+
+  $('*').on('DOMMouseScroll mousewheel', function(e) {
+    e.stopPropagation();
+    e.preventDefault();
+    e.returnValue = false;
+    return false;
+  });
+
+  setTimeout(function() {
+  	$('*').off('DOMMouseScroll mousewheel');
+  	$('.anime-cb-cards-in-hand').on('DOMMouseScroll mousewheel', noScrollOnCardHover);
+  	$('.anime-cb-card.player-enemy').css("animation", "");
+  	$('.anime-cb-card.player-enemy').css("-webkit-animation", "");
+  	$('.anime-cb-cards-in-hand.player-enemy').css("overflow", "hidden");
+  }, 600);
+};
 
 function drawCardFromDeckYou() {
   // $('.anime-cb-cards-in-hand.player-you').attr("style", "");

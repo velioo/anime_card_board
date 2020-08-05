@@ -11,7 +11,7 @@ var self = module.exports = {
     ctx.state.userMessage = ctx.request.query.msg || "";
 
     const queryStatus = await pg.pool.query(`
-      SELECT id, name FROM boards
+      SELECT id, name FROM boards ORDER BY name
     `);
 
     assert(queryStatus.rowCount >= 1);

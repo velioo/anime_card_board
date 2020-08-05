@@ -19,6 +19,8 @@ gameClient.prototype.initGameSocket = function(socket) {
 	socket.on('standByPhase', this.processStandByPhase.bind(this));
 	socket.on('mainPhase', this.processMainPhase.bind(this));
 	socket.on('summonCard', this.processSummonCard.bind(this));
+	socket.on('drawCardFromEnemyHand', this.processDrawCardFromEnemyHand.bind(this));
+	socket.on('destroyCardFromEnemyField', this.processDestroyCardFromEnemyField.bind(this));
 	socket.on('rollPhase', this.processRollPhase.bind(this));
 	socket.on('rollDiceBoard', this.processRollDiceBoard.bind(this));
 	socket.on('endPhase', this.processEndPhase.bind(this));
@@ -150,6 +152,46 @@ gameClient.prototype.processSummonCard = function (_data) {
 	if (_self.generalClient.roomController._roomId && _data.roomId
 		&& _self.generalClient.roomController._roomId == _data.roomId) {
 		_self.gameController.processSummonCard(_data);
+	}
+};
+
+gameClient.prototype.drawCardFromEnemyHand = function (_data) {
+	logger.info('drawCardFromEnemyHand');
+
+	var _self = this;
+
+	_self.socket.emit('drawCardFromEnemyHand', _data);
+};
+
+gameClient.prototype.processDrawCardFromEnemyHand = function (_data) {
+	logger.info('processDrawCardFromEnemyHand');
+	console.log('processDrawCardFromEnemyHand');
+
+	var _self = this;
+
+	if (_self.generalClient.roomController._roomId && _data.roomId
+		&& _self.generalClient.roomController._roomId == _data.roomId) {
+		_self.gameController.processDrawCardFromEnemyHand(_data);
+	}
+};
+
+gameClient.prototype.destroyCardFromEnemyField = function (_data) {
+	logger.info('destroyCardFromEnemyField');
+
+	var _self = this;
+
+	_self.socket.emit('destroyCardFromEnemyField', _data);
+};
+
+gameClient.prototype.processDestroyCardFromEnemyField = function (_data) {
+	logger.info('processDestroyCardFromEnemyField');
+	console.log('processDestroyCardFromEnemyField');
+
+	var _self = this;
+
+	if (_self.generalClient.roomController._roomId && _data.roomId
+		&& _self.generalClient.roomController._roomId == _data.roomId) {
+		_self.gameController.processDestroyCardFromEnemyField(_data);
 	}
 };
 

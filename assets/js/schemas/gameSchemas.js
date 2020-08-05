@@ -111,6 +111,18 @@ var startGameResponse = {
 							"required": cardObjRequiredFields,
 						},
 						"playerIdFinishCardContinuous": { "type": ["integer", "null"] },
+						"playerIdDrawnCardFromEnemyHand": { "type": ["integer", "null"] },
+						"cardDrawnFromEnemyHand": {
+							"type": ["object", "null"],
+							"properties": cardObjProperties,
+							"required": cardObjRequiredFields,
+						},
+						"playerIdDestroyedCardFromEnemyField": { "type": ["integer", "null"] },
+						"cardDestroyedFromEnemyField": {
+							"type": ["object", "null"],
+							"properties": cardObjProperties,
+							"required": cardObjRequiredFields,
+						},
 						"activePlayerId": { "type": "integer" },
 						"playerIdWinGame": { "type": ["integer", "null"] },
 						"playersState": {
@@ -122,6 +134,8 @@ var startGameResponse = {
 									"lastBoardIndex": { "type": "integer" },
 									"cardsInHand": "integer",
 									"cardsToDraw": "integer",
+									"cardsToDrawFromEnemyHand": "integer",
+									"cardsToDestroyFromEnemyField": "integer",
 									"cardsSummonConstraints": {
 										"type": "object",
 										"properties": {
@@ -220,6 +234,8 @@ var winGameResponse = {
 
 var activateCardEffectResponse = startGameResponse;
 var finishCardEffectContinuousResponse = startGameResponse;
+var drawCardFromEnemyHandResponse = startGameResponse;
+var destroyCardFromEnemyFieldResponse = startGameResponse;
 
 var drawCardYouResponse = {
 	"type": "object",

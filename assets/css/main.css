@@ -937,8 +937,8 @@ body {
     opacity: 0;
   }
   100% {
-    -webkit-transform: translateY(0) rotate(180deg);
-            transform: translateY(0) rotate(180deg);
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
     opacity: 1;
   }
 }
@@ -949,8 +949,8 @@ body {
     opacity: 0;
   }
   100% {
-    -webkit-transform: translateY(0) rotate(180deg);
-            transform: translateY(0) rotate(180deg);
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
     opacity: 1;
   }
 }
@@ -1989,6 +1989,11 @@ body {
   height: 4000px;
 }
 
+.center-screen.anime-cb-choose-card-effect > div:first-child {
+  padding: 50px;
+  background-color: peru;
+}
+
 .anime-cb-choose-card-effect {
   position: fixed;
   top: 50%;
@@ -2000,7 +2005,7 @@ body {
   z-index: -1;
   transform: translate(-50%, -50%);
   margin-right: -10000px;
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(1, 1, 1, 0.5);
 }
 
 .anime-cb-choose-card-effect-choice {
@@ -2157,4 +2162,551 @@ input:checked + .slider:after
 #anime-cb-form-settings .spinner {
   margin-top: 15px;
   margin-left: -100px;
+}
+
+@-webkit-keyframes draw-from-enemy-hand-you-1 {
+  0% {
+    -webkit-transform: translateY(-1150px) translateX(0px);
+            transform: translateY(-1150px) translateX(0px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-enemy-hand-you-1 {
+  0% {
+    -webkit-transform: translateY(-1150px) translateX(0px);
+            transform: translateY(-1150px) translateX(0px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-enemy-hand-you-2 {
+  0% {
+    -webkit-transform: translateY(-1150px) translateX(-67px);
+            transform: translateY(-1150px) translateX(-67px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-enemy-hand-you-2 {
+  0% {
+    -webkit-transform: translateY(-1150px) translateX(-67px);
+            transform: translateY(-1150px) translateX(-67px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-enemy-hand-you-3 {
+  0% {
+    -webkit-transform: translateY(-1150px) translateX(-134px);
+            transform: translateY(-1150px) translateX(-134px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-enemy-hand-you-3 {
+  0% {
+    -webkit-transform: translateY(-1150px) translateX(-134px);
+            transform: translateY(-1150px) translateX(-134px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-enemy-hand-you-4 {
+  0% {
+    -webkit-transform: translateY(-1150px) translateX(-201px);
+            transform: translateY(-1150px) translateX(-201px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-enemy-hand-you-4 {
+  0% {
+    -webkit-transform: translateY(-1150px) translateX(-201px);
+            transform: translateY(-1150px) translateX(-201px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-enemy-hand-you-5 {
+  0% {
+    -webkit-transform: translateY(-1150px) translateX(-268px);
+            transform: translateY(-1150px) translateX(-268px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-enemy-hand-you-5 {
+  0% {
+    -webkit-transform: translateY(-1150px) translateX(-268px);
+            transform: translateY(-1150px) translateX(-268px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-enemy-hand-you-6 {
+  0% {
+    -webkit-transform: translateY(-1150px) translateX(-315px);
+            transform: translateY(-1150px) translateX(-315px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-enemy-hand-you-6 {
+  0% {
+    -webkit-transform: translateY(-1150px) translateX(-315px);
+            transform: translateY(-1150px) translateX(-315px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-enemy-hand-you-7 {
+  0% {
+    -webkit-transform: translateY(-1150px) translateX(-350px);
+            transform: translateY(-1150px) translateX(-350px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-enemy-hand-you-7 {
+  0% {
+    -webkit-transform: translateY(-1150px) translateX(-350px);
+            transform: translateY(-1150px) translateX(-350px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-enemy-hand-you-8 {
+  0% {
+    -webkit-transform: translateY(-1150px) translateX(-380px);
+            transform: translateY(-1150px) translateX(-380px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-enemy-hand-you-8 {
+  0% {
+    -webkit-transform: translateY(-1150px) translateX(-380px);
+            transform: translateY(-1150px) translateX(-380px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-enemy-hand-you-9 {
+  0% {
+    -webkit-transform: translateY(-1150px) translateX(-410px);
+            transform: translateY(-1150px) translateX(-410px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-enemy-hand-you-9 {
+  0% {
+    -webkit-transform: translateY(-1150px) translateX(-410px);
+            transform: translateY(-1150px) translateX(-410px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-enemy-hand-you-10 {
+  0% {
+    -webkit-transform: translateY(-1150px) translateX(-415px);
+            transform: translateY(-1150px) translateX(-415px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-enemy-hand-you-10 {
+  0% {
+    -webkit-transform: translateY(-1150px) translateX(-415px);
+            transform: translateY(-1150px) translateX(-415px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-enemy-hand-you-11 {
+  0% {
+    -webkit-transform: translateY(-1150px) translateX(-420px);
+            transform: translateY(-1150px) translateX(-420px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-enemy-hand-you-11 {
+  0% {
+    -webkit-transform: translateY(-1150px) translateX(-420px);
+            transform: translateY(-1150px) translateX(-420px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-enemy-hand-enemy-1 {
+  0% {
+    -webkit-transform: translateY(1150px) translateX(0px);
+            transform: translateY(1150px) translateX(0px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-enemy-hand-enemy-1 {
+  0% {
+    -webkit-transform: translateY(1150px) translateX(0px);
+            transform: translateY(1150px) translateX(0px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-enemy-hand-enemy-2 {
+  0% {
+    -webkit-transform: translateY(1150px) translateX(-67px);
+            transform: translateY(1150px) translateX(-67px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-enemy-hand-enemy-2 {
+  0% {
+    -webkit-transform: translateY(1150px) translateX(-67px);
+            transform: translateY(1150px) translateX(-67px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-enemy-hand-enemy-3 {
+  0% {
+    -webkit-transform: translateY(1150px) translateX(-134px);
+            transform: translateY(1150px) translateX(-134px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-enemy-hand-enemy-3 {
+  0% {
+    -webkit-transform: translateY(1150px) translateX(-134px);
+            transform: translateY(1150px) translateX(-134px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-enemy-hand-enemy-4 {
+  0% {
+    -webkit-transform: translateY(1150px) translateX(-201px);
+            transform: translateY(1150px) translateX(-201px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-enemy-hand-enemy-4 {
+  0% {
+    -webkit-transform: translateY(1150px) translateX(-201px);
+            transform: translateY(1150px) translateX(-201px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-enemy-hand-enemy-5 {
+  0% {
+    -webkit-transform: translateY(1150px) translateX(-268px);
+            transform: translateY(1150px) translateX(-268px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-enemy-hand-enemy-5 {
+  0% {
+    -webkit-transform: translateY(1150px) translateX(-268px);
+            transform: translateY(1150px) translateX(-268px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-enemy-hand-enemy-6 {
+  0% {
+    -webkit-transform: translateY(1150px) translateX(-315px);
+            transform: translateY(1150px) translateX(-315px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-enemy-hand-enemy-6 {
+  0% {
+    -webkit-transform: translateY(1150px) translateX(-315px);
+            transform: translateY(1150px) translateX(-315px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-enemy-hand-enemy-7 {
+  0% {
+    -webkit-transform: translateY(1150px) translateX(-350px);
+            transform: translateY(1150px) translateX(-350px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-enemy-hand-enemy-7 {
+  0% {
+    -webkit-transform: translateY(1150px) translateX(-350px);
+            transform: translateY(1150px) translateX(-350px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-enemy-hand-enemy-8 {
+  0% {
+    -webkit-transform: translateY(1150px) translateX(-380px);
+            transform: translateY(1150px) translateX(-380px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-enemy-hand-enemy-8 {
+  0% {
+    -webkit-transform: translateY(1150px) translateX(-380px);
+            transform: translateY(1150px) translateX(-380px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-enemy-hand-enemy-9 {
+  0% {
+    -webkit-transform: translateY(1150px) translateX(-410px);
+            transform: translateY(1150px) translateX(-410px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-enemy-hand-enemy-9 {
+  0% {
+    -webkit-transform: translateY(1150px) translateX(-410px);
+            transform: translateY(1150px) translateX(-410px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-enemy-hand-enemy-10 {
+  0% {
+    -webkit-transform: translateY(1150px) translateX(-415px);
+            transform: translateY(1150px) translateX(-415px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-enemy-hand-enemy-10 {
+  0% {
+    -webkit-transform: translateY(1150px) translateX(-415px);
+            transform: translateY(1150px) translateX(-415px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes draw-from-enemy-hand-enemy-11 {
+  0% {
+    -webkit-transform: translateY(1150px) translateX(-420px);
+            transform: translateY(1150px) translateX(-420px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes draw-from-enemy-hand-enemy-11 {
+  0% {
+    -webkit-transform: translateY(1150px) translateX(-420px);
+            transform: translateY(1150px) translateX(-420px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+/* ----------------------------------------------
+ * Generated by Animista on 2020-8-5 0:50:9
+ * Licensed under FreeBSD License.
+ * See http://animista.net/license for more info.
+ * w: http://animista.net, t: @cssanimista
+ * ---------------------------------------------- */
+
+/**
+ * ----------------------------------------
+ * animation rotate-out-ver
+ * ----------------------------------------
+ */
+@-webkit-keyframes destroy-card-on-field-you {
+  0% {
+    -webkit-transform: rotateY(360deg);
+            transform: rotateY(360deg);
+    opacity: 1;
+    border: 2px solid red;
+    z-index: 1000;
+  }
+  99% {
+    z-index: 1000;
+  }
+  100% {
+    -webkit-transform: rotateY(0deg);
+            transform: rotateY(0deg);
+    opacity: 0;
+    z-index: -1;
+  }
+}
+@keyframes destroy-card-on-field-you {
+  0% {
+    -webkit-transform: rotateY(360deg);
+            transform: rotateY(360deg);
+    opacity: 1;
+    border: 2px solid red;
+     z-index: 1000;
+  }
+  99% {
+    z-index: 1000;
+  }
+  100% {
+    -webkit-transform: rotateY(0deg);
+            transform: rotateY(0deg);
+    opacity: 0;
+    z-index: -1;
+  }
+}
+@-webkit-keyframes destroy-card-on-field-enemy {
+  0% {
+    -webkit-transform: rotateY(360deg);
+            transform: rotateY(360deg);
+    opacity: 1;
+    border: 2px solid blue;
+    z-index: 1000;
+  }
+  99% {
+    z-index: 1000;
+  }
+  100% {
+    -webkit-transform: rotateY(0deg);
+            transform: rotateY(0deg);
+    opacity: 0;
+    z-index: -1;
+  }
+}
+@keyframes destroy-card-on-field-enemy {
+  0% {
+    -webkit-transform: rotateY(360deg);
+            transform: rotateY(360deg);
+    opacity: 1;
+    border: 2px solid blue;
+     z-index: 1000;
+  }
+  99% {
+    z-index: 1000;
+  }
+  100% {
+    -webkit-transform: rotateY(0deg);
+            transform: rotateY(0deg);
+    opacity: 0;
+    z-index: -1;
+  }
 }

@@ -164,50 +164,47 @@ roomController.prototype.processGetCurrentRoomDataResponse = function (data) {
   	JSON.stringify(ajv.errors, null, 2));
 
 	if (data.isSuccessful) {
-		// if the room no longer exists the the host left the room
-		if (!data.result.id) {
-			if (_self._inGame) {
-				_self._inGame = false;
-				console.log('Room no longer exists, host has left the game, winGameFormally', data);
-				logger.info('Room no longer exists, host has left the game, winGameFormally: %o', data);
-				_self.client.gameClient.winGameFormally({ roomId: _self._roomId });
-			} else if ($(_self.LOBBY_SCREEN_CLASS).is(':visible')) {
-				window.alert("The host has left the room.");
-				_self.processChangeScreen(this.MAIN_MENU_SCREEN_CLASS);
-			} else if ($(_self.MATCHMAKING_SCREEN_CLASS).is(':visible') && _self._matchmaking) {
-				window.alert('The other player left matchmaking, please matchmake again.');
-				_self.processChangeScreen(this.MAIN_MENU_SCREEN_CLASS);
-			}
-
-			return;
-		}
-
-		// if the player is not the host but is still in lobby screen for some reason despite not being in the room
-		if (data.result.player1Id != _self.client.logInSignUpController._userId
-			&& !data.result.player2Id && !_self._inGame) {
-			_self.processChangeScreen(this.MAIN_MENU_SCREEN_CLASS);
-			return;
-		}
-
-		// if the player is the host and the other player left the game while ingame
-		if (data.result.player1Id == _self.client.logInSignUpController._userId && !data.result.player2Id) {
-			if (_self._inGame) {
-				console.log('Player 2 is no longer in the room, winGameFormally', data);
-				logger.info('Player 2 is no longer in the room, winGameFormally: %o', data);
-				_self._inGame = false;
-				_self.client.gameClient.winGameFormally({ roomId: _self._roomId });
-			} else if (!_self._inGame && $(_self.MATCHMAKING_SCREEN_CLASS).is(':visible') && _self._matchmaking) {
-				window.alert('The other player left matchmaking, please matchmake again.');
-				_self.processChangeScreen(this.MAIN_MENU_SCREEN_CLASS);
-			}
-			return;
-		}
-
-		_self._roomId = data.result.id;
-		_self._user2Id = data.result.player2Id;
-
 		if (data.isUserLoggedIn === true) {
-			if (!_self._inGame && $(_self.LOBBY_SCREEN_CLASS).is(':visible')) {
+			if (!data.result.id) {
+				if (_self._inGame) {
+					_self._inGame = false;
+					console.log('Room no longer exists, host has left the game, winGameFormally', data);
+					logger.info('Room no longer exists, host has left the game, winGameFormally: %o', data);
+					_self.client.gameClient.winGameFormally({ roomId: _self._roomId });
+				} else if ($(_self.LOBBY_SCREEN_CLASS).is(':visible')) {
+					window.alert("The host has left the room.");
+					_self.processChangeScreen(this.MAIN_MENU_SCREEN_CLASS);
+				} else if ($(_self.MATCHMAKING_SCREEN_CLASS).is(':visible') && _self._matchmaking) {
+					window.alert('The other player left matchmaking, please matchmake again.');
+					_self.processChangeScreen(this.MAIN_MENU_SCREEN_CLASS);
+				}
+
+				return;
+			}
+
+			// if the player is not the host but is still in lobby screen for some reason despite not being in the room
+			if (data.result.player1Id != _self.client.logInSignUpController._userId
+				&& !data.result.player2Id && !_self._inGame) {
+				_self.processChangeScreen(this.MAIN_MENU_SCREEN_CLASS);
+				return;
+			}
+
+			_self._roomId = data.result.id;
+			_self._user2Id = data.result.player2Id;
+
+			// if the player is the host and there is no player 2
+			if (data.result.player1Id == _self.client.logInSignUpController._userId && !data.result.player2Id) {
+				if (_self._inGame) {
+					logger.info('Player 2 is no longer in the room, winGameFormally: %o', data);
+					_self._inGame = false;
+					_self.client.gameClient.winGameFormally({ roomId: _self._roomId });
+				} else if (!_self._inGame && $(_self.MATCHMAKING_SCREEN_CLASS).is(':visible') && _self._matchmaking) {
+					window.alert('The other player left matchmaking, please matchmake again.');
+					_self.processChangeScreen(this.MAIN_MENU_SCREEN_CLASS);
+				} else if (!_self._inGame && $(_self.LOBBY_SCREEN_CLASS).is(':visible')) {
+					_self.updateRoomState(data);
+				}
+			} else if (!_self._inGame && $(_self.LOBBY_SCREEN_CLASS).is(':visible')) {
 				_self.updateRoomState(data);
 			}
 		} else {
