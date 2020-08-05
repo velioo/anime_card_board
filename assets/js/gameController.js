@@ -378,7 +378,7 @@ gameController.prototype.showEventsInfo = function (infoText) {
 gameController.prototype.renderGameField = function () {
 	var _self = this;
 
-	$(_self.GAME_SCREEN_CLASS).html('<div class="anime-cb-title-page-game"><p id="anime-cb-title-page-game-room-name"></p></div><div id="anime-cb-card-info-card-name"></div><div id="anime-cb-card-info-wrapper"><div id="anime-cb-card-info-subwrapper"><img id="anime-cb-card-info-card" src="/imgs/player_cards/card_back.png"></div></div><div id="anime-cb-card-info-text"></div><div class="anime-cb-card-graveyard-wrapper player-enemy"><p class="anime-cb-card-graveyard-text player-enemy">Enemy Graveyard</p><img class="anime-cb-card-graveyard-deck player-enemy bottom"><img class="anime-cb-card-graveyard-deck player-enemy top"></div><div id="anime-cb-card-global-deck-wrapper"><img id="anime-cb-card-global-deck" src="/imgs/player_cards/card_back.png"><p id="anime-cb-card-global-deck-text">Global Deck</p></div><div id="anime-cb-game-events-info"><p id="anime-cb-game-events-info-text"></p></div><div class="anime-cb-turn-timer player-enemy"><p class="anime-cb-turn-timer-text player-enemy"></p></div><div class="anime-cb-turn-timer player-you"><p class="anime-cb-turn-timer-text player-you"></p></div><div class="anime-cb-energy-points-wrapper player-you"><p class="anime-cb-energy-points-title player-you">Energy</p><p class="anime-cb-energy-points-text player-you"></p></div><div class="anime-cb-energy-points-wrapper player-enemy"><p class="anime-cb-energy-points-title player-enemy">Energy</p><p class="anime-cb-energy-points-text player-enemy"></p></div><table id="anime-cb-phases-wrapper"><tr class="anime-cb-phase-row"><td id="anime-cb-phase-draw" class="anime-cb-phase-column next" data-phase-text="Draw Phase">DP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-standby" class="anime-cb-phase-column next" data-phase-text="Standby Phase">SP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-main" class="anime-cb-phase-column next" data-phase-text="Main Phase">MP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-roll" class="anime-cb-phase-column next" data-phase-text="Roll Phase">RP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-end" class="anime-cb-phase-column next" data-phase-text="End Phase">EP</td></tr></table><div class="center-screen"><div class="anime-cb-cards-in-hand-wrapper player-enemy"><div class="anime-cb-cards-in-hand player-enemy"></div></div><div class="anime-cb-board-player-label player-enemy"></div><div class="anime-cb-card-field-wrapper"><div class="anime-cb-card-field-charges-label player-enemy">Charges Left | Energy Cost</div><table class="anime-cb-card-field-charges-status-wrapper player-enemy"><tr><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td></tr></table><table class="anime-cb-card-field player-enemy"><tr><td></td><td></td><td></td><td></td><td></td></tr></table></div><div id="anime-cb-board-wrapper"><table id="anime-cb-board"></table></div><div class="anime-cb-card-field-wrapper"><table class="anime-cb-card-field player-you"><tr><td></td><td></td><td></td><td></td><td></td></tr></table><table class="anime-cb-card-field-charges-status-wrapper player-you"><tr><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td></tr></table><div class="anime-cb-card-field-charges-label player-you">Charges Left | Energy Cost</div></div><div class="anime-cb-board-player-label player-you"></div><div class="anime-cb-cards-in-hand-wrapper player-you"><div class="anime-cb-cards-in-hand player-you"></div></div></div><div class="anime-cb-card-graveyard-wrapper player-you"><img class="anime-cb-card-graveyard-deck player-you bottom"><img class="anime-cb-card-graveyard-deck player-you top"><p class="anime-cb-card-graveyard-text player-you">Your Graveyard</p></div><div class="anime-cb-screen_footer-game"><button id="anime-cb-surrender" type="button" class="btn btn-primary anime-cb-button-stateless anime-cb-btn-main-menu">Surrender</button></div><div class="anime-cb-player-status-wrapper"><p class="anime-cb-player-status-title">Game Status</p><div class="anime-cb-player-status-content"></div></div><div id="anime-cb-dice-wrapper-player-you"></div><div id="anime-cb-dice-wrapper-player-enemy"></div><div class="modal graveyard-modal player-you"> <div class="modal-content"> <div class="modal-header player-you"> <span class="close">&times;</span> <h2>Your Graveyard</h2> </div> <div class="modal-body"> </div> <div class="modal-footer player-you"> <h3>Your Graveyard</h3> </div> </div></div><div class="modal graveyard-modal player-enemy"> <div class="modal-content"> <div class="modal-header player-enemy"> <span class="close">&times;</span> <h2>Enemy Graveyard</h2> </div> <div class="modal-body"> </div> <div class="modal-footer player-enemy"> <h3>Enemy Graveyard</h3> </div> </div></div><img class="anime-cb-card-activate-show"><div class="center-screen anime-cb-choose-card-effect"><div></div></div>');
+	$(_self.GAME_SCREEN_CLASS).html('<div class="anime-cb-title-page-game"><p id="anime-cb-title-page-game-room-name"></p></div><div id="anime-cb-card-info-card-name"></div><div id="anime-cb-card-info-wrapper"><div id="anime-cb-card-info-subwrapper"><img id="anime-cb-card-info-card" src="/imgs/player_cards/card_back.png"></div></div><div id="anime-cb-card-info-text"></div><div class="anime-cb-card-graveyard-wrapper player-enemy"><p class="anime-cb-card-graveyard-text player-enemy">Enemy Graveyard</p><img class="anime-cb-card-graveyard-deck player-enemy bottom"><img class="anime-cb-card-graveyard-deck player-enemy top"></div><div id="anime-cb-card-global-deck-wrapper"><img id="anime-cb-card-global-deck" src="/imgs/player_cards/card_back.png"><p id="anime-cb-card-global-deck-text">Global Deck</p></div><div id="anime-cb-game-events-info"><p id="anime-cb-game-events-info-text"></p></div><div class="anime-cb-turn-timer player-enemy"><p class="anime-cb-turn-timer-text player-enemy"></p></div><div class="anime-cb-turn-timer player-you"><p class="anime-cb-turn-timer-text player-you"></p></div><div class="anime-cb-energy-points-wrapper player-you"><p class="anime-cb-energy-points-title player-you">Energy</p><p class="anime-cb-energy-points-text player-you"></p></div><div class="anime-cb-energy-points-wrapper player-enemy"><p class="anime-cb-energy-points-title player-enemy">Energy</p><p class="anime-cb-energy-points-text player-enemy"></p></div><table id="anime-cb-phases-wrapper"><tr class="anime-cb-phase-row"><td id="anime-cb-phase-draw" class="anime-cb-phase-column next" data-phase-text="Draw Phase">DP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-standby" class="anime-cb-phase-column next" data-phase-text="Standby Phase">SP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-main" class="anime-cb-phase-column next" data-phase-text="Main Phase">MP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-roll" class="anime-cb-phase-column next" data-phase-text="Roll Phase">RP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-end" class="anime-cb-phase-column next" data-phase-text="End Phase">EP</td></tr></table><div class="center-screen"><div class="anime-cb-cards-in-hand-wrapper player-enemy"><div class="anime-cb-cards-in-hand player-enemy"></div></div><div class="anime-cb-board-player-label player-enemy"></div><div class="anime-cb-card-field-wrapper"><div class="anime-cb-card-field-charges-label player-enemy">Charges | Energy</div><table class="anime-cb-card-field-charges-status-wrapper player-enemy"><tr><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td></tr></table><table class="anime-cb-card-field player-enemy"><tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr></table></div><div id="anime-cb-board-wrapper"><table id="anime-cb-board"></table></div><div class="anime-cb-card-field-wrapper"><table class="anime-cb-card-field player-you"><tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr></table><table class="anime-cb-card-field-charges-status-wrapper player-you"><tr><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td></tr></table><div class="anime-cb-card-field-charges-label player-you">Charges | Energy</div></div><div class="anime-cb-board-player-label player-you"></div><div class="anime-cb-cards-in-hand-wrapper player-you"><div class="anime-cb-cards-in-hand player-you"></div></div></div><div class="anime-cb-card-graveyard-wrapper player-you"><img class="anime-cb-card-graveyard-deck player-you bottom"><img class="anime-cb-card-graveyard-deck player-you top"><p class="anime-cb-card-graveyard-text player-you">Your Graveyard</p></div><div class="anime-cb-screen_footer-game"><button id="anime-cb-surrender" type="button" class="btn btn-primary anime-cb-button-stateless anime-cb-btn-main-menu">Surrender</button></div><div class="anime-cb-player-status-wrapper"><p class="anime-cb-player-status-title">Game Status</p><div class="anime-cb-player-status-content"></div></div><div id="anime-cb-dice-wrapper-player-you"></div><div id="anime-cb-dice-wrapper-player-enemy"></div><div class="modal graveyard-modal player-you"> <div class="modal-content"> <div class="modal-header player-you"> <span class="close">&times;</span> <h2>Your Graveyard</h2> </div> <div class="modal-body"> </div> <div class="modal-footer player-you"> <h3>Your Graveyard</h3> </div> </div></div><div class="modal graveyard-modal player-enemy"> <div class="modal-content"> <div class="modal-header player-enemy"> <span class="close">&times;</span> <h2>Enemy Graveyard</h2> </div> <div class="modal-body"> </div> <div class="modal-footer player-enemy"> <h3>Enemy Graveyard</h3> </div> </div></div><img class="anime-cb-card-activate-show"><div class="center-screen anime-cb-choose-card-effect"><div></div></div>');
 };
 
 gameController.prototype.initGameData = function (data) {
@@ -781,6 +781,8 @@ gameController.prototype.processStandByPhase = function (data) {
 	_self._gameplayData = data.gameplayData;
 	_self._roomData = data.roomData;
 	_self._cardsInHandArr = data.cardsInHandArr;
+	_self.updateCardsStatusText();
+	_self.updateCardChargesStatuses();
 	_self.updateGameStatusInfo();
 
 	if (_self._gameplayData.gameState.currPlayerId == _self._yourUserId) {
@@ -1087,6 +1089,7 @@ gameController.prototype.processRollDiceBoard = function (data) {
 			_self.rollDiceYou(_self._gameplayData.gameState.rollDiceBoard.rollDiceValue, _self.moveYourCharacter, _self.enableActionsInEnemyPhase);
 		}
 	} else {
+		_self.hideEventsInfo(null, 0);
 		if (_self._gameplayData.gameState.currPlayerId == _self._enemyUserId) {
 			_self.rollDiceEnemy(_self._gameplayData.gameState.rollDiceBoard.rollDiceValue, _self.moveEnemyCharacter, _self.waitForEnemyActions);
 		} else {
@@ -1296,7 +1299,7 @@ gameController.prototype.startStandByPhaseAnimationYou = function () {
 gameController.prototype.startStandByPhaseAnimationEnemy = function () {
 	var _self = this;
 
-	_self.switchPhaseEnemy(_self.PHASE_STANDBY_ID);
+	_self.switchPhaseEnemy(_self.PHASE_STANDBY_ID, _self.checkForExpiredCardsEnemy.bind(_self));
 };
 
 gameController.prototype.startMainPhaseAnimationYou = function () {
@@ -1383,7 +1386,7 @@ gameController.prototype.switchPhaseYou = function (currPhaseIdSelector) {
   		_self.setCardDrawListener();
 	  	_self.startDrawCardAnimationsFinishedPoll(_self.startStandByPhase);
 	  } else if (currPhaseIdSelector == _self.PHASE_STANDBY_ID) {
-	  	_self.startMainPhase();
+	  	_self.checkForExpiredCardsYou(_self.startMainPhase.bind(_self));
 	  } else if (currPhaseIdSelector == _self.PHASE_MAIN_ID) {
 	  	_self.enableMainPhaseActions();
   	} else if (currPhaseIdSelector == _self.PHASE_ROLL_ID) {
@@ -1422,6 +1425,7 @@ gameController.prototype.enableMainPhaseActions = function () {
 	} else if (playerStateYou.cardsToDiscard > 0) {
 		_self.setCardDiscardListener();
 	} else {
+		_self.hideEventsInfo(null, 0);
 		$(_self.PHASE_ROLL_ID).addClass("selectable");
 		_self.setUpContinuousCardOnClickListener();
 
@@ -1478,7 +1482,43 @@ gameController.prototype.enableActionsInEnemyPhase = function () {
 	} else if (playerStateYou.cardsToDrawFromEnemyHand > 0) {
 		_self.setDrawCardFromEnemyHandListener();
 	} else {
-		_self.hideEventsInfo(null, 0);
+		_self.waitForEnemyActions();
+	}
+};
+
+gameController.prototype.checkForExpiredCardsYou = function (callback) {
+	var _self = this;
+
+	var playerStateYou = _self._gameplayData.gameState.playersState[_self._yourUserId];
+
+	if (playerStateYou.cardsExpired.length > 0) {
+		playerStateYou.cardsExpired.forEach(function(card, cardIdx, arr) {
+			if (cardIdx == arr.length - 1) {
+				_self.destroyCardAnimationYou(card, callback);
+			} else {
+				_self.destroyCardAnimationYou(card);
+			}
+		});
+	} else {
+		if (typeof callback === "function") {
+			callback();
+		}
+	}
+};
+
+gameController.prototype.checkForExpiredCardsEnemy = function (callback=null) {
+	var _self = this;
+
+	var playerStateEnemy = _self._gameplayData.gameState.playersState[_self._enemyUserId];
+
+	if (playerStateEnemy.cardsExpired.length > 0) {
+		playerStateEnemy.cardsExpired.forEach(function(card, cardIdx, arr) {
+			if (cardIdx == arr.length - 1) {
+				_self.destroyCardAnimationEnemy(card, callback);
+			} else {
+				_self.destroyCardAnimationEnemy(card);
+			}
+		});
 	}
 };
 
@@ -1526,6 +1566,9 @@ gameController.prototype.performCardEffectInstantYou = function (card) {
 		} else if (card.cardEffect.effect == "destroyCardFromEnemyField") {
 			_self._postDestroyCard = card;
 			_self.enableMainPhaseActions();
+		} else if (card.cardEffect.effect == "drawCardFromDeckYouEnemy") {
+			_self._postDestroyCard = card;
+			_self.waitForEnemyActions();
 		}
 	} else if (card.cardEffect.continuous) {
 		_self.enableMainPhaseActions();
@@ -1611,7 +1654,6 @@ gameController.prototype.checkIfEnemyIsOnSpecialSpace = function () {
 		|| _self._gameplayData.gameState.playersState[_self._enemyUserId].cardsToDiscard > 0) {
 		_self.waitForEnemyActions();
 	} else {
-		_self.hideEventsInfo(null, 0);
 		_self.enableMainPhaseActions();
 	}
 };
@@ -1631,18 +1673,112 @@ gameController.prototype.setBoardSpaceListener = function (card) {
 	var _self = this;
 
 	if (card.cardEffect.effect == "moveSpacesForwardUpTo") {
-		_self.setBoardSpaceListenerMoveSpacesForwardsUpToYou(card);
+		_self.setBoardSpaceListenerMoveSpaces(card, _self._yourUserId, "forward");
 	} else if (card.cardEffect.effect == "moveSpacesBackwardsUpToEnemy") {
-		_self.setBoardSpaceListenerMoveSpacesBackwardsUpToEnemyYou(card);
+		_self.setBoardSpaceListenerMoveSpaces(card, _self._enemyUserId, "backward");
 	} else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpTo") {
-		_self.setBoardSpaceListenerMoveSpacesForwardOrBackwardUpToYou(card);
+		_self.setBoardSpaceListenerMoveSpaces(card, _self._yourUserId, "both");
 	} else if (card.cardEffect.effect == "copySpecialSpacesUpTo") {
 		_self.setBoardSpaceListenerCopySpecialSpacesUpToYou(card);
 	} else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpToEnemy") {
-		_self.setBoardSpaceListenerMoveSpacesForwardOrBackwardUpToEnemyYou(card);
+		_self.setBoardSpaceListenerMoveSpaces(card, _self._enemyUserId, "both");
 	} else if (card.cardEffect.effect.match("createSpecialBoardSpaceForwardTier")) {
 		_self.setBoardSpaceListenerCreateSpecialBoardSpaceForwardTierYou(card);
 	}
+};
+
+gameController.prototype.setBoardSpaceListenerMoveSpaces = function (card, playerId, direction) {
+	var _self = this;
+
+	var boardPath = _self._gameplayData.gameState.boardData.boardDataPlayers.boardPath;
+  var currBoardIndex = _self._gameplayData.gameState.playersState[playerId].currBoardIndex;
+  var backwardBoardIndex = currBoardIndex;
+  var forwardBoardIndex = currBoardIndex;
+  var rowIndexForward;
+  var columnIndexForward;
+  var rowIndexBackward;
+  var columnIndexBackward;
+
+  var moveBoardForward = true;
+  if (playerId == _self._roomData.player2Id) {
+  	moveBoardForward = false;
+  }
+
+  var cannotMoveForward = false;
+  var cannotMoveBackward = false;
+
+	$(_self.BOARD_ID).css("z-index", 4);
+	for (var i = 0; i < card.cardEffect.effectValue; i++) {
+		cannotMoveForward = false;
+		cannotMoveBackward = false;
+
+		forwardBoardIndex++;
+		backwardBoardIndex--;
+
+		if (!boardPath[forwardBoardIndex]) {
+			cannotMoveForward = true;
+		}
+
+		if (backwardBoardIndex < 0) {
+			cannotMoveBackward = true;
+		}
+
+		if (cannotMoveForward && cannotMoveBackward) {
+			break;
+		}
+
+		if (!cannotMoveForward && ((moveBoardForward && direction == "forward")
+			|| (!moveBoardForward && direction == "backward") || (direction == "both"))) {
+		  rowIndexForward = boardPath[forwardBoardIndex][0];
+		  columnIndexForward = boardPath[forwardBoardIndex][1];
+
+			var selectorTd = _self.BOARD_ROW_CLASS + ':nth-child(' + (rowIndexForward + 1) + ')' + ' ' + _self.BOARD_COLUMN_CLASS
+				+ ':nth-child(' + (columnIndexForward + 1) + ')';
+		  $(selectorTd).data("moveSpaces", i + 1);
+		  $(selectorTd).addClass("selectable-you");
+			$(selectorTd).on("click", function () {
+				$(_self.BOARD_COLUMN_CLASS).off("click");
+				$(_self.BOARD_COLUMN_CLASS).removeClass("selectable-you");
+				$(_self.BOARD_ID).css("z-index", 1);
+
+				var finishData = { effectValueChosen: $(this).data("moveSpaces"), moveBackward: moveBoardForward ? false : true };
+				_self._lastClientData = { roomId: _self._roomData.id, cardId: card.cardId, finishData: finishData };
+
+				if (card.cardEffect.continuous) {
+					_self.client.finishCardEffectContinuous(_self._lastClientData);
+				} else {
+					_self.client.finishCardEffect(_self._lastClientData);
+				}
+			});
+	  }
+
+	  if (!cannotMoveBackward && ((moveBoardForward && direction == "backward")
+	  	|| (!moveBoardForward && direction == "forward") || (direction == "both"))) {
+		  rowIndexBackward = boardPath[backwardBoardIndex][0];
+		  columnIndexBackward = boardPath[backwardBoardIndex][1];
+
+		  var selectorTd = _self.BOARD_ROW_CLASS + ':nth-child(' + (rowIndexBackward + 1) + ')' + ' ' + _self.BOARD_COLUMN_CLASS
+				+ ':nth-child(' + (columnIndexBackward + 1) + ')';
+		  $(selectorTd).data("moveSpaces", i + 1);
+		  $(selectorTd).addClass("selectable-you");
+			$(selectorTd).on("click", function () {
+				$(_self.BOARD_COLUMN_CLASS).off("click");
+				$(_self.BOARD_COLUMN_CLASS).removeClass("selectable-you");
+				$(_self.BOARD_ID).css("z-index", 1);
+
+				var finishData = { effectValueChosen: $(this).data("moveSpaces"), moveBackward: moveBoardForward ? true : false };
+				_self._lastClientData = { roomId: _self._roomData.id, cardId: card.cardId, finishData: finishData };
+
+				if (card.cardEffect.continuous) {
+					_self.client.finishCardEffectContinuous(_self._lastClientData);
+				} else {
+					_self.client.finishCardEffect(_self._lastClientData);
+				}
+			});
+	  }
+	}
+
+	assert (i != 0);
 };
 
 gameController.prototype.setBoardSpaceListenerCreateSpecialBoardSpaceForwardTierYou = function (card) {
@@ -1711,18 +1847,18 @@ gameController.prototype.setBoardSpaceListenerCreateSpecialBoardSpaceForwardTier
 					var finishData = { rowIndex: $(boardSpaceTd).closest('tr').index(),
 						columnIndex: $(boardSpaceTd).index(), specialSpaceType: $(this).data("specialSpaceType") };
 					_self._lastClientData = { roomId: _self._roomData.id, cardId: card.cardId, finishData: finishData };
-					_self.client.finishCardEffect(_self._lastClientData);
+
+					if (card.cardEffect.continuous) {
+						_self.client.finishCardEffectContinuous(_self._lastClientData);
+					} else {
+						_self.client.finishCardEffect(_self._lastClientData);
+					}
 				});
 			});
 		}
 	}
 
-	if (i == 0) {
-		_self._lastClientData = { roomId: _self._roomData.id, cardId: card.cardId,
-			finishData: { rowIndex: -1, columnIndex: -1, specialSpaceType: -1 } };
-		_self.client.finishCardEffect(_self._lastClientData);
-		$(_self.BOARD_ID).css("z-index", 1);
-	}
+	assert (i != 0);
 };
 
 gameController.prototype.setBoardSpaceListenerCreateSpecialBoardSpaceForwardTierEnemy = function (card) {
@@ -1762,93 +1898,6 @@ gameController.prototype.setBoardSpaceListenerCreateSpecialBoardSpaceForwardTier
 				+ ':nth-child(' + (columnIndex + 1) + ')';
 		  $(selectorTd).addClass("selectable-enemy");
 		}
-	}
-};
-
-gameController.prototype.setBoardSpaceListenerMoveSpacesForwardOrBackwardUpToEnemyYou = function (card) {
-	var _self = this;
-
-	var boardPath = _self._gameplayData.gameState.boardData.boardDataPlayers.boardPath;
-  var currBoardIndex = _self._gameplayData.gameState.playersState[_self._enemyUserId].currBoardIndex;
-  var backwardBoardIndex = currBoardIndex;
-  var forwardBoardIndex = currBoardIndex;
-  var rowIndexForward;
-  var columnIndexForward;
-  var rowIndexBackward;
-  var columnIndexBackward;
-
-  var moveBoardForward = true;
-  if (_self._enemyUserId == _self._roomData.player2Id) {
-  	moveBoardForward = false;
-  }
-
-  var canNotMoveForward = false;
-  var canNotMoveBackward = false;
-
-	$(_self.BOARD_ID).css("z-index", 4);
-	for (var i = 0; i < card.cardEffect.effectValue; i++) {
-		canNotMoveForward = false;
-		canNotMoveBackward = false;
-
-		forwardBoardIndex++;
-		backwardBoardIndex--;
-
-		if (!boardPath[forwardBoardIndex]) {
-			canNotMoveForward = true;
-		}
-
-		if (backwardBoardIndex < 0) {
-			canNotMoveBackward = true;
-		}
-
-		if (canNotMoveForward && canNotMoveBackward) {
-			break;
-		}
-
-		if (!canNotMoveForward) {
-		  rowIndexForward = boardPath[forwardBoardIndex][0];
-		  columnIndexForward = boardPath[forwardBoardIndex][1];
-
-			var selectorTd = _self.BOARD_ROW_CLASS + ':nth-child(' + (rowIndexForward + 1) + ')' + ' ' + _self.BOARD_COLUMN_CLASS
-				+ ':nth-child(' + (columnIndexForward + 1) + ')';
-		  $(selectorTd).data("moveSpaces", i + 1);
-		  $(selectorTd).addClass("selectable-you");
-			$(selectorTd).on("click", function () {
-				$(_self.BOARD_COLUMN_CLASS).off("click");
-				$(_self.BOARD_COLUMN_CLASS).removeClass("selectable-you");
-				$(_self.BOARD_ID).css("z-index", 1);
-
-				var finishData = { effectValueChosen: $(this).data("moveSpaces"), moveBackward: moveBoardForward ? false : true };
-				_self._lastClientData = { roomId: _self._roomData.id, cardId: card.cardId, finishData: finishData };
-				_self.client.finishCardEffectContinuous(_self._lastClientData);
-			});
-	  }
-
-	  if (!canNotMoveBackward) {
-		  rowIndexBackward = boardPath[backwardBoardIndex][0];
-		  columnIndexBackward = boardPath[backwardBoardIndex][1];
-
-		  var selectorTd = _self.BOARD_ROW_CLASS + ':nth-child(' + (rowIndexBackward + 1) + ')' + ' ' + _self.BOARD_COLUMN_CLASS
-				+ ':nth-child(' + (columnIndexBackward + 1) + ')';
-		  $(selectorTd).data("moveSpaces", i + 1);
-		  $(selectorTd).addClass("selectable-you");
-			$(selectorTd).on("click", function () {
-				$(_self.BOARD_COLUMN_CLASS).off("click");
-				$(_self.BOARD_COLUMN_CLASS).removeClass("selectable-you");
-				$(_self.BOARD_ID).css("z-index", 1);
-
-				var finishData = { effectValueChosen: $(this).data("moveSpaces"), moveBackward: moveBoardForward ? true : false };
-				_self._lastClientData = { roomId: _self._roomData.id, cardId: card.cardId, finishData: finishData };
-				_self.client.finishCardEffectContinuous(_self._lastClientData);
-			});
-	  }
-	}
-
-	if (i == 0) {
-		_self._lastClientData = { roomId: _self._roomData.id, cardId: card.cardId,
-			finishData: { effectValueChosen: card.cardEffect.effectValue, moveBackward: false } };
-		_self.client.finishCardEffectContinuous(_self._lastClientData);
-		$(_self.BOARD_ID).css("z-index", 1);
 	}
 };
 
@@ -1896,17 +1945,17 @@ gameController.prototype.setBoardSpaceListenerCopySpecialSpacesUpToYou = functio
 
 				var finishData = { rowIndex: $(this).closest('tr').index(), columnIndex: $(this).index() };
 				_self._lastClientData = { roomId: _self._roomData.id, cardId: card.cardId, finishData: finishData };
-				_self.client.finishCardEffectContinuous(_self._lastClientData);
+
+				if (card.cardEffect.continuous) {
+					_self.client.finishCardEffectContinuous(_self._lastClientData);
+				} else {
+					_self.client.finishCardEffect(_self._lastClientData);
+				}
 			});
 		}
 	}
 
-	if (i == 0) {
-		_self._lastClientData = { roomId: _self._roomData.id, cardId: card.cardId,
-			finishData: { rowIndex: -1, columnIndex: -1 } };
-		_self.client.finishCardEffectContinuous(_self._lastClientData);
-		$(_self.BOARD_ID).css("z-index", 1);
-	}
+	assert (i != 0);
 };
 
 gameController.prototype.setBoardSpaceListenerCopySpecialSpacesUpToEnemy = function (card) {
@@ -1949,287 +1998,29 @@ gameController.prototype.setBoardSpaceListenerCopySpecialSpacesUpToEnemy = funct
 	}
 };
 
-gameController.prototype.setBoardSpaceListenerMoveSpacesForwardOrBackwardUpToYou = function (card) {
-	var _self = this;
-
-	var boardPath = _self._gameplayData.gameState.boardData.boardDataPlayers.boardPath;
-  var currBoardIndex = _self._gameplayData.gameState.playersState[_self._yourUserId].currBoardIndex;
-  var backwardBoardIndex = currBoardIndex;
-  var forwardBoardIndex = currBoardIndex;
-  var rowIndexForward;
-  var columnIndexForward;
-  var rowIndexBackward;
-  var columnIndexBackward;
-
-  var moveBoardForward = true;
-  if (_self._yourUserId == _self._roomData.player2Id) {
-  	moveBoardForward = false;
-  }
-
-  var canNotMoveForward = false;
-  var canNotMoveBackward = false;
-
-	$(_self.BOARD_ID).css("z-index", 4);
-	for (var i = 0; i < card.cardEffect.effectValue; i++) {
-		canNotMoveForward = false;
-		canNotMoveBackward = false;
-
-		forwardBoardIndex++;
-		backwardBoardIndex--;
-
-		if (!boardPath[forwardBoardIndex]) {
-			canNotMoveForward = true;
-		}
-
-		if (backwardBoardIndex < 0) {
-			canNotMoveBackward = true;
-		}
-
-		if (canNotMoveForward && canNotMoveBackward) {
-			break;
-		}
-
-		if (!canNotMoveForward) {
-		  rowIndexForward = boardPath[forwardBoardIndex][0];
-		  columnIndexForward = boardPath[forwardBoardIndex][1];
-
-			var selectorTd = _self.BOARD_ROW_CLASS + ':nth-child(' + (rowIndexForward + 1) + ')' + ' ' + _self.BOARD_COLUMN_CLASS
-				+ ':nth-child(' + (columnIndexForward + 1) + ')';
-		  $(selectorTd).data("moveSpaces", i + 1);
-		  $(selectorTd).addClass("selectable-you");
-			$(selectorTd).on("click", function () {
-				$(_self.BOARD_COLUMN_CLASS).off("click");
-				$(_self.BOARD_COLUMN_CLASS).removeClass("selectable-you");
-				$(_self.BOARD_ID).css("z-index", 1);
-
-				var finishData = { effectValueChosen: $(this).data("moveSpaces"), moveBackward: moveBoardForward ? false : true };
-				_self._lastClientData = { roomId: _self._roomData.id, cardId: card.cardId, finishData: finishData };
-				_self.client.finishCardEffect(_self._lastClientData);
-			});
-	  }
-
-	  if (!canNotMoveBackward) {
-		  rowIndexBackward = boardPath[backwardBoardIndex][0];
-		  columnIndexBackward = boardPath[backwardBoardIndex][1];
-
-		  var selectorTd = _self.BOARD_ROW_CLASS + ':nth-child(' + (rowIndexBackward + 1) + ')' + ' ' + _self.BOARD_COLUMN_CLASS
-				+ ':nth-child(' + (columnIndexBackward + 1) + ')';
-		  $(selectorTd).data("moveSpaces", i + 1);
-		  $(selectorTd).addClass("selectable-you");
-			$(selectorTd).on("click", function () {
-				$(_self.BOARD_COLUMN_CLASS).off("click");
-				$(_self.BOARD_COLUMN_CLASS).removeClass("selectable-you");
-				$(_self.BOARD_ID).css("z-index", 1);
-
-				var finishData = { effectValueChosen: $(this).data("moveSpaces"), moveBackward: moveBoardForward ? true : false };
-				_self._lastClientData = { roomId: _self._roomData.id, cardId: card.cardId, finishData: finishData };
-				_self.client.finishCardEffect(_self._lastClientData);
-			});
-	  }
-	}
-
-	if (i == 0) {
-		_self._lastClientData = { roomId: _self._roomData.id, cardId: card.cardId,
-			finishData: { effectValueChosen: card.cardEffect.effectValue, moveBackward: false } };
-		_self.client.finishCardEffect(_self._lastClientData);
-		$(_self.BOARD_ID).css("z-index", 1);
-	}
-};
-
-gameController.prototype.setBoardSpaceListenerMoveSpacesForwardOrBackwardUpToEnemy = function (card) {
-	var _self = this;
-
-	var boardPath = _self._gameplayData.gameState.boardData.boardDataPlayers.boardPath;
-  var currBoardIndex = _self._gameplayData.gameState.playersState[_self._enemyUserId].currBoardIndex;
-  var backwardBoardIndex = currBoardIndex;
-  var forwardBoardIndex = currBoardIndex;
-  var rowIndexForward;
-  var columnIndexForward;
-  var rowIndexBackward;
-  var columnIndexBackward;
-
-  var moveBoardForward = true;
-  if (_self._enemyUserId == _self._roomData.player2Id) {
-  	moveBoardForward = false;
-  }
-
-  var canNotMoveForward = false;
-  var canNotMoveBackward = false;
-
-	for (var i = 0; i < card.cardEffect.effectValue; i++) {
-		canNotMoveForward = false;
-		canNotMoveBackward = false;
-
-		forwardBoardIndex++;
-		backwardBoardIndex--;
-
-		if (!boardPath[forwardBoardIndex]) {
-			canNotMoveForward = true;
-		}
-
-		if (backwardBoardIndex < 0) {
-			canNotMoveBackward = true;
-		}
-
-		if (canNotMoveForward && canNotMoveBackward) {
-			break;
-		}
-
-		if (!canNotMoveForward) {
-		  rowIndexForward = boardPath[forwardBoardIndex][0];
-		  columnIndexForward = boardPath[forwardBoardIndex][1];
-
-			var selectorTd = _self.BOARD_ROW_CLASS + ':nth-child(' + (rowIndexForward + 1) + ')' + ' ' + _self.BOARD_COLUMN_CLASS
-				+ ':nth-child(' + (columnIndexForward + 1) + ')';
-		  $(selectorTd).data("moveSpaces", i + 1);
-		  $(selectorTd).addClass("selectable-enemy");
-	  }
-
-	  if (!canNotMoveBackward) {
-		  rowIndexBackward = boardPath[backwardBoardIndex][0];
-		  columnIndexBackward = boardPath[backwardBoardIndex][1];
-
-		  var selectorTd = _self.BOARD_ROW_CLASS + ':nth-child(' + (rowIndexBackward + 1) + ')' + ' ' + _self.BOARD_COLUMN_CLASS
-				+ ':nth-child(' + (columnIndexBackward + 1) + ')';
-		  $(selectorTd).data("moveSpaces", i + 1);
-		  $(selectorTd).addClass("selectable-enemy");
-	  }
-	}
-};
-
-gameController.prototype.setBoardSpaceListenerMoveSpacesForwardsUpToYou = function (card) {
-	var _self = this;
-
-	var boardPath = _self._gameplayData.gameState.boardData.boardDataPlayers.boardPath;
-  var currBoardIndex = _self._gameplayData.gameState.playersState[_self._yourUserId].currBoardIndex;
-  var rowIndex;
-  var columnIndex;
-
-  var moveBoardForward = true;
-  if (_self._yourUserId == _self._roomData.player2Id) {
-  	moveBoardForward = false;
-  }
-
-	$(_self.BOARD_ID).css("z-index", 4);
-	for (var i = 0; i < card.cardEffect.effectValue; i++) {
-		if (moveBoardForward) {
-			currBoardIndex++;
-
-			if (!boardPath[currBoardIndex]) {
-				break;
-			}
-		} else {
-			currBoardIndex--;
-
-			if (currBoardIndex < 0) {
-				break;
-			}
-		}
-
-	  rowIndex = boardPath[currBoardIndex][0];
-	  columnIndex = boardPath[currBoardIndex][1];
-
-	  var selectorTd = _self.BOARD_ROW_CLASS + ':nth-child(' + (rowIndex + 1) + ')' + ' ' + _self.BOARD_COLUMN_CLASS
-			+ ':nth-child(' + (columnIndex + 1) + ')';
-	  $(selectorTd).data("moveSpacesForward", i + 1);
-	  $(selectorTd).addClass("selectable-you");
-		$(selectorTd).on("click", function () {
-			$(_self.BOARD_COLUMN_CLASS).off("click");
-			$(_self.BOARD_COLUMN_CLASS).removeClass("selectable-you");
-			$(_self.BOARD_ID).css("z-index", 1);
-
-			var finishData = { effectValueChosen: $(this).data("moveSpacesForward") };
-			_self._lastClientData = { roomId: _self._roomData.id, cardId: card.cardId, finishData: finishData };
-			_self.client.finishCardEffect(_self._lastClientData);
-		});
-	}
-
-	if (i == 0) {
-		_self._lastClientData = { roomId: _self._roomData.id, cardId: card.cardId,
-			finishData: { effectValueChosen: card.cardEffect.effectValue } };
-		_self.client.finishCardEffect(_self._lastClientData);
-		$(_self.BOARD_ID).css("z-index", 1);
-	}
-};
-
-gameController.prototype.setBoardSpaceListenerMoveSpacesBackwardsUpToEnemyYou = function (card) {
-	var _self = this;
-
-	var boardPath = _self._gameplayData.gameState.boardData.boardDataPlayers.boardPath;
-  var currBoardIndex = _self._gameplayData.gameState.playersState[_self._enemyUserId].currBoardIndex;
-  var rowIndex;
-  var columnIndex;
-
-  var moveBoardForward = false;
-  if (_self._enemyUserId == _self._roomData.player2Id) {
-  	moveBoardForward = true;
-  }
-
-	$(_self.BOARD_ID).css("z-index", 4);
-	for (var i = 0; i < card.cardEffect.effectValue; i++) {
-		if (moveBoardForward) {
-			currBoardIndex++;
-
-			if (!boardPath[currBoardIndex]) {
-				break;
-			}
-		} else {
-			currBoardIndex--;
-
-			if (currBoardIndex < 0) {
-				break;
-			}
-		}
-
-	  rowIndex = boardPath[currBoardIndex][0];
-	  columnIndex = boardPath[currBoardIndex][1];
-
-	  var selectorTd = _self.BOARD_ROW_CLASS + ':nth-child(' + (rowIndex + 1) + ')' + ' ' + _self.BOARD_COLUMN_CLASS
-			+ ':nth-child(' + (columnIndex + 1) + ')';
-	  $(selectorTd).data("moveSpacesBackwardsEnemy", i + 1);
-	  $(selectorTd).addClass("selectable-you");
-		$(selectorTd).on("click", function () {
-			$(_self.BOARD_COLUMN_CLASS).off("click");
-			$(_self.BOARD_COLUMN_CLASS).removeClass("selectable-you");
-			$(_self.BOARD_ID).css("z-index", 1);
-
-			var finishData = { effectValueChosen: $(this).data("moveSpacesBackwardsEnemy") };
-			_self._lastClientData = { roomId: _self._roomData.id, cardId: card.cardId, finishData: finishData };
-			_self.client.finishCardEffect(_self._lastClientData);
-		});
-	}
-
-	if (i == 0) {
-		_self._lastClientData = { roomId: _self._roomData.id, cardId: card.cardId,
-			finishData: { effectValueChosen: card.cardEffect.effectValue } };
-		_self.client.finishCardEffect(_self._lastClientData);
-		$(_self.BOARD_ID).css("z-index", 1);
-	}
-};
-
 gameController.prototype.setBoardSpaceListenerEnemy = function (card) {
 	var _self = this;
 
 	if (card.cardEffect.effect == "moveSpacesForwardUpTo") {
-		_self.setBoardSpaceListenerMoveSpacesForwardsUpToEnemy(card);
+		_self.setBoardSpaceListenerMoveSpacesEnemy(card, _self._enemyUserId, "forward");
 	} else if (card.cardEffect.effect == "moveSpacesBackwardsUpToEnemy") {
-		_self.setBoardSpaceListenerMoveSpacesBackwardsUpToEnemyEnemy(card);
+		_self.setBoardSpaceListenerMoveSpacesEnemy(card, _self._yourUserId, "backward");
 	} else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpTo") {
-		_self.setBoardSpaceListenerMoveSpacesForwardOrBackwardUpToEnemy(card);
+		_self.setBoardSpaceListenerMoveSpacesEnemy(card, _self._enemyUserId, "both");
 	} else if (card.cardEffect.effect == "copySpecialSpacesUpTo") {
 		_self.setBoardSpaceListenerCopySpecialSpacesUpToEnemy(card);
 	} else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpToEnemy") {
-		_self.setBoardSpaceListenerMoveSpacesForwardOrBackwardUpToEnemyEnemy(card);
+		_self.setBoardSpaceListenerMoveSpacesEnemy(card, _self._yourUserId, "both");
 	} else if (card.cardEffect.effect.match("createSpecialBoardSpaceForwardTier")) {
 		_self.setBoardSpaceListenerCreateSpecialBoardSpaceForwardTierEnemy(card);
 	}
 };
 
-gameController.prototype.setBoardSpaceListenerMoveSpacesForwardOrBackwardUpToEnemyEnemy = function (card) {
+gameController.prototype.setBoardSpaceListenerMoveSpacesEnemy = function (card, playerId, direction) {
 	var _self = this;
 
 	var boardPath = _self._gameplayData.gameState.boardData.boardDataPlayers.boardPath;
-  var currBoardIndex = _self._gameplayData.gameState.playersState[_self._yourUserId].currBoardIndex;
+  var currBoardIndex = _self._gameplayData.gameState.playersState[playerId].currBoardIndex;
   var backwardBoardIndex = currBoardIndex;
   var forwardBoardIndex = currBoardIndex;
   var rowIndexForward;
@@ -2238,33 +2029,34 @@ gameController.prototype.setBoardSpaceListenerMoveSpacesForwardOrBackwardUpToEne
   var columnIndexBackward;
 
   var moveBoardForward = true;
-  if (_self._yourUserId == _self._roomData.player2Id) {
+  if (playerId == _self._roomData.player2Id) {
   	moveBoardForward = false;
   }
 
-  var canNotMoveForward = false;
-  var canNotMoveBackward = false;
+  var cannotMoveForward = false;
+  var cannotMoveBackward = false;
 
 	for (var i = 0; i < card.cardEffect.effectValue; i++) {
-		canNotMoveForward = false;
-		canNotMoveBackward = false;
+		cannotMoveForward = false;
+		cannotMoveBackward = false;
 
 		forwardBoardIndex++;
 		backwardBoardIndex--;
 
 		if (!boardPath[forwardBoardIndex]) {
-			canNotMoveForward = true;
+			cannotMoveForward = true;
 		}
 
 		if (backwardBoardIndex < 0) {
-			canNotMoveBackward = true;
+			cannotMoveBackward = true;
 		}
 
-		if (canNotMoveForward && canNotMoveBackward) {
+		if (cannotMoveForward && cannotMoveBackward) {
 			break;
 		}
 
-		if (!canNotMoveForward) {
+		if (!cannotMoveForward && ((moveBoardForward && direction == "forward")
+			|| (!moveBoardForward && direction == "backward") || (direction == "both"))) {
 		  rowIndexForward = boardPath[forwardBoardIndex][0];
 		  columnIndexForward = boardPath[forwardBoardIndex][1];
 
@@ -2274,7 +2066,8 @@ gameController.prototype.setBoardSpaceListenerMoveSpacesForwardOrBackwardUpToEne
 		  $(selectorTd).addClass("selectable-enemy");
 	  }
 
-	  if (!canNotMoveBackward) {
+	  if (!cannotMoveBackward && ((moveBoardForward && direction == "backward")
+	  	|| (!moveBoardForward && direction == "forward") || (direction == "both"))) {
 		  rowIndexBackward = boardPath[backwardBoardIndex][0];
 		  columnIndexBackward = boardPath[backwardBoardIndex][1];
 
@@ -2283,80 +2076,6 @@ gameController.prototype.setBoardSpaceListenerMoveSpacesForwardOrBackwardUpToEne
 		  $(selectorTd).data("moveSpaces", i + 1);
 		  $(selectorTd).addClass("selectable-enemy");
 	  }
-	}
-};
-
-gameController.prototype.setBoardSpaceListenerMoveSpacesForwardsUpToEnemy = function (card) {
-	var _self = this;
-
-	var boardPath = _self._gameplayData.gameState.boardData.boardDataPlayers.boardPath;
-  var currBoardIndex = _self._gameplayData.gameState.playersState[_self._enemyUserId].currBoardIndex;
-  var rowIndex;
-  var columnIndex;
-
-  var moveBoardForward = true;
-  if (_self._enemyUserId == _self._roomData.player2Id) {
-  	moveBoardForward = false;
-  }
-
-	for (var i = 0; i < card.cardEffect.effectValue; i++) {
-		if (moveBoardForward) {
-			currBoardIndex++;
-
-			if (!boardPath[currBoardIndex]) {
-				break;
-			}
-		} else {
-			currBoardIndex--;
-
-			if (currBoardIndex < 0) {
-				break;
-			}
-		}
-
-	  rowIndex = boardPath[currBoardIndex][0];
-	  columnIndex = boardPath[currBoardIndex][1];
-
-	  var selectorTd = _self.BOARD_ROW_CLASS + ':nth-child(' + (rowIndex + 1) + ')' + ' ' + _self.BOARD_COLUMN_CLASS
-			+ ':nth-child(' + (columnIndex + 1) + ')';
-	  $(selectorTd).addClass("selectable-enemy");
-	}
-};
-
-gameController.prototype.setBoardSpaceListenerMoveSpacesBackwardsUpToEnemyEnemy = function (card) {
-	var _self = this;
-
-	var boardPath = _self._gameplayData.gameState.boardData.boardDataPlayers.boardPath;
-  var currBoardIndex = _self._gameplayData.gameState.playersState[_self._yourUserId].currBoardIndex;
-  var rowIndex;
-  var columnIndex;
-
-  var moveBoardForward = false;
-  if (_self._yourUserId == _self._roomData.player2Id) {
-  	moveBoardForward = true;
-  }
-
-	for (var i = 0; i < card.cardEffect.effectValue; i++) {
-		if (moveBoardForward) {
-			currBoardIndex++;
-
-			if (!boardPath[currBoardIndex]) {
-				break;
-			}
-		} else {
-			currBoardIndex--;
-
-			if (currBoardIndex < 0) {
-				break;
-			}
-		}
-
-	  rowIndex = boardPath[currBoardIndex][0];
-	  columnIndex = boardPath[currBoardIndex][1];
-
-	  var selectorTd = _self.BOARD_ROW_CLASS + ':nth-child(' + (rowIndex + 1) + ')' + ' ' + _self.BOARD_COLUMN_CLASS
-			+ ':nth-child(' + (columnIndex + 1) + ')';
-	  $(selectorTd).addClass("selectable-enemy");
 	}
 };
 
@@ -2404,6 +2123,9 @@ gameController.prototype.performCardEffectInstantEnemy = function (card) {
 		} else if (card.cardEffect.effect == "destroyCardFromEnemyField") {
 			_self._postDestroyCard = card;
 			_self.waitForEnemyActions();
+		} else if (card.cardEffect.effect == "drawCardFromDeckYouEnemy") {
+			_self._postDestroyCard = card;
+			_self.enableActionsInEnemyPhase();
 		}
 	} else {
 		_self.waitForEnemyActions();
@@ -2675,8 +2397,11 @@ gameController.prototype.setDrawCardFromEnemyHandListener = function () {
 gameController.prototype.setDestroyCardFromEnemyFieldListener = function () {
 	var _self = this;
 
-	var eventInfoText = "Destroy " + _self._gameplayData.gameState.playersState[_self._yourUserId].cardsToDestroyFromEnemyField;
-	if (_self._gameplayData.gameState.playersState[_self._yourUserId].cardsToDestroyFromEnemyField > 1) {
+	var playerState = _self._gameplayData.gameState.playersState[_self._yourUserId];
+	var playerStateEnemy = _self._gameplayData.gameState.playersState[_self._enemyUserId];
+
+	var eventInfoText = "Destroy " + playerState.cardsToDestroyFromEnemyField;
+	if (playerState.cardsToDestroyFromEnemyField > 1) {
 		eventInfoText += " cards from your opponents field";
 	} else {
 		eventInfoText += " card from your opponents field";
@@ -2686,8 +2411,35 @@ gameController.prototype.setDestroyCardFromEnemyFieldListener = function () {
 
 	$(_self.CARD_ON_FIELD_CLASS  + _self.PLAYER_ENEMY_CLASS).on('click', function(e) {
 		$(_self.CARD_ON_FIELD_CLASS +  _self.PLAYER_ENEMY_CLASS).off();
-		_self.destroyCardFromEnemyField.call(_self, this);
-		_self.hideEventsInfo(null, 0);
+
+		var cardOnFieldEl = this;
+		var cardId = $(cardOnFieldEl).data("cardId");
+		var availableTargets = [];
+
+		playerStateEnemy.cardsOnFieldArr.forEach(function(card) {
+			if (card.cardEffect.effect == "taunt") {
+				availableTargets.push(card);
+			}
+		});
+
+    let canDestroyCard = false;
+    if (availableTargets.length > 0) {
+      availableTargets.forEach(function(card) {
+        if (cardId == card.cardId) {
+          canDestroyCard = true;
+        }
+      });
+    } else {
+      canDestroyCard = true;
+    }
+
+    if (canDestroyCard) {
+			_self.destroyCardFromEnemyField.call(_self, cardOnFieldEl);
+			_self.hideEventsInfo(null, 0);
+    } else {
+			setTimeout(_self.setDestroyCardFromEnemyFieldListener.bind(_self), 0);
+			return;
+    }
 	});
 };
 
@@ -2713,6 +2465,10 @@ gameController.prototype.enableRollDiceBoard = function () {
 			eventInfoText += " more times";
 		} else {
 			eventInfoText += " more time";
+		}
+
+		if (playerStateYou.moveBackwardsOnNextRoll) {
+			eventInfoText += "...backwards";
 		}
 	}
 
@@ -3210,7 +2966,7 @@ gameController.prototype.updateCardChargesStatus = function (cardObj, playerSele
 		if ($(this).data("cardId") == cardObj.cardId) {
 			$(_self.CARD_FIELD_CHARGES_WRAPPER_CLASS + playerSelectorClass + ' td:nth-child(' + (cardTd.index() + 1) + ')')
 				.html((cardEffect.effectChargesCount - cardEffect.chargesUsedTotal) + '/' + cardEffect.effectChargesCount
-					+ ' | ' + '<span class="anime-cb-card-field-energy-cost">' + cardObj.cardEffect.energyPerUse + '</span>');
+					+ ' | ' + '<span class="anime-cb-card-field-energy-cost">' + (cardObj.cardEffect.energyPerUse || 0) + '</span>');
 		}
 	});
 };
@@ -3972,11 +3728,9 @@ gameController.prototype.decreaseEnemyCardsInHandDensity = function() {
 gameController.prototype.updateGameStatusInfo = function () {
 	var _self = this;
 
-	if (!_self._gameplayData) {
+	if ((!_self._gameplayData) || (!_self._yourUserId)) {
 		return;
 	}
-
-	console.log(_self._gameplayData);
 
 	var gameState = _self._gameplayData.gameState;
 	var playerYouStatus = gameState.playersState[_self._yourUserId];

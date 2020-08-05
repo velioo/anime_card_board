@@ -16,7 +16,49 @@ var self = module.exports = {
 		gameState.playersState[ctx.session.userData.userId].cardsToDraw++;
 	},
 	standyPhaseHook: async (ctx) => {
+		let gameState = ctx.gameplayData.gameState;
+		let playerState = gameState.playersState[ctx.session.userData.userId];
+		let enemyUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
+		let playerStateEnemy = gameState.playersState[enemyUserId];
+    let yourUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player1Id : ctx.roomData.player2Id;
 
+    playerState.cardsExpired = [];
+
+    playerState.cardsOnFieldArr.slice().reverse().forEach(function(card, cardIdx, arr) {
+		  if (card.cardEffect.continuousEffectType == "passive") {
+		  	card.cardEffect.chargesUsedTotal++;
+
+				if (card.cardEffect.chargesUsedTotal >= card.cardEffect.effectChargesCount) {
+					playerState.cardsInGraveyard.push(card);
+		   		playerState.cardsOnFieldArr.splice(arr.length - 1 - cardIdx, 1);
+					playerState.cardsExpired.push(card);
+
+					if ("effectExpire" in card.cardEffect) {
+						assert("effectValueExpire" in card.cardEffect);
+
+						if (card.cardEffect.effectExpire == "drawCardFromDeckYou") {
+							playerState.cardsToDraw += card.cardEffect.effectValueExpire;
+						}
+					}
+				}
+		  }
+		});
+
+		playerState.cardsInHandArr.forEach(function(card) {
+    	updateCardEffectValueStatus(card, playerState);
+		});
+
+		playerStateEnemy.cardsInHandArr.forEach(function(card) {
+    	updateCardEffectValueStatus(card, playerStateEnemy);
+		});
+
+		playerState.cardsOnFieldArr.forEach(function(card) {
+    	updateCardEffectValueStatus(card, playerState);
+		});
+
+		playerStateEnemy.cardsOnFieldArr.forEach(function(card) {
+    	updateCardEffectValueStatus(card, playerStateEnemy);
+		});
 	},
 	mainPhaseHook: async (ctx) => {
 		let gameState = ctx.gameplayData.gameState;
@@ -162,6 +204,11 @@ var self = module.exports = {
 		  	} else {
 		  		playerState.cardsToDestroyFromEnemyField += card.cardEffect.effectValue;
 		  	}
+		  }
+
+		  if (card.cardEffect.effect == "drawCardFromDeckYouEnemy") {
+		  	playerState.cardsToDraw += card.cardEffect.effectValue;
+		  	playerStateEnemy.cardsToDraw += card.cardEffect.effectValueEnemy;
 		  }
 		} else {
 			if (card.cardEffect.maxUsesPerTurn) {
@@ -588,6 +635,32 @@ var self = module.exports = {
 		playerStateEnemy.cardsOnFieldArr.forEach(function(card) {
     	updateCardEffectValueStatus(card, playerStateEnemy);
 		});
+	},
+	preDestroyCardFromEnemyFieldHook: async (ctx) => {
+		let gameState = ctx.gameplayData.gameState;
+		let playerState = gameState.playersState[ctx.session.userData.userId];
+		let enemyUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
+		let playerStateEnemy = gameState.playersState[enemyUserId];
+
+	  let availableTargets = [];
+    playerStateEnemy.cardsOnFieldArr.forEach(function(card) {
+      if (card.cardEffect.effect == "taunt") {
+        availableTargets.push(card);
+      }
+    });
+
+    let canDestroyCard = false;
+    if (availableTargets.length > 0) {
+      availableTargets.forEach(function(card) {
+        if (ctx.data.cardId == card.cardId) {
+          canDestroyCard = true;
+        }
+      });
+    } else {
+      canDestroyCard = true;
+    }
+
+    assert(canDestroyCard);
 	},
 	destroyCardFromEnemyFieldHook: async (ctx) => {
 		let gameState = ctx.gameplayData.gameState;

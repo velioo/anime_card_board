@@ -173,6 +173,10 @@ var startGameResponse = {
 									"energyPoints": { "type": "integer" },
 									"maxEnergyPoints": { "type": "integer" },
 									"energyPerTurnGain": { "type": "integer" },
+									"cardsExpired": {
+										"type": "array",
+										"items": cardObj,
+									},
 								},
 							},
 							"additionalProperties": false,

@@ -83,7 +83,7 @@
 			C.C
 		</div>
 		<div class="anime-cb-card-field-wrapper">
-			<div class="anime-cb-card-field-charges-label player-enemy">Charges Left | Energy Cost</div>
+			<div class="anime-cb-card-field-charges-label player-enemy">Charges | Energy</div>
 			<table class="anime-cb-card-field-charges-status-wrapper player-enemy">
 				<tr>
 					<td class="anime-cb-card-field-charges-status">1/3 | <span class="anime-cb-card-field-energy-cost">5</span></td>
@@ -91,15 +91,21 @@
 					<td class="anime-cb-card-field-charges-status">1/3 | <span class="anime-cb-card-field-energy-cost">5</span></td>
 					<td class="anime-cb-card-field-charges-status">2/3 | <span class="anime-cb-card-field-energy-cost">5</span></td>
 					<td class="anime-cb-card-field-charges-status">3/3 | <span class="anime-cb-card-field-energy-cost">5</span></td>
+					<td class="anime-cb-card-field-charges-status">3/3 | <span class="anime-cb-card-field-energy-cost">5</span></td>
+					<td class="anime-cb-card-field-charges-status">3/3 | <span class="anime-cb-card-field-energy-cost">5</span></td>
+					<td class="anime-cb-card-field-charges-status">3/3 | <span class="anime-cb-card-field-energy-cost">5</span></td>
 				</tr>
 			</table>
 			<table class="anime-cb-card-field player-enemy">
 				<tr>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
+					<td><img data-tooltip="activateEffect" class="anime-cb-card-onfield hover player-you" data-card-text="This is Saber" data-card-name="Saber" src="imgs/player_cards/Saber.jpg"></td>
+					<td><img data-tooltip="activateEffect" class="anime-cb-card-onfield hover player-you" data-card-text="This is Saber" data-card-name="Saber" src="imgs/player_cards/Saber.jpg"></td>
+					<td><img data-tooltip="activateEffect" class="anime-cb-card-onfield hover player-you" data-card-text="This is Saber" data-card-name="Saber" src="imgs/player_cards/Saber.jpg"></td>
+					<td><img data-tooltip="activateEffect" class="anime-cb-card-onfield hover player-you" data-card-text="This is Saber" data-card-name="Saber" src="imgs/player_cards/Saber.jpg"></td>
+					<td><img data-tooltip="activateEffect" class="anime-cb-card-onfield hover player-you" data-card-text="This is Saber" data-card-name="Saber" src="imgs/player_cards/Saber.jpg"></td>
+					<td><img data-tooltip="activateEffect" class="anime-cb-card-onfield hover player-you" data-card-text="This is Saber" data-card-name="Saber" src="imgs/player_cards/Saber.jpg"></td>
+					<td><img data-tooltip="activateEffect" class="anime-cb-card-onfield hover player-you" data-card-text="This is Saber" data-card-name="Saber" src="imgs/player_cards/Saber.jpg"></td>
+					<td><img data-tooltip="activateEffect" class="anime-cb-card-onfield hover player-you" data-card-text="This is Saber" data-card-name="Saber" src="imgs/player_cards/Saber.jpg"></td>
 				</tr>
 			</table>
 		</div>
@@ -114,6 +120,9 @@
 					<td><img data-tooltip="activateEffect" class="anime-cb-card-onfield hover player-you" data-card-text="This is Saber" data-card-name="Saber" src="imgs/player_cards/Saber.jpg"></td>
 					<td><img data-tooltip="activateEffect" class="anime-cb-card-onfield hover player-you" data-card-text="This is Saber" data-card-name="Saber" src="imgs/player_cards/Saber.jpg"></td>
 					<td><img data-tooltip="activateEffect" class="anime-cb-card-onfield hover player-you" data-card-text="This is Saber" data-card-name="Saber" src="imgs/player_cards/Saber.jpg"></td>
+					<td><img data-tooltip="activateEffect" class="anime-cb-card-onfield hover player-you" data-card-text="This is Saber" data-card-name="Saber" src="imgs/player_cards/Saber.jpg"></td>
+					<td></td>
+					<td></td>
 					<td></td>
 				</tr>
 			</table>
@@ -124,9 +133,12 @@
 					<td class="anime-cb-card-field-charges-status">1/3 | <span class="anime-cb-card-field-energy-cost">5</span></td>
 					<td class="anime-cb-card-field-charges-status">3/3 | <span class="anime-cb-card-field-energy-cost">5</span></td>
 					<td class="anime-cb-card-field-charges-status">1/3 | <span class="anime-cb-card-field-energy-cost">5</span></td>
+					<td class="anime-cb-card-field-charges-status">1/3 | <span class="anime-cb-card-field-energy-cost">5</span></td>
+					<td class="anime-cb-card-field-charges-status">1/3 | <span class="anime-cb-card-field-energy-cost">5</span></td>
+					<td class="anime-cb-card-field-charges-status"><span class="anime-cb-card-field-energy-cost">5</span></td>
 				</tr>
 			</table>
-			<div class="anime-cb-card-field-charges-label player-you">Charges Left | Energy Cost</div>
+			<div class="anime-cb-card-field-charges-label player-you">Charges | Energy</div>
 		</div>
 		<div class="anime-cb-board-player-label player-you">
 			Lelouch
@@ -544,103 +556,103 @@ function rollDiceWithValues() {
 
 
 // Summon cards on field---------------------
-// $('.anime-cb-cards-in-hand-wrapper.player-you').on('click', '.anime-cb-card', function(e) {
-// 	var cardSrc = $(this).attr("src");
-// 	var cardText = $(this).data("cardText");
-// 	var cardName = $(this).data("cardName");
-// 	var card = this;
+$('.anime-cb-cards-in-hand-wrapper.player-you').on('click', '.anime-cb-card', function(e) {
+	var cardSrc = $(this).attr("src");
+	var cardText = $(this).data("cardText");
+	var cardName = $(this).data("cardName");
+	var card = this;
 
-// 	$('.anime-cb-card-field.player-you td').each(function(idx) {
-// 		if (!$(this).find('img').length) {
-// 			$(this).css("-webkit-animation", "summon-your-card 0.6s ease-out both");
-// 			$(this).css("animation", "summon-your-card 0.6s ease-out both");
-// 			$(this).html('<img class="anime-cb-card-onfield hover player-you" data-card-text="' + cardText + '" data-card-name="' + cardName + '" src="' + cardSrc + '">');
-// 			$('.anime-cb-cards-in-hand').css("overflow", "hidden");
-// 			$(card).remove();
+	$('.anime-cb-card-field.player-you td').each(function(idx) {
+		if (!$(this).find('img').length) {
+			$(this).css("-webkit-animation", "summon-your-card 0.6s ease-out both");
+			$(this).css("animation", "summon-your-card 0.6s ease-out both");
+			$(this).html('<img class="anime-cb-card-onfield hover player-you" data-card-text="' + cardText + '" data-card-name="' + cardName + '" src="' + cardSrc + '">');
+			$('.anime-cb-cards-in-hand').css("overflow", "hidden");
+			$(card).remove();
 
-// 			decreaseYourCardsInHandDensity();
+			decreaseYourCardsInHandDensity();
 
-// 			setTimeout(function() {
-// 				$(this).css("animation", "");
-// 				$(this).css("-webkit-animation", "");
-// 			}.bind(this), 500);
+			setTimeout(function() {
+				$(this).css("animation", "");
+				$(this).css("-webkit-animation", "");
+			}.bind(this), 500);
 
-// 			return false;
-// 		}
-// 	});
-// });
+			return false;
+		}
+	});
+});
 
-// This will not be on click but just for test and the data will be taken from server
-// $('.anime-cb-cards-in-hand-wrapper.player-enemy').on('click', '.anime-cb-card', function(e) {
-// 	// The date won't be taken from here but just for test
-// 	var cardSrc = $(this).attr("src");
-// 	var card = this;
+//This will not be on click but just for test and the data will be taken from server
+$('.anime-cb-cards-in-hand-wrapper.player-enemy').on('click', '.anime-cb-card', function(e) {
+	// The date won't be taken from here but just for test
+	var cardSrc = $(this).attr("src");
+	var card = this;
 
-// 	$('.anime-cb-card-field.player-enemy td').each(function(idx) {
-// 		if (!$(this).find('img').length) {
-// 			$(this).css("-webkit-animation", "summon-enemy-card 0.6s ease-out both");
-// 			$(this).css("animation", "summon-enemy-card 0.6s ease-out both");
-// 			$(this).html('<img class="anime-cb-card-onfield hover player-enemy" src="' + cardSrc + '">');
-// 			$('.anime-cb-cards-in-hand').css("overflow", "hidden");
-// 			$(card).remove();
+	$('.anime-cb-card-field.player-enemy td').each(function(idx) {
+		if (!$(this).find('img').length) {
+			$(this).css("-webkit-animation", "summon-enemy-card 0.6s ease-out both");
+			$(this).css("animation", "summon-enemy-card 0.6s ease-out both");
+			$(this).html('<img class="anime-cb-card-onfield hover player-enemy" src="' + cardSrc + '">');
+			$('.anime-cb-cards-in-hand').css("overflow", "hidden");
+			$(card).remove();
 
-// 			decreaseEnemyCardsInHandDensity();
+			decreaseEnemyCardsInHandDensity();
 
-// 			setTimeout(function() {
-// 				$(this).css("animation", "");
-// 				$(this).css("-webkit-animation", "");
-// 			}.bind(this), 500);
+			setTimeout(function() {
+				$(this).css("animation", "");
+				$(this).css("-webkit-animation", "");
+			}.bind(this), 500);
 
-// 			return false;
-// 		}
-// 	});
-// });
+			return false;
+		}
+	});
+});
 
 // --------------------
 
 // Discard cards from hand
-$('.anime-cb-cards-in-hand-wrapper.player-you').on('click', '.anime-cb-card', function(e) {
-	var card = this;
+// $('.anime-cb-cards-in-hand-wrapper.player-you').on('click', '.anime-cb-card', function(e) {
+// 	var card = this;
 
-	$(card).remove();
-	$('.anime-cb-card-graveyard-deck.player-you.bottom').attr("src", $('.anime-cb-card-graveyard-deck.player-you.top').attr("src"));
-	$('.anime-cb-card-graveyard-deck.player-you.top')
-		.css("-webkit-animation", "discard-card-from-hand-you 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both");
-	$('.anime-cb-card-graveyard-deck.player-you.top')
-		.css("animation", "discard-card-from-hand-you 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both");
+// 	$(card).remove();
+// 	$('.anime-cb-card-graveyard-deck.player-you.bottom').attr("src", $('.anime-cb-card-graveyard-deck.player-you.top').attr("src"));
+// 	$('.anime-cb-card-graveyard-deck.player-you.top')
+// 		.css("-webkit-animation", "discard-card-from-hand-you 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both");
+// 	$('.anime-cb-card-graveyard-deck.player-you.top')
+// 		.css("animation", "discard-card-from-hand-you 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both");
 
-	$('.anime-cb-card-graveyard-deck.player-you.top').attr("src", $(card).attr("src"));
-	$('.anime-cb-cards-in-hand').css("overflow", "hidden");
+// 	$('.anime-cb-card-graveyard-deck.player-you.top').attr("src", $(card).attr("src"));
+// 	$('.anime-cb-cards-in-hand').css("overflow", "hidden");
 
-	decreaseYourCardsInHandDensity();
+// 	decreaseYourCardsInHandDensity();
 
-	setTimeout(function() {
-		$('.anime-cb-card-graveyard-deck.player-you.top').css("animation", "");
-		$('.anime-cb-card-graveyard-deck.player-you.top').css("-webkit-animation", "");
-	}.bind(this), 550);
+// 	setTimeout(function() {
+// 		$('.anime-cb-card-graveyard-deck.player-you.top').css("animation", "");
+// 		$('.anime-cb-card-graveyard-deck.player-you.top').css("-webkit-animation", "");
+// 	}.bind(this), 550);
 
-});
+// });
 
-$('.anime-cb-cards-in-hand-wrapper.player-enemy').on('click', '.anime-cb-card', function(e) {
-	var card = this;
+// $('.anime-cb-cards-in-hand-wrapper.player-enemy').on('click', '.anime-cb-card', function(e) {
+// 	var card = this;
 
-	$(card).remove();
-	$('.anime-cb-card-graveyard-deck.player-enemy.bottom').attr("src", $('.anime-cb-card-graveyard-deck.player-enemy.top').attr("src"));
-	$('.anime-cb-card-graveyard-deck.player-enemy.top')
-		.css("-webkit-animation", "discard-card-from-hand-enemy 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both");
-	$('.anime-cb-card-graveyard-deck.player-enemy.top')
-		.css("animation", "discard-card-from-hand-enemy 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both");
+// 	$(card).remove();
+// 	$('.anime-cb-card-graveyard-deck.player-enemy.bottom').attr("src", $('.anime-cb-card-graveyard-deck.player-enemy.top').attr("src"));
+// 	$('.anime-cb-card-graveyard-deck.player-enemy.top')
+// 		.css("-webkit-animation", "discard-card-from-hand-enemy 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both");
+// 	$('.anime-cb-card-graveyard-deck.player-enemy.top')
+// 		.css("animation", "discard-card-from-hand-enemy 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both");
 
-	$('.anime-cb-card-graveyard-deck.player-enemy.top').attr("src", $(card).attr("src"));
-	$('.anime-cb-cards-in-hand').css("overflow", "hidden");
+// 	$('.anime-cb-card-graveyard-deck.player-enemy.top').attr("src", $(card).attr("src"));
+// 	$('.anime-cb-cards-in-hand').css("overflow", "hidden");
 
-	decreaseEnemyCardsInHandDensity();
+// 	decreaseEnemyCardsInHandDensity();
 
-	setTimeout(function() {
-		$('.anime-cb-card-graveyard-deck.player-enemy.top').css("animation", "");
-		$('.anime-cb-card-graveyard-deck.player-enemy.top').css("-webkit-animation", "");
-	}.bind(this), 550);
-});
+// 	setTimeout(function() {
+// 		$('.anime-cb-card-graveyard-deck.player-enemy.top').css("animation", "");
+// 		$('.anime-cb-card-graveyard-deck.player-enemy.top').css("-webkit-animation", "");
+// 	}.bind(this), 550);
+// });
 // ----------------
 // Test phases switch, in real game the animations will triger when there is server response (draw phase, standby phase, main phase) or the player clicked on roll phase or end phase
 // TODO TODO TODO

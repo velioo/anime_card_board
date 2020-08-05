@@ -694,7 +694,7 @@ body {
 }
 
 .anime-cb-card-field {
-  width: 460px;
+  width: 736px;
   height: 120px;
   background-color: rgba(0, 0, 0, 0.3);
 }
@@ -715,7 +715,7 @@ body {
   margin-bottom: 10px;
 }
 .anime-cb-card-field-charges-status-wrapper {
-  width: 460px;
+  width: 736px;
   height: 30px;
   text-align: center;
   color: white;
@@ -728,11 +728,11 @@ body {
 
 .anime-cb-card-field-charges-label {
   font-size: 14pt;
-  margin-left: -750px;
+  margin-left: -886px;
 }
 
 .anime-cb-card-field-charges-label.player-you {
-  margin-top: -27px;
+  margin-top: -31px;
 }
 
 .anime-cb-card-field-charges-label.player-enemy {

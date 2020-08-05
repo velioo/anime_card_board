@@ -140,7 +140,7 @@ const self = module.exports = {
               },
               cardsInHandArr: [],
               cardsOnFieldArr: [],
-              maxCardsOnField: 5,
+              maxCardsOnField: 8,
               canRollDiceBoardInRollPhase: true,
               canRollDiceBoardCount: 0,
               rollAgain: false,
@@ -174,7 +174,7 @@ const self = module.exports = {
               },
               cardsInHandArr: [],
               cardsOnFieldArr: [],
-              maxCardsOnField: 5,
+              maxCardsOnField: 8,
               canRollDiceBoardInRollPhase: true,
               canRollDiceBoardCount: 0,
               rollAgain: false,
@@ -623,6 +623,8 @@ const self = module.exports = {
 
       assert(playerState.cardsToDestroyFromEnemyField > 0);
       assert(playerStateEnemy.cardsOnFieldArr.length > 0);
+
+      await gameCore.preDestroyCardFromEnemyFieldHook(ctx);
 
       let cardToDestroy;
       let cardIdx;
