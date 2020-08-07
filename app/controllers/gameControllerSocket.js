@@ -150,6 +150,7 @@ const self = module.exports = {
               energyPoints: 0,
               maxEnergyPoints: 10,
               energyPerTurnGain: 5,
+              energyRegen: 0,
             },
             [ctx.roomData.player2Id]: {
               name: ctx.roomData.player2Name,
@@ -184,6 +185,7 @@ const self = module.exports = {
               energyPoints: 0,
               maxEnergyPoints: 10,
               energyPerTurnGain: 5,
+              energyRegen: 0,
             },
           },
         },
@@ -243,6 +245,7 @@ const self = module.exports = {
 
       ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
       ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
+      ctx.cardsInDeckArr = JSON.parse(queryStatus.rows[0].deck_json);
 
       let gameState = ctx.gameplayData.gameState;
       let playerState = gameState.playersState[ctx.session.userData.userId];
@@ -261,8 +264,8 @@ const self = module.exports = {
 
       playerState.cardsInHandArr.push(ctx.cardDrawn);
 
-      queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
-        field2: 'room_id', queryArg2: ctx.data.roomId });
+      queryStatus = await utils.updateRowById({ table: 'games', fields: ['data_json', 'deck_json', 'room_id'],
+        queryArgs: [JSON.stringify(ctx.gameplayData), JSON.stringify(ctx.cardsInDeckArr), ctx.data.roomId] });
 
       ctx.cardsInHandArrPlayer1 = gameState.playersState[ctx.roomData.player1Id].cardsInHandArr;
       ctx.cardsInHandArrPlayer2 = gameState.playersState[ctx.roomData.player2Id].cardsInHandArr;
@@ -316,8 +319,8 @@ const self = module.exports = {
       await gameCore.drawPhaseHook(ctx);
       await gameCore.activePlayerHook(ctx);
 
-      queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
-        field2: 'room_id', queryArg2: ctx.data.roomId });
+      queryStatus = await utils.updateRowById({ table: 'games', fields: ['data_json', 'room_id'],
+        queryArgs: [JSON.stringify(ctx.gameplayData), ctx.data.roomId] });
 
       ctx.cardsInHandArrPlayer1 = gameState.playersState[ctx.roomData.player1Id].cardsInHandArr;
       ctx.cardsInHandArrPlayer2 = gameState.playersState[ctx.roomData.player2Id].cardsInHandArr;
@@ -371,8 +374,8 @@ const self = module.exports = {
 
       // Do something... -> card effects
 
-      queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
-        field2: 'room_id', queryArg2: ctx.data.roomId });
+      queryStatus = await utils.updateRowById({ table: 'games', fields: ['data_json', 'room_id'],
+        queryArgs: [JSON.stringify(ctx.gameplayData), ctx.data.roomId] });
 
       ctx.cardsInHandArrPlayer1 = gameState.playersState[ctx.roomData.player1Id].cardsInHandArr;
       ctx.cardsInHandArrPlayer2 = gameState.playersState[ctx.roomData.player2Id].cardsInHandArr;
@@ -424,8 +427,8 @@ const self = module.exports = {
       await gameCore.mainPhaseHook(ctx);
       await gameCore.activePlayerHook(ctx);
 
-      queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
-        field2: 'room_id', queryArg2: ctx.data.roomId });
+      queryStatus = await utils.updateRowById({ table: 'games', fields: ['data_json', 'room_id'],
+        queryArgs: [JSON.stringify(ctx.gameplayData), ctx.data.roomId] });
 
       ctx.cardsInHandArrPlayer1 = gameState.playersState[ctx.roomData.player1Id].cardsInHandArr;
       ctx.cardsInHandArrPlayer2 = gameState.playersState[ctx.roomData.player2Id].cardsInHandArr;
@@ -503,7 +506,6 @@ const self = module.exports = {
           break;
       }
 
-
       gameState.cardSummonedIdxInPlayerHand = ctx.data.cardIdx;
       playerState.cardsOnFieldArr.push(cardSelected);
       gameState.cardSummoned = playerState.cardsOnFieldArr[playerState.cardsOnFieldArr.length - 1];
@@ -514,8 +516,8 @@ const self = module.exports = {
       await gameCore.summonCardHook(ctx);
       await gameCore.activePlayerHook(ctx);
 
-      queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
-        field2: 'room_id', queryArg2: ctx.data.roomId });
+      queryStatus = await utils.updateRowById({ table: 'games', fields: ['data_json', 'room_id'],
+        queryArgs: [JSON.stringify(ctx.gameplayData), ctx.data.roomId] });
 
       ctx.cardsInHandArrPlayer1 = gameState.playersState[ctx.roomData.player1Id].cardsInHandArr;
       ctx.cardsInHandArrPlayer2 = gameState.playersState[ctx.roomData.player2Id].cardsInHandArr;
@@ -575,8 +577,8 @@ const self = module.exports = {
       await gameCore.drawCardFromEnemyHandHook(ctx);
       await gameCore.activePlayerHook(ctx);
 
-      queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
-        field2: 'room_id', queryArg2: ctx.data.roomId });
+      queryStatus = await utils.updateRowById({ table: 'games', fields: ['data_json', 'room_id'],
+        queryArgs: [JSON.stringify(ctx.gameplayData), ctx.data.roomId] });
 
       ctx.cardsInHandArrPlayer1 = gameState.playersState[ctx.roomData.player1Id].cardsInHandArr;
       ctx.cardsInHandArrPlayer2 = gameState.playersState[ctx.roomData.player2Id].cardsInHandArr;
@@ -647,8 +649,8 @@ const self = module.exports = {
       await gameCore.destroyCardFromEnemyFieldHook(ctx);
       await gameCore.activePlayerHook(ctx);
 
-      queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
-        field2: 'room_id', queryArg2: ctx.data.roomId });
+      queryStatus = await utils.updateRowById({ table: 'games', fields: ['data_json', 'room_id'],
+        queryArgs: [JSON.stringify(ctx.gameplayData), ctx.data.roomId] });
 
       ctx.cardsInHandArrPlayer1 = gameState.playersState[ctx.roomData.player1Id].cardsInHandArr;
       ctx.cardsInHandArrPlayer2 = gameState.playersState[ctx.roomData.player2Id].cardsInHandArr;
@@ -700,8 +702,8 @@ const self = module.exports = {
       await gameCore.rollPhaseHook(ctx);
       await gameCore.activePlayerHook(ctx);
 
-      queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
-        field2: 'room_id', queryArg2: ctx.data.roomId });
+      queryStatus = await utils.updateRowById({ table: 'games', fields: ['data_json', 'room_id'],
+        queryArgs: [JSON.stringify(ctx.gameplayData), ctx.data.roomId] });
 
       ctx.cardsInHandArrPlayer1 = gameState.playersState[ctx.roomData.player1Id].cardsInHandArr;
       ctx.cardsInHandArrPlayer2 = gameState.playersState[ctx.roomData.player2Id].cardsInHandArr;
@@ -757,8 +759,8 @@ const self = module.exports = {
       await gameCore.rollDiceBoardHook(ctx);
       await gameCore.activePlayerHook(ctx);
 
-      queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
-        field2: 'room_id', queryArg2: ctx.data.roomId });
+      queryStatus = await utils.updateRowById({ table: 'games', fields: ['data_json', 'room_id'],
+        queryArgs: [JSON.stringify(ctx.gameplayData), ctx.data.roomId] });
 
       ctx.cardsInHandArrPlayer1 = gameState.playersState[ctx.roomData.player1Id].cardsInHandArr;
       ctx.cardsInHandArrPlayer2 = gameState.playersState[ctx.roomData.player2Id].cardsInHandArr;
@@ -818,8 +820,8 @@ const self = module.exports = {
 
       resetTurn(ctx);
 
-      queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
-        field2: 'room_id', queryArg2: ctx.data.roomId });
+      queryStatus = await utils.updateRowById({ table: 'games', fields: ['data_json', 'room_id'],
+        queryArgs: [JSON.stringify(ctx.gameplayData), ctx.data.roomId] });
 
       ctx.cardsInHandArrPlayer1 = gameState.playersState[ctx.roomData.player1Id].cardsInHandArr;
       ctx.cardsInHandArrPlayer2 = gameState.playersState[ctx.roomData.player2Id].cardsInHandArr;
@@ -883,8 +885,8 @@ const self = module.exports = {
       await gameCore.discardCardHook(ctx);
       await gameCore.activePlayerHook(ctx);
 
-      queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
-        field2: 'room_id', queryArg2: ctx.data.roomId });
+      queryStatus = await utils.updateRowById({ table: 'games', fields: ['data_json', 'room_id'],
+        queryArgs: [JSON.stringify(ctx.gameplayData), ctx.data.roomId] });
 
       ctx.cardsInHandArrPlayer1 = gameState.playersState[ctx.roomData.player1Id].cardsInHandArr;
       ctx.cardsInHandArrPlayer2 = gameState.playersState[ctx.roomData.player2Id].cardsInHandArr;
@@ -953,8 +955,8 @@ const self = module.exports = {
       await gameCore.cardFinishHook(ctx);
       await gameCore.activePlayerHook(ctx);
 
-      queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
-        field2: 'room_id', queryArg2: ctx.data.roomId });
+      queryStatus = await utils.updateRowById({ table: 'games', fields: ['data_json', 'room_id'],
+        queryArgs: [JSON.stringify(ctx.gameplayData), ctx.data.roomId] });
 
       ctx.cardsInHandArrPlayer1 = gameState.playersState[ctx.roomData.player1Id].cardsInHandArr;
       ctx.cardsInHandArrPlayer2 = gameState.playersState[ctx.roomData.player2Id].cardsInHandArr;
@@ -1020,8 +1022,8 @@ const self = module.exports = {
       await gameCore.activateCardEffectHook(ctx);
       await gameCore.activePlayerHook(ctx);
 
-      queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
-        field2: 'room_id', queryArg2: ctx.data.roomId });
+      queryStatus = await utils.updateRowById({ table: 'games', fields: ['data_json', 'room_id'],
+        queryArgs: [JSON.stringify(ctx.gameplayData), ctx.data.roomId] });
 
       ctx.cardsInHandArrPlayer1 = gameState.playersState[ctx.roomData.player1Id].cardsInHandArr;
       ctx.cardsInHandArrPlayer2 = gameState.playersState[ctx.roomData.player2Id].cardsInHandArr;
@@ -1086,8 +1088,8 @@ const self = module.exports = {
       await gameCore.cardFinishContinuousHook(ctx);
       await gameCore.activePlayerHook(ctx);
 
-      queryStatus = await utils.updateRowById({ table: 'games', field: 'data_json', queryArg: JSON.stringify(ctx.gameplayData),
-        field2: 'room_id', queryArg2: ctx.data.roomId });
+      queryStatus = await utils.updateRowById({ table: 'games', fields: ['data_json', 'room_id'],
+        queryArgs: [JSON.stringify(ctx.gameplayData), ctx.data.roomId] });
 
       ctx.cardsInHandArrPlayer1 = gameState.playersState[ctx.roomData.player1Id].cardsInHandArr;
       ctx.cardsInHandArrPlayer2 = gameState.playersState[ctx.roomData.player2Id].cardsInHandArr;
@@ -1257,7 +1259,9 @@ let resetTurn = (ctx) => {
     gameState.playersState[playerId].cardsSummonedThisTurnCount.rare = 0;
     gameState.playersState[playerId].cardsSummonedThisTurnCount.epic = 0;
     gameState.playersState[playerId].cardsOnFieldArr.forEach(function(card) {
-      card.cardEffect.activationsCountThisTurn = 0;
+      if ("maxUsesPerTurn" in card.cardEffect) {
+        card.cardEffect.activationsCountThisTurn = 0;
+      }
     });
   }
   gameState.playerIdDrawnCard = null;
@@ -1266,6 +1270,8 @@ let resetTurn = (ctx) => {
   gameState.playerIdFinishCard = null;
   gameState.playerIdActivatedCard = null;
   gameState.playerIdFinishCardContinuous = null;
+  gameState.playerIdDestroyedCardFromEnemyField = null;
+  gameState.playerIdDrawnCardFromEnemyHand = null;
   gameState.cardSummoned = null;
   gameState.cardSummonedIdxInPlayerHand = null;
   gameState.rollDiceBoard = {
@@ -1281,6 +1287,8 @@ let resetTurn = (ctx) => {
   gameState.cardFinish = null;
   gameState.cardActivated = null;
   gameState.cardFinishContinuous = null;
+  gameState.cardDestroyedFromEnemyField = null;
+  gameState.cardDrawnFromEnemyHand = null;
 };
 
 let resetTimers = (ctx) => {

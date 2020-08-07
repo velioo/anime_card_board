@@ -204,16 +204,28 @@ const self = module.exports = {
 
     return results;
   },
+  // Example: params.fields = [name, phone, id], params.queryArgs = ['test', 'xxxxxxxxxxx', 1] =>
+  // the name and phone will be updated for user with id = 1
   updateRowById: async (params) => {
-    assert(params.table && params.field && params.field2 && params.queryArg && params.queryArg2);
-    assert(_.isString(params.table) && _.isString(params.field) && _.isString(params.field2));
+    assert(params.table && (params.fields.length >= 2) && (params.queryArgs.length >= 2)
+      && (params.fields.length == params.queryArgs.length));
+    assert(_.isString(params.table));
+
+    let setFieldsStr = "";
+    let whereField = params.fields[ params.fields.length - 1 ];
+    let wherePos = "$" + params.fields.length;
+    for (let i = 0; i < params.fields.length - 1; i++) {
+      setFieldsStr += params.fields[i] + " = $" + (i + 1) + ",";
+    }
+
+    setFieldsStr = setFieldsStr.slice(0, -1);
 
     const results = await pg.pool.query(`
       UPDATE ${params.table}
-      SET ${params.field} = $1
-      WHERE ${params.field2} = $2
+      SET ${setFieldsStr}
+      WHERE ${whereField} = ${wherePos}
       RETURNING *
-      `, [ params.queryArg, params.queryArg2 ]);
+      `, params.queryArgs);
 
     assert(results.rowCount == 1);
 

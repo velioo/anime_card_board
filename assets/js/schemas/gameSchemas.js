@@ -7,9 +7,10 @@ var cardObjProperties = {
   "cardRarity": { "type": "string" },
   "cardEffect": { "type": "object" },
   "cardCost": { "type": "integer" },
+  "cardAttributes": { "type": "array" },
 };
 
-var cardObjRequiredFields = [ "cardName", "cardText", "cardImg", "cardId", "cardRarity", "cardEffect", "cardCost" ];
+var cardObjRequiredFields = [ "cardName", "cardText", "cardImg", "cardId", "cardRarity", "cardEffect", "cardCost", "cardAttributes" ];
 
 var cardObj = {
 	"type": "object",
@@ -173,6 +174,7 @@ var startGameResponse = {
 									"energyPoints": { "type": "integer" },
 									"maxEnergyPoints": { "type": "integer" },
 									"energyPerTurnGain": { "type": "integer" },
+									"energyRegen": { "type": "integer" },
 									"cardsExpired": {
 										"type": "array",
 										"items": cardObj,

@@ -97,6 +97,7 @@ CREATE TABLE "games" (
   "player1_id" integer NOT NULL REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
   "player2_id" integer NOT NULL REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
   "data_json" text NOT NULL,
+  "deck_json" text NOT NULL DEFAULT '[]',
   "room_data_json" text NOT NULL,
   "status_id" integer NOT NULL REFERENCES gameplay_statuses(id) ON UPDATE CASCADE,
   "winning_player_id" integer REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -132,39 +133,44 @@ CREATE table "cards" (
   "rarity_id" text NOT NULL REFERENCES card_rarities(id),
   "effect_json" text NOT NULL,
   "cost" integer NOT NULL,
+  "attributes" text[] NOT NULL,
   PRIMARY KEY (id)
 );
 
 GRANT ALL ON cards TO velioo;
 GRANT ALL ON cards_id_seq TO velioo;
 
-INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) VALUES (1, 'Misaka', 'Go 6 spaces forward.', 'Misaka 3.jpg', 'rare',
-'{"effect": "moveSpacesForward", "effectValue": 6, "autoEffect":true, "continuous": false}', 3);
-INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) VALUES (2, 'Alice', 'Go up to 2 spaces forward.',
-'Alice.jpg', 'common', '{"effect": "moveSpacesForwardUpTo", "effectValue": 2, "autoEffect": false, "continuous": false}', 2);
-INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) VALUES (3, 'Okabe', 'Move your opponent up to 2 spaces backward.',
-'Okabe.png', 'common', '{"effect": "moveSpacesBackwardsUpToEnemy", "effectValue": 2, "autoEffect":false, "continuous": false}', 2);
-INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) VALUES (4, 'Kagura', 'Move your opponent 6 spaces backward.',
-'Kagura.jpg', 'rare', '{"effect": "moveSpacesBackwardsEnemy", "effectValue": 6, "autoEffect":true, "continuous": false}', 3);
-INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) VALUES (5, 'Lucy', 'Move 1 space forward or backward.',
-'Lucy.png', 'common', '{"effect": "moveSpacesForwardOrBackwardUpTo", "effectValue": 1, "autoEffect":false, "continuous": false}', 1);
-INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) VALUES (6, 'Kakashi',
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes) VALUES (1, 'Misaka', 'Go 6 spaces forward.', 'Misaka.jpg', 'rare',
+'{"effect": "moveSpacesForward", "effectValue": 6, "autoEffect":true, "continuous": false}', 3, '{field}');
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes) VALUES (2, 'Alice', 'Go up to 2 spaces forward.',
+'Alice.jpg', 'common', '{"effect": "moveSpacesForwardUpTo", "effectValue": 2, "autoEffect": false, "continuous": false}', 2, '{field}');
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes) VALUES (3, 'Okabe', 'Move your opponent up to 2 spaces backward.',
+'Okabe.png', 'common', '{"effect": "moveSpacesBackwardsUpToEnemy", "effectValue": 2, "autoEffect":false, "continuous": false}', 2, '{field}');
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes) VALUES (4, 'Kagura', 'Move your opponent 6 spaces backward.',
+'Kagura.jpg', 'rare', '{"effect": "moveSpacesBackwardsEnemy", "effectValue": 6, "autoEffect":true, "continuous": false}', 3, '{field}');
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes) VALUES (5, 'Lucy', 'Move 1 space forward or backward.',
+'Lucy.png', 'common', '{"effect": "moveSpacesForwardOrBackwardUpTo", "effectValue": 1, "autoEffect":false, "continuous": false}', 1, '{field}');
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes) VALUES (6, 'Kakashi',
 'Choose a special board space up to <span style="color:rgb(65, 105, 225); font-weight: 700;">|X|</span> spaces forward and apply its effect for yourself. The number of spaces you can choose up to increases by 4 every time you use this card (max 30). This card has 3 charges, each time you use it, 1 charge is consumed. Each use of this effect consumes 1 additional Energy compared to the previous use (max 5).',
 'Kakashi.jpg', 'epic',
-'{"autoEffect":false, "continuous": true, "effectChargesCount": 3, "maxUsesPerTurn": 1, "continuousEffectType": "onClick", "energyPerUse": 1, "energyPerUseMax": 5, "effect": "copySpecialSpacesUpTo", "effectValue": 4, "effectValueMax": 30, "energyPerUseIncrement": "+1", "energyPerUseIncrementCondition": "totalUsedCharges", "energyPerUseIncrementConditionFilter": "every1", "effectValueIncrement": "+4", "effectValueIncrementCondition": "totalUsedCharges", "effectValueIncrementConditionFilter": "every1"}', 2);
-INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) VALUES (7, 'Lelouch',
+'{"autoEffect":false, "continuous": true, "effectChargesCount": 3, "maxUsesPerTurn": 1, "continuousEffectType": "onClick", "energyPerUse": 1, "energyPerUseMax": 5, "effect": "copySpecialSpacesUpTo", "effectValue": 4, "effectValueMax": 30, "energyPerUseIncrement": "+1", "energyPerUseIncrementCondition": "totalUsedCharges", "energyPerUseIncrementConditionFilter": "every1", "effectValueIncrement": "+4", "effectValueIncrementCondition": "totalUsedCharges", "effectValueIncrementConditionFilter": "every1"}', 2, '{field}');
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes) VALUES (7, 'Lelouch',
 'Move your opponent up to <span style="color:rgb(171, 33, 33); font-weight: 700;">|X|</span> spaces forward or backward. The number of spaces you can choose up to increases x2 every time you use this card (max 20). This card has 3 charges, each time you use it, 1 charge is consumed. Each use of this effect consumes 1 additional Energy compared to the previous use (max 5).',
 'Lelouch.webp', 'epic',
-'{"autoEffect":false, "continuous": true, "effectChargesCount": 3, "maxUsesPerTurn": 1, "continuousEffectType": "onClick", "energyPerUse": 1, "energyPerUseMax": 5, "effect": "moveSpacesForwardOrBackwardUpToEnemy", "effectValue": 2, "effectValueMax": 20, "energyPerUseIncrement": "+1", "energyPerUseIncrementCondition": "totalUsedCharges", "energyPerUseIncrementConditionFilter": "every1", "effectValueIncrement": "x2", "effectValueIncrementCondition": "totalUsedCharges", "effectValueIncrementConditionFilter": "every1"}', 2);
-INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) VALUES (8, 'Edward', 'Choose an empty board space up to 10 spaces forward and create a Tier 1 special board space on its location.',
-'Edward.png', 'common', '{"effect": "createSpecialBoardSpaceForwardTier1", "effectValue": 10, "autoEffect": false, "continuous": false}', 1);
-INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) VALUES (9, 'Saber', 'Go up to <span style="color:rgb(65, 105, 225); font-weight: 700;">|X|</span> spaces forward. For every 5 cards in your graveyard you can go up to 1 more space forward (max 10), and for every 10 cards in your graveyard the energy cost increases by 1 (max 5).',
-'Saber.gif', 'rare', '{"effect": "moveSpacesForwardUpTo", "effectValue": 1, "autoEffect": false, "continuous": false, "effectValueIncrement": "+1", "effectValueIncrementCondition": "cardsInYourGraveyard", "effectValueIncrementConditionFilter": "every5", "effectValueMax": 10, "costIncrement": "+1", "costIncrementCondition": "cardsInYourGraveyard", "costIncrementConditionFilter": "every10", "costMax": 5}', 1);
-INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) VALUES (10, 'Kazuma', 'Take a card from your opponent''s hand.', 'Kazuma.jpg', 'common',
-'{"effect": "drawCardFromEnemyHand", "effectValue": 1, "autoEffect":true, "continuous": false}', 2);
-INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) VALUES (11, 'Kurumi', 'Choose a card from your opponent''s field and destroy it.', 'Kurumi.gif', 'rare',
-'{"effect": "destroyCardFromEnemyField", "effectValue": 1, "autoEffect":true, "continuous": false}', 4);
-INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) VALUES (12, 'Yugi', 'Draw 2 cards from the deck and your opponent draws 1.', 'Yugi.jpg', 'common',
-'{"effect": "drawCardFromDeckYouEnemy", "effectValue": 2, "effectValueEnemy": 1, "autoEffect":true, "continuous": false}', 2);
-INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost) VALUES (13, 'Ononoki', 'While this card is active, your opponent cannot target other cards on your field for destruction. This card has 3 charges, 1 charge is consumed on every SP. If this card is still on your field on your 3-rd SP, draw 1 card.', 'Ononoki.png', 'common',
-'{"effect": "taunt", "effectExpire": "drawCardFromDeckYou", "effectValueExpire": 1, "effectChargesCount": 3,"continuousEffectType": "passive", "autoEffect":true, "continuous": true}', 3);
+'{"autoEffect":false, "continuous": true, "effectChargesCount": 3, "maxUsesPerTurn": 1, "continuousEffectType": "onClick", "energyPerUse": 1, "energyPerUseMax": 5, "effect": "moveSpacesForwardOrBackwardUpToEnemy", "effectValue": 2, "effectValueMax": 20, "energyPerUseIncrement": "+1", "energyPerUseIncrementCondition": "totalUsedCharges", "energyPerUseIncrementConditionFilter": "every1", "effectValueIncrement": "x2", "effectValueIncrementCondition": "totalUsedCharges", "effectValueIncrementConditionFilter": "every1"}', 2, '{field}');
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes) VALUES (8, 'Edward', 'Choose an empty board space up to 10 spaces forward and create a Tier 1 special board space on its location.',
+'Edward.png', 'common', '{"effect": "createSpecialBoardSpaceForwardTier1", "effectValue": 10, "autoEffect": false, "continuous": false}', 1, '{field}');
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes) VALUES (9, 'Saber', 'Go up to <span style="color:rgb(65, 105, 225); font-weight: 700;">|X|</span> spaces forward. For every 5 cards in your graveyard you can go up to 1 more space forward (max 10), and for every 10 cards in your graveyard the energy cost increases by 1 (max 5).',
+'Saber.gif', 'rare', '{"effect": "moveSpacesForwardUpTo", "effectValue": 1, "autoEffect": false, "continuous": false, "effectValueIncrement": "+1", "effectValueIncrementCondition": "cardsInYourGraveyard", "effectValueIncrementConditionFilter": "every5", "effectValueMax": 10, "costIncrement": "+1", "costIncrementCondition": "cardsInYourGraveyard", "costIncrementConditionFilter": "every10", "costMax": 5}', 1, '{field}');
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes) VALUES (10, 'Kazuma', 'Take a card from your opponent''s hand.', 'Kazuma.jpg', 'common',
+'{"effect": "drawCardFromEnemyHand", "effectValue": 1, "autoEffect":true, "continuous": false}', 2, '{cards}');
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes) VALUES (11, 'Kurumi', 'Choose a card from your opponent''s field and destroy it.', 'Kurumi.gif', 'rare',
+'{"effect": "destroyCardFromEnemyField", "effectValue": 1, "autoEffect":true, "continuous": false}', 3, '{cards}');
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes) VALUES (12, 'Yugi', 'Draw 2 cards from the deck and your opponent draws 1.', 'Yugi.jpg', 'common',
+'{"effect": "drawCardFromDeckYouEnemy", "effectValue": 2, "effectValueEnemy": 1, "autoEffect":true, "continuous": false}', 1, '{cards}');
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes) VALUES (13, 'Ononoki', 'While this card is active, your opponent cannot target other cards on your field for destruction. This card has 3 charges, 1 charge is consumed on every SP. If this card is still on your field on your 3-rd SP, draw 1 card.', 'Ononoki.png', 'common',
+'{"effect": "taunt", "effectExpire": "drawCardFromDeckYou", "chargeConsumedPhase": "standby", "effectValueExpire": 1, "effectChargesCount": 3,"continuousEffectType": "passive", "autoEffect":true, "continuous": true}', 3, '{cards}');
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes) VALUES (14, 'Sōma', 'While this card is on your field, your Energy regeneration is increased by 2. This card has 3 charges, 1 charge is consumed on every MP (not including the MP this card was summoned).', 'Souma.png', 'rare',
+'{"effect": "energyRegen", "effectChargesCount": 3, "effectValue": 2, "chargeConsumedPhase": "main", "continuousEffectType": "passive", "autoEffect":true, "continuous": true}', 1, '{energy}');
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes) VALUES (15, 'Aladdin', 'For this turn only, all the effects of the special board spaces you step on are nullified.', 'Aladdin.jpg', 'common',
+'{"effect": "nullifyAllSpecialBoardSpaces", "effectChargesCount": 1, "chargeConsumedPhase": "end", "continuousEffectType": "passive", "autoEffect":true, "continuous": true}', 2, '{field}');
