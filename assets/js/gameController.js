@@ -231,6 +231,7 @@ gameController.prototype.resetGameState = function () {
 	_self._lastClientData = null;
 	clearTimeout(_self.retryTimeout);
 	_self._postDestroyCard = null;
+	_self._enableGraveyardPopulationOnClick = true;
 };
 
 gameController.prototype.setLeaveButton = function () {
@@ -596,7 +597,6 @@ gameController.prototype.processDrawCard = function (data) {
 		assert(data.errors.length > 0);
 
 		$(_self.GAME_STATUS_CONTENT_CLASS).html(data.errors[0].message);
-		// _self.showAlertError(data.errors[0].message);
 		return;
 	}
 
@@ -958,6 +958,10 @@ gameController.prototype.canSummonCard = function (card) {
 		if (playerStateEnemy.cardsOnFieldArr.length <= 0) {
 			canSummonCard = false;
 		}
+	} else if (cardEffect.effect == "takeCardFromYourGraveyard") {
+		if (playerStateYou.cardsInGraveyardArr.length <= 0) {
+			canSummonCard = false;
+		}
 	}
 
 	playerStateYou.cardsOnFieldArr.forEach(function(card, idx) {
@@ -1092,7 +1096,8 @@ gameController.prototype.processRollDiceBoard = function (data) {
 		if (_self._gameplayData.gameState.currPlayerId == _self._enemyUserId) {
 			_self.rollDiceEnemy(_self._gameplayData.gameState.rollDiceBoard.rollDiceValue, _self.moveEnemyCharacter, _self.waitForEnemyActions);
 		} else {
-			_self.rollDiceEnemy(_self._gameplayData.gameState.rollDiceBoard.rollDiceValue, _self.moveEnemyCharacter, _self.checkIfEnemyIsOnSpecialSpace);
+			_self.rollDiceEnemy(_self._gameplayData.gameState.rollDiceBoard.rollDiceValue, _self.moveEnemyCharacter, _self.checkIfEnemyHasToDoAction
+				.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self)));
 		}
 	}
 };
@@ -1167,7 +1172,17 @@ gameController.prototype.destroyCardFromEnemyField = function(card) {
 
 	_self._lastClientData = { roomId: _self._roomData.id, cardId: cardId };
 	_self.client.destroyCardFromEnemyField(_self._lastClientData);
-}
+};
+
+gameController.prototype.takeCardFromYourGraveyard = function (card) {
+	logger.info("Trying to take card from your graveyard");
+
+	var _self = this;
+	var cardIdx = _self._gameplayData.gameState.playersState[_self._yourUserId].cardsInGraveyardArr.length - ($(card).index() + 1);
+
+	_self._lastClientData = { roomId: _self._roomData.id, cardIdx: cardIdx };
+	_self.client.takeCardFromYourGraveyard(_self._lastClientData);
+};
 
 gameController.prototype.processDiscardCard = function (data) {
 	console.log('processDiscardCard');
@@ -1217,7 +1232,7 @@ gameController.prototype.processDiscardCard = function (data) {
 		if (_self._gameplayData.gameState.currPlayerId == _self._enemyUserId) {
 			callback = _self.waitForEnemyActions.bind(_self);
 		} else {
-			callback = _self.checkIfEnemyIsOnSpecialSpace.bind(_self);
+			callback = _self.checkIfEnemyHasToDoAction.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self));
 		}
 
 		_self.discardCardFromHandEnemy(_self._gameplayData.gameState.cardDiscarded, callback);
@@ -1431,24 +1446,27 @@ gameController.prototype.enableMainPhaseActions = function () {
 
 	var playerStateYou = _self._gameplayData.gameState.playersState[_self._yourUserId];
 
-	if (playerStateYou.canRollDiceBoardCount > 0) {
-		_self.enableRollDiceBoard();
-		return;
-	} else if (playerStateYou.cardsToDraw > 0) {
+	if (playerStateYou.cardsToDraw > 0) {
 		_self.setCardDrawListener();
-	  _self.startDrawCardAnimationsFinishedPoll(_self.enableMainPhaseActions);
+	  _self.startDrawCardAnimationsFinishedPoll(_self.checkIfEnemyHasToDoAction
+	  	.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self)));
   	return;
-	} else if (playerStateYou.cardsToDestroyFromEnemyField > 0) {
-		_self.setDestroyCardFromEnemyFieldListener();
 	} else if (playerStateYou.cardsToDrawFromEnemyHand > 0) {
 		_self.setDrawCardFromEnemyHandListener();
+	} else if (playerStateYou.cardsToTakeFromYourGraveyard > 0) {
+		_self.setTakeCardFromYourGraveyardListener();
+	} else if (playerStateYou.cardsToDiscard > 0) {
+		_self.setCardDiscardListener();
+	} else if (playerStateYou.cardsToDestroyFromEnemyField > 0) {
+		_self.setDestroyCardFromEnemyFieldListener();
+	} else if (playerStateYou.canRollDiceBoardCount > 0) {
+		_self.enableRollDiceBoard();
+		return;
 	} else if (_self._postDestroyCard) {
 		var card = _self._postDestroyCard;
 		_self._postDestroyCard = null;
-		_self.destroyCardAnimationYou.call(_self, card, _self.enableMainPhaseActions);
+		_self.destroyCardAnimationYou.call(_self, card, _self.enableMainPhaseActions.bind(_self));
 		return;
-	} else if (playerStateYou.cardsToDiscard > 0) {
-		_self.setCardDiscardListener();
 	} else {
 		_self.hideEventsInfo(null, 0);
 		$(_self.PHASE_ROLL_ID).addClass("selectable");
@@ -1490,22 +1508,33 @@ gameController.prototype.disableMainPhaseActions = function () {
 gameController.prototype.enableActionsInEnemyPhase = function () {
 	var _self = this;
 
+	_self.updateCardChargesStatuses();
 	_self.updateCardsStatusText();
 
 	var playerStateYou = _self._gameplayData.gameState.playersState[_self._yourUserId];
-	if ( playerStateYou.canRollDiceBoardCount > 0) {
-		_self.enableRollDiceBoard();
-		return;
-	} else if (playerStateYou.cardsToDraw > 0) {
+
+	if (playerStateYou.cardsToDraw > 0) {
 		_self.setCardDrawListener();
 	  _self.startDrawCardAnimationsFinishedPoll(_self.enableActionsInEnemyPhase);
   	return;
+	} else if (playerStateYou.cardsToDrawFromEnemyHand > 0) {
+		_self.setDrawCardFromEnemyHandListener();
+	} else if (playerStateYou.cardsToTakeFromYourGraveyard > 0) {
+		_self.setTakeCardFromYourGraveyardListener();
 	} else if (playerStateYou.cardsToDiscard > 0) {
 		_self.setCardDiscardListener();
 	} else if (playerStateYou.cardsToDestroyFromEnemyField > 0) {
 		_self.setDestroyCardFromEnemyFieldListener();
-	} else if (playerStateYou.cardsToDrawFromEnemyHand > 0) {
-		_self.setDrawCardFromEnemyHandListener();
+	} else if (playerStateYou.canRollDiceBoardInRollPhase
+		&& playerStateYou.canRollDiceBoardCount > 0) {
+		_self.enableRollDiceBoard();
+		return;
+	} else if (_self._postDestroyCard) {
+		var card = _self._postDestroyCard;
+		_self._postDestroyCard = null;
+		_self.destroyCardAnimationEnemy.call(_self, card);
+		setTimeout(_self.waitForEnemyActions.bind(_self), 0);
+		return;
 	} else {
 		_self.waitForEnemyActions();
 	}
@@ -1558,34 +1587,36 @@ gameController.prototype.performCardEffectInstantYou = function (card) {
 		if (card.cardEffect.effect == "moveSpacesForwardUpTo") {
 			if (card.cardEffect.isFinished) {
 				_self.moveYourCharacter(card.cardEffect.effectValueChosen,
-					_self.destroyCardAnimationYou.bind(_self, card, _self.enableMainPhaseActions), 0);
+					_self.destroyCardAnimationYou.bind(_self, card, _self.enableMainPhaseActions.bind(_self)), 0);
 			} else {
 				_self.setBoardSpaceListener(card);
 			}
 		} else if (card.cardEffect.effect == "moveSpacesBackwardsUpToEnemy") {
 			if (card.cardEffect.isFinished) {
 				_self.moveEnemyCharacter(card.cardEffect.effectValueChosen,
-					_self.destroyCardAnimationYou.bind(_self, card, _self.checkIfEnemyIsOnSpecialSpace), 0);
+					_self.destroyCardAnimationYou.bind(_self, card, _self.checkIfEnemyHasToDoAction
+						.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self))), 0);
 			} else {
 				_self.setBoardSpaceListener(card);
 			}
 		} else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpTo") {
 			if (card.cardEffect.isFinished) {
 				_self.moveYourCharacter(card.cardEffect.effectValueChosen,
-					_self.destroyCardAnimationYou.bind(_self, card, _self.enableMainPhaseActions), 0);
+					_self.destroyCardAnimationYou.bind(_self, card, _self.enableMainPhaseActions.bind(_self)), 0);
 			} else {
 				_self.setBoardSpaceListener(card);
 			}
 		}	else if (card.cardEffect.effect == "moveSpacesForward") {
 			_self.moveYourCharacter(card.cardEffect.effectValue,
-				_self.destroyCardAnimationYou.bind(_self, card, _self.enableMainPhaseActions), 500);
+				_self.destroyCardAnimationYou.bind(_self, card, _self.enableMainPhaseActions.bind(_self)), 500);
 		} else if (card.cardEffect.effect == "moveSpacesBackwardsEnemy") {
 			_self.moveEnemyCharacter(card.cardEffect.effectValue,
-				_self.destroyCardAnimationYou.bind(_self, card, _self.checkIfEnemyIsOnSpecialSpace), 0);
+				_self.destroyCardAnimationYou.bind(_self, card, _self.checkIfEnemyHasToDoAction
+					.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self))), 0);
 		} else if (card.cardEffect.effect.match("createSpecialBoardSpaceForwardTier")) {
 			if (card.cardEffect.isFinished) {
 				_self.createNewSpecialBoardSpaceAnimation(card.finishData,
-					_self.destroyCardAnimationYou.bind(_self, card, _self.enableMainPhaseActions));
+					_self.destroyCardAnimationYou.bind(_self, card, _self.enableMainPhaseActions.bind(_self)));
 			} else {
 				_self.setBoardSpaceListener(card);
 			}
@@ -1597,7 +1628,10 @@ gameController.prototype.performCardEffectInstantYou = function (card) {
 			_self.enableMainPhaseActions();
 		} else if (card.cardEffect.effect == "drawCardFromDeckYouEnemy") {
 			_self._postDestroyCard = card;
-			_self.waitForEnemyActions();
+			_self.enableMainPhaseActions();
+		} else if (card.cardEffect.effect == "takeCardFromYourGraveyard") {
+			_self._postDestroyCard = card;
+			_self.enableMainPhaseActions();
 		}
 	} else if (card.cardEffect.continuous) {
 		_self.enableMainPhaseActions();
@@ -1634,16 +1668,18 @@ gameController.prototype.performCardEffectContinuousFinishYou = function (card) 
 	if (card.cardEffect.continuous) {
 		if (card.cardEffect.effect == "copySpecialSpacesUpTo") {
 			if (card.cardEffect.isFinished) {
-				_self.destroyCardAnimationYou(card, _self.enableMainPhaseActions);
+				_self.destroyCardAnimationYou(card, _self.enableMainPhaseActions.bind(_self));
 			} else {
 				_self.enableMainPhaseActions();
 			}
 		} else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpToEnemy") {
 			if (card.cardEffect.isFinished) {
 				_self.moveEnemyCharacter(card.cardEffect.effectValueChosen,
-					_self.destroyCardAnimationYou.bind(_self, card, _self.checkIfEnemyIsOnSpecialSpace), 0);
+					_self.destroyCardAnimationYou.bind(_self, card, _self.checkIfEnemyHasToDoAction
+						.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self))), 0);
 			} else {
-				_self.moveEnemyCharacter(card.cardEffect.effectValueChosen, _self.checkIfEnemyIsOnSpecialSpace, 0);
+				_self.moveEnemyCharacter(card.cardEffect.effectValueChosen, _self.checkIfEnemyHasToDoAction
+					.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self)), 0);
 			}
 		} else {
 			_self.enableMainPhaseActions();
@@ -1657,16 +1693,18 @@ gameController.prototype.performCardEffectContinuousFinishEnemy = function (card
 	if (card.cardEffect.continuous) {
 		if (card.cardEffect.effect == "copySpecialSpacesUpTo") {
 			if (card.cardEffect.isFinished) {
-				_self.destroyCardAnimationEnemy(card, _self.waitForEnemyActions);
+				_self.destroyCardAnimationEnemy(card, _self.waitForEnemyActions.bind(_self));
 			} else {
 				_self.waitForEnemyActions();
 			}
 		} else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpToEnemy") {
 			if (card.cardEffect.isFinished) {
 				_self.moveYourCharacter(card.cardEffect.effectValueChosen,
-					_self.destroyCardAnimationEnemy.bind(_self, card, _self.checkIfYouAreOnSpecialSpace), 0);
+					_self.destroyCardAnimationEnemy.bind(_self, card, _self.checkIfYouHaveToDoAction
+						.bind(_self, _self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self))), 0);
 			} else {
-				_self.moveYourCharacter(card.cardEffect.effectValueChosen, _self.checkIfYouAreOnSpecialSpace, 0);
+				_self.moveYourCharacter(card.cardEffect.effectValueChosen, _self.checkIfYouHaveToDoAction
+					.bind(_self, _self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self)), 0);
 			}
 		} else {
 			_self.waitForEnemyActions();
@@ -1674,27 +1712,48 @@ gameController.prototype.performCardEffectContinuousFinishEnemy = function (card
 	}
 };
 
-gameController.prototype.checkIfEnemyIsOnSpecialSpace = function () {
+gameController.prototype.checkIfEnemyHasToDoAction = function (callback, callback2) {
 	var _self = this;
 
+	var playerStateEnemy = _self._gameplayData.gameState.playersState[_self._enemyUserId];
+
 	$(_self.BOARD_COLUMN_CLASS).removeClass("selectable-enemy");
-	if (_self._gameplayData.gameState.playersState[_self._enemyUserId].canRollDiceBoardCount > 0
-		|| _self._gameplayData.gameState.playersState[_self._enemyUserId].cardsToDraw > 0
-		|| _self._gameplayData.gameState.playersState[_self._enemyUserId].cardsToDiscard > 0) {
-		_self.waitForEnemyActions();
+	if (playerStateEnemy.canRollDiceBoardCount > 0
+		|| playerStateEnemy.cardsToDraw > 0
+		|| playerStateEnemy.cardsToDiscard > 0
+		|| playerStateEnemy.cardsToDrawFromEnemyHand > 0
+		|| playerStateEnemy.cardsToDestroyFromEnemyField > 0
+		|| playerStateEnemy.cardsToTakeFromYourGraveyard > 0) {
+		if (typeof callback === "function") {
+			callback();
+		}
 	} else {
-		_self.enableMainPhaseActions();
+		if (typeof callback === "function") {
+			callback2();
+		}
 	}
 };
 
-gameController.prototype.checkIfYouAreOnSpecialSpace = function () {
+gameController.prototype.checkIfYouHaveToDoAction = function (callback, callback2) {
 	var _self = this;
 
+	var playerStateYou = _self._gameplayData.gameState.playersState[_self._yourUserId];
+
 	$(_self.BOARD_COLUMN_CLASS).removeClass("selectable-enemy");
-	if (_self._gameplayData.gameState.playersState[_self._yourUserId].canRollDiceBoardCount > 0
-		|| _self._gameplayData.gameState.playersState[_self._yourUserId].cardsToDraw > 0
-		|| _self._gameplayData.gameState.playersState[_self._yourUserId].cardsToDiscard > 0) {
-		_self.enableActionsInEnemyPhase();
+	if (playerStateYou.canRollDiceBoardCount > 0
+		|| playerStateYou.cardsToDraw > 0
+		|| playerStateYou.cardsToDiscard > 0
+		|| playerStateYou.cardsToDrawFromEnemyHand > 0
+		|| playerStateYou.cardsToDestroyFromEnemyField > 0
+		|| playerStateYou.cardsToTakeFromYourGraveyard > 0) {
+		console.log('I HAVE ACTION TO DO');
+		if (typeof callback === "function") {
+			callback();
+		}
+	} else {
+		if (typeof callback2 === "function") {
+			callback2();
+		}
 	}
 };
 
@@ -2115,34 +2174,36 @@ gameController.prototype.performCardEffectInstantEnemy = function (card) {
 		if (card.cardEffect.effect == "moveSpacesForwardUpTo") {
 			if (card.cardEffect.isFinished) {
 				_self.moveEnemyCharacter(card.cardEffect.effectValueChosen,
-					_self.destroyCardAnimationEnemy.bind(_self, card, _self.waitForEnemyActions), 0);
+					_self.destroyCardAnimationEnemy.bind(_self, card, _self.waitForEnemyActions.bind(_self)), 0);
 			} else {
 				_self.setBoardSpaceListenerEnemy(card);
 			}
 		} else if (card.cardEffect.effect == "moveSpacesBackwardsUpToEnemy") {
 			if (card.cardEffect.isFinished) {
 				_self.moveYourCharacter(card.cardEffect.effectValueChosen,
-					_self.destroyCardAnimationEnemy.bind(_self, card, _self.checkIfYouAreOnSpecialSpace), 0);
+					_self.destroyCardAnimationEnemy.bind(_self, card, _self.checkIfYouHaveToDoAction
+						.bind(_self, _self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self))), 0);
 			} else {
 				_self.setBoardSpaceListenerEnemy(card);
 			}
 		} else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpTo") {
 			if (card.cardEffect.isFinished) {
 				_self.moveEnemyCharacter(card.cardEffect.effectValueChosen,
-					_self.destroyCardAnimationEnemy.bind(_self, card, _self.waitForEnemyActions), 0);
+					_self.destroyCardAnimationEnemy.bind(_self, card, _self.waitForEnemyActions.bind(_self)), 0);
 			} else {
 				_self.setBoardSpaceListenerEnemy(card);
 			}
 		} else if (card.cardEffect.effect == "moveSpacesForward") {
 			_self.moveEnemyCharacter(card.cardEffect.effectValue,
-				_self.destroyCardAnimationEnemy.bind(_self, card, _self.waitForEnemyActions), 500);
+				_self.destroyCardAnimationEnemy.bind(_self, card, _self.waitForEnemyActions.bind(_self)), 500);
 		} else if (card.cardEffect.effect == "moveSpacesBackwardsEnemy") {
 			_self.moveYourCharacter(card.cardEffect.effectValue,
-				_self.destroyCardAnimationEnemy.bind(_self, card, _self.checkIfYouAreOnSpecialSpace), 0);
+				_self.destroyCardAnimationEnemy.bind(_self, card, _self.checkIfYouHaveToDoAction
+						.bind(_self, _self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self))), 0);
 		} else if (card.cardEffect.effect.match("createSpecialBoardSpaceForwardTier")) {
 			if (card.cardEffect.isFinished) {
 				_self.createNewSpecialBoardSpaceAnimation(card.finishData,
-					_self.destroyCardAnimationEnemy.bind(_self, card, _self.waitForEnemyActions));
+					_self.destroyCardAnimationEnemy.bind(_self, card, _self.waitForEnemyActions.bind(_self)));
 			} else {
 				_self.setBoardSpaceListenerEnemy(card);
 			}
@@ -2154,7 +2215,10 @@ gameController.prototype.performCardEffectInstantEnemy = function (card) {
 			_self.waitForEnemyActions();
 		} else if (card.cardEffect.effect == "drawCardFromDeckYouEnemy") {
 			_self._postDestroyCard = card;
-			_self.enableActionsInEnemyPhase();
+			_self.waitForEnemyActions();
+		} else if (card.cardEffect.effect == "takeCardFromYourGraveyard") {
+			_self._postDestroyCard = card;
+			_self.waitForEnemyActions();
 		}
 	} else {
 		_self.waitForEnemyActions();
@@ -2257,20 +2321,32 @@ gameController.prototype.createNewSpecialBoardSpaceAnimation = function(spaceDat
 gameController.prototype.enableRollPhaseActions = function () {
 	var _self = this;
 
+	_self.updateCardChargesStatuses();
+	_self.updateCardsStatusText();
+
 	var playerStateYou = _self._gameplayData.gameState.playersState[_self._yourUserId];
-	if (playerStateYou.canRollDiceBoardInRollPhase
-		&& playerStateYou.canRollDiceBoardCount > 0) {
-		_self.enableRollDiceBoard();
-	} else if (playerStateYou.cardsToDraw > 0) {
+
+	if (playerStateYou.cardsToDraw > 0) {
 		_self.setCardDrawListener();
 	  _self.startDrawCardAnimationsFinishedPoll(_self.enableRollPhaseActions);
   	return;
+	} else if (playerStateYou.cardsToDrawFromEnemyHand > 0) {
+		_self.setDrawCardFromEnemyHandListener();
+	} else if (playerStateYou.cardsToTakeFromYourGraveyard > 0) {
+		_self.setTakeCardFromYourGraveyardListener();
 	} else if (playerStateYou.cardsToDiscard > 0) {
 		_self.setCardDiscardListener();
 	} else if (playerStateYou.cardsToDestroyFromEnemyField > 0) {
 		_self.setDestroyCardFromEnemyFieldListener();
-	} else if (playerStateYou.cardsToDrawFromEnemyHand > 0) {
-		_self.setDrawCardFromEnemyHandListener();
+	} else if (playerStateYou.canRollDiceBoardInRollPhase
+		&& playerStateYou.canRollDiceBoardCount > 0) {
+		_self.enableRollDiceBoard();
+		return;
+	} else if (_self._postDestroyCard) {
+		var card = _self._postDestroyCard;
+		_self._postDestroyCard = null;
+		_self.destroyCardAnimationYou.call(_self, card, _self.enableRollPhaseActions.bind(_self));
+		return;
 	} else {
 		_self.hideEventsInfo(null, 0);
 		$(_self.PHASE_ROLL_ID + ', ' + _self.PHASE_END_ID).removeClass("selectable");
@@ -2293,27 +2369,7 @@ gameController.prototype.waitForEnemyActions = function () {
 	var playerStateEnemy = _self._gameplayData.gameState.playersState[_self._enemyUserId];
 	$(_self.BOARD_COLUMN_CLASS).removeClass("selectable-enemy");
 
-	if (playerStateEnemy.canRollDiceBoardInRollPhase
-		&& playerStateEnemy.canRollDiceBoardCount > 0) {
-
-		if (playerStateEnemy.rollAgain) {
-			var eventInfoText = _self._enemyName + " rolls again ";
-
-			if (playerStateEnemy.moveBackwardsOnNextRoll) {
-				eventInfoText += "...backwards";
-			} else {
-				eventInfoText += playerStateEnemy.canRollDiceBoardCount;
-				if (playerStateEnemy.canRollDiceBoardCount > 1) {
-					eventInfoText += " more times";
-				} else {
-					eventInfoText += " more time";
-				}
-			}
-
-			_self.showEventsInfo(eventInfoText);
-			return;
-		}
-	} else if (playerStateEnemy.cardsToDraw > 0) {
+	if (playerStateEnemy.cardsToDraw > 0) {
 		var eventInfoText =  _self._enemyName + " draws " + playerStateEnemy.cardsToDraw;
 		if (playerStateEnemy.cardsToDraw > 1) {
 			eventInfoText += " cards from the deck";
@@ -2322,12 +2378,37 @@ gameController.prototype.waitForEnemyActions = function () {
 		}
 
 		_self.showEventsInfo(eventInfoText);
+
+		if (!_self.drawCardAnimationsFinishedEnemy) {
+			return;
+		}
+
 		_self.drawCardAnimationsFinishedEnemy = false;
 		if (_self._gameplayData.gameState.currPlayerId == _self._yourUserId) {
-			_self.startDrawCardAnimationsFinishedPoll(_self.checkIfEnemyIsOnSpecialSpace);
+			_self.startDrawCardAnimationsFinishedPoll(_self.checkIfEnemyHasToDoAction
+				.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self)));
 		} else {
-			_self.startDrawCardAnimationsFinishedPoll(_self.waitForEnemyActions);
+			_self.startDrawCardAnimationsFinishedPoll(_self.checkIfYouHaveToDoAction
+				.bind(_self, _self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self)));
 		}
+	} else if (playerStateEnemy.cardsToDrawFromEnemyHand > 0) {
+		var eventInfoText = _self._enemyName + " draws " + playerStateEnemy.cardsToDrawFromEnemyHand;
+		if (playerStateEnemy.cardsToDrawFromEnemyHand > 1) {
+			eventInfoText += " cards from your hand";
+		} else {
+			eventInfoText += " card from your hand";
+		}
+
+		_self.showEventsInfo(eventInfoText);
+	} else if (playerStateEnemy.cardsToTakeFromYourGraveyard > 0) {
+		var eventInfoText = _self._enemyName + " takes " + playerStateEnemy.cardsToTakeFromYourGraveyard;
+		if (playerStateEnemy.cardsToDrawFromEnemyHand > 1) {
+			eventInfoText += " cards from his graveyard";
+		} else {
+			eventInfoText += " card from his graveyard";
+		}
+
+		_self.showEventsInfo(eventInfoText);
 	} else if (playerStateEnemy.cardsToDiscard > 0) {
 		var eventInfoText = _self._enemyName + " must discard " + playerStateEnemy.cardsToDiscard;
 		if (playerStateEnemy.cardsToDiscard > 1) {
@@ -2345,20 +2426,32 @@ gameController.prototype.waitForEnemyActions = function () {
 		}
 
 		_self.showEventsInfo(eventInfoText);
-	} else if (playerStateEnemy.cardsToDrawFromEnemyHand > 0) {
-		var eventInfoText = _self._enemyName + " draws " + playerStateEnemy.cardsToDrawFromEnemyHand + " card/s from your hand";
-		if (playerStateEnemy.cardsToDrawFromEnemyHand > 1) {
-			eventInfoText += " cards from your hand";
+	} else if (playerStateEnemy.canRollDiceBoardInRollPhase
+		&& playerStateEnemy.canRollDiceBoardCount > 0) {
+
+		var eventInfoText = "";
+		if (playerStateEnemy.rollAgain) {
+			eventInfoText += _self._enemyName + " rolls dice again ";
 		} else {
-			eventInfoText += " card from your hand";
+			eventInfoText += _self._enemyName + " roll dice ";
+		}
+
+		if (playerStateEnemy.canRollDiceBoardCount > 1) {
+			eventInfoText += playerStateEnemy.canRollDiceBoardCount + " times";
+		} else {
+			eventInfoText += playerStateEnemy.canRollDiceBoardCount + " time";
+		}
+
+		if (playerStateEnemy.moveBackwardsOnNextRoll) {
+			eventInfoText += "...backwards";
 		}
 
 		_self.showEventsInfo(eventInfoText);
 	} else if (_self._postDestroyCard) {
 		var card = _self._postDestroyCard;
 		_self._postDestroyCard = null;
-		_self.destroyCardAnimationEnemy.call(_self, card, _self.waitForEnemyActions);
-		return;
+		_self.destroyCardAnimationEnemy.call(_self, card);
+		setTimeout(_self.waitForEnemyActions.bind(_self));
 	} else {
 		if (_self._gameplayData.gameState.nextPhase != _self.TURN_PHASES.STANDBY
 			&& _self._gameplayData.gameState.nextPhase != _self.TURN_PHASES.MAIN) {
@@ -2369,6 +2462,8 @@ gameController.prototype.waitForEnemyActions = function () {
 
 gameController.prototype.setCardDrawListener = function () {
 	var _self = this;
+
+	console.log('ENABLE SET CARD DRAW LISTENER');
 
 	_self.drawCardAnimationsFinishedYou = false;
 	_self.drawCardInteractive = true;
@@ -2382,6 +2477,7 @@ gameController.prototype.setCardDrawListener = function () {
 	_self.showEventsInfo(eventInfoText);
 
 	$(_self.DECK_GLOBAL_ID).on('click', function(e) {
+		console.log('CLICK ON DRAW FROM DECK');
 		$(_self.DECK_GLOBAL_ID).off("click");
 		_self.hideEventsInfo(null, 0);
 		_self.drawCard();
@@ -2455,6 +2551,61 @@ gameController.prototype.setDestroyCardFromEnemyFieldListener = function () {
 	});
 };
 
+gameController.prototype.setTakeCardFromYourGraveyardListener = function () {
+	var _self = this;
+
+	var playerState = _self._gameplayData.gameState.playersState[_self._yourUserId];
+	var playerStateEnemy = _self._gameplayData.gameState.playersState[_self._enemyUserId];
+
+	var eventInfoText = "Take " + playerState.cardsToTakeFromYourGraveyard;
+	if (playerState.cardsToTakeFromYourGraveyard > 1) {
+		eventInfoText += " cards from your graveyard to your hand";
+	} else {
+		eventInfoText += " card from your graveyard to your hand";
+	}
+
+	_self.showEventsInfo(eventInfoText);
+	_self.populateGraveyard(_self._yourUserId, _self.PLAYER_YOU_CLASS);
+	_self.disableGraveyardPopulation();
+	$(_self.MODAL_GRAVEYARD_CLASS + _self.PLAYER_YOU_CLASS).show();
+
+	$(_self.MODAL_GRAVEYARD_CLASS + _self.PLAYER_YOU_CLASS + ' .modal-body img').each(function() {
+			if (!_self.canTakeCardFromGraveyard(this)) {
+				return;
+			}
+
+			$(this).attr("data-tooltip", "takeCardFromGraveyard");
+			$(this).on("click", function(e) {
+				$(_self.MODAL_GRAVEYARD_CLASS + _self.PLAYER_YOU_CLASS).hide();
+				_self.enableGraveyardPopulation();
+				$(_self.MODAL_GRAVEYARD_CLASS + _self.PLAYER_YOU_CLASS + ' .modal-body img').off("click");
+				$(_self.MODAL_GRAVEYARD_CLASS + _self.PLAYER_YOU_CLASS + ' .modal-body img').removeAttr("data-tooltip");
+				_self.takeCardFromYourGraveyard.call(_self, this);
+				_self.hideEventsInfo(null, 0);
+			});
+	});
+};
+
+gameController.prototype.disableGraveyardPopulation = function () {
+	var _self = this;
+
+	_self._enableGraveyardPopulationOnClick = false;
+};
+
+gameController.prototype.enableGraveyardPopulation = function () {
+	var _self = this;
+
+	_self._enableGraveyardPopulationOnClick = true;
+};
+
+
+gameController.prototype.canTakeCardFromGraveyard = function (card) {
+	var _self = this;
+	var canTakeCard = true;
+
+	return canTakeCard;
+};
+
 gameController.prototype.canDestroyCard = function(card) {
 	var _self = this;
 
@@ -2487,28 +2638,21 @@ gameController.prototype.enableRollDiceBoard = function () {
 
 	var eventInfoText = "";
 	var playerStateYou = _self._gameplayData.gameState.playersState[_self._yourUserId];
-	if (_self._gameplayData.gameState.nextPhase == _self.TURN_PHASES.END && playerStateYou.rollAgain) {
-		eventInfoText += "Roll again";
-		if (playerStateYou.moveBackwardsOnNextRoll) {
-			eventInfoText += "...backwards";
-		} else {
-			if (playerStateYou.canRollDiceBoardCount > 1) {
-				eventInfoText += " " + playerStateYou.canRollDiceBoardCount + " more times";
-			} else {
-				eventInfoText += " " + playerStateYou.canRollDiceBoardCount + " more time";
-			}
-		}
-	} else {
-		eventInfoText += "Roll dice " + playerStateYou.canRollDiceBoardCount;
-		if (playerStateYou.canRollDiceBoardCount > 1) {
-			eventInfoText += " more times";
-		} else {
-			eventInfoText += " more time";
-		}
 
-		if (playerStateYou.moveBackwardsOnNextRoll) {
-			eventInfoText += "...backwards";
-		}
+	if (playerStateYou.rollAgain) {
+		eventInfoText += "Roll dice again ";
+	} else {
+		eventInfoText += "Roll dice ";
+	}
+
+	if (playerStateYou.canRollDiceBoardCount > 1) {
+		eventInfoText += playerStateYou.canRollDiceBoardCount + " times";
+	} else {
+		eventInfoText += playerStateYou.canRollDiceBoardCount + " time";
+	}
+
+	if (playerStateYou.moveBackwardsOnNextRoll) {
+		eventInfoText += "...backwards";
 	}
 
 	_self.showEventsInfo(eventInfoText);
@@ -2636,11 +2780,11 @@ gameController.prototype.handleCardHover = function (e, card) {
 gameController.prototype.populateGraveyard = function (playerId, playerSelectorClass) {
 	var _self = this;
 
-	if (!playerId || !_self._gameplayData) {
+	if (!playerId || !_self._gameplayData || !_self._enableGraveyardPopulationOnClick) {
 		return;
 	}
 
-	var graveyardArr = _self._gameplayData.gameState.playersState[playerId].cardsInGraveyard;
+	var graveyardArr = _self._gameplayData.gameState.playersState[playerId].cardsInGraveyardArr;
 	var $modal_body = $(_self.MODAL_GRAVEYARD_CLASS + playerSelectorClass).find('.modal-body');
 	$modal_body.html("");
 
@@ -3282,7 +3426,7 @@ gameController.prototype.processDrawCardFromEnemyHand = function(data) {
 		if (_self._gameplayData.gameState.currPlayerId == _self._enemyUserId) {
 			callback = _self.waitForEnemyActions.bind(_self);
 		} else {
-			callback = _self.checkIfEnemyIsOnSpecialSpace.bind(_self);
+			callback = _self.checkIfEnemyHasToDoAction.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self));
 		}
 
 		_self.drawCardFromEnemyHandEnemyAnimation(_self._gameplayData.gameState.cardDrawnFromEnemyHand, callback);
@@ -3336,10 +3480,64 @@ gameController.prototype.processDestroyCardFromEnemyField = function(data) {
 		if (_self._gameplayData.gameState.currPlayerId == _self._enemyUserId) {
 			callback = _self.waitForEnemyActions.bind(_self);
 		} else {
-			callback = _self.checkIfEnemyIsOnSpecialSpace.bind(_self);
+			callback = _self.checkIfEnemyHasToDoAction.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self));
 		}
 
 		_self.destroyCardFromEnemyFieldEnemyAnimation(_self._gameplayData.gameState.cardDestroyedFromEnemyField, callback);
+	}
+};
+
+gameController.prototype.processTakeCardFromYourGraveyard = function(data) {
+	console.log('processTakeCardFromYourGraveyard');
+	console.log('processTakeCardFromYourGraveyard data: ', data);
+
+	var _self = this;
+
+	if (!data.isSuccessful) {
+		assert(data.errors.length > 0);
+
+		_self.retryTimeout = setTimeout(function() {
+			if (_self._gameplayData && _self._yourUserId &&
+				_self._gameplayData.gameState.activePlayerId == _self._yourUserId) {
+				_self.client.takeCardFromYourGraveyard(_self._lastClientData);
+			}
+		}, 1000);
+
+		$(_self.GAME_STATUS_CONTENT_CLASS).html(data.errors[0].message);
+		return;
+	}
+
+	clearTimeout(_self.retryTimeout);
+
+	assert(ajv.validate(takeCardFromYourGraveyardResponse, data), 'takeCardFromYourGraveyardResponse is invalid' +
+  	JSON.stringify(ajv.errors, null, 2));
+
+	_self._gameplayData = data.gameplayData;
+	_self._roomData = data.roomData;
+	_self._cardsInHandArr = data.cardsInHandArr;
+	_self.updateGameStatusInfo();
+
+	var callback;
+	if (_self._gameplayData.gameState.playerIdTakenCardFromGraveyard == _self._yourUserId) {
+		if (_self._gameplayData.gameState.currPlayerId == _self._yourUserId) {
+			if (_self._gameplayData.gameState.nextPhase == _self.TURN_PHASES.ROLL) {
+				callback = _self.enableMainPhaseActions.bind(_self);
+			} else if (_self._gameplayData.gameState.nextPhase == _self.TURN_PHASES.END) {
+				callback = _self.enableRollPhaseActions.bind(_self);
+			}
+		} else {
+			callback = _self.enableActionsInEnemyPhase.bind(_self);
+		}
+
+		_self.takeCardFromYourGraveyardYouAnimation(_self._gameplayData.gameState.cardTakenFromGraveyard, callback);
+	} else {
+		if (_self._gameplayData.gameState.currPlayerId == _self._enemyUserId) {
+			callback = _self.waitForEnemyActions.bind(_self);
+		} else {
+			callback = _self.checkIfEnemyHasToDoAction.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self));
+		}
+
+		_self.takeCardFromYourGraveyardEnemyAnimation(_self._gameplayData.gameState.cardTakenFromGraveyard, callback);
 	}
 };
 
@@ -3735,6 +3933,241 @@ gameController.prototype.discardCardFromHandEnemy = function (card, callback) {
 			callback();
 		}
 	}, 700);
+};
+
+gameController.prototype.takeCardFromYourGraveyardYouAnimation = function (cardObj, callback) {
+	var _self = this;
+
+	var playerStateYou = _self._gameplayData.gameState.playersState[_self._yourUserId];
+	var cardInGraveyardIdx = cardObj.cardInGraveyardIdx;
+	var cardId = cardObj.cardId;
+	var cardName = cardObj.cardName;
+	var cardText = cardObj.cardText;
+	var cardImg = cardObj.cardImg;
+	var cardRarity = cardObj.cardRarity;
+	var cardEffect = cardObj.cardEffect;
+	var cardCost = cardObj.cardCost;
+	var cardAttributes = cardObj.cardAttributes;
+
+	var cardsInHandCount = $(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_YOU_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_YOU_CLASS).length;
+  var drawFromDeckAnimationCount = cardsInHandCount + 1;
+
+  if (cardsInHandCount >= 10 && cardsInHandCount <= 15) {
+  	drawFromDeckAnimationCount = 10;
+  } else if (cardsInHandCount > 15) {
+  	drawFromDeckAnimationCount = 11;
+  }
+
+  _self.disableScroll();
+
+  $(_self.GAME_SCREEN_CLASS).off('mouseout');
+  $(_self.GAME_SCREEN_CLASS).on('mouseout', _self.CARD_CLASS, function() {
+	  $(this).css("transform", "perspective(500px) scale(1) rotateX(0) rotateY(0)");
+	});
+
+  $(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_YOU_CLASS).css("overflow", "visible");
+  $(_self.CARD_CLASS + _self.PLAYER_YOU_CLASS).css("animation", "");
+  $(_self.CARD_CLASS + _self.PLAYER_YOU_CLASS).css("-webkit-animation", "");
+  $(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_YOU_CLASS).append('<img style="animation: take-card-from-your-graveyard-you-'
+  	+ drawFromDeckAnimationCount + ' 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both; -webkit-animation: take-card-from-your-graveyard-you-'
+  	+ drawFromDeckAnimationCount + ' 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;" class="anime-cb-card player-you" '
+  		+ 'src="/imgs/player_cards/' + cardImg + '">');
+
+  var $card = $(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_YOU_CLASS + ' img').last();
+  $card.data("cardId", cardId);
+  $card.data("cardName", cardName);
+  $card.data("cardText", cardText);
+  $card.data("cardRarity", cardRarity);
+  $card.data("cardEffect", cardEffect);
+  $card.data("cardCost", cardCost);
+  $card.data("cardAttributes", cardAttributes);
+
+	if (cardInGraveyardIdx == (playerStateYou.cardsInGraveyardArr.length - 1)) {
+		var $graveyardTopCard = $(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_YOU_CLASS + '.top');
+		if (playerStateYou.cardsInGraveyardArr.length > 1) {
+			var prevCardObj = playerStateYou.cardsInGraveyardArr[playerStateYou.cardsInGraveyardArr.length - 2];
+			$graveyardTopCard.attr("src", "/imgs/player_cards/" + prevCardObj.cardImg);
+			$graveyardTopCard.data("cardId", prevCardObj.cardId);
+			$graveyardTopCard.data("cardName", prevCardObj.cardName);
+			$graveyardTopCard.data("cardText", prevCardObj.cardText);
+			$graveyardTopCard.data("cardRarity", prevCardObj.cardRarity);
+			$graveyardTopCard.data("cardEffect", prevCardObj.cardEffect);
+			$graveyardTopCard.data("cardCost", prevCardObj.cardCost);
+			$graveyardTopCard.data("cardAttributes", prevCardObj.cardAttributes);
+		} else {
+			$graveyardTopCard.data("cardId", null);
+			$graveyardTopCard.data("cardName", null);
+			$graveyardTopCard.data("cardText", null);
+			$graveyardTopCard.data("cardRarity", null);
+			$graveyardTopCard.data("cardEffect", null);
+			$graveyardTopCard.data("cardCost", null);
+			$graveyardTopCard.data("cardAttributes", null);
+			$graveyardTopCard.remove();
+			$(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_YOU_CLASS + '.bottom')
+				.after('<img class="anime-cb-card-graveyard-deck player-you top">');
+		}
+	}
+
+	_self.increaseYourCardsInHandDensity();
+
+	setTimeout(function() {
+		$(_self.GAME_SCREEN_CLASS).off('mouseout');
+  	$(_self.GAME_SCREEN_CLASS).on('mouseout', _self.CARD_CLASS, function() {
+		  $(this).css("transform", "perspective(500px) scale(1) rotateX(0) rotateY(0)");
+		  $(_self.CARDS_IN_HAND_CLASS).css("overflow", "hidden");
+		});
+  	$('*').off('DOMMouseScroll mousewheel');
+  	$(_self.CARDS_IN_HAND_CLASS).on('DOMMouseScroll mousewheel', _self.noScrollOnCardHover);
+  	$(_self.CARD_CLASS + _self.PLAYER_YOU_CLASS).css("animation", "");
+  	$(_self.CARD_CLASS + _self.PLAYER_YOU_CLASS).css("-webkit-animation", "");
+  	$(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_YOU_CLASS).css("overflow", "hidden");
+
+  	_self.showCardOnScreen(cardObj, _self.PLAYER_YOU_CLASS, _self.shuffleCardsInHandYou.bind(_self, callback));
+	}, 550);
+};
+
+gameController.prototype.takeCardFromYourGraveyardEnemyAnimation = function (cardObj, callback) {
+	var _self = this;
+
+	var playerStateEnemy = _self._gameplayData.gameState.playersState[_self._enemyUserId];
+	var cardInGraveyardIdx = cardObj.cardInGraveyardIdx;
+	var cardId = cardObj.cardId;
+	var cardName = cardObj.cardName;
+	var cardText = cardObj.cardText;
+	var cardImg = cardObj.cardImg;
+	var cardRarity = cardObj.cardRarity;
+	var cardEffect = cardObj.cardEffect;
+	var cardCost = cardObj.cardCost;
+	var cardAttributes = cardObj.cardAttributes;
+
+	var cardsInHandCount = $(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_ENEMY_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_ENEMY_CLASS).length;
+  var drawFromDeckAnimationCount = cardsInHandCount + 1;
+
+  if (cardsInHandCount >= 10 && cardsInHandCount <= 15) {
+  	drawFromDeckAnimationCount = 10;
+  } else if (cardsInHandCount > 15) {
+  	drawFromDeckAnimationCount = 11;
+  }
+
+  _self.disableScroll();
+
+  $(_self.GAME_SCREEN_CLASS).off('mouseout');
+  $(_self.GAME_SCREEN_CLASS).on('mouseout', _self.CARD_CLASS, function() {
+	  $(this).css("transform", "perspective(500px) scale(1) rotateX(0) rotateY(0)");
+	});
+
+  $(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_ENEMY_CLASS).css("overflow", "visible");
+  $(_self.CARD_CLASS + _self.PLAYER_ENEMY_CLASS).css("animation", "");
+  $(_self.CARD_CLASS + _self.PLAYER_ENEMY_CLASS).css("-webkit-animation", "");
+  $(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_ENEMY_CLASS).append('<img style="animation: take-card-from-your-graveyard-enemy-'
+  	+ drawFromDeckAnimationCount + ' 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both; -webkit-animation: take-card-from-your-graveyard-enemy-'
+  	+ drawFromDeckAnimationCount + ' 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;" class="anime-cb-card player-enemy" '
+  		+ 'src="/imgs/player_cards/card_back.png">');
+
+	if (cardInGraveyardIdx == (playerStateEnemy.cardsInGraveyardArr.length - 1)) {
+		var $graveyardTopCard = $(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_ENEMY_CLASS + '.top');
+		if (playerStateEnemy.cardsInGraveyardArr.length > 1) {
+			var prevCardObj = playerStateEnemy.cardsInGraveyardArr[playerStateEnemy.cardsInGraveyardArr.length - 2];
+			$graveyardTopCard.attr("src", "/imgs/player_cards/" + prevCardObj.cardImg);
+			$graveyardTopCard.data("cardId", prevCardObj.cardId);
+			$graveyardTopCard.data("cardName", prevCardObj.cardName);
+			$graveyardTopCard.data("cardText", prevCardObj.cardText);
+			$graveyardTopCard.data("cardRarity", prevCardObj.cardRarity);
+			$graveyardTopCard.data("cardEffect", prevCardObj.cardEffect);
+			$graveyardTopCard.data("cardCost", prevCardObj.cardCost);
+			$graveyardTopCard.data("cardAttributes", prevCardObj.cardAttributes);
+		} else {
+			$graveyardTopCard.data("cardId", null);
+			$graveyardTopCard.data("cardName", null);
+			$graveyardTopCard.data("cardText", null);
+			$graveyardTopCard.data("cardRarity", null);
+			$graveyardTopCard.data("cardEffect", null);
+			$graveyardTopCard.data("cardCost", null);
+			$graveyardTopCard.data("cardAttributes", null);
+			$graveyardTopCard.remove();
+			$(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_ENEMY_CLASS + '.bottom')
+				.after('<img class="anime-cb-card-graveyard-deck player-enemy top">');
+		}
+	}
+
+	_self.increaseEnemyCardsInHandDensity();
+
+	setTimeout(function() {
+		$(_self.GAME_SCREEN_CLASS).off('mouseout');
+  	$(_self.GAME_SCREEN_CLASS).on('mouseout', _self.CARD_CLASS, function() {
+		  $(this).css("transform", "perspective(500px) scale(1) rotateX(0) rotateY(0)");
+		  $(_self.CARDS_IN_HAND_CLASS).css("overflow", "hidden");
+		});
+  	$('*').off('DOMMouseScroll mousewheel');
+  	$(_self.CARDS_IN_HAND_CLASS).on('DOMMouseScroll mousewheel', _self.noScrollOnCardHover);
+  	$(_self.CARD_CLASS + _self.PLAYER_ENEMY_CLASS).css("animation", "");
+  	$(_self.CARD_CLASS + _self.PLAYER_ENEMY_CLASS).css("-webkit-animation", "");
+  	$(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_ENEMY_CLASS).css("overflow", "hidden");
+
+  	_self.showCardOnScreen(cardObj, _self.PLAYER_ENEMY_CLASS, _self.shuffleCardsInHandEnemy.bind(_self, callback));
+	}, 550);
+};
+
+gameController.prototype.showCardOnScreen = function (cardObj, playerSelectorClass, callback) {
+	var _self = this;
+
+	$('.anime-cb-card-activate-show').attr("src", "/imgs/player_cards/" + cardObj.cardImg);
+	$('.anime-cb-card-activate-show').css("animation", "show-card-on-screen-"
+		+ (playerSelectorClass.substr(1)) + " 1.5s both");
+
+	setTimeout(function() {
+		$('.anime-cb-card-activate-show').css("animation", "");
+		if (typeof callback === "function") {
+			callback();
+		}
+	}, 1500);
+};
+
+gameController.prototype.shuffleCardsInHandYou = function (callback) {
+	var _self = this;
+
+	var playerStateYou = _self._gameplayData.gameState.playersState[_self._yourUserId];
+
+	$(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_YOU_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_YOU_CLASS)
+		.css("animation", "slide-bottom-top 1s cubic-bezier(0.250, 0.460, 0.450, 0.940) both");
+
+	setTimeout(function() {
+		_self._cardsInHandArr.forEach(function(card, cardIdx) {
+			var $currCardEl = $(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_YOU_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_YOU_CLASS
+				+ ':nth-child(' + (cardIdx + 1));
+			$currCardEl.attr("src", "/imgs/player_cards/" + card.cardImg);
+		  $currCardEl.data("cardId", card.cardId);
+		  $currCardEl.data("cardName", card.cardName);
+		  $currCardEl.data("cardText", card.cardText);
+		  $currCardEl.data("cardRarity", card.cardRarity);
+		  $currCardEl.data("cardEffect", card.cardEffect);
+		  $currCardEl.data("cardCost", card.cardCost);
+		  $currCardEl.data("cardAttributes", card.cardAttributes);
+		});
+	}, 500);
+
+	setTimeout(function() {
+		$(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_YOU_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_YOU_CLASS)
+			.css("animation", "");
+		if (typeof callback === "function") {
+			callback();
+		}
+	}, 1000);
+};
+
+gameController.prototype.shuffleCardsInHandEnemy = function (callback) {
+	var _self = this;
+
+	$(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_ENEMY_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_ENEMY_CLASS)
+		.css("animation", "slide-top-bottom 1s cubic-bezier(0.250, 0.460, 0.450, 0.940) both");
+
+	setTimeout(function() {
+		$(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_ENEMY_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_ENEMY_CLASS)
+			.css("animation", "");
+		if (typeof callback === "function") {
+			callback();
+		}
+	}, 1000);
 };
 
 gameController.prototype.increaseYourCardsInHandDensity = function() {

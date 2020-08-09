@@ -75,12 +75,12 @@
 	<div class="center-screen">
 		<div class="anime-cb-cards-in-hand-wrapper player-enemy">
 			<div class="anime-cb-cards-in-hand player-enemy">
-				<img class="anime-cb-card player-you" data-card-text="This is Kurumi" data-card-name="Kurumi" src="imgs/player_cards/Kurumi 3.jpg">
+<!-- 				<img class="anime-cb-card player-you" data-card-text="This is Kurumi" data-card-name="Kurumi" src="imgs/player_cards/Kurumi 3.jpg">
  				<img class="anime-cb-card player-you" data-card-text="This is Ange" data-card-name="Ange" src="imgs/player_cards/Ange 2.jpg">
 				<img class="anime-cb-card player-you" data-card-text="This is Saber" data-card-name="Saber" src="imgs/player_cards/Saber.jpg">
 				<img class="anime-cb-card player-you" data-card-text="This is Maki" data-card-name="Maki" src="imgs/player_cards/Maki.jpg">
 				<img class="anime-cb-card player-you" data-card-text="This is Jeanne" data-card-name="Jeanne" src="imgs/player_cards/Jeanne Alter 2.jpg">
-				<img class="anime-cb-card player-you" data-card-text="This is Violet" data-card-name="Violet" src="imgs/player_cards/Violet.jpg">
+				<img class="anime-cb-card player-you" data-card-text="This is Violet" data-card-name="Violet" src="imgs/player_cards/Violet.jpg"> -->
 			</div>
 		</div>
 		<div class="anime-cb-board-player-label player-enemy">
@@ -149,12 +149,12 @@
 		</div>
 		<div class="anime-cb-cards-in-hand-wrapper player-you">
 			<div class="anime-cb-cards-in-hand player-you">
-				<img class="anime-cb-card player-you" data-card-text="This is Kurumi" data-card-name="Kurumi" src="imgs/player_cards/Kurumi 3.jpg" >
+<!-- 				<img class="anime-cb-card player-you" data-card-text="This is Kurumi" data-card-name="Kurumi" src="imgs/player_cards/Kurumi 3.jpg" >
  				<img class="anime-cb-card player-you" data-card-text="This is Ange" data-card-name="Ange" src="imgs/player_cards/Ange 2.jpg">
 				<img class="anime-cb-card player-you" data-card-text="This is Saber" data-card-name="Saber" src="imgs/player_cards/Saber.jpg">
 				<img class="anime-cb-card player-you" data-card-text="This is Maki" data-card-name="Maki" src="imgs/player_cards/Maki.jpg">
 				<img class="anime-cb-card player-you" data-card-text="This is Jeanne" data-card-name="Jeanne" src="imgs/player_cards/Jeanne Alter 2.jpg">
-				<img class="anime-cb-card player-you" data-card-text="This is Violet" data-card-name="Violet" src="imgs/player_cards/Violet.jpg">
+				<img class="anime-cb-card player-you" data-card-text="This is Violet" data-card-name="Violet" src="imgs/player_cards/Violet.jpg"> -->
 			</div>
 		</div>
 	</div>
@@ -727,10 +727,75 @@ var turnTimer = setInterval(function() {
 
 // Draw card---------------------------
 $('#anime-cb-card-global-deck').on('click', function(e) {
-	drawCardFromEnemyHandEnemy();
-	drawCardFromDeckYou();
+	// drawCardFromEnemyHandEnemy();
+	// drawCardFromDeckYou();
+	drawCardFromGraveyardYou();
+	drawCardFromGraveyardEnemy();
+
 	// drawCardFromEnemyHandYou();
 });
+
+function drawCardFromGraveyardYou() {
+  var cardsInHandCount = $('.anime-cb-cards-in-hand.player-you .anime-cb-card.player-you').length;
+  var drawFromDeckAnimationCount = cardsInHandCount + 1;
+
+  if (cardsInHandCount >= 10 && cardsInHandCount <= 15) {
+  	drawFromDeckAnimationCount = 10;
+  } else if (cardsInHandCount > 15) {
+  	drawFromDeckAnimationCount = 11;
+  }
+
+  $('.anime-cb-cards-in-hand.player-you').css("overflow", "visible");
+  $('.anime-cb-cards-in-hand.player-you').append('<img style="animation: take-card-from-your-graveyard-you-' + drawFromDeckAnimationCount + ' 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both; -webkit-animation: take-card-from-your-graveyard-you-' + drawFromDeckAnimationCount + ' 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;" class="anime-cb-card player-you" data-card-text="This is Misaka" data-card-name="Misaka" src="imgs/player_cards/Misaka.jpg">');
+
+  increaseYourCardsInHandDensity();
+
+  $('*').on('DOMMouseScroll mousewheel', function(e) {
+    e.stopPropagation();
+    e.preventDefault();
+    e.returnValue = false;
+    return false;
+  });
+
+  setTimeout(function() {
+  	$('*').off('DOMMouseScroll mousewheel');
+  	$('.anime-cb-cards-in-hand').on('DOMMouseScroll mousewheel', noScrollOnCardHover);
+  	$('.anime-cb-card.player-you').css("animation", "");
+  	$('.anime-cb-card.player-you').css("-webkit-animation", "");
+  	$('.anime-cb-cards-in-hand.player-you').css("overflow", "hidden");
+  }, 600);
+};
+
+function drawCardFromGraveyardEnemy() {
+  var cardsInHandCount = $('.anime-cb-cards-in-hand.player-enemy .anime-cb-card.player-enemy').length;
+  var drawFromDeckAnimationCount = cardsInHandCount + 1;
+
+  if (cardsInHandCount >= 10 && cardsInHandCount <= 15) {
+  	drawFromDeckAnimationCount = 10;
+  } else if (cardsInHandCount > 15) {
+  	drawFromDeckAnimationCount = 11;
+  }
+
+  $('.anime-cb-cards-in-hand.player-enemy').css("overflow", "visible");
+  $('.anime-cb-cards-in-hand.player-enemy').append('<img style="animation: take-card-from-your-graveyard-enemy-' + drawFromDeckAnimationCount + ' 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both; -webkit-animation: take-card-from-your-graveyard-enemy-' + drawFromDeckAnimationCount + ' 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;" class="anime-cb-card player-enemy" data-card-text="This is Misaka" data-card-name="Misaka" src="imgs/player_cards/Misaka.jpg">');
+
+  increaseEnemyCardsInHandDensity();
+
+  $('*').on('DOMMouseScroll mousewheel', function(e) {
+    e.stopPropagation();
+    e.preventDefault();
+    e.returnValue = false;
+    return false;
+  });
+
+  setTimeout(function() {
+  	$('*').off('DOMMouseScroll mousewheel');
+  	$('.anime-cb-cards-in-hand').on('DOMMouseScroll mousewheel', noScrollOnCardHover);
+  	$('.anime-cb-card.player-enemy').css("animation", "");
+  	$('.anime-cb-card.player-enemy').css("-webkit-animation", "");
+  	$('.anime-cb-cards-in-hand.player-enemy').css("overflow", "hidden");
+  }, 600);
+};
 
 function drawCardFromEnemyHandYou() {
   // $('.anime-cb-cards-in-hand.player-you').attr("style", "");
@@ -900,14 +965,19 @@ function decreaseEnemyCardsInHandDensity() {
 // Remove card from field animation
 $('.anime-cb-screen-game').on('click', '.anime-cb-card-onfield.player-you', function(e) {
 
+	$('.anime-cb-cards-in-hand.player-enemy .anime-cb-card.player-enemy')
+		.css("animation", "slide-top-bottom 1s cubic-bezier(0.250, 0.460, 0.450, 0.940) both");
+
 	$('.anime-cb-card-activate-show').attr("src", $(this).attr("src"));
-	$('.anime-cb-card-activate-show').css("animation", "vibrate-1 0.3s linear 5 both");
+	$('.anime-cb-card-activate-show').css("animation", "show-card-on-screen-player-you 1s both");
 
   // $(this).css("animation", "fade-out 1.5s ease-in both");
   // $(this).css("-webkit-animation", "fade-out 1.5s ease-in both");
   // $(this).removeClass("hover");
 
   setTimeout(function() {
+  	$('.anime-cb-cards-in-hand.player-enemy .anime-cb-card.player-enemy')
+		.css("animation", "");
   // 	$(this).remove();
   $('.anime-cb-card-activate-show').css("animation", "");
   }.bind(this), 1500);

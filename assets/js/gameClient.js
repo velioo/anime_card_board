@@ -21,6 +21,7 @@ gameClient.prototype.initGameSocket = function(socket) {
 	socket.on('summonCard', this.processSummonCard.bind(this));
 	socket.on('drawCardFromEnemyHand', this.processDrawCardFromEnemyHand.bind(this));
 	socket.on('destroyCardFromEnemyField', this.processDestroyCardFromEnemyField.bind(this));
+	socket.on('takeCardFromYourGraveyard', this.processTakeCardFromYourGraveyard.bind(this));
 	socket.on('rollPhase', this.processRollPhase.bind(this));
 	socket.on('rollDiceBoard', this.processRollDiceBoard.bind(this));
 	socket.on('endPhase', this.processEndPhase.bind(this));
@@ -192,6 +193,26 @@ gameClient.prototype.processDestroyCardFromEnemyField = function (_data) {
 	if (_self.generalClient.roomController._roomId && _data.roomId
 		&& _self.generalClient.roomController._roomId == _data.roomId) {
 		_self.gameController.processDestroyCardFromEnemyField(_data);
+	}
+};
+
+gameClient.prototype.takeCardFromYourGraveyard = function (_data) {
+	logger.info('takeCardFromYourGraveyard');
+
+	var _self = this;
+
+	_self.socket.emit('takeCardFromYourGraveyard', _data);
+};
+
+gameClient.prototype.processTakeCardFromYourGraveyard = function (_data) {
+	logger.info('processTakeCardFromYourGraveyard');
+	console.log('processTakeCardFromYourGraveyard');
+
+	var _self = this;
+
+	if (_self.generalClient.roomController._roomId && _data.roomId
+		&& _self.generalClient.roomController._roomId == _data.roomId) {
+		_self.gameController.processTakeCardFromYourGraveyard(_data);
 	}
 };
 

@@ -127,6 +127,7 @@ const self = module.exports = {
               cardsToDraw: 5,
               cardsToDrawFromEnemyHand: 0,
               cardsToDestroyFromEnemyField: 0,
+              cardsToTakeFromYourGraveyard: 0,
               cardsSummonConstraints: {
                 cardsCanSummonAny: false,
                 cardsCanSummonCommon: true,
@@ -146,7 +147,7 @@ const self = module.exports = {
               rollAgain: false,
               moveBackwardsOnNextRoll: null,
               moveBackwards: null,
-              cardsInGraveyard: [],
+              cardsInGraveyardArr: [],
               energyPoints: 0,
               maxEnergyPoints: 10,
               energyPerTurnGain: 5,
@@ -162,6 +163,7 @@ const self = module.exports = {
               cardsToDraw: 5,
               cardsToDrawFromEnemyHand: 0,
               cardsToDestroyFromEnemyField: 0,
+              cardsToTakeFromYourGraveyard: 0,
               cardsSummonConstraints: {
                 cardsCanSummonAny: false,
                 cardsCanSummonCommon: true,
@@ -181,7 +183,7 @@ const self = module.exports = {
               rollAgain: false,
               moveBackwardsOnNextRoll: null,
               moveBackwards: null,
-              cardsInGraveyard: [],
+              cardsInGraveyardArr: [],
               energyPoints: 0,
               maxEnergyPoints: 10,
               energyPerTurnGain: 5,
@@ -261,8 +263,6 @@ const self = module.exports = {
       if (gameState.nextPhase != TURN_PHASES.DRAW) {
         await gameCore.activePlayerHook(ctx);
       }
-
-      playerState.cardsInHandArr.push(ctx.cardDrawn);
 
       queryStatus = await utils.updateRowById({ table: 'games', fields: ['data_json', 'deck_json', 'room_id'],
         queryArgs: [JSON.stringify(ctx.gameplayData), JSON.stringify(ctx.cardsInDeckArr), ctx.data.roomId] });
@@ -568,7 +568,7 @@ const self = module.exports = {
       gameState.playerIdDrawnCardFromEnemyHand = ctx.session.userData.userId;
       gameState.cardDrawnFromEnemyHand = playerStateEnemy.cardsInHandArr[ctx.data.cardIdx];
       gameState.cardDrawnFromEnemyHand.cardInHandIdx = ctx.data.cardIdx;
-      playerState.cardsInHandArr.push(playerStateEnemy.cardsInHandArr[ctx.data.cardIdx]);
+      playerState.cardsInHandArr.push(gameState.cardDrawnFromEnemyHand);
       playerStateEnemy.cardsInHandArr.splice(ctx.data.cardIdx, 1);
       playerState.cardsToDrawFromEnemyHand--;
       playerState.cardsInHand++;
@@ -593,6 +593,67 @@ const self = module.exports = {
       await pg.pool.query('ROLLBACK');
 
       logger.info('Failed to draw card from enemy hand: %o', err);
+    }
+  },
+  takeCardFromYourGraveyard: async (ctx, next) => {
+    logger.info('takeCardFromYourGraveyard gameController');
+    ctx.errors = [];
+
+    await pg.pool.query('BEGIN');
+
+    try {
+      ctx.data.roomId = parseInt(ctx.data.roomId);
+      ctx.data.cardIdx = parseInt(ctx.data.cardIdx);
+
+      const isSchemaValid = ajv.validate(SCHEMAS.TAKE_CARD_FROM_GRAVEYARD, ctx.data);
+      assert(isSchemaValid);
+
+      assert(ctx.session.userData && ctx.session.userData.userId);
+
+      let queryStatus = await utils.lockRowById({ table: 'games', field: 'room_id', queryArg: ctx.data.roomId });
+
+      assert(queryStatus.rows[0].player1_id == ctx.session.userData.userId
+        || queryStatus.rows[0].player2_id == ctx.session.userData.userId);
+
+      ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
+      ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
+
+      let gameState = ctx.gameplayData.gameState;
+      let playerState = gameState.playersState[ctx.session.userData.userId];
+
+      assert(playerState.cardsToTakeFromYourGraveyard > 0);
+      assert(playerState.cardsInGraveyardArr.length > 0);
+      assert((ctx.data.cardIdx >= 0) && (ctx.data.cardIdx < playerState.cardsInGraveyardArr.length));
+
+      gameState.cardTakenFromGraveyard = playerState.cardsInGraveyardArr[ctx.data.cardIdx];
+      gameState.cardTakenFromGraveyard.cardInGraveyardIdx = ctx.data.cardIdx;
+
+      gameState.playerIdTakenCardFromGraveyard = ctx.session.userData.userId;
+      playerState.cardsInHandArr.push(gameState.cardTakenFromGraveyard);
+      playerState.cardsInGraveyardArr.splice(ctx.data.cardIdx, 1);
+      playerState.cardsToTakeFromYourGraveyard--;
+      playerState.cardsInHand++;
+
+      await gameCore.takeCardFromYourGraveyardHook(ctx);
+      await gameCore.activePlayerHook(ctx);
+
+      queryStatus = await utils.updateRowById({ table: 'games', fields: ['data_json', 'room_id'],
+        queryArgs: [JSON.stringify(ctx.gameplayData), ctx.data.roomId] });
+
+      ctx.cardsInHandArrPlayer1 = gameState.playersState[ctx.roomData.player1Id].cardsInHandArr;
+      ctx.cardsInHandArrPlayer2 = gameState.playersState[ctx.roomData.player2Id].cardsInHandArr;
+
+      gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
+      gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
+
+      await pg.pool.query('COMMIT');
+    } catch (err) {
+      ctx.errors.push({ dataPath: '/take_card_from_your_graveyard',
+        message: 'There was a problem while taking card from your graveyard. Retrying...' });
+
+      await pg.pool.query('ROLLBACK');
+
+      logger.info('Failed to take card from your graveyard: %o', err);
     }
   },
   destroyCardFromEnemyField: async (ctx, next) => {
@@ -643,7 +704,7 @@ const self = module.exports = {
       gameState.playerIdDestroyedCardFromEnemyField = ctx.session.userData.userId;
       gameState.cardDestroyedFromEnemyField = cardToDestroy;
       playerStateEnemy.cardsOnFieldArr.splice(cardIdx, 1);
-      playerStateEnemy.cardsInGraveyard.push(cardToDestroy);
+      playerStateEnemy.cardsInGraveyardArr.push(cardToDestroy);
       playerState.cardsToDestroyFromEnemyField--;
 
       await gameCore.destroyCardFromEnemyFieldHook(ctx);
@@ -880,7 +941,7 @@ const self = module.exports = {
       playerState.cardsInHand--;
       gameState.playerIdDiscardedCard = ctx.session.userData.userId;
 
-      playerState.cardsInGraveyard.push(cardSelected);
+      playerState.cardsInGraveyardArr.push(cardSelected);
 
       await gameCore.discardCardHook(ctx);
       await gameCore.activePlayerHook(ctx);

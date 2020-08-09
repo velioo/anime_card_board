@@ -366,6 +366,51 @@ const self = module.exports = {
 	  	}
 	  });
 
+	  socket.on('takeCardFromYourGraveyard', async (ctx) => {
+	  	try {
+	  		let ctx_c = _.clone(ctx);
+	  		logger.info('Take card from your graveyard data: %o', ctx_c.data);
+
+		  	await gameServer.takeCardFromYourGraveyard(ctx_c, next);
+
+		  	let isSuccessful = ctx_c.errors.length ? false : true;
+
+		  	if (ctx_c.roomData && ctx_c.sessions[ctx_c.roomData.player1Id] && ctx_c.sessions[ctx_c.roomData.player2Id]
+		  		&& ctx_c.sessions[ctx_c.roomData.player1Id].socketId && ctx_c.sessions[ctx_c.roomData.player2Id].socketId
+		  		&& ctx_c.io.getSocket(ctx_c.sessions[ctx_c.roomData.player1Id].socketId) && ctx_c.io.getSocket(ctx_c.sessions[ctx_c.roomData.player2Id].socketId)) {
+
+			  	ctx.io.getSocket(ctx_c.sessions[ctx_c.roomData.player1Id].socketId).emit('takeCardFromYourGraveyard', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	cardsInHandArr: ctx_c.cardsInHandArrPlayer1,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+
+				  ctx.io.getSocket(ctx_c.sessions[ctx_c.roomData.player2Id].socketId).emit('takeCardFromYourGraveyard', {
+			  		errors: ctx_c.errors,
+				  	isSuccessful: isSuccessful,
+				  	gameplayData: ctx_c.gameplayData,
+				  	cardsInHandArr: ctx_c.cardsInHandArrPlayer2,
+				  	roomData: ctx_c.roomData,
+				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				  });
+		  	} else {
+					// socket.broadcast('discardCard', {
+			  // 		errors: ctx_c.errors,
+				 //  	isSuccessful: isSuccessful,
+				 //  	gameplayData: ctx_c.gameplayData,
+				 //  	roomData: ctx_c.roomData,
+				 //  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+				 //  });
+		  	}
+	  	} catch (err) {
+	  		socket.emit('serverError', err);
+	  		logger.error('Error: %o', err);
+	  	}
+	  });
+
 	  socket.on('drawPhase', async (ctx) => {
 	  	try {
 	  		let ctx_c = _.clone(ctx);

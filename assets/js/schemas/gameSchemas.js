@@ -124,6 +124,12 @@ var startGameResponse = {
 							"properties": cardObjProperties,
 							"required": cardObjRequiredFields,
 						},
+						"playerIdTakenCardFromGraveyard": { "type": ["integer", "null"] },
+						"cardTakenFromGraveyard": {
+							"type": ["object", "null"],
+							"properties": cardObjProperties,
+							"required": cardObjRequiredFields,
+						},
 						"activePlayerId": { "type": "integer" },
 						"playerIdWinGame": { "type": ["integer", "null"] },
 						"playersState": {
@@ -133,10 +139,11 @@ var startGameResponse = {
 									"name": { "type": "string" },
 									"currBoardIndex": { "type": "integer" },
 									"lastBoardIndex": { "type": "integer" },
-									"cardsInHand": "integer",
-									"cardsToDraw": "integer",
-									"cardsToDrawFromEnemyHand": "integer",
-									"cardsToDestroyFromEnemyField": "integer",
+									"cardsInHand": { "type": "integer" },
+									"cardsToDraw": { "type": "integer" },
+									"cardsToDrawFromEnemyHand": { "type": "integer" },
+									"cardsToDestroyFromEnemyField": { "type": "integer" },
+									"cardsToTakeFromYourGraveyard": { "type": "integer" },
 									"cardsSummonConstraints": {
 										"type": "object",
 										"properties": {
@@ -167,7 +174,7 @@ var startGameResponse = {
 									"moveBackwardsOnNextRoll": { "type": ["boolean", "null"] },
 									"maxCardsInHand": { "type": "integer" },
 									"cardsToDiscard": { "type": "integer" },
-									"cardsInGraveyard": {
+									"cardsInGraveyardArr": {
 										"type": "array",
 										"items": cardObj,
 									},
@@ -242,6 +249,7 @@ var activateCardEffectResponse = startGameResponse;
 var finishCardEffectContinuousResponse = startGameResponse;
 var drawCardFromEnemyHandResponse = startGameResponse;
 var destroyCardFromEnemyFieldResponse = startGameResponse;
+var takeCardFromYourGraveyardResponse = startGameResponse;
 
 var drawCardYouResponse = {
 	"type": "object",
