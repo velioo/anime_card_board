@@ -17,7 +17,7 @@
 
 <script type="text/javascript">
     window.onerror = function (msg, url, lineNo, columnNo, error) {
-      if ($('.anime-cb-screen-game').is(':visible') && !_gameClient.gameController._gameplayData) {
+      if (($('.anime-cb-screen-game').is(':visible') || _gameClient.gameController._postGame) && !_gameClient.gameController._gameplayData) {
         return;
       }
 

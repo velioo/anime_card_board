@@ -120,7 +120,7 @@ var self = module.exports = {
         ctx.errors.push({ dataPath: '/username', message: 'Wrong username or password.' });
       }
 
-      ctx.settings = ctx.session.settings;
+      ctx.settings = ctx.session.userData.settings;
     } catch(err) {
       ctx.errors.push({ dataPath: '/username', message: 'There was a problem while logging in. Please try again later.' });
 
