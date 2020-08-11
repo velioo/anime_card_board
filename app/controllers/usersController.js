@@ -1,6 +1,7 @@
 const logger = require('../helpers/logger');
 const pg = require('../db/pg');
 const utils = require('../helpers/utils');
+const gameServer = require('../socket/gameServer.js');
 
 const {
   ROOT,
@@ -16,12 +17,11 @@ const Validations = require('../helpers/validations');
 const sha256 = require('js-sha256').sha256;
 const Nodemailer = require('nodemailer');
 const Ajv = require('ajv');
-const ajv = new Ajv({ allErrors: true, $data: true, jsonPointers: true });
+const ajv = new Ajv({ allErrors: true, $data: true, jsonPointers: true, format: "full" });
 const ajvErrors = require('ajv-errors')(ajv);
 
 var self = module.exports = {
   signUp: async (ctx, next) => {
-    console.log('signUp usersController');
     ctx.errors = [];
 
     const isSchemaValid = ajv.validate(SCHEMAS.SIGN_UP, ctx.request.body.data);
@@ -39,21 +39,18 @@ var self = module.exports = {
     }
 
     const userData = getUserData(ctx);
-
-    logger.info('User Data = %o', userData);
-
     const tempCode = utils.generateUniqueId(32);
 
     const userDbData = Object.keys(userData).map((fieldName) => userData[ fieldName ]);
     const userDbFields = Object.keys(userData).join(', ');
 
-    await pg.pool.query(`BEGIN`);
+    await pg.pool.query('BEGIN');
 
     try {
       const queryStatus = await pg.pool.query(`
 
         INSERT INTO users (${userDbFields})
-        VALUES ($1, $2, $3, $4)
+        VALUES ($1, $2, $3, $4, $5)
         RETURNING id
 
       `, userDbData);
@@ -73,10 +70,10 @@ var self = module.exports = {
 
       logger.info('Confirmation email sent');
 
-      await pg.pool.query(`COMMIT`);
+      await pg.pool.query('COMMIT');
     } catch (err) {
       ctx.errors.push({ dataPath: '/username', message: 'There was a problem creating your account. Please try again later.' });
-      await pg.pool.query(`ROLLBACK`);
+      await pg.pool.query('ROLLBACK');
 
       logger.info('Failed to sign up: %o', err);
     }
@@ -84,8 +81,8 @@ var self = module.exports = {
     return self.sendResponse(ctx, next);
   },
   logIn: async (ctx, next) => {
-    console.log('logIn usersController');
     ctx.errors = [];
+    ctx.settings = null;
 
     const isSchemaValid = ajv.validate(SCHEMAS.LOGIN, ctx.request.body.data);
 
@@ -99,29 +96,47 @@ var self = module.exports = {
       return self.sendResponse(ctx, next);
     }
 
-    const userData = await pg.pool.query(`
+    try {
+      const userData = await pg.pool.query(`
 
-      SELECT username, password, salt, id, is_confirmed
-      FROM users
-      WHERE
-        username = $1
+        SELECT username, password, salt, id, is_confirmed, settings_json
+        FROM users
+        WHERE
+          username = $1
 
-    `, [ ctx.request.body.data.username ]);
+      `, [ ctx.request.body.data.username ]);
 
-    assert(userData.rowCount <= 1);
+      assert(userData.rowCount <= 1);
 
-    if (userData.rowCount === 1 && isLoginSuccessfull(ctx.request.body.data.password, userData.rows[0])) {
-      if (isAccountConfirmed(userData.rows[0])) {
-        ctx.session.userData = { userId: userData.rows[0].id, username: userData.rows[0].username };
-        ctx.session.isUserLoggedIn = true;
+      if (userData.rowCount === 1 && isLoginSuccessfull(ctx.request.body.data.password, userData.rows[0])) {
+        if (isAccountConfirmed(userData.rows[0])) {
+          ctx.session.userData = { userId: userData.rows[0].id, username: userData.rows[0].username };
+          ctx.session.isUserLoggedIn = true;
+          ctx.session.userData.settings = JSON.parse(userData.rows[0].settings_json);
+        } else {
+          ctx.errors.push({ dataPath: '/username', message: 'You must confirm your email before logging in.' });
+        }
       } else {
-        ctx.errors.push({ dataPath: '/username', message: 'You must confirm your email before logging in.' });
+        ctx.errors.push({ dataPath: '/username', message: 'Wrong username or password.' });
       }
-    } else {
-      ctx.errors.push({ dataPath: '/username', message: 'Wrong username or password.' });
+
+      ctx.settings = ctx.session.userData.settings;
+    } catch(err) {
+      ctx.errors.push({ dataPath: '/username', message: 'There was a problem while logging in. Please try again later.' });
+
+      logger.info('Failed to log in: %o', err);
     }
 
     return self.sendResponse(ctx, next);
+  },
+  isUserLoggedIn: async (ctx, next) => {
+    ctx.body = {
+      isUserLoggedIn: ctx.session.isUserLoggedIn,
+      userId: ctx.session.userData ? ctx.session.userData.userId || null : null,
+      username: ctx.session.userData ? ctx.session.userData.username || null : null,
+      settings: ctx.session.userData ? ctx.session.userData.settings || null : null,
+      isSuccessful: true,
+    };
   },
   sendResponse: async (ctx, next) => {
     ctx.body = {
@@ -132,10 +147,18 @@ var self = module.exports = {
     if (ctx.userMessage) {
       ctx.body.userMessage = ctx.userMessage;
     }
+
+    if ("settings" in ctx) {
+      ctx.body.settings = ctx.settings;
+    }
+
+    ctx.body.userId = ctx.session.userData ? ctx.session.userData.userId : null;
+    ctx.body.username = ctx.session.userData ? ctx.session.userData.username : null;
   },
   logOut: async (ctx, next) => {
-    console.log('logOut usersController');
     ctx.errors = [];
+
+    await gameServer.processDisconnect(ctx, next);
 
     if (ctx.session.isUserLoggedIn) {
       ctx.session.userData = null;
@@ -143,6 +166,54 @@ var self = module.exports = {
     }
 
     self.sendResponse(ctx, next);
+  },
+  settings: async (ctx, next) => {
+    ctx.errors = [];
+    ctx.userMessage = "There was a problem while saving your settings. Please try again later.";
+    ctx.settings = {};
+
+    try {
+      assert(ctx.session.userData && ctx.session.userData.username);
+
+      ctx.request.body.data.sound = (ctx.request.body.data.sound == 'true');
+      const isSchemaValid = ajv.validate(SCHEMAS.SETTINGS, ctx.request.body.data);
+
+      if (!isSchemaValid) {
+        ajv.errors.forEach((el) => {
+          ctx.errors.push(el);
+        })
+      }
+
+      if (ctx.errors.length) {
+        return self.sendResponse(ctx, next);
+      }
+
+      let settingsJson = {
+        sound: ctx.request.body.data.sound,
+      };
+
+      const queryStatus = await pg.pool.query(`
+
+        UPDATE users
+        SET settings_json = $1
+        WHERE username = $2
+        RETURNING id
+
+      `, [ JSON.stringify(settingsJson), ctx.session.userData.username ]);
+
+      assert(queryStatus.rowCount == 1);
+
+      ctx.userMessage = "Settings successfully saved.";
+      ctx.settings = settingsJson;
+      ctx.session.userData.settings = settingsJson;
+
+    } catch(err) {
+      ctx.errors.push({ dataPath: '/settings', message: 'There was a problem while saving your settings. Please try again later.' });
+
+      logger.info('Failed to save setttings: %o', err);
+    }
+
+    return self.sendResponse(ctx, next);
   },
 };
 
@@ -171,6 +242,9 @@ let getUserData = (ctx) => {
     'email': ctx.request.body.data.email,
     'password': sha256(ctx.request.body.data.password + salt),
     'salt': salt,
+    'settings_json': JSON.stringify({
+      sound: false,
+    }),
   };
 };
 

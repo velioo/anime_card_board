@@ -5,6 +5,12 @@ var hbsPartials = {
   signUp: '../partials/sign_up',
   login: '../partials/login',
   signUpSuccess: '../partials/sign_up_success',
+  createRoom: '../partials/create_room',
+  browseRooms: '../partials/browse_rooms',
+  lobby: '../partials/lobby',
+  game: '../partials/game',
+  matchmaking: '../partials/matchmaking',
+  settings: '../partials/settings',
 };
 
 module.exports = hbsPartials;

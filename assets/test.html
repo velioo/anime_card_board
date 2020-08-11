@@ -1,0 +1,437 @@
+<html lang="en"><head>
+    <title>Home</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.css">
+    <script src="../node_modules/jquery/dist/jquery.js"></script>
+    <script src="../node_modules/bootstrap/dist/js/bootstrap.js"></script>
+    <script type="text/javascript" src="../node_modules/roll-a-die/dist/roll-a-die.js"></script>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+<div id="acb-main-wrapper">
+<div id="acb-submain-wrapper" style="display: block;">
+<div class="anime-cb-screen-game anime-cb-screen" style="display: block;">
+	<div class="anime-cb-title-page-game">
+		<p>Room: Test Room</p>
+	</div>
+
+	<div id="anime-cb-card-info-wrapper">
+		<div id="anime-cb-card-info-subwrapper">
+			Card Info<br>
+			<img id="anime-cb-card-info-card" src="imgs/player_cards/card_back.png">
+			<div id="anime-cb-card-info-text">
+			</div>
+		</div>
+	</div>
+	<div class="anime-cb-card-graveyard-wrapper player-enemy">
+			<br><p class="anime-cb-card-graveyard-text player-enemy">Enemy Graveyard</p>
+		<img class="anime-cb-card-graveyard-deck player-enemy" src="imgs/player_cards/card_back.png">
+	</div>
+	<div class="anime-cb-card-global-deck-wrapper">
+		<img class="anime-cb-card-global-deck" src="imgs/player_cards/card_back.png"><br><br>
+		<p class="anime-cb-card-global-deck-text">Global Deck</p>
+	</div>
+	<table id="anime-cb-phases-wrapper">
+		<tr class="anime-cb-phase-row">
+			<td id="anime-cb-phase-draw" class="anime-cb-phase-column ended">DP</td>
+		</tr>
+		<tr class="anime-cb-phase-row">
+			<td id="anime-cb-phase-standby" class="anime-cb-phase-column active">SP</td>
+		</tr>
+		<tr class="anime-cb-phase-row">
+			<td id="anime-cb-phase-main" class="anime-cb-phase-column next">MP</td>
+		</tr>
+		<tr class="anime-cb-phase-row">
+			<td id="anime-cb-phase-roll" class="anime-cb-phase-column next">RP</td>
+		</tr>
+		<tr class="anime-cb-phase-row">
+			<td id="anime-cb-phase-end" class="anime-cb-phase-column next">EP</td>
+		</tr>
+	</table>
+	<div class="center-screen">
+		<div class="anime-cb-cards-in-hand-wrapper player-enemy">
+			<div class="anime-cb-cards-in-hand player-enemy">
+				<img class="anime-cb-card player-enemy" src="imgs/player_cards/card_back.png">
+				<img class="anime-cb-card player-enemy" src="imgs/player_cards/card_back.png">
+				<img class="anime-cb-card player-enemy" src="imgs/player_cards/card_back.png">
+				<img class="anime-cb-card player-enemy" src="imgs/player_cards/card_back.png">
+				<img class="anime-cb-card player-enemy" src="imgs/player_cards/card_back.png">
+				<img class="anime-cb-card player-enemy" src="imgs/player_cards/card_back.png">
+			</div>
+		</div>
+		<div class="anime-cb-board-player-label player-enemy">
+			C.C
+		</div>
+		<table class="anime-cb-card-field player-enemy">
+			<tr>
+				<td><img class="anime-cb-card-onfield player-enemy" data-card-text="This is Kurumi" src="imgs/player_cards/Kurumi 3.jpg"></td>
+				<td><img class="anime-cb-card-onfield player-enemy" data-card-text="This is Ange"  src="imgs/player_cards/Ange 2.jpg"></td>
+				<td><img class="anime-cb-card-onfield player-enemy" data-card-text="This is Saber" src="imgs/player_cards/Saber.jpg"></td>
+				<td><img class="anime-cb-card-onfield player-enemy" data-card-text="This is Maki"  src="imgs/player_cards/Maki.jpg"></td>
+				<td><img class="anime-cb-card-onfield player-enemy" data-card-text="This is Jeanne" src="imgs/player_cards/Jeanne Alter 2.jpg"></td>
+			</tr>
+		</table>
+		<div id="anime-cb-board-wrapper">
+			<table id="anime-cb-board">
+				<tr class="anime-cb-board-row">
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+				</tr>
+				<tr class="anime-cb-board-row">
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+				</tr>
+				<tr class="anime-cb-board-row">
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+				</tr>
+				<tr class="anime-cb-board-row">
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+				</tr>
+				<tr class="anime-cb-board-row">
+					<td class="anime-cb-column"><span class="anime-cb-player-you-position"></span></td>
+					<td class="anime-cb-column"></td>
+					<td class="anime-cb-column"></td>
+					<td class="anime-cb-column"></td>
+					<td class="anime-cb-column"></td>
+					<td class="anime-cb-column"></td>
+					<td class="anime-cb-column"></td>
+					<td class="anime-cb-column"></td>
+					<td class="anime-cb-column"></td>
+					<td class="anime-cb-column"></td>
+					<td class="anime-cb-column"></td>
+					<td class="anime-cb-column"></td>
+					<td class="anime-cb-column"></td>
+					<td class="anime-cb-column"></td>
+					<td class="anime-cb-column"></td>
+					<td class="anime-cb-column"></td>
+					<td class="anime-cb-column"></td>
+					<td class="anime-cb-column"></td>
+					<td class="anime-cb-column"></td>
+					<td class="anime-cb-column"><span class="anime-cb-player-enemy-position"></span></td>
+				</tr>
+				<tr class="anime-cb-board-row">
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+				</tr>
+				<tr class="anime-cb-board-row">
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td  id="roll" class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+				</tr>
+				<tr class="anime-cb-board-row">
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+				</tr>
+				<tr class="anime-cb-board-row">
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+				</tr>
+				<tr class="anime-cb-board-row">
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td>
+					<td class="anime-cb-column blank"></td><!-- <img id="anime-cb-dice" src="imgs/dice.webp"> -->
+				</tr>
+			</table>
+		</div>
+		<div>
+			<table class="anime-cb-card-field player-you">
+				<tr>
+					<td><img id="tilt" class="anime-cb-card-onfield player-you" data-card-text="This is Kurumi" src="imgs/player_cards/Kurumi 3.jpg"></td>
+					<td><img class="anime-cb-card-onfield player-you" data-card-text="This is Ange" src="imgs/player_cards/Ange 2.jpg"></td>
+					<td><img class="anime-cb-card-onfield player-you" data-card-text="This is Saber" src="imgs/player_cards/Saber.jpg"></td>
+					<td><img class="anime-cb-card-onfield player-you" data-card-text="This is Maki" src="imgs/player_cards/Maki.jpg"></td>
+					<td><img class="anime-cb-card-onfield player-you" data-card-text="This is Jeanne" src="imgs/player_cards/Jeanne Alter 2.jpg"></td>
+				</tr>
+			</table>
+		</div>
+		<div class="anime-cb-board-player-label player-you">
+			Lelouch
+		</div>
+		<div class="anime-cb-cards-in-hand-wrapper player-you">
+			<div class="anime-cb-cards-in-hand player-you">
+				<img class="anime-cb-card player-you" data-card-text="This is Kurumi" src="imgs/player_cards/Kurumi 3.jpg">
+				<img class="anime-cb-card player-you" data-card-text="This is Ange" src="imgs/player_cards/Ange 2.jpg">
+				<img class="anime-cb-card player-you" data-card-text="This is Saber" src="imgs/player_cards/Saber.jpg">
+				<img class="anime-cb-card player-you" data-card-text="This is Maki" src="imgs/player_cards/Maki.jpg">
+				<img class="anime-cb-card player-you" data-card-text="This is Jeanne" src="imgs/player_cards/Jeanne Alter 2.jpg">
+				<img class="anime-cb-card player-you" data-card-text="This is Violet" src="imgs/player_cards/Violet.jpg">
+			</div>
+		</div>
+	</div>
+	<div class="anime-cb-card-graveyard-wrapper player-you">
+		<img class="anime-cb-card-graveyard-deck player-you" src="imgs/player_cards/card_back.png"><br><br>
+		<p class="anime-cb-card-graveyard-text player-you">Your Graveyard</p><br>
+	</div>
+	<div class="anime-cb-screen_footer-game">
+		<button id="anime-cb-surrender" type="button" class="btn btn-primary anime-cb-button-stateless anime-cb-btn-main-menu">Surrender</button>
+	</div>
+	<div id="anime-cb-dice-wrapper-player1">
+	</div>
+	<div id="anime-cb-dice-wrapper-player2">
+	</div>
+</div>
+</div>
+</div>
+</body></html>
+
+<script type="text/javascript">
+
+$('.anime-cb-card-onfield').mousemove(function(e) {
+	$('#anime-cb-card-info-card').attr("src", $(this).attr("src"));
+	$('#anime-cb-card-info-card').css("border", "1px solid white");
+	$('#anime-cb-card-info-text').text($(this).data("cardText"));
+});
+
+$('.anime-cb-card-onfield').mouseout(function(e) {
+	$('#anime-cb-card-info-card').attr("src", "imgs/player_cards/card_back.png");
+	$('#anime-cb-card-info-card').css("border", "");
+	$('#anime-cb-card-info-text').text("");
+});
+
+
+
+$('.anime-cb-card').mousemove(handleMove);
+function handleMove(e) {
+  const xVal = e.offsetX;
+  const yVal = e.offsetY;
+
+  const height = $(this).height();
+  const width = $(this).width();
+
+  const yRotation = 20 * ((xVal - width / 2) / width);
+  const xRotation = -20 * ((yVal - height / 2) / height);
+
+  const string = 'perspective(500px) scale(1.1) rotateX(' + xRotation + 'deg) rotateY(' + yRotation + 'deg) translateZ(0)';
+
+  $(this).css("transform", string);
+
+  $('#anime-cb-card-info-card').attr("src", $(this).attr("src"));
+  $('#anime-cb-card-info-card').css("border", "1px solid white");
+  $('#anime-cb-card-info-text').text($(this).data("cardText"));
+  $('.anime-cb-cards-in-hand').css("overflow", "visible");
+}
+
+$('.anime-cb-card').mouseout(function() {
+  $(this).css("transform", "perspective(500px) scale(1) rotateX(0) rotateY(0) translateZ(0)");
+  	$('#anime-cb-card-info-card').attr("src", "imgs/player_cards/card_back.png");
+	$('#anime-cb-card-info-card').css("border", "");
+	$('#anime-cb-card-info-text').text("");
+	$('.anime-cb-cards-in-hand').css("overflow", "hidden");
+});
+
+$('.anime-cb-card').mousedown(function() {
+  $(this).css("transform", "perspective(500px) scale(0.9) rotateX(0) rotateY(0) translateZ(0)");
+});
+
+$('.anime-cb-card').mouseup(function() {
+  $(this).css("transform", "perspective(500px) scale(1.1) rotateX(0) rotateY(0) translateZ(0)");
+});
+
+// don't allow scroll on when hovering on cards in hand
+$('.anime-cb-cards-in-hand').on('DOMMouseScroll mousewheel', function(e) {
+    var $this = $(this),
+        scrollTop = this.scrollTop,
+        scrollHeight = this.scrollHeight,
+        height = $this.height(),
+        delta = (e.type == 'DOMMouseScroll' ?
+            e.originalEvent.detail * -40 :
+            e.originalEvent.wheelDelta),
+        up = delta > 0;
+
+    var prevent = function() {
+        e.stopPropagation();
+        e.preventDefault();
+        e.returnValue = false;
+        return false;
+    }
+
+    if (!up && -delta > scrollHeight - height - scrollTop) {
+        $this.scrollTop(scrollHeight);
+        return prevent();
+    } else if (up && delta > scrollTop) {
+        $this.scrollTop(0);
+        return prevent();
+    }
+});
+
+function response(res) {
+  console.log(res)
+}
+
+function rollDiceWithValues() {
+  var element = document.getElementById('anime-cb-dice-wrapper-player1');
+  var numberOfDice = 1;
+  var options = {
+    element,
+    numberOfDice,
+    values: [5],
+    callback: response
+  };
+  rollADie(options);
+}
+
+$('#anime-cb-phase-roll').on('click', rollDiceWithValues);
+</script>

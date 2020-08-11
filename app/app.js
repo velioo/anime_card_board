@@ -15,6 +15,9 @@ const globalErrHandler = require('./middlewares/errorHandler');
 const hbaHelpers = require('./helpers/handlebars/helpers');
 const hbaPartials = require('./helpers/handlebars/partials');
 const socketRouter = require('./socket/socketRouter.js');
+const roomController = require('./controllers/roomController.js');
+const authenticate = require('./middlewares/authenticate');
+const _ = require('lodash/lang');
 const { routes, allowedMethods } = require('./routes');
 const dirs = {};
 
@@ -27,9 +30,10 @@ const Views = require('koa-views');
 const path = require('path');
 const Http = require('http');
 const server = Http.createServer(app.callback());
-const IO = require( 'koa-socket.io' );
+const IO = require( './socket/koa-socket.io/lib/index.js' );
 const KoaSocketSession = require('koa-socket-session');
 const io = new IO({ namespace: '/' });
+let sessions;
 
 app.use(globalErrHandler);
 
@@ -41,11 +45,11 @@ app.use(new StaticCache('./uploads', {
 }, dirs));
 app.use(new StaticCache('./node_modules'));
 
-app.keys = ['dca23e28c111808d1f9e6230849ee19e '];
+app.keys = ['dca23e28c111808d1f9e6230849ee19e'];
 
 const SESSION_CONFIG = {
     key: 'koa:sess', /** (string) cookie key (default is koa:sess) */
-    maxAge: 86400000, /** (number) maxAge in ms (default is 1 days) */
+    maxAge: 315569259747, /** (number) maxAge in ms (default is 1 days) */
     overwrite: true, /** (boolean) can overwrite or not (default true) */
     httpOnly: true, /** (boolean) httpOnly or not (default true) */
     signed: true, /** (boolean) signed or not (default true) */
@@ -58,11 +62,15 @@ app.use(async (ctx, next) => {
   ctx.state.FRONTEND_LOGGER_INTERVAL = FRONTEND_LOGGER_INTERVAL;
   ctx.state.session = ctx.session;
   ctx.session.isUserLoggedIn = ctx.session.isUserLoggedIn || false;
+  ctx.sessions = sessions;
 
   await next();
 });
 
-io.start(server);
+io.start(server,{
+  pingInterval: 6000,
+  pingTimeout: 3000,
+});
 io.use(KoaSocketSession(app, session));
 
 Validate(app);
@@ -79,6 +87,7 @@ app.use(new Views(path.resolve(__dirname, 'render'), {
 
 app.use(routes);
 app.use(allowedMethods);
+app.use(authenticate);
 
 app.use( async (ctx) => {
   if (ctx.status !== 404) {
@@ -89,18 +98,35 @@ app.use( async (ctx) => {
     ctx.redirect(ROOT + 'imgs/no_image.png');
   } else {
     ctx.status = 404;
-    await ctx.render('./views/404.hbs');
+    ctx.state = {
+      userMessage: 'ERROR 404! Sorry the server couldn\'t find this resource :)',
+      httpCode: 404,
+    }
+    await ctx.render('./views/400.hbs');
   }
 });
 
-// io.use(async (ctx, next) => {
-//   console.log('middleware invoke begin: %s, %s', ctx.event, ctx.id);
-
-//   console.log('middleware invoke end: %s, %s', ctx.event, ctx.id);
-// });
-
 io.on('connect', async (ctx, next) => {
   try {
+    ctx.io = io;
+
+    if (ctx.session.userData && ctx.session.userData.userId) {
+      if (!sessions[ctx.session.userData.userId]) {
+        sessions[ctx.session.userData.userId] = {
+          turnInterval: null,
+          pausedTimer: true,
+          timerValue: null,
+          disconnected: false,
+          roomId: null,
+          socketId: ctx.socket.id,
+        };
+      } else {
+        sessions[ctx.session.userData.userId].disconnected = false;
+        sessions[ctx.session.userData.userId].socketId = ctx.socket.id;
+      }
+    }
+
+    ctx.sessions = sessions;
     await socketRouter.routeRequest(ctx, next);
   } catch (err) {
     logger.error('IO Errors: %o', err);
@@ -110,4 +136,12 @@ io.on('connect', async (ctx, next) => {
 server.listen(PORT, () => {
   console.log('Server running on port: ' + PORT);
   logger.info('Server started on port: ' + PORT);
+  sessions = {};
 });
+
+setTimeout(async () => {
+  ctx = {};
+  ctx.io = io;
+  ctx.sessions = sessions;
+  await roomController.matchmake(ctx);
+}, 1000);

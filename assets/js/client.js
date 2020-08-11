@@ -1,7 +1,13 @@
-var generalClient = {};
-var gameClient = {};
+var _generalClient = {};
+var _gameClient = {};
 
 window.onload = function() {
-	generalClient = new generalClient();
-	gameClient = new gameClient();
+	_generalClient = new generalClient();
+	_gameClient = new gameClient();
+	_generalClient.gameClient = _gameClient;
+	_gameClient.generalClient = _generalClient;
+	_gameClient.logInSignUpController = _generalClient.logInSignUpController;
+	_gameClient.roomController = _generalClient.roomController;
+	_generalClient.gameController = _gameClient.gameController;
+	_gameClient.initSocket();
 };

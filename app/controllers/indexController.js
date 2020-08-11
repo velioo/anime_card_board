@@ -7,9 +7,22 @@ const assert = require('assert');
 const _ = require('lodash/lang');
 
 var self = module.exports = {
-	renderHomeScreen: async (ctx, next) => {
+	renderHomeScreen: async (ctx) => {
+    ctx.state.userMessage = ctx.request.query.msg || "";
+
+    const queryStatus = await pg.pool.query(`
+      SELECT id, name FROM boards ORDER BY name
+    `);
+
+    assert(queryStatus.rowCount >= 1);
+
+    ctx.state.boards = queryStatus.rows;
+
 		await ctx.render('./views/home.hbs');
 	},
+  renderTestGame: async (ctx) => {
+    await ctx.render('./views/test.hbs');
+  },
   confirmAccount: async (ctx, next) => {
     const userTempData = await pg.pool.query(`
 
@@ -24,7 +37,7 @@ var self = module.exports = {
 
     if (userTempData.rowCount === 0) {
       ctx.state.userMessage = 'Link is invalid or has expired.';
-      return self.renderHomeScreen(ctx, next);
+      return ctx.redirect('/main-menu?msg=' + ctx.state.userMessage);
     }
 
     await pg.pool.query(`BEGIN`);
@@ -60,7 +73,7 @@ var self = module.exports = {
       logger.info('Problem while validation your account: %o', err);
     }
 
-    await self.renderHomeScreen(ctx, next);
+    ctx.redirect('/main-menu?msg=' + ctx.state.userMessage);
   },
 	frontendLogger: async (ctx, next) => {
     const requestBody = ctx.request.body;

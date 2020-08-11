@@ -1,0 +1,14 @@
+{{> header }}
+
+<div class="server-error">
+	<h1>
+	{{#if httpCode }}
+		<div>Error Code: {{httpCode}}</div>
+	{{/if}}
+	{{#if userMessage}}
+		<div class="user-message">{{userMessage}}</div>
+	{{/if}}
+</h1>
+</div>
+
+{{> footer }}

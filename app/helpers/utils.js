@@ -112,7 +112,11 @@ const self = module.exports = {
 
     assert(results.rowCount <= 1);
 
-    return (results.rowCount);
+    if (results.rowCount <= 0) {
+      return false;
+    }
+
+    return results.rows[0];
   },
   generateSalt: (bytes = 32) => {
     return Crypto.randomBytes(bytes).toString('base64');
@@ -168,5 +172,93 @@ const self = module.exports = {
     }
 
     return date.toISOString().slice(0, 10) === dateStr;
-  }
+  },
+  lockRowById: async (params) => {
+    assert(params.table && params.field && params.queryArg);
+    assert(_.isString(params.table) && _.isString(params.field));
+
+    const results = await pg.pool.query(`
+      SELECT *
+      FROM ${params.table}
+      WHERE
+        ${params.field} = $1
+      FOR NO KEY UPDATE
+      `, [ params.queryArg ]);
+
+    assert(results.rowCount == 1);
+
+    return results;
+  },
+  selectRowById: async (params) => {
+    assert(params.table && params.field && params.queryArg);
+    assert(_.isString(params.table) && _.isString(params.field));
+
+    const results = await pg.pool.query(`
+      SELECT *
+      FROM ${params.table}
+      WHERE
+        ${params.field} = $1
+      `, [ params.queryArg ]);
+
+    assert(results.rowCount == 1);
+
+    return results;
+  },
+  // Example: params.fields = [name, phone, id], params.queryArgs = ['test', 'xxxxxxxxxxx', 1] =>
+  // the name and phone will be updated for user with id = 1
+  updateRowById: async (params) => {
+    assert(params.table && (params.fields.length >= 2) && (params.queryArgs.length >= 2)
+      && (params.fields.length == params.queryArgs.length));
+    assert(_.isString(params.table));
+
+    let setFieldsStr = "";
+    let whereField = params.fields[ params.fields.length - 1 ];
+    let wherePos = "$" + params.fields.length;
+    for (let i = 0; i < params.fields.length - 1; i++) {
+      setFieldsStr += params.fields[i] + " = $" + (i + 1) + ",";
+    }
+
+    setFieldsStr = setFieldsStr.slice(0, -1);
+
+    const results = await pg.pool.query(`
+      UPDATE ${params.table}
+      SET ${setFieldsStr}
+      WHERE ${whereField} = ${wherePos}
+      RETURNING *
+      `, params.queryArgs);
+
+    assert(results.rowCount == 1);
+
+    return results;
+  },
+  getRandomInt: (min, max) => {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  },
+  getAllFromTable: async (params) => {
+    assert(params.table);
+    assert(_.isString(params.table));
+
+    const results = await pg.pool.query(`
+      SELECT * FROM ${params.table}
+    `);
+
+    assert(results.rowCount > 0);
+
+    return results;
+  },
+  getKeyByValue: (object, value) => {
+    return Object.keys(object).find(key => object[key] === value);
+  },
+  shuffle: (a) => {
+    var j, x, i;
+    for (i = a.length - 1; i > 0; i--) {
+        j = Math.floor(Math.random() * (i + 1));
+        x = a[i];
+        a[i] = a[j];
+        a[j] = x;
+    }
+    return a;
+  },
 };

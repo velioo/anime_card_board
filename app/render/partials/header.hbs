@@ -3,21 +3,25 @@
 <head>
     <title>Home</title>
     <meta charset="utf-8">
-    <link rel="icon" href="http://downloadicons.net/sites/default/files/computer-icon-65917.png">
+    <link rel="icon" href="/imgs/dice.webp">
     <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.css">
     <script src="/jquery/dist/jquery.js"></script>
     <script src="/bootstrap/dist/js/bootstrap.js"></script>
     <script src="/ajv/dist/ajv.min.js"></script>
+    <script src="/stickytooltip/stickytooltip.js"></script>
     <script src="/log4javascript/log4javascript.js"></script>
-    <!-- <script src="/js/schemas.js"></script> -->
+    <script type="text/javascript" src="/roll-a-die/dist/roll-a-die.js"></script>
     <link rel="stylesheet" href="/css/main.css">
 </head>
 <body>
 
 <script type="text/javascript">
     window.onerror = function (msg, url, lineNo, columnNo, error) {
-      infoLog = '';
-      window.alert(`There was a problem while processing your request.`);
+      if (($('.anime-cb-screen-game').is(':visible') || _gameClient.gameController._postGame) && !_gameClient.gameController._gameplayData) {
+        return;
+      }
+
+      window.alert('There was a problem while processing your request.');
       if(error !== null) {
         if(error.stack != '') {
           logger.error(error.name + ': ', error.message + '\n' + error.stack);
@@ -25,11 +29,12 @@
           logger.error(error.name + ': ', error.message + '\n' + url + ':' + lineNo + ':' + columnNo + '\n');
         }
       } else if(ajv.errors) {
-        logger.error("Request didn\'t return a valid JSON object\n" + JSON.stringify(ajv.errors, null, 2));
+        logger.error('Request didn\'t return a valid JSON object\n' + JSON.stringify(ajv.errors, null, 2));
       } else {
         logger.error(msg + ': ' + url + ': ' + lineNo + ': ' + columnNo + '\n');
       }
-      return true;
+      // make return true in production environment, returning true prevents the firing of the default event handler.
+      return false;
     };
 
     const logger = log4javascript.getLogger();
@@ -44,8 +49,6 @@
     function getLogger() {
       return logger;
     }
-
-    var infoLog = '';
 
     var ajv = new Ajv({ allErrors: true });
 
