@@ -369,10 +369,8 @@ const self = module.exports = {
 
       gameState.nextPhase = TURN_PHASES.MAIN;
 
-      await gameCore.standyPhaseHook(ctx);
+      await gameCore.standbyPhaseHook(ctx);
       await gameCore.activePlayerHook(ctx);
-
-      // Do something... -> card effects
 
       queryStatus = await utils.updateRowById({ table: 'games', fields: ['data_json', 'room_id'],
         queryArgs: [JSON.stringify(ctx.gameplayData), ctx.data.roomId] });

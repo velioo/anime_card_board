@@ -176,6 +176,7 @@ var self = module.exports = {
       player2Name: null,
       player1Id: null,
       player2Id: null,
+      boardName: null,
     };
 
     await pg.pool.query('BEGIN');
@@ -225,6 +226,9 @@ var self = module.exports = {
         return self.sendResponse(ctx, next);
       }
 
+      let roomSettings = JSON.parse(queryStatus.rows[0].settings_json);
+      assert(roomSettings.board_id);
+
       queryStatus = await pg.pool.query(`
 
         UPDATE rooms
@@ -244,13 +248,14 @@ var self = module.exports = {
       queryStatus = await pg.pool.query(`
 
         SELECT
-          R.*, U1.username as player1_name, U2.username as player2_name
+          R.*, U1.username as player1_name, U2.username as player2_name,
+            (SELECT name FROM boards WHERE id = $1) as board_name
         FROM rooms as R
         JOIN users as U1 ON U1.id = R.player1_id
         LEFT JOIN users as U2 ON U2.id = R.player2_id
-        WHERE R.id = $1
+        WHERE R.id = $2
 
-      `, [ ctx.request.body.data.roomId ]);
+      `, [ roomSettings.board_id, ctx.request.body.data.roomId ]);
 
       assert(queryStatus.rows.length === 1);
 
@@ -261,6 +266,7 @@ var self = module.exports = {
         player2Name: queryStatus.rows[0].player2_name,
         player1Id: queryStatus.rows[0].player1_id,
         player2Id: queryStatus.rows[0].player2_id,
+        boardName: queryStatus.rows[0].board_name,
       };
 
       await pg.pool.query('COMMIT');

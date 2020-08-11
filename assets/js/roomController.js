@@ -529,6 +529,7 @@ roomController.prototype.showJoinRoomSuccess = function(data) {
 
 	$(_self.LOBBY_ROOM_NAME_CLASS).text('Room: ' + data.result.name);
 	$(_self.LOBBY_ROOM_PLAYERS_CLASS).text('Players: ' + data.result.player1Name + ', ' + data.result.player2Name);
+	$(_self.LOBBY_ROOM_BOARD_CLASS).text('Board: ' + data.result.boardName);
 	$(_self.LOBBY_SCREEN_CLASS).find(_self.SCREEN_FOOTER_CLASS)
 		.html('<button id="anime-cb-leave-room" type="button" class="btn btn-primary anime-cb-button anime-cb-btn-main-menu">Leave</button>');
 	$(_self.LOBBY_ROOM_WAITING_PLAYERS_CLASS).hide();

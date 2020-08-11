@@ -140,6 +140,7 @@ CREATE table "cards" (
 GRANT ALL ON cards TO velioo;
 GRANT ALL ON cards_id_seq TO velioo;
 
+DELETE FROM cards;
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes) VALUES (1, 'Misaka', 'Go 6 spaces forward.', 'Misaka.jpg', 'rare',
 '{"effect": "moveSpacesForward", "effectValue": 6, "autoEffect":true, "continuous": false}', 3, '{field}');
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes) VALUES (2, 'Alice', 'Go up to 2 spaces forward.',
@@ -182,7 +183,13 @@ INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, a
 '{"effect": "moveSpacesForwardMoveSpacesBackwardEnemyX", "effectValue": 0, "effectValueIncrement": "x1", "effectValueDependentOn": "diceRoll", "autoEffect":false, "continuous": false}', 3, '{field}');
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes) VALUES (19, 'Shiroe', 'Draw 3 cards from the deck, then discard 3.', 'Shiroe.jpg', 'common',
 '{"effect": "drawCardFromDeckYouDiscardCardYou", "effectValue1": 3, "effectValue2": 3, "autoEffect":true, "continuous": false}', 2, '{cards}');
-INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes) VALUES (20, 'Ainz', 'While this card is on your field your opponent cannot summon field attribute cards. This cards has 3 charges, 1 charge is consumed on every MP (your, not including the MP this card was summoned). If this card is still on your field on your 3-rd SP, your opponent must discard 1 card from his hand.', 'Ainz.jpg', 'epic',
-'{"effect": "nullifyCardsFieldSummon", "effectExpire": "discardCardEnemy", "effectValueExpire": 1, "chargeConsumedPhase": "main", "effectChargesCount": 3,  "continuousEffectType": "passive", "autoEffect":true, "continuous": true}', 5, '{field, cards}');
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes) VALUES (20, 'Ainz', 'While this card is on your field your opponent cannot summon field attribute cards. This card has 3 charges, 1 charge is consumed on every MP (your, not including the MP this card was summoned). If this card is still on your field on your 3-rd SP, your opponent must discard 1 card from his hand.', 'Ainz.jpg', 'epic',
+'{"effect": "nullifyCardsFieldSummon", "effectExpire": "discardCardEnemy", "effectValueExpire": 1, "chargeConsumedPhase": "main", "effectChargesCount": 3, "continuousEffectType": "passive", "autoEffect":true, "continuous": true}', 5, '{field, cards}');
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes) VALUES (21, 'Ryūko', 'Destroy 1 special board space up to 10 spaces forward. If the board spaces''s Tier is 1 or 2, you will be returned either 2 or 1 Energy back respectively.', 'Ryuko.gif', 'rare',
 '{"effect": "destroySpecialBoardSpaceForward", "effectValue": 10, "energyReturnedTier1": 2, "energyReturnedTier2": 1, "autoEffect": false, "continuous": false}', 3, '{field}');
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes) VALUES (22, 'Shiro', 'Go to the closest special board space (forward or backward) excluding the board space you''re already on. If it''s a tie go to the closest forward.', 'Shiro.gif', 'rare',
+'{"effect": "moveSpacesClosestBoardSpaceSpecial", "autoEffect": true, "continuous": false}', 3, '{field}');
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes) VALUES (23, 'Shoto', 'Move your opponent to the closest special board space relative to his position (forward or backward) excluding the board space he''s already on. If it''s a tie move him to the closest backward.', 'Shoto.gif', 'rare',
+'{"effect": "moveSpacesClosestBoardSpaceSpecialEnemy", "autoEffect": true, "continuous": false}', 3, '{field}');
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes) VALUES (24, 'Emilia', 'While this card is on your field, your opponent cannot draw cards during his Draw Phase. This card has 3 charges, 1 charge is consumed on every SP.', 'Emilia.jpg', 'rare',
+'{"effect": "nullifyDrawPhaseEnemy", "effectChargesCount": 3, "chargeConsumedPhase": "standby", "continuousEffectType": "passive", "autoEffect": true, "continuous": true}', 4, '{cards}');

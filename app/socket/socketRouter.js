@@ -44,7 +44,7 @@ const self = module.exports = {
 		  		// if (ctx_c.session.userData && ctx_c.session.userData.userId && ctx_c.sessions[ctx_c.session.userData.userId]) {
 		  		// 	ctx_c.sessions[ctx_c.session.userData.userId] = null;
 		  		// }
-		  	}, 10000);
+		  	}, 60000);
 	  	} catch(err) {
 	  		socket.emit('serverError', err);
 	  		logger.error('Error: %o', err);
