@@ -1033,6 +1033,14 @@ gameController.prototype.canSummonCard = function (card) {
 		if (!availableSpace) {
 			canSummonCard = false;
 		}
+	} else if (cardEffect.effect == "reapplyCurrentSpecialBoardSpace") {
+		if (boardMatrix[boardPath[currBoardIndexYou][0]][boardPath[currBoardIndexYou][1]] <= 1) {
+			canSummonCard = false;
+		}
+	} else if (cardEffect.effect == "reapplyCurrentSpecialBoardSpaceEnemy") {
+		if (boardMatrix[boardPath[currBoardIndexEnemy][0]][boardPath[currBoardIndexEnemy][1]] <= 1) {
+			canSummonCard = false;
+		}
 	}
 
 	playerStateYou.cardsOnFieldArr.forEach(function(card, idx) {
@@ -1741,6 +1749,12 @@ gameController.prototype.performCardEffectInstantYou = function (card) {
 			_self.moveEnemyCharacter(card.finishData.moveSpaces,
 				_self.destroyCardAnimationYou.bind(_self, card, _self.checkIfEnemyHasToDoAction
 					.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self))), 500);
+		} else if (card.cardEffect.effect == "reapplyCurrentSpecialBoardSpace") {
+			_self._postDestroyCard = card;
+			_self.enableMainPhaseActions();
+		} else if (card.cardEffect.effect == "reapplyCurrentSpecialBoardSpaceEnemy") {
+			_self._postDestroyCard = card;
+			_self.checkIfEnemyHasToDoAction(_self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self));
 		}
 	} else if (card.cardEffect.continuous) {
 		_self.enableMainPhaseActions();
@@ -2484,6 +2498,12 @@ gameController.prototype.performCardEffectInstantEnemy = function (card) {
 			_self.moveYourCharacter(card.finishData.moveSpaces,
 				_self.destroyCardAnimationEnemy.bind(_self, card, _self.checkIfYouHaveToDoAction
 					.bind(_self, _self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self))), 500);
+		} else if (card.cardEffect.effect == "reapplyCurrentSpecialBoardSpace") {
+			_self._postDestroyCard = card;
+			_self.waitForEnemyActions();
+		} else if (card.cardEffect.effect == "reapplyCurrentSpecialBoardSpaceEnemy") {
+			_self._postDestroyCard = card;
+			_self.checkIfYouHaveToDoAction(_self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self));
 		}
 	} else {
 		_self.waitForEnemyActions();

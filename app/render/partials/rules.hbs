@@ -1,0 +1,66 @@
+<div class="anime-cb-screen-rules anime-cb-screen">
+	<div class="center-screen">
+		<div class="anime-cb-title-page">
+			<h1>Game Rules</h1>
+		</div>
+		<div class="anime-cb-rules-wrapper">
+			<h3>1. Essence of the game</h3>
+			<div class="anime-cb-rules-paragraph">
+				The main idea behind this game is to merge traditional board games, in which you only use pawns and dice, with card games
+				like Yu-Gi-Oh. <br>In this game you have a pawn (character), which you use to move on the board, and you have cards, that can help
+				you move your pawn easier through the board or make it more difficult for your opponent. The goal of the game is to move your pawn to the starting position of your opponent.
+			</div>
+			<h3>2. The board</h3>
+			<div class="anime-cb-rules-paragraph">
+				The board consists of different types of board spaces that are activated by moving your pawn on them. <br> Currently there are 5 types of special board spaces: <br>
+				<img class="anime-cb-board-space" src="/imgs/roll_again_1.png">
+			 	Roll dice again - roll the dice again and go that many board spaces forward if the board allows it, otherwise don't move your pawn.<br>
+				<img class="anime-cb-board-space" src="/imgs/roll_again_back_1.png">
+				Roll dice again backward - roll the dice again and go that many board spaces backward, if the board allows it, otherwise don't move your pawn.<br>
+				<img class="anime-cb-board-space" src="/imgs/card_draw_1.png">
+				Draw card - draw a card from the deck.<br>
+				<img class="anime-cb-board-space" src="/imgs/card_discard_1.png">
+				Discard card - discard a card from your hand to your graveyard.<br>
+				<img class="anime-cb-board-space" src="/imgs/random_1.png">
+				Random - random choice from one of the above effects.<br>
+				The number displayed in the board space's images indicate how many times the effect will be applied.
+				For example there can be a special board space like this one <img class="anime-cb-board-space" src="/imgs/card_draw_3.png"> which means the you must draw 3 cards from the deck. Also, a board space can be empty, meaning that nothing special will happen if you end up on it.
+			</div>
+			<h3>3. The cards</h3>
+			<div class="anime-cb-rules-paragraph">
+				In this game you can use cards that can help you move your pawn easier throughout the board, or prevent your opponent from moving his.<br>That's the gist of them, but it can get a lot more complicated with the card's effects. Some card effects are simple like moving your pawn N board spaces forward, but there are also cards, for example, that destroy other cards, which doesn't directly affect the position of yours or your opponents's pawn, but can help you remove negative effects that your opponent used on you with his cards.<br>
+				You start the game by drawing N cards (usually 5). You can have a maximum of 6 cards in your hand.
+				<br>Each card has a name, description, attributes and energy cost. Currently, the attributes that a card can have are: field <img class="anime-cb-rules-card-attribute" src="/imgs/field_attr.png"> , cards <img class="anime-cb-rules-card-attribute" src="/imgs/cards_attr.png"> or energy <img class="anime-cb-rules-card-attribute" src="/imgs/energy_attr.png">. A card can have more than 1 attribute.
+				<br>A card with 'field' attribute <img class="anime-cb-rules-card-attribute" src="/imgs/field_attr.png"> means that the card somehow affects the field, either by manipulating the positions of the pawns or by changing the field itself.
+				<br>A card with 'cards' attribute <img class="anime-cb-rules-card-attribute" src="/imgs/cards_attr.png"> means that the card somehow affects yours or your opponent's cards. For example: drawing, discarding, destroying, nulifying cards etc.
+				<br>A card with 'energy' attribute <img class="anime-cb-rules-card-attribute" src="/imgs/energy_attr.png"> means that the card somehow affects yours or your opponents's energy points.
+				<br>Each card costs certain amount of Energy points to be summoned/activated. By default, each turn you gain X (usually 5) amount of Energy points up to a maximum of Y (usually 10). For example let's say that the maximum Energy you can have is 10 and you gain 5 Energy points each turn. If you currently have 6 Energy points and end your turn, your next turn you will have 10 energy points instead of 11.
+				<br><br>The cards can be split into two main types - instant and continuous. Instant cards are cards with effect like this: 'Go N spaces forward', after the effect is finished, the card is sent to the graveyard. Continous cards, on the other hand, stay on the field until they expire - passively or actively. Each continous card has X amount of charges. After a card reaches 0 charges, they expire and are sent to the graveyard.
+				<br>Continous cards can be split into 2 types: passive and active.
+				<br>The effects of passive continous cards
+				are in action as long as the card is on your field (for example 'taunt') and usually 1 charge is consumed every turn.
+				<br>On the other hand, active continous cards won't expire by themselves and their effects will only activate on your demand, usually by clicking them and a charge will be consumed with each activation of the card's effect.
+			</div>
+			<h3>4. The phases</h3>
+			<div class="anime-cb-rules-paragraph">
+				Each turn is split into 5 phases: Draw Phase, Standby Phase, Main Phase, Roll Phase and End Phase.
+				The Roll and End phase must be clicked on, in order to transition to them.
+				<br>1. Draw Phase (DP) - this is the starting phase of each turn, you usually just draw 1 card in it.
+				<br>2. Standby Phase (SP) - this is the second phase in which you usually won't have to do any action. The purpose of it is that
+				some card effects can expire or activate in this phase.
+				<br>3. Main Phase (MP) - this is the third phase, in it you can summon cards from your hand or activate the effects of continuous cards on your field. Also, some cards can expire in this phase instead in the SP.
+				<br>4. Roll Phase (RP) - this is the fourth phase, it's purpose is to roll the dice and move your pawn forward on the board. Also, in this phase, if you have more than 6 cards, you must choose cards to discard until you have 6 in your hand. In order to roll the dice, you must click on the RP label located on the phase meter.
+				<br>5. End Phase (EP) - this is the last phase of each turn, some cards might expire in it. After your EP, it's your opponent's turn.
+			</div>
+			<h3>5. The timer</h3>
+			<div class="anime-cb-rules-paragraph">
+				Each player has a time limit in which he must finish his turn, otherwise he automatically loses the game.
+				<br>If one of the players has to do some action in his opponent's turn, the timer of his opponent will be paused and his timer will become active.
+			</div>
+		</div>
+		<div class="btn-group-vertical anime-cb-btn-group">
+		    <button type="button" class="btn btn-primary anime-cb-button anime-cb-btn-info">Back</button>
+		    <img class="pre-screen-spinner" src="/imgs/spinner.gif">
+	 	</div>
+	</div>
+</div>

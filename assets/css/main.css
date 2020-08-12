@@ -3556,3 +3556,38 @@ input:checked + .slider:after
             transform: translateY(0px);
   }
 }
+
+.anime-cb-rules-wrapper {
+  width: 70%;
+  text-align: left;
+  font-family: Arial, Helvetica, sans-serif;
+  border-radius: 10px;
+  font-size: 14pt;
+  padding: 20px;
+  color: black;
+  background: white;
+}
+
+.anime-cb-screen-rules .anime-cb-title-page {
+  margin-top: 50px;
+}
+
+.anime-cb-screen-rules .anime-cb-btn-group {
+  margin-top: 50px;
+}
+
+.anime-cb-rules-paragraph {
+  text-indent: 25px;
+}
+
+.anime-cb-board-space {
+  width: 50px;
+  height: 50px;
+}
+
+.anime-cb-rules-card-attribute {
+  width: 50px;
+  height: 50px;
+  display: inline-block;
+  background-color: black;
+}

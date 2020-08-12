@@ -14,4 +14,4 @@ There must be a number of characters from which you can choose who give you some
 - roll dice 2 times on first roll phase
 
 You should be able to choose a character before matchmaking.
-You should be able to choose default character from settings menu..
+You should be able to choose default character from settings menu.

@@ -1,0 +1,5 @@
+1. Make a pull request to the master branch on github page and merge the trunk branch.
+2. Open console, make sure you've checked out the trunk branch and make 'git pull origin master'
+3. Make 'git push'
+
+After that the trunk branch should be even with the master branch. Check in github page.

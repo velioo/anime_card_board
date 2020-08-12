@@ -45,6 +45,10 @@ baseController.prototype._initConstants = function() {
 	_self.GAME_SCREEN_CLASS = '.anime-cb-screen-game';
 	_self.MATCHMAKING_SCREEN_CLASS = '.anime-cb-screen-matchmaking';
 	_self.SETTINGS_SCREEN_CLASS = '.anime-cb-screen-settings';
+	_self.PLAY_SCREEN_CLASS = '.anime-cb-screen-play';
+	_self.INFO_SCREEN_CLASS = '.anime-cb-screen-info';
+	_self.RULES_SCREEN_CLASS = '.anime-cb-screen-rules';
+	_self.CARDS_SCREEN_CLASS = '.anime-cb-screen-cards';
 
 	_self.USER_MESSAGE_CLASS = '.user-message';
 
@@ -66,6 +70,9 @@ baseController.prototype._initConstants = function() {
 		_self.LOGIN_SCREEN_CLASS,
 		_self.SIGN_UP_SCREEN_CLASS,
 		_self.SIGN_UP_SUCCESS_SCREEN_CLASS,
+		_self.INFO_SCREEN_CLASS,
+		_self.RULES_SCREEN_CLASS,
+		_self.CARDS_SCREEN_CLASS,
 	];
 
 	_self.IGNORE_SCREENS = [

@@ -1,4 +1,3 @@
 Draw 1 more card during your draw phases (3 charges). (rare)
 Roll the dice 1 more time on your roll phase (3 charges). (rare)
-Reapply the effect of the current special board space you're on. (common)
 Prevent your opponent from winning the game, once.
