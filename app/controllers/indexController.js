@@ -10,13 +10,19 @@ var self = module.exports = {
 	renderHomeScreen: async (ctx) => {
     ctx.state.userMessage = ctx.request.query.msg || "";
 
-    const queryStatus = await pg.pool.query(`
+    let queryStatus = await pg.pool.query(`
       SELECT id, name FROM boards ORDER BY name
     `);
 
-    assert(queryStatus.rowCount >= 1);
-
+    assert(queryStatus.rowCount > 0);
     ctx.state.boards = queryStatus.rows;
+
+    queryStatus = await pg.pool.query(`
+      SELECT * FROM cards ORDER BY name
+    `);
+
+    assert(queryStatus.rowCount >= 0);
+    ctx.state.cards = queryStatus.rows;
 
 		await ctx.render('./views/home.hbs');
 	},

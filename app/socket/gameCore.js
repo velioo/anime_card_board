@@ -136,15 +136,54 @@ var self = module.exports = {
 		});
 	},
 	rollPhaseHook: async(ctx) => {
-		let gameState = ctx.gameplayData.gameState;
+	let gameState = ctx.gameplayData.gameState;
 		let playerState = gameState.playersState[ctx.session.userData.userId];
+		let enemyUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
+		let playerStateEnemy = gameState.playersState[enemyUserId];
+    let yourUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player1Id : ctx.roomData.player2Id;
+
+    playerState.cardsOnFieldArr.forEach(function(card) {
+    	if (card.cardEffect.effect == "rollDiceRollPhase") {
+    		playerState.canRollDiceBoardCount += card.cardEffect.effectValue;
+    	}
+		});
+
+    playerState.cardsExpired = [];
+    playerState.cardsOnFieldArr.slice().reverse().forEach(function(card, cardIdx, arr) {
+		  if ((card.cardEffect.continuousEffectType == "passive") && (card.cardEffect.chargeConsumedPhase == "roll")) {
+		  	card.cardEffect.chargesUsedTotal++;
+
+				if (card.cardEffect.chargesUsedTotal >= card.cardEffect.effectChargesCount) {
+					playerState.cardsInGraveyardArr.push(card);
+		   		playerState.cardsOnFieldArr.splice(arr.length - 1 - cardIdx, 1);
+					playerState.cardsExpired.push(card);
+				}
+		  }
+		});
 
 		playerState.cardsSummonConstraints.cardsCanSummonAny = false;
+
 		playerState.canRollDiceBoardCount++;
 
 		if (playerState.cardsInHand > playerState.maxCardsInHand) {
 			playerState.cardsToDiscard += (playerState.cardsInHand - playerState.maxCardsInHand);
 		}
+
+		playerState.cardsInHandArr.forEach(function(card) {
+    	updateCardEffectValueStatus(card, playerState);
+		});
+
+		playerStateEnemy.cardsInHandArr.forEach(function(card) {
+    	updateCardEffectValueStatus(card, playerStateEnemy);
+		});
+
+		playerState.cardsOnFieldArr.forEach(function(card) {
+    	updateCardEffectValueStatus(card, playerState);
+		});
+
+		playerStateEnemy.cardsOnFieldArr.forEach(function(card) {
+    	updateCardEffectValueStatus(card, playerStateEnemy);
+		});
 	},
 	endPhaseHook: async (ctx) => {
 		let gameState = ctx.gameplayData.gameState;

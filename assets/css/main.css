@@ -420,15 +420,6 @@ body {
   color: white;
   text-align: center;
   z-index: 2;
-
-/*  position: sticky;
-  top: 0;
-  margin-left: 20px;
-  width: 300px;
-  height: 440px;
-  margin-top: -440px;
-  color: white;
-  text-align: center;*/
   font-size: 16pt;
 }
 
@@ -462,17 +453,64 @@ body {
   overflow-y: auto;
 }
 
-#anime-cb-card-global-deck-wrapper {
-/*  position: sticky;
-  top: 35%;
-  right: 0;
-  margin-right: 20px;
-  margin-top: -330px;
+#anime-cb-card-info-card-name2 {
+  position: fixed;
+  bottom: 50%;
+  left: 50%;
+  margin-left: -930px;
+  margin-bottom: 330px;
+  width: 300px;
   display: inline-block;
   color: white;
   text-align: center;
-  float: right;
-  z-index: 2;*/
+  z-index: 2;
+  font-size: 14pt;
+}
+
+#anime-cb-card-info-wrapper2 {
+  position: fixed;
+  bottom: 50%;
+  left: 50%;
+  margin-left: -930px;
+  margin-bottom: -120px;
+  display: inline-block;
+  color: white;
+  text-align: center;
+  z-index: 2;
+  font-size: 16pt;
+}
+
+#anime-cb-card-info-card2 {
+  width: 300px;
+  height: 440px;
+  border-radius: 10px;
+}
+
+#anime-cb-card-info-subwrapper2 {
+  display: inline-block;
+  margin-top: 100px;
+}
+
+#anime-cb-card-info-text2 {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin-left: -930px;
+  margin-top: 130px;
+  display: inline-block;
+  color: white;
+  text-align: left;
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  border-radius: 10px;
+  color: white;
+  font-size: 12pt;
+  width: 300px;
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+#anime-cb-card-global-deck-wrapper {
   position: fixed;
   top: 50%;
   right: 50%;
@@ -615,14 +653,6 @@ body {
 }
 
 .anime-cb-card-graveyard-wrapper.player-enemy {
-/*  position: sticky;
-  top:0;
-  right:0;
-  margin-right: 20px;
-  margin-top: -330px;
-  display: inline-block;
-  float: right;
-  z-index: 2;*/
   top: 50%;
   right: 50%;
   margin-right: -930px;
@@ -634,14 +664,6 @@ body {
 }
 
 .anime-cb-card-graveyard-wrapper.player-you {
-/*  position: sticky;
-  bottom:0;
-  right:0;
-  margin-right: 20px;
-  margin-top: -300px;
-  display: inline-block;
-  float: right;
-  z-index: 2;*/
   top: 50%;
   right: 50%;
   margin-right: -930px;
@@ -3568,11 +3590,11 @@ input:checked + .slider:after
   background: white;
 }
 
-.anime-cb-screen-rules .anime-cb-title-page {
+.anime-cb-screen-rules .anime-cb-title-page,  .anime-cb-screen-cards .anime-cb-title-page{
   margin-top: 50px;
 }
 
-.anime-cb-screen-rules .anime-cb-btn-group {
+.anime-cb-screen-rules .anime-cb-btn-group, .anime-cb-screen-cards .anime-cb-btn-group {
   margin-top: 50px;
 }
 
@@ -3590,4 +3612,48 @@ input:checked + .slider:after
   height: 50px;
   display: inline-block;
   background-color: black;
+}
+
+.anime-cb-cards-info-card-wrapper {
+  width: 50%;
+  min-height: 50vh;
+}
+
+.anime-cb-cards-info-card {
+  width: 150px;
+  height: 220px;
+  display: inline-block;
+  position: relative;
+  border-radius: 3px;
+  transition: box-shadow 0.1s, transform 0.1s;
+  border: 1px solid white;
+  margin-top: 6px;
+  margin-left: 2px;
+  margin-right: 2px;
+  cursor: pointer;
+}
+
+.anime-cb-cards-info-filters-wrapper {
+  height: 200px;
+  width: 50%;
+  background-color: rgba(0, 0, 0, 0.5);
+  margin-bottom: 25px;
+  text-align: left;
+  padding: 20px;
+}
+
+#filter_card_name {
+  width: 50%;
+}
+
+.anime-cb-cards-info-filters-title {
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.anime-cb-cards-info-filters-cards-count {
+  float: right;
+  bottom: 0;
+  font-size: 20pt;
 }

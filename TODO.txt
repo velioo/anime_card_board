@@ -1,14 +1,8 @@
-1. Add Help screen in Main Menu
-1.1 In Help screen add 2 more screens
-1.1.1 Rules Screen explaining how the game works and what you should do: phases, characters, board, cards etc.
-1.1.2 Cards Screen where you can browse all the cards in the game and see their description etc. like the hover over card in-game.
-Also there must be a filters for easier searching for specific cards: card name filter, card attributes, continous or not.
-
-2. Add leveling system. Each matchmade game you play must give you a certain amount of XP, if you win, you get more XP.
+1. Add leveling system. Each matchmade game you play must give you a certain amount of XP, if you win, you get more XP.
 The XP you gain should mainly depend on the total time spent in-game and win/lose. Other factors could be:
 - was the other player higher lvl than you, if yes then gain more XP than usual.
 
-3. Character abilities.
+2. Character abilities.
 There must be a number of characters from which you can choose who give you some kind of passive bonus in-game, example:
 - draw 2 cards on first draw phase
 - roll dice 2 times on first roll phase

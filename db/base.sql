@@ -195,5 +195,7 @@ INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, a
 '{"effect": "nullifyDrawPhaseEnemy", "effectChargesCount": 3, "chargeConsumedPhase": "standby", "continuousEffectType": "passive", "autoEffect": true, "continuous": true}', 4, '{cards}');
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes) VALUES (25, 'Tamaki', 'Apply for yourself the effect of the current special board space you''re on.', 'Tamaki.jpg', 'common',
 '{"effect": "reapplyCurrentSpecialBoardSpace", "autoEffect": true, "continuous": false}', 2, '{field}');
-INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes) VALUES (26, 'Shinya', 'Apply to your enemy the effect of the current special board space he''s on.', 'Shinya.jpg', 'common',
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes) VALUES (26, 'Shinya', 'Apply to your opponent the effect of the current special board space he''s on.', 'Shinya.jpg', 'common',
 '{"effect": "reapplyCurrentSpecialBoardSpaceEnemy", "autoEffect": true, "continuous": false}', 2, '{field}');
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes) VALUES (27, 'Inori', 'While this card is on your field, roll the dice 1 more time during your Roll Phase. This card has 3 charges, 1 charge is consumed on every RP.', 'Inori.jpg', 'common',
+'{"effect": "rollDiceRollPhase", "effectValue": 1, "effectChargesCount": 3, "chargeConsumedPhase": "roll", "continuousEffectType": "passive", "autoEffect": true, "continuous": true}', 4, '{field}');

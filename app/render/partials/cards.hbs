@@ -3,6 +3,40 @@
 		<div class="anime-cb-title-page">
 			<h1>Cards Info</h1>
 		</div>
+		<div id="anime-cb-card-info-card-name2">
+		</div>
+		<div id="anime-cb-card-info-wrapper2">
+			<div id="anime-cb-card-info-subwrapper2">
+				<img id="anime-cb-card-info-card2" src="imgs/player_cards/card_back.png">
+			</div>
+		</div>
+		<div id="anime-cb-card-info-text2">
+		</div>
+		<div class="anime-cb-cards-info-filters-wrapper">
+			<h4 class="anime-cb-cards-info-filters-title">Filter Cards</h4>
+			<div class="form-group form-inline">
+			  <label for="filter_card_name">Name:</label>
+			  <input type="text" class="form-control" id="filter_card_name">
+			</div>
+			<div class="form-group form-inline">
+			Type:
+				<label class="checkbox-inline"><input class="anime-cb-cards-info-card-type-checkbox" type="checkbox" value="continuous">Continuous</label>
+				<label class="checkbox-inline"><input class="anime-cb-cards-info-card-type-checkbox" type="checkbox" value="instant">Instant</label><br>
+			</div>
+			Attributes:
+			<label class="checkbox-inline"><input class="anime-cb-cards-info-card-attribute-checkbox" type="checkbox" value="field">Field</label>
+			<label class="checkbox-inline"><input class="anime-cb-cards-info-card-attribute-checkbox" type="checkbox" value="cards">Cards</label>
+			<label class="checkbox-inline"><input class="anime-cb-cards-info-card-attribute-checkbox" type="checkbox" value="energy">Energy</label>
+			<div class="anime-cb-cards-info-filters-cards-count"></div>
+		</div>
+		<div class="anime-cb-cards-info-card-wrapper">
+			{{#each cards}}
+				<img class="anime-cb-cards-info-card" data-card-name="{{name}}" data-card-text="{{description}}"
+				data-card-rarity="{{rarity_id}}" data-card-attributes="{{attributes}}" data-card-cost="{{cost}}"
+				data-card-effect="{{effect_json}}"
+				src="imgs/player_cards/{{image}}">
+		 	{{/each}}
+	 	</div>
 		<div class="btn-group-vertical anime-cb-btn-group">
 		    <button type="button" class="btn btn-primary anime-cb-button anime-cb-btn-info">Back</button>
 		    <img class="pre-screen-spinner" src="/imgs/spinner.gif">

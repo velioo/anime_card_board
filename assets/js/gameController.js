@@ -1428,7 +1428,8 @@ gameController.prototype.startRollPhaseAnimationYou = function () {
 gameController.prototype.startRollPhaseAnimationEnemy = function () {
 	var _self = this;
 
-	_self.switchPhaseEnemy(_self.PHASE_ROLL_ID, _self.waitForEnemyActions.bind(_self));
+	_self.switchPhaseEnemy(_self.PHASE_ROLL_ID, _self.updateGameStatusInfo.bind(_self),
+		_self.checkForExpiredCardsEnemy.bind(_self, _self.waitForEnemyActions.bind(_self)));
 };
 
 gameController.prototype.startEndPhaseAnimation = function (callback) {
@@ -1504,7 +1505,8 @@ gameController.prototype.switchPhaseYou = function (currPhaseIdSelector) {
 	  	_self.checkForExpiredCardsYou(_self.checkIfEnemyHasToDoAction
 	  		.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self)));
   	} else if (currPhaseIdSelector == _self.PHASE_ROLL_ID) {
-	    _self.enableRollPhaseActions();
+  		_self.updateGameStatusInfo();
+	  	_self.checkForExpiredCardsYou(_self.enableRollPhaseActions.bind(_self));
 	  } else if (currPhaseIdSelector == _self.PHASE_END_ID) {
 	  	$(currPhaseIdSelector).removeClass("active");
 	  	$(currPhaseIdSelector).addClass("ended");
@@ -2975,8 +2977,6 @@ gameController.prototype.enableRollDiceBoard = function () {
 
 gameController.prototype.switchPhaseEnemy = function (currPhaseIdSelector, callback, callback2, callback3) {
 	var _self = this;
-
-	console.log('Switch Phase phase selector: ', currPhaseIdSelector);
 
   var phaseText = $(currPhaseIdSelector).data("phaseText");
 

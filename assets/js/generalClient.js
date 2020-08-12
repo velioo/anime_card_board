@@ -1,6 +1,7 @@
 var generalClient = function() {
 	this.logInSignUpController = new logInSignUpController(this);
 	this.roomController = new roomController(this);
+  this.cardsInfoController = new cardsInfoController(this);
 	this.clientConnectToServer();
 };
 
