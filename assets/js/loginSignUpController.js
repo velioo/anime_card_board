@@ -58,8 +58,6 @@ logInSignUpController.prototype.initListeners = function() {
 	      values[this.name] = $(this).val();
 	  });
 
-	  logger.info('Form signup values: ', JSON.stringify(values));
-
 	  _self.showSignUpSpinner();
 	  _self.disableElement(_self.SIGN_UP_SUBMIT_BTN_ID);
 
@@ -73,8 +71,6 @@ logInSignUpController.prototype.initListeners = function() {
 	  _self.$loginInputs.each(function() {
 	      values[this.name] = $(this).val();
 	  });
-
-	  logger.info('Form login values: ', JSON.stringify(values));
 
 	  _self.showLoginSpinner();
 	  _self.disableElement(_self.LOGIN_SUBMIT_BTN_ID);

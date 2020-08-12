@@ -113,14 +113,13 @@ var self = module.exports = {
           ctx.session.userData = { userId: userData.rows[0].id, username: userData.rows[0].username };
           ctx.session.isUserLoggedIn = true;
           ctx.session.userData.settings = JSON.parse(userData.rows[0].settings_json);
+          ctx.settings = ctx.session.userData.settings;
         } else {
           ctx.errors.push({ dataPath: '/username', message: 'You must confirm your email before logging in.' });
         }
       } else {
         ctx.errors.push({ dataPath: '/username', message: 'Wrong username or password.' });
       }
-
-      ctx.settings = ctx.session.userData.settings;
     } catch(err) {
       ctx.errors.push({ dataPath: '/username', message: 'There was a problem while logging in. Please try again later.' });
 
@@ -158,6 +157,7 @@ var self = module.exports = {
   logOut: async (ctx, next) => {
     ctx.errors = [];
 
+    await gameServer.removeFromMatchmaking(ctx);
     await gameServer.processDisconnect(ctx, next);
 
     if (ctx.session.isUserLoggedIn) {

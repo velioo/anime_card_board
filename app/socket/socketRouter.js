@@ -121,7 +121,9 @@ const self = module.exports = {
 	  	try {
 	  		let ctx_c = _.clone(ctx);
 
-	  		await gameServer.removeFromMatchmaking(ctx_c, next);
+	  		if (ctx_c.session.userData && ctx_c.session.userData.userId) {
+		  		await gameServer.removeFromMatchmaking(ctx_c);
+		  	}
 
 	  	} catch (err) {
 	  		socket.emit('serverError', err);

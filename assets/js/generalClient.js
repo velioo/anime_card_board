@@ -30,7 +30,6 @@ generalClient.prototype.sendServerReconnect = function () {
 
 generalClient.prototype.sendSignUpData = function(_data) {
 	logger.info('sendSignUpData');
-	logger.info('Sending data to signup: ', JSON.stringify(_data));
 
 	var _self = this;
 
@@ -41,7 +40,6 @@ generalClient.prototype.sendSignUpData = function(_data) {
 
 generalClient.prototype.sendLoginData = function(_data) {
 	logger.info('sendLoginData');
-	logger.info('Sending data to login: ', JSON.stringify(_data));
 
 	var _self = this;
 
