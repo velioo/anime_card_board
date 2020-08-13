@@ -1060,6 +1060,19 @@ gameController.prototype.canSummonCard = function (card) {
 		if (boardMatrix[boardPath[currBoardIndexEnemy][0]][boardPath[currBoardIndexEnemy][1]] <= 1) {
 			canSummonCard = false;
 		}
+	} else if (cardEffect.effect == "increaseChargesContinousCard") {
+		var availableCards = false;
+		playerStateYou.cardsOnFieldArr.forEach(function(cardOnField) {
+			cardOnField.cardAttributes.forEach(function(attribute) {
+				if (cardEffect.allowedAttributes.includes(attribute)) {
+					availableCards = true;
+				}
+			});
+		});
+
+		if (!availableCards) {
+			canSummonCard = false;
+		}
 	}
 
 	playerStateYou.cardsOnFieldArr.forEach(function(card, idx) {
@@ -1776,10 +1789,93 @@ gameController.prototype.performCardEffectInstantYou = function (card) {
 		} else if (card.cardEffect.effect == "reapplyCurrentSpecialBoardSpaceEnemy") {
 			_self._postDestroyCard = card;
 			_self.checkIfEnemyHasToDoAction(_self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self));
+		} else if (card.cardEffect.effect == "increaseChargesContinousCard") {
+			if (card.cardEffect.isFinished) {
+				_self.destroyCardAnimationYou(card, _self.enableMainPhaseActions.bind(_self));
+			} else {
+				_self.setCardSelectOnFieldListenerWrapper(card);
+			}
 		}
 	} else if (card.cardEffect.continuous) {
 		_self.enableMainPhaseActions();
 	}
+};
+
+gameController.prototype.setCardSelectOnFieldListenerWrapper = function (card) {
+	var _self = this;
+
+	if (card.cardEffect.effect == "increaseChargesContinousCard") {
+		_self.setCardSelectOnFieldListener(card, _self._yourUserId);
+	}
+};
+
+gameController.prototype.setCardSelectOnFieldListenerWrapperEnemy = function (card) {
+	var _self = this;
+
+	if (card.cardEffect.effect == "increaseChargesContinousCard") {
+		_self.setCardSelectOnFieldListenerEnemy(card, _self._enemyUserId);
+	}
+};
+
+gameController.prototype.setCardSelectOnFieldListener = function(card, playerId) {
+	var _self = this;
+
+	var playerSelectorClass;
+	var allowedAttributes = card.cardEffect.allowedAttributes;
+	var cardFromFieldText = "";
+
+	if (playerId == _self._yourUserId) {
+		playerSelectorClass = _self.PLAYER_YOU_CLASS;
+		cardFromFieldText += " your field";
+	} else {
+		playerSelectorClass = _self.PLAYER_ENEMY_CLASS;
+		cardFromFieldText += " your opponent's field";
+	}
+
+	var eventInfoText = "Select card from" + cardFromFieldText;
+
+	_self.showEventsInfo(eventInfoText);
+
+	$(_self.CARD_ON_FIELD_CLASS + playerSelectorClass).each(function() {
+		var cardAttributes = $(this).data("cardAttributes");
+		var selectable = false;
+		cardAttributes.forEach(function(attribute) {
+			if (allowedAttributes.includes(attribute)) {
+				selectable = true;
+			}
+		});
+
+		if (!selectable) {
+			return;
+		}
+
+		$(this).attr("data-tooltip", "selectCard");
+		$(this).on("click", function() {
+			$(_self.CARD_ON_FIELD_CLASS + playerSelectorClass).off("click");
+			$(_self.CARD_ON_FIELD_CLASS + playerSelectorClass).removeAttr("data-tooltip");
+			_self.hideEventsInfo(null, 0);
+			var finishData = { cardId: $(this).data("cardId") };
+			_self._lastClientData = { roomId: _self._roomData.id, cardId: card.cardId, finishData: finishData };
+			_self.client.finishCardEffect(_self._lastClientData);
+		});
+	});
+};
+
+gameController.prototype.setCardSelectOnFieldListenerEnemy = function(card, playerId) {
+	var _self = this;
+
+	var playerSelectorClass;
+	var cardFromFieldText = "";
+
+	if (playerId == _self._enemyUserId) {
+		cardFromFieldText += " his field";
+	} else {
+		cardFromFieldText += " your field";
+	}
+
+	var eventInfoText = "Your opponent must select a card from " + cardFromFieldText;
+
+	_self.showEventsInfo(eventInfoText);
 };
 
 gameController.prototype.setRollDiceCardListener = function (card) {
@@ -2525,6 +2621,13 @@ gameController.prototype.performCardEffectInstantEnemy = function (card) {
 		} else if (card.cardEffect.effect == "reapplyCurrentSpecialBoardSpaceEnemy") {
 			_self._postDestroyCard = card;
 			_self.checkIfYouHaveToDoAction(_self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self));
+		} else if (card.cardEffect.effect == "increaseChargesContinousCard") {
+			if (card.cardEffect.isFinished) {
+				_self.hideEventsInfo(null, 0);
+				_self.destroyCardAnimationEnemy(card, _self.waitForEnemyActions.bind(_self));
+			} else {
+				_self.setCardSelectOnFieldListenerWrapperEnemy(card);
+			}
 		}
 	} else {
 		_self.waitForEnemyActions();

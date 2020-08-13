@@ -525,6 +525,8 @@ var self = module.exports = {
 		  	ctx.session.userData.userId = enemyUserId;
 		  	checkForSpecialBoardSpace(ctx, boardPath[currBoardIndexEnemy][0], boardPath[currBoardIndexEnemy][1]);
 		  	ctx.session.userData.userId = yourUserId;
+		  } else if (card.cardEffect.effect == "increaseChargesContinousCard") {
+		  	assert(playerState.cardsOnFieldArr.length > 0);
 		  }
 		} else {
 			if (card.cardEffect.maxUsesPerTurn) {
@@ -705,6 +707,33 @@ var self = module.exports = {
 
 				card.cardEffect.effectValueChosen = diceValue;
 			}
+		} else if (card.cardEffect.effect == "increaseChargesContinousCard") {
+			assert(finishData.cardId);
+			assert(playerState.cardsOnFieldArr.length > 0);
+
+			let cardSelected;
+			playerState.cardsOnFieldArr.every(function(cardOnField) {
+    		if (cardOnField.cardId == finishData.cardId) {
+    			cardSelected = cardOnField;
+
+    			var selectable = false;
+    			cardSelected.cardAttributes.forEach(function(attribute) {
+						if (card.cardEffect.allowedAttributes.includes(attribute)) {
+							selectable = true;
+						}
+					});
+
+					assert(selectable);
+
+    			return false;
+    		}
+
+    		return true;
+			});
+
+			assert(cardSelected);
+
+			cardSelected.cardEffect.effectChargesCount += card.cardEffect.effectValue;
 		}
 
 		playerState.cardsInHandArr.forEach(function(card) {
@@ -1236,10 +1265,21 @@ let updateCardEffectValueStatus = (card, playerState) => {
 
 		if (card.cardEffect.effectValueIncrementConditionFilter.match(/every\d+/)) {
 			let everyCount = card.cardEffect.effectValueIncrementConditionFilter.substr(5);
-			let resultValue = (Math.floor(forEveryCount / everyCount)) * incrementValue;
+			let resultValue = (Math.floor(forEveryCount / everyCount));
 
-			if (operator == "x" && resultValue == 0) {
+			if (operator == "x") {
+				let loopsCount = resultValue;
 				resultValue = 1;
+
+				for (let i = 0; i < loopsCount; i++) {
+					resultValue *= card.cardEffect.effectValueOriginal;
+				}
+
+				if (resultValue == 0) {
+					resultValue = 1;
+				}
+			} else {
+				resultValue *= incrementValue;
 			}
 
 			card.cardEffect.effectValue = updateFieldValue[operator](card.cardEffect.effectValueOriginal, resultValue);
@@ -1271,10 +1311,21 @@ let updateCardEffectValueStatus = (card, playerState) => {
 
 		if (card.cardEffect.energyPerUseIncrementConditionFilter.match(/every\d+/)) {
 			let everyCount = card.cardEffect.energyPerUseIncrementConditionFilter.substr(5);
-			let resultValue = (Math.floor(forEveryCount / everyCount)) * incrementValue;
+			let resultValue = Math.floor(forEveryCount / everyCount);
 
-			if (operator == "x" && resultValue == 0) {
+			if (operator == "x") {
+				let loopsCount = resultValue;
 				resultValue = 1;
+
+				for (let i = 0; i < loopsCount; i++) {
+					resultValue *= card.cardEffect.energyPerUseOriginal;
+				}
+
+				if (resultValue == 0) {
+					resultValue = 1;
+				}
+			} else {
+				resultValue *= incrementValue;
 			}
 
 			card.cardEffect.energyPerUse = updateFieldValue[operator](card.cardEffect.energyPerUseOriginal, resultValue);
