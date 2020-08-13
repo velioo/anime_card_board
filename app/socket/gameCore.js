@@ -251,6 +251,7 @@ var self = module.exports = {
 			    cardEffect: JSON.parse(cardRow.effect_json),
 			    cardCost: cardRow.cost,
 			    cardAttributes: cardRow.attributes,
+			    cardSounds: JSON.parse(cardRow.sounds_json),
 			  });
 			});
 		}

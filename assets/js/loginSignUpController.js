@@ -1,12 +1,14 @@
 var logInSignUpController = function(generalClient) {
-	baseController.call(this, generalClient);
+	var _self = this;
 
-	this._isUserLoggedIn = false;
-	this.initConstants();
-	this.initElements();
-	this.initListeners();
-	this.initIntervals();
-	this.checkIsUserLoggedIn();
+	baseController.call(_self, generalClient);
+
+	_self._isUserLoggedIn = false;
+	_self.initConstants();
+	_self.initElements();
+	_self.initListeners();
+	_self.initIntervals();
+	_self.checkIsUserLoggedIn();
 };
 
 logInSignUpController.prototype = Object.create(baseController.prototype);
@@ -18,25 +20,31 @@ Object.defineProperty(logInSignUpController.prototype, 'constructor', {
 });
 
 logInSignUpController.prototype.initConstants = function() {
-	this.SIGN_UP_FORM_ID = '#anime-cb-form-sign-up';
-	this.LOGIN_FORM_ID = '#anime-cb-form-login';
-	this.SETTINGS_FORM_ID = '#anime-cb-form-settings';
+	var _self = this;
 
-	this.SIGN_UP_SUBMIT_BTN_ID = '#anime-cb-submit-sign-up';
-	this.RESET_SIGN_UP_BTN_ID = '#anime-cb-reset-sign-up';
-	this.LOGIN_SUBMIT_BTN_ID = '#anime-cb-submit-login';
-	this.RESET_LOGIN_BTN_ID = '#anime-cb-reset-login';
-	this.SIGN_OUT_BTN_ID = '#anime-cb-logout-btn';
-	this.SETTINGS_SUBMIT_BTN_ID = '#anime-cb-submit-settings';
+	_self.SIGN_UP_FORM_ID = '#anime-cb-form-sign-up';
+	_self.LOGIN_FORM_ID = '#anime-cb-form-login';
+	_self.SETTINGS_FORM_ID = '#anime-cb-form-settings';
+
+	_self.SIGN_UP_SUBMIT_BTN_ID = '#anime-cb-submit-sign-up';
+	_self.RESET_SIGN_UP_BTN_ID = '#anime-cb-reset-sign-up';
+	_self.LOGIN_SUBMIT_BTN_ID = '#anime-cb-submit-login';
+	_self.RESET_LOGIN_BTN_ID = '#anime-cb-reset-login';
+	_self.SIGN_OUT_BTN_ID = '#anime-cb-logout-btn';
+	_self.SETTINGS_SUBMIT_BTN_ID = '#anime-cb-submit-settings';
+	_self.SETTINGS_VOLUME_LABEL_ID = '#anime-cb-setting-volume-label';
+	_self.SETTINGS_VOLUME_INPUT_ID = '#anime-cb-setting-volume';
 };
 
 logInSignUpController.prototype.initElements = function() {
-	this.$signUpInputs = $(this.SIGN_UP_FORM_ID).find('input');
-	this.$loginInputs = $(this.LOGIN_FORM_ID).find('input');
-	this.$settingsInputs = $(this.SETTINGS_FORM_ID).find('input');
-	this._userId = null;
-	this._username = null;
-	this._settings = {};
+	var _self = this;
+
+	_self.$signUpInputs = $(_self.SIGN_UP_FORM_ID).find('input');
+	_self.$loginInputs = $(_self.LOGIN_FORM_ID).find('input');
+	_self.$settingsInputs = $(_self.SETTINGS_FORM_ID).find('input');
+	_self._userId = null;
+	_self._username = null;
+	_self._settings = {};
 };
 
 logInSignUpController.prototype.initListeners = function() {
@@ -90,6 +98,15 @@ logInSignUpController.prototype.initListeners = function() {
 		_self.clearLoginInputs();
 	  _self.clearLoginErrors();
 	  _self.hideLoginErrors();
+	});
+
+	$(_self.SETTINGS_VOLUME_INPUT_ID).slider({
+		min: 1,
+		max: 100,
+		range: "min",
+		slide: function (event, ui) {
+			$(_self.SETTINGS_VOLUME_LABEL_ID).text(ui.value);
+		},
 	});
 
 	_self.reEnableSettingsSubmit();
@@ -278,6 +295,8 @@ logInSignUpController.prototype.reEnableSettingsSubmit = function () {
 	  	}
 	  });
 
+	  values["soundVolume"] = $(_self.SETTINGS_VOLUME_INPUT_ID).slider("value");
+
 	  logger.info('Form settings values: ', JSON.stringify(values));
 
 	  _self.showSettingsSpinner();
@@ -393,6 +412,11 @@ logInSignUpController.prototype.updateSettingsStatus = function (settings) {
 			$input.val(settings[setting]);
 		} else {
 			$input.prop("checked", settings[setting]);
+		}
+
+		if (setting == "soundVolume") {
+			$(_self.SETTINGS_VOLUME_INPUT_ID).slider("value", settings[setting]);
+			$(_self.SETTINGS_VOLUME_LABEL_ID).text(settings[setting]);
 		}
 	}
 };

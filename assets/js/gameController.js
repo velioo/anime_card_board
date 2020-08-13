@@ -194,6 +194,10 @@ gameController.prototype.resetGameState = function () {
 
 	console.log('RESET GAME STATE');
 
+	if (_self._backgroundMusic) {
+		_self._backgroundMusic.pause();
+	}
+
 	_self._gameplayData = null;
 	_self._roomData = null;
 	_self._cardsInHandArr = [];
@@ -340,6 +344,7 @@ gameController.prototype.processStartGameResponse = function (data) {
 
 	_self.disableScroll();
 	_self.resetGameState();
+	_self.startBackgroundMusic();
 	_self.initListeners();
 	_self.renderGameField();
 	_self.initGameData(data);
@@ -357,11 +362,25 @@ gameController.prototype.processStartGameResponse = function (data) {
 			_self.hideEventsInfo(null, 2000);
 			_self.drawStartCards();
 			_self.client.generalClient.roomController._matchmaking = false;
+			window.addEventListener("beforeunload", _self.beforeUnload);
 		}
 	}, 500);
 
 	_self.updateGameStatusInfo();
-	window.addEventListener("beforeunload", _self.beforeUnload);
+};
+
+gameController.prototype.startBackgroundMusic = function () {
+	var _self = this;
+
+	if (!_self.client.generalClient.logInSignUpController._settings.sound) {
+		return;
+	}
+
+	_self._backgroundMusicFile = "background.mp3";
+	_self._backgroundMusic = new Audio("/sounds/" + _self._backgroundMusicFile);
+ 	_self._backgroundMusic.volume = (_self.client.generalClient.logInSignUpController._settings.soundVolume) / 1000;
+ 	_self._backgroundMusic.loop = true;
+  _self._backgroundMusic.play();
 };
 
 gameController.prototype.beforeUnload = function(event) {
@@ -3384,6 +3403,7 @@ gameController.prototype.summonCardFromHandAnimationYou = function (cardObj, cal
 	var card = $(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_YOU_CLASS + ' ' + _self.CARD_CLASS
 		+ _self.PLAYER_YOU_CLASS + ':nth-child(' + cardIdx + ')');
 
+	var cardSuccessfullySummoned = false;
 	var cardId = cardObj.cardId;
 	var cardName = cardObj.cardName;
 	var cardText = cardObj.cardText;
@@ -3392,7 +3412,6 @@ gameController.prototype.summonCardFromHandAnimationYou = function (cardObj, cal
 	var cardEffect = cardObj.cardEffect;
 	var cardCost = cardObj.cardCost;
 	var cardAttributes = cardObj.cardAttributes;
-	var cardSuccessfullySummoned = false;
 
 	$(_self.CARD_FIELD_CLASS + _self.PLAYER_YOU_CLASS + ' td').each(function(idx) {
 		if (!$(this).find('img').length) {
@@ -3437,6 +3456,13 @@ gameController.prototype.summonCardFromHandAnimationYou = function (cardObj, cal
 gameController.prototype.showCardActivateOnScreenYou = function (cardObj, callback) {
 	var _self = this;
 
+	var cardSounds = cardObj.cardSounds;
+
+	if (_self.client.generalClient.logInSignUpController._settings.sound
+		&& cardSounds.activateEffect) {
+		_self.playSound(cardSounds.activateEffect);
+	}
+
 	$('.anime-cb-card-activate-show').attr("src", "/imgs/player_cards/" + cardObj.cardImg);
 	$('.anime-cb-card-activate-show').css("animation", "vibrate-card-activate-you 0.3s linear 5 both");
 
@@ -3445,11 +3471,18 @@ gameController.prototype.showCardActivateOnScreenYou = function (cardObj, callba
 		if (typeof callback === "function") {
 			callback();
 		}
-	}, 1500);
+	}, 2000);
 };
 
 gameController.prototype.showCardActivateOnScreenEnemy = function (cardObj, callback) {
 	var _self = this;
+
+	var cardSounds = cardObj.cardSounds;
+
+	if (_self.client.generalClient.logInSignUpController._settings.sound
+		&& cardSounds.activateEffect) {
+		_self.playSound(cardSounds.activateEffect);
+	}
 
 	$('.anime-cb-card-activate-show').attr("src", "/imgs/player_cards/" + cardObj.cardImg);
 	$('.anime-cb-card-activate-show').css("animation", "vibrate-card-activate-enemy 0.3s linear 5 both");
@@ -3459,7 +3492,7 @@ gameController.prototype.showCardActivateOnScreenEnemy = function (cardObj, call
 		if (typeof callback === "function") {
 			callback();
 		}
-	}, 1500);
+	}, 2000);
 };
 
 gameController.prototype.updateCardChargesStatuses = function () {
@@ -3854,6 +3887,7 @@ gameController.prototype.summonCardFromHandAnimationEnemy = function (cardObj, c
 	var card = $(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_ENEMY_CLASS + ' ' + _self.CARD_CLASS
 		+ _self.PLAYER_ENEMY_CLASS + ':nth-last-child(' + cardIdx + ')');
 
+	var cardSuccessfullySummoned = false;
 	var cardId = cardObj.cardId;
 	var cardName = cardObj.cardName;
 	var cardText = cardObj.cardText;
@@ -3862,7 +3896,6 @@ gameController.prototype.summonCardFromHandAnimationEnemy = function (cardObj, c
 	var cardEffect = cardObj.cardEffect;
 	var cardCost = cardObj.cardCost;
 	var cardAttributes = cardObj.cardAttributes;
-	var cardSuccessfullySummoned = false;
 
 	$($(_self.CARD_FIELD_CLASS + _self.PLAYER_ENEMY_CLASS + ' td').get().reverse()).each(function(idx) {
 		if (!$(this).find('img').length) {
@@ -4606,6 +4639,14 @@ gameController.prototype.updateCardsStatusText = function () {
 			}
 		});
 	});
+};
+
+gameController.prototype.playSound = function (soundFile) {
+	var _self = this;
+  var audio = new Audio("/sounds/" + soundFile);
+
+ 	audio.volume = _self.client.generalClient.logInSignUpController._settings.soundVolume / 100;
+  audio.play();
 };
 
 var noop = function(){};

@@ -176,6 +176,7 @@ var self = module.exports = {
       assert(ctx.session.userData && ctx.session.userData.username);
 
       ctx.request.body.data.sound = (ctx.request.body.data.sound == 'true');
+      ctx.request.body.data.soundVolume = (+ctx.request.body.data.soundVolume);
       const isSchemaValid = ajv.validate(SCHEMAS.SETTINGS, ctx.request.body.data);
 
       if (!isSchemaValid) {
@@ -190,6 +191,7 @@ var self = module.exports = {
 
       let settingsJson = {
         sound: ctx.request.body.data.sound,
+        soundVolume: ctx.request.body.data.soundVolume,
       };
 
       const queryStatus = await pg.pool.query(`
@@ -244,6 +246,7 @@ let getUserData = (ctx) => {
     'salt': salt,
     'settings_json': JSON.stringify({
       sound: false,
+      soundVolume: 20,
     }),
   };
 };

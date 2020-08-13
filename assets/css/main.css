@@ -2701,6 +2701,10 @@ input:checked + .slider:after
   margin-top: -35px;
 }
 
+.anime-cb-setting-label-2 {
+  font-size: 14pt;
+}
+
 #anime-cb-submit-settings {
   margin-top: 50px;
 }
@@ -3656,4 +3660,8 @@ input:checked + .slider:after
   float: right;
   bottom: 0;
   font-size: 20pt;
+}
+
+#anime-cb-setting-volume .ui-slider-range {
+  background: #2ab934;
 }

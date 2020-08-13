@@ -212,8 +212,9 @@ const _SETTINGS = {
   "type": "object",
   "properties": {
     "sound": { "type": "boolean" },
+    "soundVolume": { "type": "number", "minimum": 1, "maximum": 100 },
   },
-  "required": [ "sound" ],
+  "required": [ "sound", "soundVolume" ],
 };
 
 const _DRAW_CARD_FROM_ENEMY_HAND = {
