@@ -169,6 +169,7 @@ var startGameResponse = {
 									"maxCardsOnField": { "type": "integer" },
 									"canRollDiceBoardInRollPhase": { "type": "boolean" },
 									"canRollDiceBoardCount": { "type": ["integer", "null"] },
+									"canRollDiceBoardCountBackward": { "type": ["integer", "null"] },
 									"rollAgain": { "type": "boolean" },
 									"moveBackwards": { "type": ["boolean", "null"] },
 									"moveBackwardsOnNextRoll": { "type": ["boolean", "null"] },

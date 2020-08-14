@@ -62,6 +62,8 @@ const BOARD_FIELDS = {
   RANDOM_1: 12,
   RANDOM_2: 13,
   RANDOM_3: 14,
+  ROLL_AGAIN_BACKWARDS_2: 15,
+  ROLL_AGAIN_BACKWARDS_3: 16,
 };
 
 module.exports = {

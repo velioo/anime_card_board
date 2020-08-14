@@ -210,6 +210,7 @@ var self = module.exports = {
 		});
 
     assert(playerState.canRollDiceBoardCount == 0);
+    assert(playerState.canRollDiceBoardCountBackward == 0);
     assert(playerState.cardsToDiscard == 0);
     assert(playerState.cardsToDraw == 0);
     assert(playerState.cardsToDrawFromEnemyHand == 0);
@@ -527,6 +528,10 @@ var self = module.exports = {
 		  	ctx.session.userData.userId = yourUserId;
 		  } else if (card.cardEffect.effect == "increaseChargesContinousCard") {
 		  	assert(playerState.cardsOnFieldArr.length > 0);
+		  } else if (card.cardEffect.effect == "rollDiceForwardBackward") {
+		  	playerState.canRollDiceBoardCountBackward += card.cardEffect.effectValue1;
+		  	playerState.canRollDiceBoardCount += card.cardEffect.effectValue2 + card.cardEffect.effectValue1;
+		  	playerState.moveBackwardsOnNextRoll = true;
 		  }
 		} else {
 			if (card.cardEffect.maxUsesPerTurn) {
@@ -970,6 +975,13 @@ var self = module.exports = {
     if (gameState.playersState[ctx.session.userData.userId].moveBackwardsOnNextRoll) {
     	gameState.playersState[ctx.session.userData.userId].moveBackwardsOnNextRoll = false;
     	gameState.playersState[ctx.session.userData.userId].moveBackwards = true;
+
+    	if (gameState.playersState[ctx.session.userData.userId].canRollDiceBoardCountBackward > 0) {
+    		gameState.playersState[ctx.session.userData.userId].canRollDiceBoardCountBackward--;
+    		if (gameState.playersState[ctx.session.userData.userId].canRollDiceBoardCountBackward > 0) {
+    			gameState.playersState[ctx.session.userData.userId].moveBackwardsOnNextRoll = true;
+    		}
+    	}
     }
 
     let rowIndex = boardPath[currBoardIndex][0];
@@ -1190,7 +1202,11 @@ let checkForSpecialBoardSpace = (ctx, rowIndex, columnIndex) => {
   } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.ROLL_AGAIN_3) {
   	rollAgain(ctx, 3);
   } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.ROLL_AGAIN_BACKWARDS_1) {
-  	rollAgainBackwards(ctx, null);
+  	rollAgainBackwards(ctx, 1);
+  } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.ROLL_AGAIN_BACKWARDS_2) {
+  	rollAgainBackwards(ctx, 2);
+  } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.ROLL_AGAIN_BACKWARDS_3) {
+  	rollAgainBackwards(ctx, 3);
   } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.CARD_DRAW_1) {
   	cardDraw(ctx, 1);
   } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.CARD_DRAW_2) {
@@ -1217,9 +1233,10 @@ let rollAgain = (ctx, count) => {
 	ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].canRollDiceBoardCount += count;
 };
 
-let rollAgainBackwards = (ctx, dummy) => {
+let rollAgainBackwards = (ctx, count) => {
 	ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].rollAgain = true;
-	ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].canRollDiceBoardCount++;
+	ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].canRollDiceBoardCount += count;
+	ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].canRollDiceBoardCountBackward += count;
 	ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].moveBackwardsOnNextRoll = true;
 };
 

@@ -180,7 +180,7 @@ INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, a
 '{"effect": "takeCardFromYourGraveyard", "effectValue": 1, "autoEffect":false, "continuous": false}', 2, '{cards}', '{}');
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes, sounds_json) VALUES (17, 'Violet', 'Summon this card on your field. This card has 3 charges, 1 charge is consumed on every SP. When this card expires (not destroyed), increase your max Energy points by 2.', 'Violet.jpg', 'common',
 '{"effect": "dummy", "effectChargesCount": 3, "effectExpire": "increaseMaxEnergy", "effectValueExpire": 2, "chargeConsumedPhase": "standby", "continuousEffectType": "passive", "autoEffect":true, "continuous": true}', 3, '{energy}', '{}');
-INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes, sounds_json) VALUES (18, 'Hayasaka', 'Throw the dice. Go that many spaces forward and your opponent goes that many spaces backward.', 'Hayasaka.jpg', 'rare',
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes, sounds_json) VALUES (18, 'Hayasaka', 'Roll the die. Go that many spaces forward and your opponent goes that many spaces backward.', 'Hayasaka.jpg', 'rare',
 '{"effect": "moveSpacesForwardMoveSpacesBackwardEnemyX", "effectValue": 0, "effectValueIncrement": "x1", "effectValueDependentOn": "diceRoll", "autoEffect":false, "continuous": false}', 3, '{field}', '{}');
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes, sounds_json) VALUES (19, 'Shiroe', 'Draw 3 cards from the deck, then discard 3.', 'Shiroe.jpg', 'common',
 '{"effect": "drawCardFromDeckYouDiscardCardYou", "effectValue1": 3, "effectValue2": 3, "autoEffect":true, "continuous": false}', 2, '{cards}', '{}');
@@ -198,7 +198,9 @@ INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, a
 '{"effect": "reapplyCurrentSpecialBoardSpace", "autoEffect": true, "continuous": false}', 2, '{field}', '{}');
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes, sounds_json) VALUES (26, 'Shinya', 'Apply to your opponent the effect of the current special board space he''s on.', 'Shinya.jpg', 'common',
 '{"effect": "reapplyCurrentSpecialBoardSpaceEnemy", "autoEffect": true, "continuous": false}', 2, '{field}', '{}');
-INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes, sounds_json) VALUES (27, 'Inori', 'While this card is on your field, roll the dice 1 more time during your Roll Phase. This card has 3 charges, 1 charge is consumed on every RP.', 'Inori.jpg', 'common',
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes, sounds_json) VALUES (27, 'Inori', 'While this card is on your field, roll the die 1 more time during your Roll Phase. This card has 3 charges, 1 charge is consumed on every RP.', 'Inori.jpg', 'common',
 '{"effect": "rollDiceRollPhase", "effectValue": 1, "effectChargesCount": 3, "chargeConsumedPhase": "roll", "continuousEffectType": "passive", "autoEffect": true, "continuous": true}', 4, '{field}', '{}');
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes, sounds_json) VALUES (28, 'Kamina', 'Choose a continuous card on your field and increase its charges by 1.', 'Kamina.jpg', 'common',
 '{"effect": "increaseChargesContinousCard", "effectValue": 1, "allowedAttributes": ["field", "cards", "energy"], "autoEffect": false, "continuous": false}', 2, '{cards}', '{}');
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes, sounds_json) VALUES (29, 'Ange', 'Roll the die 1 times backward and then 2 times forward.', 'Ange.jpg', 'common',
+'{"effect": "rollDiceForwardBackward", "effectValue1": 1, "effectValue2": 2, "autoEffect": true, "continuous": false}', 2, '{field}', '{}');

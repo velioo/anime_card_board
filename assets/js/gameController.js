@@ -104,6 +104,8 @@ gameController.prototype.initElements = function() {
 	  RANDOM_1: 12,
 	  RANDOM_2: 13,
 	  RANDOM_3: 14,
+	  ROLL_AGAIN_BACKWARDS_2: 15,
+  	ROLL_AGAIN_BACKWARDS_3: 16,
 	};
 
 	_self.BOARD_FIELDS_IMGS = {
@@ -121,6 +123,8 @@ gameController.prototype.initElements = function() {
 	  RANDOM_1: "random_1.png",
 	  RANDOM_2: "random_2.png",
 	  RANDOM_3: "random_3.png",
+	  ROLL_AGAIN_BACKWARDS_2: "roll_again_back_2.png",
+  	ROLL_AGAIN_BACKWARDS_3: "roll_again_back_3.png",
 	};
 };
 
@@ -489,6 +493,10 @@ gameController.prototype.renderBoard = function () {
       		boardRowHtml += '<td class="anime-cb-column active roll-again-3"><img class="anime-cb-board-img" src="/imgs/roll_again_3.png"></td>';
       	} else if (boardColumn == _self.BOARD_FIELDS.ROLL_AGAIN_BACKWARDS_1) {
       		boardRowHtml += '<td class="anime-cb-column active roll-again-back-1"><img class="anime-cb-board-img" src="/imgs/roll_again_back_1.png"></td>';
+      	} else if (boardColumn == _self.BOARD_FIELDS.ROLL_AGAIN_BACKWARDS_2) {
+      		boardRowHtml += '<td class="anime-cb-column active roll-again-back-2"><img class="anime-cb-board-img" src="/imgs/roll_again_back_2.png"></td>';
+      	} else if (boardColumn == _self.BOARD_FIELDS.ROLL_AGAIN_BACKWARDS_3) {
+      		boardRowHtml += '<td class="anime-cb-column active roll-again-back-3"><img class="anime-cb-board-img" src="/imgs/roll_again_back_3.png"></td>';
       	} else if (boardColumn == _self.BOARD_FIELDS.CARD_DRAW_1) {
       		boardRowHtml += '<td class="anime-cb-column active card-draw-1"><img class="anime-cb-board-img" src="/imgs/card_draw_1.png"></td>';
       	} else if (boardColumn == _self.BOARD_FIELDS.CARD_DRAW_2) {
@@ -1795,6 +1803,9 @@ gameController.prototype.performCardEffectInstantYou = function (card) {
 			} else {
 				_self.setCardSelectOnFieldListenerWrapper(card);
 			}
+		} else if (card.cardEffect.effect == "rollDiceForwardBackward") {
+			_self._postDestroyCard = card;
+			_self.enableMainPhaseActions();
 		}
 	} else if (card.cardEffect.continuous) {
 		_self.enableMainPhaseActions();
@@ -2628,6 +2639,9 @@ gameController.prototype.performCardEffectInstantEnemy = function (card) {
 			} else {
 				_self.setCardSelectOnFieldListenerWrapperEnemy(card);
 			}
+		} else if (card.cardEffect.effect == "rollDiceForwardBackward") {
+			_self._postDestroyCard = card;
+			_self.waitForEnemyActions();
 		}
 	} else {
 		_self.waitForEnemyActions();
@@ -2864,9 +2878,9 @@ gameController.prototype.waitForEnemyActions = function () {
 
 		var eventInfoText = "";
 		if (playerStateEnemy.rollAgain) {
-			eventInfoText += _self._enemyName + " rolls dice again";
+			eventInfoText += _self._enemyName + " rolls the die again";
 		} else {
-			eventInfoText += _self._enemyName + " roll dice";
+			eventInfoText += _self._enemyName + " rolls the die";
 		}
 
 		if (!playerStateEnemy.moveBackwardsOnNextRoll) {
@@ -2876,7 +2890,12 @@ gameController.prototype.waitForEnemyActions = function () {
 				eventInfoText += " " + playerStateEnemy.canRollDiceBoardCount + " time";
 			}
 		} else {
-			eventInfoText += "...backwards";
+			if (playerStateEnemy.canRollDiceBoardCountBackward > 1) {
+				eventInfoText += " " + playerStateEnemy.canRollDiceBoardCountBackward + " times";
+			} else {
+				eventInfoText += " " + playerStateEnemy.canRollDiceBoardCountBackward + " time";
+			}
+			eventInfoText += " backwards";
 		}
 
 		_self.showEventsInfo(eventInfoText);
@@ -2925,8 +2944,10 @@ gameController.prototype.setCardDiscardListener = function () {
 	}
 	_self.showEventsInfo(eventInfoText);
 
+	$(_self.CARDS_IN_HAND_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_YOU_CLASS).attr("data-tooltip", "discardCard");
 	$(_self.CARDS_IN_HAND_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_YOU_CLASS).on('click', function(e) {
 		$(_self.CARDS_IN_HAND_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_YOU_CLASS).off();
+		$(_self.CARDS_IN_HAND_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_YOU_CLASS).removeAttr("data-tooltip");
 		_self.discardCard.call(_self, this);
 		_self.hideEventsInfo(null, 0);
 	});
@@ -2944,8 +2965,10 @@ gameController.prototype.setDrawCardFromEnemyHandListener = function () {
 
 	_self.showEventsInfo(eventInfoText);
 
+	$(_self.CARDS_IN_HAND_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_ENEMY_CLASS).attr("data-tooltip", "takeCard");
 	$(_self.CARDS_IN_HAND_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_ENEMY_CLASS).on('click', function(e) {
 		$(_self.CARDS_IN_HAND_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_ENEMY_CLASS).off();
+		$(_self.CARDS_IN_HAND_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_ENEMY_CLASS).removeAttr("data-tooltip");
 		_self.drawCardFromEnemyHand.call(_self, this);
 		_self.hideEventsInfo(null, 0);
 	});
@@ -3004,7 +3027,7 @@ gameController.prototype.setTakeCardFromYourGraveyardListener = function () {
 				return;
 			}
 
-			$(this).attr("data-tooltip", "takeCardFromGraveyard");
+			$(this).attr("data-tooltip", "takeCard");
 			$(this).on("click", function(e) {
 				$(_self.MODAL_GRAVEYARD_CLASS + _self.PLAYER_YOU_CLASS).hide();
 				_self.enableGraveyardPopulation();
@@ -3070,9 +3093,9 @@ gameController.prototype.enableRollDiceBoard = function () {
 	var playerStateYou = _self._gameplayData.gameState.playersState[_self._yourUserId];
 
 	if (playerStateYou.rollAgain) {
-		eventInfoText += "Roll dice again";
+		eventInfoText += "Roll the die again";
 	} else {
-		eventInfoText += "Roll dice";
+		eventInfoText += "Roll the die";
 	}
 
 	if (!playerStateYou.moveBackwardsOnNextRoll) {
@@ -3082,7 +3105,12 @@ gameController.prototype.enableRollDiceBoard = function () {
 			eventInfoText += " " + playerStateYou.canRollDiceBoardCount + " time";
 		}
 	} else {
-		eventInfoText += "...backwards";
+		if (playerStateYou.canRollDiceBoardCountBackward > 1) {
+			eventInfoText += " " + playerStateYou.canRollDiceBoardCountBackward + " times";
+		} else {
+			eventInfoText += " " + playerStateYou.canRollDiceBoardCountBackward + " time";
+		}
+		eventInfoText += " backwards";
 	}
 
 	_self.showEventsInfo(eventInfoText);
@@ -4698,7 +4726,7 @@ gameController.prototype.updateGameStatusInfo = function () {
 
 	statusContent += "- Cards to Draw: " + playerYouStatus.cardsToDraw + "<br>";
 	statusContent += "- Cards to discard: " + playerYouStatus.cardsToDiscard + "<br>";
-	statusContent += "- Dice to roll: " + playerYouStatus.canRollDiceBoardCount + "<br>";
+	statusContent += "- Die to roll: " + playerYouStatus.canRollDiceBoardCount + "<br>";
 	statusContent += "- Can summon any: " + (playerYouStatus.cardsSummonConstraints.cardsCanSummonAny ? "Yes" : "No") + "<br>";
 	statusContent += "- Can summon common: " + (playerYouStatus.cardsSummonConstraints.cardsCanSummonCommon ? "Yes" : "No") + "<br>";
 	statusContent += "- Can summon rare: " + (playerYouStatus.cardsSummonConstraints.cardsCanSummonRare ? "Yes" : "No") + "<br>";
@@ -4708,7 +4736,7 @@ gameController.prototype.updateGameStatusInfo = function () {
 
 	statusContent += "- Cards to Draw: " + playerEnemyStatus.cardsToDraw + "<br>";
 	statusContent += "- Cards to discard: " + playerEnemyStatus.cardsToDiscard + "<br>";
-	statusContent += "- Dice to roll: " + playerEnemyStatus.canRollDiceBoardCount + "<br>";
+	statusContent += "- Die to roll: " + playerEnemyStatus.canRollDiceBoardCount + "<br>";
 	statusContent += "- Can summon any: " + (playerEnemyStatus.cardsSummonConstraints.cardsCanSummonAny ? "Yes" : "No") + "<br>";
 	statusContent += "- Can summon common: " + (playerEnemyStatus.cardsSummonConstraints.cardsCanSummonCommon ? "Yes" : "No") + "<br>";
 	statusContent += "- Can summon rare: " + (playerEnemyStatus.cardsSummonConstraints.cardsCanSummonRare ? "Yes" : "No") + "<br>";
