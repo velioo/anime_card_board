@@ -31,7 +31,7 @@ const self = module.exports = {
 
     try {
       // let rand = utils.getRandomInt(0, 1);
-      // assert(rand);
+      // assert(rand); 
 
       ctx.data.roomId = parseInt(ctx.data.roomId);
       ctx.data.player1Id = parseInt(ctx.data.player1Id);
