@@ -1816,7 +1816,9 @@ gameController.prototype.setCardSelectOnFieldListenerWrapper = function (card) {
 	var _self = this;
 
 	if (card.cardEffect.effect == "increaseChargesContinousCard") {
-		_self.setCardSelectOnFieldListener(card, _self._yourUserId);
+		_self.setCardSelectFromYourFieldListener(card, _self._yourUserId);
+	} else if (card.cardEffect.effect == "decreaseChargesContinousCardAll") {
+		_self.setCardSelectFromAnyFieldListener(card);
 	}
 };
 
@@ -1824,11 +1826,13 @@ gameController.prototype.setCardSelectOnFieldListenerWrapperEnemy = function (ca
 	var _self = this;
 
 	if (card.cardEffect.effect == "increaseChargesContinousCard") {
-		_self.setCardSelectOnFieldListenerEnemy(card, _self._enemyUserId);
+		_self.setCardSelectFromEnemyFieldListenerEnemy(card, _self._enemyUserId);
+	} else if (card.cardEffect.effect == "decreaseChargesContinousCardAll") {
+		_self.setCardSelectFromAnyFieldListenerEnemy(card);
 	}
 };
 
-gameController.prototype.setCardSelectOnFieldListener = function(card, playerId) {
+gameController.prototype.setCardSelectFromYourFieldListener = function(card, playerId) {
 	var _self = this;
 
 	var playerSelectorClass;
@@ -1872,7 +1876,49 @@ gameController.prototype.setCardSelectOnFieldListener = function(card, playerId)
 	});
 };
 
-gameController.prototype.setCardSelectOnFieldListenerEnemy = function(card, playerId) {
+gameController.prototype.setCardSelectFromAnyFieldListener = function (card) {
+	var _self = this;
+
+	var allowedAttributes = card.cardEffect.allowedAttributes;
+	var eventInfoText = "Select a card from any field";
+
+	_self.showEventsInfo(eventInfoText);
+
+	$(_self.CARD_ON_FIELD_CLASS).each(function() {
+		var cardAttributes = $(this).data("cardAttributes");
+		var selectable = false;
+		cardAttributes.forEach(function(attribute) {
+			if (allowedAttributes.includes(attribute)) {
+				selectable = true;
+			}
+		});
+
+		if ($(this).hasClass("player-you") && $(this).data("cardId") == card.cardId) {
+			selectable = false;
+		}
+
+		if (!selectable) {
+			return;
+		}
+
+		$(this).attr("data-tooltip", "selectCard");
+		$(this).on("click", function() {
+			$(_self.CARD_ON_FIELD_CLASS).off("click");
+			$(_self.CARD_ON_FIELD_CLASS).removeAttr("data-tooltip");
+			_self.hideEventsInfo(null, 0);
+			var finishData = { cardId: $(this).data("cardId"), fieldChosen: $(this).hasClass("player-you") ? "your" : "enemy" };
+			_self._lastClientData = { roomId: _self._roomData.id, cardId: card.cardId, finishData: finishData };
+
+			if (card.cardEffect.continuous) {
+				_self.client.finishCardEffectContinuous(_self._lastClientData);
+			} else {
+				_self.client.finishCardEffect(_self._lastClientData);
+			}
+		});
+	});
+};
+
+gameController.prototype.setCardSelectFromEnemyFieldListenerEnemy = function(card, playerId) {
 	var _self = this;
 
 	var playerSelectorClass;
@@ -1886,6 +1932,13 @@ gameController.prototype.setCardSelectOnFieldListenerEnemy = function(card, play
 
 	var eventInfoText = "Your opponent must select a card from " + cardFromFieldText;
 
+	_self.showEventsInfo(eventInfoText);
+};
+
+gameController.prototype.setCardSelectFromAnyFieldListenerEnemy = function(card) {
+	var _self = this;
+
+	var eventInfoText = "Your opponent must select a card from any field";
 	_self.showEventsInfo(eventInfoText);
 };
 
@@ -1921,6 +1974,8 @@ gameController.prototype.performCardEffectContinuousYou = function (card) {
 		if (card.cardEffect.effect == "copySpecialSpacesUpTo"
 			|| card.cardEffect.effect ==  "moveSpacesForwardOrBackwardUpToEnemy") {
 			_self.setBoardSpaceListener(card);
+		} else if (card.cardEffect.effect == "decreaseChargesContinousCardAll") {
+			_self.setCardSelectOnFieldListenerWrapper(card);
 		}
 	}
 };
@@ -1933,6 +1988,8 @@ gameController.prototype.performCardEffectContinuousEnemy = function (card) {
 		if (card.cardEffect.effect == "copySpecialSpacesUpTo"
 			|| card.cardEffect.effect ==  "moveSpacesForwardOrBackwardUpToEnemy") {
 			_self.setBoardSpaceListenerEnemy(card);
+		} else if (card.cardEffect.effect == "decreaseChargesContinousCardAll") {
+			_self.setCardSelectOnFieldListenerWrapperEnemy(card);
 		}
 	}
 };
@@ -1955,6 +2012,24 @@ gameController.prototype.performCardEffectContinuousFinishYou = function (card) 
 			} else {
 				_self.moveEnemyCharacter(card.cardEffect.effectValueChosen, _self.checkIfEnemyHasToDoAction
 					.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self)), 0);
+			}
+		} else if (card.cardEffect.effect == "decreaseChargesContinousCardAll") {
+			var callback = function (card) {
+				if (card.finishData.fieldChosen == "your") {
+					_self.checkForExpiredCardsYou(_self.checkIfEnemyHasToDoAction
+						.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self)));
+				} else {
+					_self.checkForExpiredCardsEnemy(_self.checkIfEnemyHasToDoAction
+						.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self)));
+				}
+			};
+
+			let playerSelectorClass = card.finishData.fieldChosen == "your" ? _self.PLAYER_YOU_CLASS : _self.PLAYER_ENEMY_CLASS;
+			if (card.cardEffect.isFinished) {
+				_self.showCardOnScreen(card.finishData.cardChosen, playerSelectorClass,
+					_self.destroyCardAnimationYou.bind(_self, card, callback.bind(_self, card)));
+			} else {
+				_self.showCardOnScreen(card.finishData.cardChosen, playerSelectorClass, callback.bind(_self, card));
 			}
 		} else {
 			_self.enableMainPhaseActions();
@@ -1980,6 +2055,25 @@ gameController.prototype.performCardEffectContinuousFinishEnemy = function (card
 			} else {
 				_self.moveYourCharacter(card.cardEffect.effectValueChosen, _self.checkIfYouHaveToDoAction
 					.bind(_self, _self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self)), 0);
+			}
+		} else if (card.cardEffect.effect == "decreaseChargesContinousCardAll") {
+			_self.hideEventsInfo(null, 0);
+			var callback = function (card) {
+				if (card.finishData.fieldChosen == "your") {
+					_self.checkForExpiredCardsEnemy(_self.checkIfYouHaveToDoAction
+						.bind(_self, _self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self)));
+				} else {
+					_self.checkForExpiredCardsYou(_self.checkIfYouHaveToDoAction
+						.bind(_self, _self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self)));
+				}
+			};
+
+			let playerSelectorClass = card.finishData.fieldChosen == "your" ? _self.PLAYER_ENEMY_CLASS : _self.PLAYER_YOU_CLASS;
+			if (card.cardEffect.isFinished) {
+				_self.showCardOnScreen(card.finishData.cardChosen, playerSelectorClass,
+					_self.destroyCardAnimationEnemy.bind(_self, card, callback.bind(_self, card)));
+			} else {
+				_self.showCardOnScreen(card.finishData.cardChosen, playerSelectorClass, callback.bind(_self, card));
 			}
 		} else {
 			_self.waitForEnemyActions();
@@ -3699,6 +3793,7 @@ gameController.prototype.canActivateCard = function (card) {
 	var boardPath = _self._gameplayData.gameState.boardData.boardDataPlayers.boardPath;
   var currBoardIndex = _self._gameplayData.gameState.playersState[_self._yourUserId].currBoardIndex;
   var playerStateYou = _self._gameplayData.gameState.playersState[_self._yourUserId];
+  var playerStateEnemy = _self._gameplayData.gameState.playersState[_self._enemyUserId];
   var rowIndex;
   var columnIndex;
   var canActivateCard = true;
@@ -3745,6 +3840,27 @@ gameController.prototype.canActivateCard = function (card) {
 		}
 
 		if (availableSpaces <= 0) {
+			canActivateCard = false;
+		}
+	} else if (cardEffect.effect == "decreaseChargesContinousCardAll") {
+		var availableCards = false;
+		playerStateYou.cardsOnFieldArr.forEach(function(cardOnField) {
+			cardOnField.cardAttributes.forEach(function(attribute) {
+				if (cardOnField.cardId != cardId && cardEffect.allowedAttributes.includes(attribute)) {
+					availableCards = true;
+				}
+			});
+		});
+
+		playerStateEnemy.cardsOnFieldArr.forEach(function(cardOnField) {
+			cardOnField.cardAttributes.forEach(function(attribute) {
+				if (cardEffect.allowedAttributes.includes(attribute)) {
+					availableCards = true;
+				}
+			});
+		});
+
+		if (!availableCards) {
 			canActivateCard = false;
 		}
 	}
