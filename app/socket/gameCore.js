@@ -33,13 +33,15 @@ var self = module.exports = {
     let yourUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player1Id : ctx.roomData.player2Id;
 
     playerState.cardsExpired = [];
-    playerState.cardsOnFieldArr.slice().reverse().forEach(function(card, cardIdx, arr) {
-		  if ((card.cardEffect.continuousEffectType == "passive") && (card.cardEffect.chargeConsumedPhase == "standby")) {
-		  	card.cardEffect.chargesUsedTotal++;
 
-		  	checkIfCardExpired(card, cardIdx, playerState, playerStateEnemy);
+		let cardsOnFieldCopy = playerState.cardsOnFieldArr.slice().reverse();
+		for (let i = 0; i < cardsOnFieldCopy.length; i++) {
+		  if ((playerState.cardsOnFieldArr[i].cardEffect.continuousEffectType == "passive") && (playerState.cardsOnFieldArr[i].cardEffect.chargeConsumedPhase == "standby")) {
+		  	playerState.cardsOnFieldArr[i].cardEffect.chargesUsedTotal++;
+
+		  	await checkIfCardExpired(playerState.cardsOnFieldArr[i], i, playerState, playerStateEnemy, cardsOnFieldCopy);
 		  }
-		});
+		}
 
 		playerState.cardsInHandArr.forEach(function(card) {
     	updateCardEffectValueStatus(card, playerState);
@@ -65,17 +67,19 @@ var self = module.exports = {
 
 		let lastEnergy = playerState.energyPoints;
 		playerState.cardsExpired = [];
-    playerState.cardsOnFieldArr.slice().reverse().forEach(function(card, cardIdx, arr) {
-		  if ((card.cardEffect.continuousEffectType == "passive") && (card.cardEffect.chargeConsumedPhase == "main")) {
-		  	card.cardEffect.chargesUsedTotal++;
 
-		  	if (card.cardEffect.effect == "energyRegen") {
-		  		playerState.energyPoints += card.cardEffect.effectValue;
+		let cardsOnFieldCopy = playerState.cardsOnFieldArr.slice().reverse();
+		for (let i = 0; i < cardsOnFieldCopy.length; i++) {
+		  if ((playerState.cardsOnFieldArr[i].cardEffect.continuousEffectType == "passive") && (playerState.cardsOnFieldArr[i].cardEffect.chargeConsumedPhase == "main")) {
+		  	playerState.cardsOnFieldArr[i].cardEffect.chargesUsedTotal++;
+
+		  	if (playerState.cardsOnFieldArr[i].cardEffect.effect == "energyRegen") {
+		  		playerState.energyPoints += playerState.cardsOnFieldArr[i].cardEffect.effectValue;
 		  	}
 
-		  	checkIfCardExpired(card, cardIdx, playerState, playerStateEnemy);
+		  	await checkIfCardExpired(playerState.cardsOnFieldArr[i], i, playerState, playerStateEnemy, cardsOnFieldCopy);
 		  }
-		});
+		}
 
 		playerState.cardsSummonConstraints.cardsCanSummonAny = true;
 
@@ -117,13 +121,16 @@ var self = module.exports = {
 		});
 
     playerState.cardsExpired = [];
-    playerState.cardsOnFieldArr.slice().reverse().forEach(function(card, cardIdx, arr) {
-		  if ((card.cardEffect.continuousEffectType == "passive") && (card.cardEffect.chargeConsumedPhase == "roll")) {
-		  	card.cardEffect.chargesUsedTotal++;
 
-		  	checkIfCardExpired(card, cardIdx, playerState, playerStateEnemy);
+		let cardsOnFieldCopy = playerState.cardsOnFieldArr.slice().reverse();
+		for (let i = 0; i < cardsOnFieldCopy.length; i++) {
+		  if ((playerState.cardsOnFieldArr[i].cardEffect.continuousEffectType == "passive")
+		  	&& (playerState.cardsOnFieldArr[i].cardEffect.chargeConsumedPhase == "roll")) {
+		  	playerState.cardsOnFieldArr[i].cardEffect.chargesUsedTotal++;
+
+		  	await checkIfCardExpired(playerState.cardsOnFieldArr[i], i, playerState, playerStateEnemy, cardsOnFieldCopy);
 		  }
-		});
+		}
 
 		playerState.cardsSummonConstraints.cardsCanSummonAny = false;
 
@@ -157,13 +164,15 @@ var self = module.exports = {
     let yourUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player1Id : ctx.roomData.player2Id;
 
 		playerState.cardsExpired = [];
-    playerState.cardsOnFieldArr.slice().reverse().forEach(function(card, cardIdx, arr) {
-		  if ((card.cardEffect.continuousEffectType == "passive") && (card.cardEffect.chargeConsumedPhase == "end")) {
-		  	card.cardEffect.chargesUsedTotal++;
 
-		  	checkIfCardExpired(card, cardIdx, playerState, playerStateEnemy);
+		let cardsOnFieldCopy = playerState.cardsOnFieldArr.slice().reverse();
+		for (let i = 0; i < cardsOnFieldCopy.length; i++) {
+		  if ((playerState.cardsOnFieldArr[i].cardEffect.continuousEffectType == "passive") && (playerState.cardsOnFieldArr[i].cardEffect.chargeConsumedPhase == "end")) {
+		  	playerState.cardsOnFieldArr[i].cardEffect.chargesUsedTotal++;
+
+		  	await checkIfCardExpired(playerState.cardsOnFieldArr[i], i, playerState, playerStateEnemy, cardsOnFieldCopy);
 		  }
-		});
+		}
 
     assert(playerState.canRollDiceBoardCount == 0);
     assert(playerState.canRollDiceBoardCountBackward == 0);
@@ -235,13 +244,15 @@ var self = module.exports = {
 		}
 
 		if (playerState.cardsToDraw <= 0) {
-			playerState.cardsOnFieldArr.slice().reverse().forEach(function(card, cardIdx, arr) {
-			  if (!card.cardEffect.continuous && card.cardEffect.effect == "drawCardFromDeckYouEnemy") {
-			  	playerStateEnemy.cardsToDraw += card.cardEffect.effectValueEnemy;
-			  	playerState.cardsInGraveyardArr.push(card);
-			  	playerState.cardsOnFieldArr.splice(arr.length - 1 - cardIdx, 1);
+			let cardsOnFieldCopy = playerState.cardsOnFieldArr.slice().reverse();
+			for (let i = 0; i < cardsOnFieldCopy.length; i++) {
+			  if (!playerState.cardsOnFieldArr[i].cardEffect.continuous
+			  	&& playerState.cardsOnFieldArr[i].cardEffect.effect == "drawCardFromDeckYouEnemy") {
+			  	playerStateEnemy.cardsToDraw += playerState.cardsOnFieldArr[i].cardEffect.effectValueEnemy;
+			  	await putCardInGraveyard(playerState.cardsOnFieldArr[i], playerState);
+			  	playerState.cardsOnFieldArr.splice(cardsOnFieldCopy.length - 1 - i, 1);
 			  }
-	    });
+			}
 		}
 
 		playerState.cardsInHandArr.forEach(function(card) {
@@ -278,7 +289,7 @@ var self = module.exports = {
 
 		if (!card.cardEffect.continuous) {
 			if (card.cardEffect.autoEffect) {
-    		playerState.cardsInGraveyardArr.push(card);
+				await putCardInGraveyard(card, playerState);
     		playerState.cardsOnFieldArr.pop();
 				card.cardEffect.isFinished = true;
 			}
@@ -532,7 +543,7 @@ var self = module.exports = {
     let yourUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player1Id : ctx.roomData.player2Id;
     let currBoardIndexYou = gameState.playersState[yourUserId].currBoardIndex;
 
-		playerState.cardsInGraveyardArr.push(card);
+    await putCardInGraveyard(card, playerState);
 
 		if (card.cardEffect.effect == "moveSpacesForwardUpTo") {
 			assert((finishData.effectValueChosen > 0) && (finishData.effectValueChosen <= card.cardEffect.effectValue));
@@ -801,11 +812,13 @@ var self = module.exports = {
 			assert(boardMatrix[finishData.rowIndex][finishData.columnIndex] > 1);
 
 			let validSpace = false;
+			let spacesCount;
 			if (ctx.session.userData.userId == ctx.roomData.player1Id) {
 				for(let i = 1; i <= card.cardEffect.effectValue; i++) {
 					if (((currBoardIndexYou + i) <= (boardPath.length - 1)) && (boardPath[currBoardIndexYou + i][0] == finishData.rowIndex)
 						&& (boardPath[currBoardIndexYou + i][1] == finishData.columnIndex)) {
 						validSpace = true;
+						spacesCount = i;
 					}
 				}
 			} else {
@@ -813,18 +826,22 @@ var self = module.exports = {
 					if ((currBoardIndexYou - i >= 0) && (boardPath[currBoardIndexYou - i][0] == finishData.rowIndex)
 						&& (boardPath[currBoardIndexYou - i][1] == finishData.columnIndex)) {
 						validSpace = true;
+						spacesCount = i;
 					}
 				}
 			}
 
 			assert(validSpace);
 			checkForSpecialBoardSpace(ctx, finishData.rowIndex, finishData.columnIndex);
+			checkForEnergyReturn(ctx, card, spacesCount);
 	  } else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpToEnemy") {
 	  	assert((finishData.effectValueChosen > 0) && (finishData.effectValueChosen <= card.cardEffect.effectValue));
 	  	assert("moveBackward" in finishData);
 	  	card.cardEffect.effectValueChosen = finishData.effectValueChosen;
 	  	await self.rollDiceBoardHook(ctx, { rollDiceValue: card.cardEffect.effectValueChosen,
 	  		userId: enemyUserId, moveBackwardsOnNextRoll: finishData.moveBackward, moveIfCan: false });
+
+	  	checkForEnergyReturn(ctx, card, finishData.effectValueChosen);
 	  } else if (card.cardEffect.effect == "decreaseChargesContinousCardAll") {
 	  	assert(("fieldChosen" in finishData) && (finishData.fieldChosen == "your" || finishData.fieldChosen == "enemy")
 	  		&& finishData.cardId);
@@ -863,10 +880,15 @@ var self = module.exports = {
 			assert(cardSelected);
 			assert(cardIdx != null && cardIdx >= 0);
 
+			checkForEnergyReturn(ctx, card,
+				cardSelected.cardEffect.effectChargesCount - cardSelected.cardEffect.chargesUsedTotal - card.cardEffect.effectValue);
 			cardSelected.cardEffect.effectChargesCount -= card.cardEffect.effectValue;
 
 			playerStateCurr.cardsExpired = [];
-			checkIfCardExpired(cardSelected, cardIdx, playerStateCurr, playerStateCurrEnemy);
+
+			let cardsOnFieldCopy = playerStateCurr.cardsOnFieldArr.slice().reverse();
+
+			await checkIfCardExpired(cardSelected, cardIdx, playerStateCurr, playerStateCurrEnemy, cardsOnFieldCopy);
 			card.finishData = {
 				fieldChosen: finishData.fieldChosen,
 				cardChosen: cardSelected,
@@ -876,7 +898,7 @@ var self = module.exports = {
 	  if ("effectChargesCount" in card.cardEffect && card.cardEffect.chargesUsedTotal >= card.cardEffect.effectChargesCount) {
 			card.cardEffect.isFinished = true;
 			playerState.cardsOnFieldArr.splice(ctx.cardIdx, 1);
-			playerState.cardsInGraveyardArr.push(card);
+			await putCardInGraveyard(card, playerState);
 		} else {
 			if ("energyPerUseIncrement" in card.cardEffect) {
 				let operator = card.cardEffect.energyPerUseIncrement.charAt(0);
@@ -1135,12 +1157,14 @@ var self = module.exports = {
 		let playerStateEnemy = gameState.playersState[enemyUserId];
 
 		if (playerState.cardsToTakeFromYourGraveyard <= 0) {
-			playerState.cardsOnFieldArr.slice().reverse().forEach(function(card, cardIdx, arr) {
-			  if (!card.cardEffect.continuous && card.cardEffect.effect == "takeCardFromYourGraveyard") {
-			  	playerState.cardsInGraveyardArr.push(card);
-			  	playerState.cardsOnFieldArr.splice(arr.length - 1 - cardIdx, 1);
+			let cardsOnFieldCopy = playerState.cardsOnFieldArr.slice().reverse();
+			for (let i = 0; i < cardsOnFieldCopy.length; i++) {
+			  if (!playerState.cardsOnFieldArr[i].cardEffect.continuous
+			  	&& playerState.cardsOnFieldArr[i].cardEffect.effect == "takeCardFromYourGraveyard") {
+			  	await putCardInGraveyard(playerState.cardsOnFieldArr[i], playerState);
+			  	playerState.cardsOnFieldArr.splice(cardsOnFieldCopy.length - 1 - i, 1);
 			  }
-	    });
+			}
 		}
 
 		playerState.cardsInHandArr = utils.shuffle(playerState.cardsInHandArr);
@@ -1264,10 +1288,37 @@ let updateFieldValue = {
 	'x': function (x, y) { return (+x) * (+y); },
 };
 
-let checkIfCardExpired = (card, cardIdx, playerState, playerStateEnemy) => {
+let updateEnergyReturnedValueBoardSpaces = {
+	'+': function(card, value) {
+		return (card.cardEffect.energyPerUse - 1)
+			- (Math.floor((value - 1) / card.cardEffect.effectValueOriginal) * card.cardEffect.energyReturnedPerLowerTierUsed);
+	},
+	'x': function(card, value) {
+		let energyReturned = -1;
+		let efffectRange = card.cardEffect.effectValueOriginal;
+
+		console.log('efffectRange: ' + efffectRange);
+		console.log('value: ' + value);
+
+		for (let i = 0; i < card.cardEffect.chargesUsedTotal; i++) {
+			console.log('for loop effectRange: ' + efffectRange);
+			if (value <= efffectRange) {
+				energyReturned++;
+			}
+
+			efffectRange *= card.cardEffect.effectValueOriginal;
+		}
+
+		console.log('energyReturned: ' + energyReturned);
+
+		return energyReturned * card.cardEffect.energyReturnedPerLowerTierUsed;
+	},
+};
+
+let checkIfCardExpired = async (card, cardIdx, playerState, playerStateEnemy, cardsOnFieldArrCopy) => {
 	if (card.cardEffect.chargesUsedTotal >= card.cardEffect.effectChargesCount) {
-		playerState.cardsInGraveyardArr.push(card);
- 		playerState.cardsOnFieldArr.splice(playerState.cardsOnFieldArr.length - 1 - cardIdx, 1);
+		await putCardInGraveyard(card, playerState);
+ 		playerState.cardsOnFieldArr.splice(cardsOnFieldArrCopy.length - 1 - cardIdx, 1);
 		playerState.cardsExpired.push(card);
 
 		if ("effectExpire" in card.cardEffect) {
@@ -1417,6 +1468,53 @@ let updateCardEffectValueStatus = (card, playerState) => {
 			}
 		}
 	}
+};
+
+let checkForEnergyReturn = (ctx, card, chosenValue) => {
+	let energyReturned;
+	let playerState = ctx.gameplayData.gameState.playersState[ctx.session.userData.userId];
+
+	if ((!"energyReturnedPerLowerTierUsed" in card.cardEffect) || (!"effectValueIncrement" in card.cardEffect))
+	{
+		return;
+	}
+
+	let operator = card.cardEffect.effectValueIncrement.charAt(0);
+
+	if (card.cardEffect.effect == "copySpecialSpacesUpTo") {
+		energyReturned = updateEnergyReturnedValueBoardSpaces[operator](card, chosenValue);
+	} else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpToEnemy") {
+		energyReturned = updateEnergyReturnedValueBoardSpaces[operator](card, chosenValue);
+	} else if (card.cardEffect.effect == "decreaseChargesContinousCardAll") {
+		if (chosenValue < 0) {
+			energyReturned = Math.abs(chosenValue);
+		}
+	}
+
+	if (energyReturned && energyReturned > 0) {
+		if ((playerState.energyPoints + energyReturned) > playerState.maxEnergyPoints) {
+			playerState.energyPoints = playerState.maxEnergyPoints;
+		} else {
+			playerState.energyPoints += energyReturned;
+		}
+	}
+};
+
+let putCardInGraveyard = async (card, playerState) => {
+	let queryStatus = await utils.selectRowById({ table: 'cards', field: 'id', queryArg: card.cardId });
+	let cardRow = queryStatus.rows[0];
+	playerState.cardsInGraveyardArr.push({
+		cardId: cardRow.id,
+    cardName: cardRow.name,
+    cardText: cardRow.description,
+    cardTextOriginal: cardRow.description,
+    cardImg: cardRow.image,
+    cardRarity: cardRow.rarity_id,
+    cardEffect: JSON.parse(cardRow.effect_json),
+    cardCost: cardRow.cost,
+    cardAttributes: cardRow.attributes,
+    cardSounds: JSON.parse(cardRow.sounds_json),
+  });
 };
 
 let checkWin = (ctx) => {
