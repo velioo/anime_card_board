@@ -247,6 +247,7 @@ gameController.prototype.resetGameState = function () {
 	clearTimeout(_self.shuffleTimeout);
 	clearTimeout(_self.shuffleTimeout2);
 	clearTimeout(_self.specialSpaceTimeout);
+	clearTimeout(_self.showEnergyTimeout);
 
 	_self._postGame = true;
 	setTimeout(function() {
@@ -1452,7 +1453,6 @@ gameController.prototype.startMainPhaseAnimationEnemy = function () {
 	var _self = this;
 
 	_self.switchPhaseEnemy(_self.PHASE_MAIN_ID,
-		_self.showEnergyRegenAnimation.bind(_self, _self._enemyUserId, _self.PLAYER_ENEMY_CLASS),
 		_self.updateGameStatusInfo.bind(_self),
 		_self.checkForExpiredCardsEnemy.bind(_self, _self.checkIfYouHaveToDoAction
 			.bind(_self, _self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self)))
@@ -1540,7 +1540,6 @@ gameController.prototype.switchPhaseYou = function (currPhaseIdSelector) {
 	  	_self.updateGameStatusInfo();
 	  	_self.checkForExpiredCardsYou(_self.startMainPhase.bind(_self));
 	  } else if (currPhaseIdSelector == _self.PHASE_MAIN_ID) {
-	  	_self.showEnergyRegenAnimation(_self._yourUserId, _self.PLAYER_YOU_CLASS);
 	  	_self.updateGameStatusInfo();
 	  	_self.checkForExpiredCardsYou(_self.checkIfEnemyHasToDoAction
 	  		.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self)));
@@ -1554,15 +1553,24 @@ gameController.prototype.switchPhaseYou = function (currPhaseIdSelector) {
   }.bind(this), 2100);
 };
 
-gameController.prototype.showEnergyRegenAnimation = function (playerId, playerSelectorClass) {
+gameController.prototype.showEnergyChangeAnimation = function (playerId, playerSelectorClass, showValue) {
 	var _self = this;
 
+	showValue = +showValue;
+	if (showValue >= 0) {
+		showValue = "+" + showValue;
+	}
+
+	clearTimeout(_self.showEnergyTimeout);
+	$(_self.ENERGY_REGEN_CLASS + playerSelectorClass).css("animation", "");
+	$(_self.ENERGY_REGEN_CLASS + playerSelectorClass).css("-webkit-animation", "");
+
 	var playerState = _self._gameplayData.gameState.playersState[playerId];
-	$(_self.ENERGY_REGEN_CLASS + playerSelectorClass).html("+" + playerState.energyRegen);
+	$(_self.ENERGY_REGEN_CLASS + playerSelectorClass).html(showValue);
 	$(_self.ENERGY_REGEN_CLASS + playerSelectorClass).css("animation", "energy-regen-" + (playerSelectorClass.substr(1)) + " 2s ease-out")
 	$(_self.ENERGY_REGEN_CLASS + playerSelectorClass).css("-webkit-animation", "energy-regen-" + (playerSelectorClass.substr(1)) + " 2s ease-out")
 
-	setTimeout(function() {
+	_self.showEnergyTimeout = setTimeout(function() {
 		$(_self.ENERGY_REGEN_CLASS + playerSelectorClass).css("animation", "");
 		$(_self.ENERGY_REGEN_CLASS + playerSelectorClass).css("-webkit-animation", "");
 	}, 2000);
@@ -1816,9 +1824,11 @@ gameController.prototype.setCardSelectOnFieldListenerWrapper = function (card) {
 	var _self = this;
 
 	if (card.cardEffect.effect == "increaseChargesContinousCard") {
-		_self.setCardSelectFromYourFieldListener(card, _self._yourUserId);
+		_self.setCardSelectFromFieldListener(card, [_self.PLAYER_YOU_CLASS]);
+		//_self.setCardSelectFromYourFieldListener(card, _self._yourUserId);
 	} else if (card.cardEffect.effect == "decreaseChargesContinousCardAll") {
-		_self.setCardSelectFromAnyFieldListener(card);
+		_self.setCardSelectFromFieldListener(card, [_self.PLAYER_YOU_CLASS, _self.PLAYER_ENEMY_CLASS]);
+		//_self.setCardSelectFromAnyFieldListener(card);
 	}
 };
 
@@ -1826,119 +1836,197 @@ gameController.prototype.setCardSelectOnFieldListenerWrapperEnemy = function (ca
 	var _self = this;
 
 	if (card.cardEffect.effect == "increaseChargesContinousCard") {
-		_self.setCardSelectFromEnemyFieldListenerEnemy(card, _self._enemyUserId);
+		_self.setCardSelectFromFieldListenerEnemy(card, [_self.PLAYER_ENEMY_CLASS]);
+		// _self.setCardSelectFromEnemyFieldListenerEnemy(card, _self._enemyUserId);
 	} else if (card.cardEffect.effect == "decreaseChargesContinousCardAll") {
-		_self.setCardSelectFromAnyFieldListenerEnemy(card);
+		_self.setCardSelectFromFieldListenerEnemy(card, [_self.PLAYER_ENEMY_CLASS, _self.PLAYER_YOU_CLASS]);
+		// _self.setCardSelectFromAnyFieldListenerEnemy(card);
 	}
 };
 
-gameController.prototype.setCardSelectFromYourFieldListener = function(card, playerId) {
+gameController.prototype.setCardSelectFromFieldListener = function (card, playerIdSelectorsArr) {
 	var _self = this;
 
-	var playerSelectorClass;
 	var allowedAttributes = card.cardEffect.allowedAttributes;
 	var cardFromFieldText = "";
 
-	if (playerId == _self._yourUserId) {
-		playerSelectorClass = _self.PLAYER_YOU_CLASS;
-		cardFromFieldText += " your field";
+	if (playerIdSelectorsArr.length > 1) {
+		cardFromFieldText += " any field";
 	} else {
-		playerSelectorClass = _self.PLAYER_ENEMY_CLASS;
-		cardFromFieldText += " your opponent's field";
+		if (playerIdSelectorsArr[0] == _self.PLAYER_YOU_CLASS) {
+			cardFromFieldText += " your field";
+		} else {
+			cardFromFieldText += " your opponent's field";
+		}
 	}
 
 	var eventInfoText = "Select card from" + cardFromFieldText;
-
 	_self.showEventsInfo(eventInfoText);
 
-	$(_self.CARD_ON_FIELD_CLASS + playerSelectorClass).each(function() {
-		var cardAttributes = $(this).data("cardAttributes");
-		var selectable = false;
-		cardAttributes.forEach(function(attribute) {
-			if (allowedAttributes.includes(attribute)) {
-				selectable = true;
+	playerIdSelectorsArr.forEach(function(playerSelectorClass) {
+		$(_self.CARD_ON_FIELD_CLASS + playerSelectorClass).each(function() {
+			var cardAttributes = $(this).data("cardAttributes");
+			var selectable = false;
+			cardAttributes.forEach(function(attribute) {
+				if (allowedAttributes.includes(attribute)) {
+					selectable = true;
+				}
+			});
+
+			if ($(this).hasClass("player-you") && $(this).data("cardId") == card.cardId) {
+				selectable = false;
 			}
-		});
 
-		if (!selectable) {
-			return;
-		}
+			if (!selectable) {
+				return;
+			}
 
-		$(this).attr("data-tooltip", "selectCard");
-		$(this).on("click", function() {
-			$(_self.CARD_ON_FIELD_CLASS + playerSelectorClass).off("click");
-			$(_self.CARD_ON_FIELD_CLASS + playerSelectorClass).removeAttr("data-tooltip");
-			_self.hideEventsInfo(null, 0);
-			var finishData = { cardId: $(this).data("cardId") };
-			_self._lastClientData = { roomId: _self._roomData.id, cardId: card.cardId, finishData: finishData };
-			_self.client.finishCardEffect(_self._lastClientData);
+			$(this).attr("data-tooltip", "selectCard");
+			$(this).on("click", function() {
+				$(_self.CARD_ON_FIELD_CLASS).off("click");
+				$(_self.CARD_ON_FIELD_CLASS).removeAttr("data-tooltip");
+				_self.hideEventsInfo(null, 0);
+				var finishData = { cardId: $(this).data("cardId"), fieldChosen: $(this).hasClass("player-you") ? "your" : "enemy" };
+				_self._lastClientData = { roomId: _self._roomData.id, cardId: card.cardId, finishData: finishData };
+
+				if (card.cardEffect.continuous) {
+					_self.client.finishCardEffectContinuous(_self._lastClientData);
+				} else {
+					_self.client.finishCardEffect(_self._lastClientData);
+				}
+			});
 		});
 	});
 };
 
-gameController.prototype.setCardSelectFromAnyFieldListener = function (card) {
-	var _self = this;
+// gameController.prototype.setCardSelectFromYourFieldListener = function(card, playerId) {
+// 	var _self = this;
 
-	var allowedAttributes = card.cardEffect.allowedAttributes;
-	var eventInfoText = "Select a card from any field";
+// 	var playerSelectorClass;
+// 	var allowedAttributes = card.cardEffect.allowedAttributes;
+// 	var cardFromFieldText = "";
 
-	_self.showEventsInfo(eventInfoText);
+// 	if (playerId == _self._yourUserId) {
+// 		playerSelectorClass = _self.PLAYER_YOU_CLASS;
+// 		cardFromFieldText += " your field";
+// 	} else {
+// 		playerSelectorClass = _self.PLAYER_ENEMY_CLASS;
+// 		cardFromFieldText += " your opponent's field";
+// 	}
 
-	$(_self.CARD_ON_FIELD_CLASS).each(function() {
-		var cardAttributes = $(this).data("cardAttributes");
-		var selectable = false;
-		cardAttributes.forEach(function(attribute) {
-			if (allowedAttributes.includes(attribute)) {
-				selectable = true;
-			}
-		});
+// 	var eventInfoText = "Select card from" + cardFromFieldText;
 
-		if ($(this).hasClass("player-you") && $(this).data("cardId") == card.cardId) {
-			selectable = false;
-		}
+// 	_self.showEventsInfo(eventInfoText);
 
-		if (!selectable) {
-			return;
-		}
+// 	$(_self.CARD_ON_FIELD_CLASS + playerSelectorClass).each(function() {
+// 		var cardAttributes = $(this).data("cardAttributes");
+// 		var selectable = false;
+// 		cardAttributes.forEach(function(attribute) {
+// 			if (allowedAttributes.includes(attribute)) {
+// 				selectable = true;
+// 			}
+// 		});
 
-		$(this).attr("data-tooltip", "selectCard");
-		$(this).on("click", function() {
-			$(_self.CARD_ON_FIELD_CLASS).off("click");
-			$(_self.CARD_ON_FIELD_CLASS).removeAttr("data-tooltip");
-			_self.hideEventsInfo(null, 0);
-			var finishData = { cardId: $(this).data("cardId"), fieldChosen: $(this).hasClass("player-you") ? "your" : "enemy" };
-			_self._lastClientData = { roomId: _self._roomData.id, cardId: card.cardId, finishData: finishData };
+// 		if (!selectable) {
+// 			return;
+// 		}
 
-			if (card.cardEffect.continuous) {
-				_self.client.finishCardEffectContinuous(_self._lastClientData);
-			} else {
-				_self.client.finishCardEffect(_self._lastClientData);
-			}
-		});
-	});
-};
+// 		$(this).attr("data-tooltip", "selectCard");
+// 		$(this).on("click", function() {
+// 			$(_self.CARD_ON_FIELD_CLASS + playerSelectorClass).off("click");
+// 			$(_self.CARD_ON_FIELD_CLASS + playerSelectorClass).removeAttr("data-tooltip");
+// 			_self.hideEventsInfo(null, 0);
+// 			var finishData = { cardId: $(this).data("cardId") };
+// 			_self._lastClientData = { roomId: _self._roomData.id, cardId: card.cardId, finishData: finishData };
+// 			_self.client.finishCardEffect(_self._lastClientData);
+// 		});
+// 	});
+// };
 
-gameController.prototype.setCardSelectFromEnemyFieldListenerEnemy = function(card, playerId) {
-	var _self = this;
+// gameController.prototype.setCardSelectFromAnyFieldListener = function (card) {
+// 	var _self = this;
+
+// 	var allowedAttributes = card.cardEffect.allowedAttributes;
+// 	var eventInfoText = "Select a card from any field";
+
+// 	_self.showEventsInfo(eventInfoText);
+
+// 	$(_self.CARD_ON_FIELD_CLASS).each(function() {
+// 		var cardAttributes = $(this).data("cardAttributes");
+// 		var selectable = false;
+// 		cardAttributes.forEach(function(attribute) {
+// 			if (allowedAttributes.includes(attribute)) {
+// 				selectable = true;
+// 			}
+// 		});
+
+// 		if ($(this).hasClass("player-you") && $(this).data("cardId") == card.cardId) {
+// 			selectable = false;
+// 		}
+
+// 		if (!selectable) {
+// 			return;
+// 		}
+
+// 		$(this).attr("data-tooltip", "selectCard");
+// 		$(this).on("click", function() {
+// 			$(_self.CARD_ON_FIELD_CLASS).off("click");
+// 			$(_self.CARD_ON_FIELD_CLASS).removeAttr("data-tooltip");
+// 			_self.hideEventsInfo(null, 0);
+// 			var finishData = { cardId: $(this).data("cardId"), fieldChosen: $(this).hasClass("player-you") ? "your" : "enemy" };
+// 			_self._lastClientData = { roomId: _self._roomData.id, cardId: card.cardId, finishData: finishData };
+
+// 			if (card.cardEffect.continuous) {
+// 				_self.client.finishCardEffectContinuous(_self._lastClientData);
+// 			} else {
+// 				_self.client.finishCardEffect(_self._lastClientData);
+// 			}
+// 		});
+// 	});
+// };
+
+// gameController.prototype.setCardSelectFromEnemyFieldListenerEnemy = function(card, playerId) {
+// 	var _self = this;
+
+// 	var playerSelectorClass;
+// 	var cardFromFieldText = "";
+
+// 	if (playerId == _self._enemyUserId) {
+// 		cardFromFieldText += " his field";
+// 	} else {
+// 		cardFromFieldText += " your field";
+// 	}
+
+// 	var eventInfoText = "Your opponent must select a card from " + cardFromFieldText;
+
+// 	_self.showEventsInfo(eventInfoText);
+// };
+
+// gameController.prototype.setCardSelectFromAnyFieldListenerEnemy = function(card) {
+// 	var _self = this;
+
+// 	var eventInfoText = "Your opponent must select a card from any field";
+// 	_self.showEventsInfo(eventInfoText);
+// };
+
+gameController.prototype.setCardSelectFromFieldListenerEnemy = function (card, playerIdSelectorsArr) {
+		var _self = this;
 
 	var playerSelectorClass;
 	var cardFromFieldText = "";
 
-	if (playerId == _self._enemyUserId) {
-		cardFromFieldText += " his field";
+	if (playerIdSelectorsArr.length > 1) {
+		cardFromFieldText += " any field";
 	} else {
-		cardFromFieldText += " your field";
+		if (playerIdSelectorsArr[0] == _self.PLAYER_YOU_CLASS) {
+			cardFromFieldText += " your field";
+		} else {
+			cardFromFieldText += " his field";
+		}
 	}
 
 	var eventInfoText = "Your opponent must select a card from " + cardFromFieldText;
 
-	_self.showEventsInfo(eventInfoText);
-};
-
-gameController.prototype.setCardSelectFromAnyFieldListenerEnemy = function(card) {
-	var _self = this;
-
-	var eventInfoText = "Your opponent must select a card from any field";
 	_self.showEventsInfo(eventInfoText);
 };
 
@@ -4834,6 +4922,20 @@ gameController.prototype.updateGameStatusInfo = function () {
 	var gameState = _self._gameplayData.gameState;
 	var playerYouStatus = gameState.playersState[_self._yourUserId];
 	var playerEnemyStatus = gameState.playersState[_self._enemyUserId];
+
+	var lastEnergy = +$(_self.ENERGY_POINTS_TEXT_CLASS + _self.PLAYER_YOU_CLASS).text().split("/")[0];
+	console.log('My last energy: ' + lastEnergy);
+	console.log('Curr energy: ' + playerYouStatus.energyPoints);
+	if (playerYouStatus.energyPoints != lastEnergy) {
+		_self.showEnergyChangeAnimation(_self._yourUserId, _self.PLAYER_YOU_CLASS, playerYouStatus.energyPoints - lastEnergy);
+	}
+
+	console.log('Enemy last energy: ' + lastEnergy);
+	console.log('Curr energy: ' + playerEnemyStatus.energyPoints);
+	lastEnergy = +$(_self.ENERGY_POINTS_TEXT_CLASS + _self.PLAYER_ENEMY_CLASS).text().split("/")[0];
+	if (playerEnemyStatus.energyPoints != lastEnergy) {
+		_self.showEnergyChangeAnimation(_self._enemyUserId, _self.PLAYER_ENEMY_CLASS, playerEnemyStatus.energyPoints - lastEnergy);
+	}
 
 	$(_self.ENERGY_POINTS_TEXT_CLASS + _self.PLAYER_YOU_CLASS).html(playerYouStatus.energyPoints + "/" + playerYouStatus.maxEnergyPoints);
 	$(_self.ENERGY_POINTS_TEXT_CLASS + _self.PLAYER_ENEMY_CLASS).html(playerEnemyStatus.energyPoints + "/" + playerEnemyStatus.maxEnergyPoints);

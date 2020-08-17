@@ -36,10 +36,10 @@ var self = module.exports = {
 
 		let cardsOnFieldCopy = playerState.cardsOnFieldArr.slice().reverse();
 		for (let i = 0; i < cardsOnFieldCopy.length; i++) {
-		  if ((playerState.cardsOnFieldArr[i].cardEffect.continuousEffectType == "passive") && (playerState.cardsOnFieldArr[i].cardEffect.chargeConsumedPhase == "standby")) {
-		  	playerState.cardsOnFieldArr[i].cardEffect.chargesUsedTotal++;
+		  if ((cardsOnFieldCopy[i].cardEffect.continuousEffectType == "passive") && (cardsOnFieldCopy[i].cardEffect.chargeConsumedPhase == "standby")) {
+		  	cardsOnFieldCopy[i].cardEffect.chargesUsedTotal++;
 
-		  	await checkIfCardExpired(playerState.cardsOnFieldArr[i], i, playerState, playerStateEnemy, cardsOnFieldCopy);
+		  	await checkIfCardExpired(cardsOnFieldCopy[i], i, playerState, playerStateEnemy, cardsOnFieldCopy);
 		  }
 		}
 
@@ -70,14 +70,14 @@ var self = module.exports = {
 
 		let cardsOnFieldCopy = playerState.cardsOnFieldArr.slice().reverse();
 		for (let i = 0; i < cardsOnFieldCopy.length; i++) {
-		  if ((playerState.cardsOnFieldArr[i].cardEffect.continuousEffectType == "passive") && (playerState.cardsOnFieldArr[i].cardEffect.chargeConsumedPhase == "main")) {
-		  	playerState.cardsOnFieldArr[i].cardEffect.chargesUsedTotal++;
+		  if ((cardsOnFieldCopy[i].cardEffect.continuousEffectType == "passive") && (cardsOnFieldCopy[i].cardEffect.chargeConsumedPhase == "main")) {
+		  	cardsOnFieldCopy[i].cardEffect.chargesUsedTotal++;
 
-		  	if (playerState.cardsOnFieldArr[i].cardEffect.effect == "energyRegen") {
-		  		playerState.energyPoints += playerState.cardsOnFieldArr[i].cardEffect.effectValue;
+		  	if (cardsOnFieldCopy[i].cardEffect.effect == "energyRegen") {
+		  		playerState.energyPoints += cardsOnFieldCopy[i].cardEffect.effectValue;
 		  	}
 
-		  	await checkIfCardExpired(playerState.cardsOnFieldArr[i], i, playerState, playerStateEnemy, cardsOnFieldCopy);
+		  	await checkIfCardExpired(cardsOnFieldCopy[i], i, playerState, playerStateEnemy, cardsOnFieldCopy);
 		  }
 		}
 
@@ -124,11 +124,11 @@ var self = module.exports = {
 
 		let cardsOnFieldCopy = playerState.cardsOnFieldArr.slice().reverse();
 		for (let i = 0; i < cardsOnFieldCopy.length; i++) {
-		  if ((playerState.cardsOnFieldArr[i].cardEffect.continuousEffectType == "passive")
-		  	&& (playerState.cardsOnFieldArr[i].cardEffect.chargeConsumedPhase == "roll")) {
-		  	playerState.cardsOnFieldArr[i].cardEffect.chargesUsedTotal++;
+		  if ((cardsOnFieldCopy[i].cardEffect.continuousEffectType == "passive")
+		  	&& (cardsOnFieldCopy[i].cardEffect.chargeConsumedPhase == "roll")) {
+		  	cardsOnFieldCopy[i].cardEffect.chargesUsedTotal++;
 
-		  	await checkIfCardExpired(playerState.cardsOnFieldArr[i], i, playerState, playerStateEnemy, cardsOnFieldCopy);
+		  	await checkIfCardExpired(cardsOnFieldCopy[i], i, playerState, playerStateEnemy, cardsOnFieldCopy);
 		  }
 		}
 
@@ -167,10 +167,10 @@ var self = module.exports = {
 
 		let cardsOnFieldCopy = playerState.cardsOnFieldArr.slice().reverse();
 		for (let i = 0; i < cardsOnFieldCopy.length; i++) {
-		  if ((playerState.cardsOnFieldArr[i].cardEffect.continuousEffectType == "passive") && (playerState.cardsOnFieldArr[i].cardEffect.chargeConsumedPhase == "end")) {
-		  	playerState.cardsOnFieldArr[i].cardEffect.chargesUsedTotal++;
+		  if ((cardsOnFieldCopy[i].cardEffect.continuousEffectType == "passive") && (cardsOnFieldCopy[i].cardEffect.chargeConsumedPhase == "end")) {
+		  	cardsOnFieldCopy[i].cardEffect.chargesUsedTotal++;
 
-		  	await checkIfCardExpired(playerState.cardsOnFieldArr[i], i, playerState, playerStateEnemy, cardsOnFieldCopy);
+		  	await checkIfCardExpired(cardsOnFieldCopy[i], i, playerState, playerStateEnemy, cardsOnFieldCopy);
 		  }
 		}
 
@@ -246,10 +246,10 @@ var self = module.exports = {
 		if (playerState.cardsToDraw <= 0) {
 			let cardsOnFieldCopy = playerState.cardsOnFieldArr.slice().reverse();
 			for (let i = 0; i < cardsOnFieldCopy.length; i++) {
-			  if (!playerState.cardsOnFieldArr[i].cardEffect.continuous
-			  	&& playerState.cardsOnFieldArr[i].cardEffect.effect == "drawCardFromDeckYouEnemy") {
-			  	playerStateEnemy.cardsToDraw += playerState.cardsOnFieldArr[i].cardEffect.effectValueEnemy;
-			  	await putCardInGraveyard(playerState.cardsOnFieldArr[i], playerState);
+			  if (!cardsOnFieldCopy[i].cardEffect.continuous
+			  	&& cardsOnFieldCopy[i].cardEffect.effect == "drawCardFromDeckYouEnemy") {
+			  	playerStateEnemy.cardsToDraw += cardsOnFieldCopy[i].cardEffect.effectValueEnemy;
+			  	await putCardInGraveyard(cardsOnFieldCopy[i], playerState);
 			  	playerState.cardsOnFieldArr.splice(cardsOnFieldCopy.length - 1 - i, 1);
 			  }
 			}
@@ -1159,9 +1159,9 @@ var self = module.exports = {
 		if (playerState.cardsToTakeFromYourGraveyard <= 0) {
 			let cardsOnFieldCopy = playerState.cardsOnFieldArr.slice().reverse();
 			for (let i = 0; i < cardsOnFieldCopy.length; i++) {
-			  if (!playerState.cardsOnFieldArr[i].cardEffect.continuous
-			  	&& playerState.cardsOnFieldArr[i].cardEffect.effect == "takeCardFromYourGraveyard") {
-			  	await putCardInGraveyard(playerState.cardsOnFieldArr[i], playerState);
+			  if (!cardsOnFieldCopy[i].cardEffect.continuous
+			  	&& cardsOnFieldCopy[i].cardEffect.effect == "takeCardFromYourGraveyard") {
+			  	await putCardInGraveyard(cardsOnFieldCopy[i], playerState);
 			  	playerState.cardsOnFieldArr.splice(cardsOnFieldCopy.length - 1 - i, 1);
 			  }
 			}
