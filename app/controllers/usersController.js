@@ -176,6 +176,8 @@ var self = module.exports = {
       assert(ctx.session.userData && ctx.session.userData.username);
 
       ctx.request.body.data.sound = (ctx.request.body.data.sound == 'true');
+      ctx.request.body.data.backgroundSound = (ctx.request.body.data.backgroundSound == 'true');
+      ctx.request.body.data.cardBoardEffectSounds = (ctx.request.body.data.cardBoardEffectSounds == 'true');
       ctx.request.body.data.soundVolume = (+ctx.request.body.data.soundVolume);
       const isSchemaValid = ajv.validate(SCHEMAS.SETTINGS, ctx.request.body.data);
 
@@ -191,6 +193,8 @@ var self = module.exports = {
 
       let settingsJson = {
         sound: ctx.request.body.data.sound,
+        backgroundSound: ctx.request.body.data.backgroundSound,
+        cardBoardEffectSounds: ctx.request.body.data.cardBoardEffectSounds,
         soundVolume: ctx.request.body.data.soundVolume,
       };
 
@@ -246,6 +250,8 @@ let getUserData = (ctx) => {
     'salt': salt,
     'settings_json': JSON.stringify({
       sound: false,
+      backgroundSound: false,
+      cardBoardEffectSounds: false,
       soundVolume: 20,
     }),
   };

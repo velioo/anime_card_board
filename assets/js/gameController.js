@@ -377,13 +377,14 @@ gameController.prototype.processStartGameResponse = function (data) {
 gameController.prototype.startBackgroundMusic = function () {
 	var _self = this;
 
-	if (!_self.client.generalClient.logInSignUpController._settings.sound) {
+	if (!_self.client.generalClient.logInSignUpController._settings.sound
+		|| !_self.client.generalClient.logInSignUpController._settings.backgroundSound) {
 		return;
 	}
 
 	_self._backgroundMusicFile = "background.mp3";
 	_self._backgroundMusic = new Audio("/sounds/" + _self._backgroundMusicFile);
- 	_self._backgroundMusic.volume = (_self.client.generalClient.logInSignUpController._settings.soundVolume) / 1000;
+ 	_self._backgroundMusic.volume = (_self.client.generalClient.logInSignUpController._settings.soundVolume || 0) / 1000;
  	_self._backgroundMusic.loop = true;
   _self._backgroundMusic.play();
 };
@@ -958,7 +959,7 @@ gameController.prototype.canSummonCard = function (card) {
 				canSummonCard = false;
 		}
 	} else if (cardEffect.effect.match("createSpecialBoardSpaceForwardTier")) {
-		var availableSpaces = 0;
+		var availableSpace = false;
 	  var moveBoardForward = true;
 	  if (_self._yourUserId == _self._roomData.player2Id) {
 	  	moveBoardForward = false;
@@ -984,11 +985,12 @@ gameController.prototype.canSummonCard = function (card) {
 		  columnIndex = boardPath[currBoardIndexYouCopy][1];
 
 		  if (boardMatrix[rowIndex][columnIndex] == 1) {
-		  	availableSpaces++;
+		  	availableSpace = true;
+		  	break;
 			}
 		}
 
-		if (availableSpaces <= 0) {
+		if (!availableSpace) {
 			canSummonCard = false;
 		}
 	} else if (cardEffect.effect == "destroySpecialBoardSpaceForward") {
@@ -1019,6 +1021,35 @@ gameController.prototype.canSummonCard = function (card) {
 
 		  if (boardMatrix[rowIndex][columnIndex] > 1) {
 		  	availableSpace = true;
+			}
+		}
+
+		if (!availableSpace) {
+			canSummonCard = false;
+		}
+	} else if (cardEffect.effect == "moveSpacesForwardNonSpecial") {
+		var availableSpace = false;
+	  var moveBoardForward = true;
+	  if (_self._yourUserId == _self._roomData.player2Id) {
+	  	moveBoardForward = false;
+	  }
+
+	  var currBoardIndexYouCopy = currBoardIndexYou;
+		for (var i = 0; i <= boardPath.length - 1; i++) {
+			if (moveBoardForward) {
+				if ((currBoardIndexYouCopy + i) > (boardPath.length - 1)) {
+					break;
+				} else if ((boardMatrix[boardPath[currBoardIndexYouCopy + i][0]][boardPath[currBoardIndexYouCopy + i][1]] == 1)) {
+					availableSpace = true;
+					break;
+				}
+			} else {
+				if ((currBoardIndexYouCopy - i) < 0) {
+					break;
+				} else if ((boardMatrix[boardPath[currBoardIndexYouCopy - 1][0]][boardPath[currBoardIndexYouCopy - i][1]] == 1)) {
+					availableSpace = true;
+					break;
+				}
 			}
 		}
 
@@ -1814,6 +1845,14 @@ gameController.prototype.performCardEffectInstantYou = function (card) {
 		} else if (card.cardEffect.effect == "rollDiceForwardBackward") {
 			_self._postDestroyCard = card;
 			_self.enableMainPhaseActions();
+		} else if (card.cardEffect.effect == "moveSpacesForwardNonSpecial") {
+			if (card.cardEffect.isFinished) {
+				_self.rollDiceYou(card.cardEffect.effectValueChosen,
+					_self.moveYourCharacter.bind(_self, card.cardEffect.moveSpaces,
+						_self.destroyCardAnimationYou.bind(_self, card, _self.enableMainPhaseActions.bind(_self)), 2000));
+			} else {
+				_self.setRollDiceCardListener(card);
+			}
 		}
 	} else if (card.cardEffect.continuous) {
 		_self.enableMainPhaseActions();
@@ -1825,10 +1864,8 @@ gameController.prototype.setCardSelectOnFieldListenerWrapper = function (card) {
 
 	if (card.cardEffect.effect == "increaseChargesContinousCard") {
 		_self.setCardSelectFromFieldListener(card, [_self.PLAYER_YOU_CLASS]);
-		//_self.setCardSelectFromYourFieldListener(card, _self._yourUserId);
 	} else if (card.cardEffect.effect == "decreaseChargesContinousCardAll") {
 		_self.setCardSelectFromFieldListener(card, [_self.PLAYER_YOU_CLASS, _self.PLAYER_ENEMY_CLASS]);
-		//_self.setCardSelectFromAnyFieldListener(card);
 	}
 };
 
@@ -1837,10 +1874,8 @@ gameController.prototype.setCardSelectOnFieldListenerWrapperEnemy = function (ca
 
 	if (card.cardEffect.effect == "increaseChargesContinousCard") {
 		_self.setCardSelectFromFieldListenerEnemy(card, [_self.PLAYER_ENEMY_CLASS]);
-		// _self.setCardSelectFromEnemyFieldListenerEnemy(card, _self._enemyUserId);
 	} else if (card.cardEffect.effect == "decreaseChargesContinousCardAll") {
 		_self.setCardSelectFromFieldListenerEnemy(card, [_self.PLAYER_ENEMY_CLASS, _self.PLAYER_YOU_CLASS]);
-		// _self.setCardSelectFromAnyFieldListenerEnemy(card);
 	}
 };
 
@@ -1898,116 +1933,6 @@ gameController.prototype.setCardSelectFromFieldListener = function (card, player
 		});
 	});
 };
-
-// gameController.prototype.setCardSelectFromYourFieldListener = function(card, playerId) {
-// 	var _self = this;
-
-// 	var playerSelectorClass;
-// 	var allowedAttributes = card.cardEffect.allowedAttributes;
-// 	var cardFromFieldText = "";
-
-// 	if (playerId == _self._yourUserId) {
-// 		playerSelectorClass = _self.PLAYER_YOU_CLASS;
-// 		cardFromFieldText += " your field";
-// 	} else {
-// 		playerSelectorClass = _self.PLAYER_ENEMY_CLASS;
-// 		cardFromFieldText += " your opponent's field";
-// 	}
-
-// 	var eventInfoText = "Select card from" + cardFromFieldText;
-
-// 	_self.showEventsInfo(eventInfoText);
-
-// 	$(_self.CARD_ON_FIELD_CLASS + playerSelectorClass).each(function() {
-// 		var cardAttributes = $(this).data("cardAttributes");
-// 		var selectable = false;
-// 		cardAttributes.forEach(function(attribute) {
-// 			if (allowedAttributes.includes(attribute)) {
-// 				selectable = true;
-// 			}
-// 		});
-
-// 		if (!selectable) {
-// 			return;
-// 		}
-
-// 		$(this).attr("data-tooltip", "selectCard");
-// 		$(this).on("click", function() {
-// 			$(_self.CARD_ON_FIELD_CLASS + playerSelectorClass).off("click");
-// 			$(_self.CARD_ON_FIELD_CLASS + playerSelectorClass).removeAttr("data-tooltip");
-// 			_self.hideEventsInfo(null, 0);
-// 			var finishData = { cardId: $(this).data("cardId") };
-// 			_self._lastClientData = { roomId: _self._roomData.id, cardId: card.cardId, finishData: finishData };
-// 			_self.client.finishCardEffect(_self._lastClientData);
-// 		});
-// 	});
-// };
-
-// gameController.prototype.setCardSelectFromAnyFieldListener = function (card) {
-// 	var _self = this;
-
-// 	var allowedAttributes = card.cardEffect.allowedAttributes;
-// 	var eventInfoText = "Select a card from any field";
-
-// 	_self.showEventsInfo(eventInfoText);
-
-// 	$(_self.CARD_ON_FIELD_CLASS).each(function() {
-// 		var cardAttributes = $(this).data("cardAttributes");
-// 		var selectable = false;
-// 		cardAttributes.forEach(function(attribute) {
-// 			if (allowedAttributes.includes(attribute)) {
-// 				selectable = true;
-// 			}
-// 		});
-
-// 		if ($(this).hasClass("player-you") && $(this).data("cardId") == card.cardId) {
-// 			selectable = false;
-// 		}
-
-// 		if (!selectable) {
-// 			return;
-// 		}
-
-// 		$(this).attr("data-tooltip", "selectCard");
-// 		$(this).on("click", function() {
-// 			$(_self.CARD_ON_FIELD_CLASS).off("click");
-// 			$(_self.CARD_ON_FIELD_CLASS).removeAttr("data-tooltip");
-// 			_self.hideEventsInfo(null, 0);
-// 			var finishData = { cardId: $(this).data("cardId"), fieldChosen: $(this).hasClass("player-you") ? "your" : "enemy" };
-// 			_self._lastClientData = { roomId: _self._roomData.id, cardId: card.cardId, finishData: finishData };
-
-// 			if (card.cardEffect.continuous) {
-// 				_self.client.finishCardEffectContinuous(_self._lastClientData);
-// 			} else {
-// 				_self.client.finishCardEffect(_self._lastClientData);
-// 			}
-// 		});
-// 	});
-// };
-
-// gameController.prototype.setCardSelectFromEnemyFieldListenerEnemy = function(card, playerId) {
-// 	var _self = this;
-
-// 	var playerSelectorClass;
-// 	var cardFromFieldText = "";
-
-// 	if (playerId == _self._enemyUserId) {
-// 		cardFromFieldText += " his field";
-// 	} else {
-// 		cardFromFieldText += " your field";
-// 	}
-
-// 	var eventInfoText = "Your opponent must select a card from " + cardFromFieldText;
-
-// 	_self.showEventsInfo(eventInfoText);
-// };
-
-// gameController.prototype.setCardSelectFromAnyFieldListenerEnemy = function(card) {
-// 	var _self = this;
-
-// 	var eventInfoText = "Your opponent must select a card from any field";
-// 	_self.showEventsInfo(eventInfoText);
-// };
 
 gameController.prototype.setCardSelectFromFieldListenerEnemy = function (card, playerIdSelectorsArr) {
 		var _self = this;
@@ -2824,6 +2749,15 @@ gameController.prototype.performCardEffectInstantEnemy = function (card) {
 		} else if (card.cardEffect.effect == "rollDiceForwardBackward") {
 			_self._postDestroyCard = card;
 			_self.waitForEnemyActions();
+		} else if (card.cardEffect.effect == "moveSpacesForwardNonSpecial") {
+			if (card.cardEffect.isFinished) {
+				_self.hideEventsInfo(null, 0);
+				_self.rollDiceEnemy(card.cardEffect.effectValueChosen,
+					_self.moveEnemyCharacter.bind(_self, card.cardEffect.moveSpaces,
+						_self.destroyCardAnimationEnemy.bind(_self, card, _self.waitForEnemyActions.bind(_self)), 2000));
+			} else {
+				_self.setRollDiceCardListenerEnemy(card);
+			}
 		}
 	} else {
 		_self.waitForEnemyActions();
@@ -3686,7 +3620,8 @@ gameController.prototype.rollDiceYou = function (diceValue, callback, callback2)
     numberOfDice: 1,
     delay: 1500,
     values: [diceValue],
-    noSound: !_self.client.generalClient.logInSignUpController._settings.sound,
+    noSound: !_self.client.generalClient.logInSignUpController._settings.sound
+    	|| !_self.client.generalClient.logInSignUpController._settings.cardBoardEffectSounds,
     callback: callback.bind(_self, diceValue, callback2, 2000)
   };
 
@@ -3702,7 +3637,8 @@ gameController.prototype.rollDiceEnemy = function (diceValue, callback, callback
     numberOfDice: 1,
     delay: 1500,
     values: [diceValue],
-    noSound: !_self.client.generalClient.logInSignUpController._settings.sound,
+    noSound: !_self.client.generalClient.logInSignUpController._settings.sound ||
+    	!_self.client.generalClient.logInSignUpController._settings.cardBoardEffectSounds,
     callback: callback.bind(_self, diceValue, callback2, 2000)
   };
 
@@ -3772,6 +3708,7 @@ gameController.prototype.showCardActivateOnScreenYou = function (cardObj, callba
 	var cardSounds = cardObj.cardSounds;
 
 	if (_self.client.generalClient.logInSignUpController._settings.sound
+		&& _self.client.generalClient.logInSignUpController._settings.cardBoardEffectSounds
 		&& cardSounds.activateEffect) {
 		_self.playSound(cardSounds.activateEffect);
 	}
@@ -3793,6 +3730,7 @@ gameController.prototype.showCardActivateOnScreenEnemy = function (cardObj, call
 	var cardSounds = cardObj.cardSounds;
 
 	if (_self.client.generalClient.logInSignUpController._settings.sound
+		&& _self.client.generalClient.logInSignUpController._settings.cardBoardEffectSounds
 		&& cardSounds.activateEffect) {
 		_self.playSound(cardSounds.activateEffect);
 	}
@@ -4097,6 +4035,7 @@ gameController.prototype.processDrawCardFromEnemyHand = function(data) {
 
 		_self.drawCardFromEnemyHandYouAnimation(_self._gameplayData.gameState.cardDrawnFromEnemyHand, callback);
 	} else {
+		_self.hideEventsInfo(null, 0);
 		if (_self._gameplayData.gameState.currPlayerId == _self._enemyUserId) {
 			callback = _self.waitForEnemyActions.bind(_self);
 		} else {
@@ -4205,6 +4144,7 @@ gameController.prototype.processTakeCardFromYourGraveyard = function(data) {
 
 		_self.takeCardFromYourGraveyardYouAnimation(_self._gameplayData.gameState.cardTakenFromGraveyard, callback);
 	} else {
+		_self.hideEventsInfo(null, 0);
 		if (_self._gameplayData.gameState.currPlayerId == _self._enemyUserId) {
 			callback = _self.waitForEnemyActions.bind(_self);
 		} else {
@@ -4994,7 +4934,7 @@ gameController.prototype.playSound = function (soundFile) {
 	var _self = this;
   var audio = new Audio("/sounds/" + soundFile);
 
- 	audio.volume = _self.client.generalClient.logInSignUpController._settings.soundVolume / 100;
+ 	audio.volume = (_self.client.generalClient.logInSignUpController._settings.soundVolume || 0) / 100;
   audio.play();
 };
 

@@ -300,51 +300,9 @@ var self = module.exports = {
 		  	await self.rollDiceBoardHook(ctx, { rollDiceValue: card.cardEffect.effectValue,
 		  		userId: enemyUserId, moveBackwardsOnNextRoll: true, moveIfCan: false });
 		  } else if (card.cardEffect.effect.match("createSpecialBoardSpaceForwardTier")) {
-		  	let availableSpaces = false;
-		  	if (yourUserId == ctx.roomData.player1Id) {
-					for(let i = 1; i <= card.cardEffect.effectValue; i++) {
-						if ((currBoardIndexYou + i) > (boardPath.length - 1)) {
-							break;
-						} else if (boardMatrix[boardPath[currBoardIndexYou + i][0]][boardPath[currBoardIndexYou + i][1]] == 1) {
-							availableSpaces = true;
-							break;
-						}
-					}
-				} else {
-					for(let i = 1; i <= card.cardEffect.effectValue; i++) {
-						if ((currBoardIndexYou - i) < 0) {
-							break;
-						} else if (boardMatrix[boardPath[currBoardIndexYou - i][0]][boardPath[currBoardIndexYou - i][1]] == 1) {
-							availableSpaces = true;
-							break;
-						}
-					}
-				}
-
-				assert(availableSpaces);
+		  	checkForEmptyBoardSpaces(ctx, card.cardEffect.effectValue, yourUserId);
 		  } else if (card.cardEffect.effect == "destroySpecialBoardSpaceForward") {
-		  	let availableSpaces = false;
-		  	if (yourUserId == ctx.roomData.player1Id) {
-					for(let i = 1; i <= card.cardEffect.effectValue; i++) {
-						if ((currBoardIndexYou + i) > (boardPath.length - 1)) {
-							break;
-						} else if (boardMatrix[boardPath[currBoardIndexYou + i][0]][boardPath[currBoardIndexYou + i][1]] > 1) {
-							availableSpaces = true;
-							break;
-						}
-					}
-				} else {
-					for(let i = 1; i <= card.cardEffect.effectValue; i++) {
-						if ((currBoardIndexYou - i) < 0) {
-							break;
-						} else if (boardMatrix[boardPath[currBoardIndexYou - i][0]][boardPath[currBoardIndexYou - i][1]] > 1) {
-							availableSpaces = true;
-							break;
-						}
-					}
-				}
-
-				assert(availableSpaces);
+		  	checkForSpecialBoardSpaces(ctx, card.cardEffect.effectValue, yourUserId);
 		  } else if (card.cardEffect.effect == "moveSpacesClosestBoardSpaceSpecial") {
 		  	let closestBoardSpaceBoardForwardSpacesCount = 0;
 		  	let closestBoardSpaceBoardBackwardSpacesCount = 0;
@@ -499,6 +457,8 @@ var self = module.exports = {
 		  	playerState.canRollDiceBoardCountBackward += card.cardEffect.effectValue1;
 		  	playerState.canRollDiceBoardCount += card.cardEffect.effectValue2 + card.cardEffect.effectValue1;
 		  	playerState.moveBackwardsOnNextRoll = true;
+		  } else if (card.cardEffect.effect == "moveSpacesForwardNonSpecial") {
+		  	checkForEmptyBoardSpaces(ctx, boardPath.length - 1, yourUserId);
 		  }
 		} else {
 			if (card.cardEffect.maxUsesPerTurn) {
@@ -580,28 +540,7 @@ var self = module.exports = {
 
 			assert(isValidSpecialSpace);
 
-	  	let availableSpaces = false;
-	  	if (yourUserId == ctx.roomData.player1Id) {
-				for(let i = 1; i <= card.cardEffect.effectValue; i++) {
-					if ((currBoardIndexYou + i) > (boardPath.length - 1)) {
-						break;
-					} else if (boardMatrix[boardPath[currBoardIndexYou + i][0]][boardPath[currBoardIndexYou + i][1]] == 1) {
-						availableSpaces = true;
-						break;
-					}
-				}
-			} else {
-				for(let i = 1; i <= card.cardEffect.effectValue; i++) {
-					if ((currBoardIndexYou - i) < 0) {
-						break;
-					} else if (boardMatrix[boardPath[currBoardIndexYou - i][0]][boardPath[currBoardIndexYou - i][1]] == 1) {
-						availableSpaces = true;
-						break;
-					}
-				}
-			}
-
-			assert(availableSpaces);
+			checkForEmptyBoardSpaces(ctx, card.cardEffect.effectValue, yourUserId);
 
 			boardMatrix[finishData.rowIndex][finishData.columnIndex] = finishData.specialSpaceType;
 			card.finishData = {
@@ -615,28 +554,7 @@ var self = module.exports = {
 				&& (finishData.columnIndex <= (boardMatrix[0].length - 1)));
 			assert(boardMatrix[finishData.rowIndex][finishData.columnIndex] > 1);
 
-	  	let availableSpaces = false;
-	  	if (yourUserId == ctx.roomData.player1Id) {
-				for(let i = 1; i <= card.cardEffect.effectValue; i++) {
-					if ((currBoardIndexYou + i) > (boardPath.length - 1)) {
-						break;
-					} else if (boardMatrix[boardPath[currBoardIndexYou + i][0]][boardPath[currBoardIndexYou + i][1]] > 1) {
-						availableSpaces = true;
-						break;
-					}
-				}
-			} else {
-				for(let i = 1; i <= card.cardEffect.effectValue; i++) {
-					if ((currBoardIndexYou - i) < 0) {
-						break;
-					} else if (boardMatrix[boardPath[currBoardIndexYou - i][0]][boardPath[currBoardIndexYou - i][1]] > 1) {
-						availableSpaces = true;
-						break;
-					}
-				}
-			}
-
-			assert(availableSpaces);
+			checkForSpecialBoardSpaces(ctx, card.cardEffect.effectValue, yourUserId);
 
 			let energyReturned;
 			if ("energyReturnedTier1" in card.cardEffect &&
@@ -706,6 +624,46 @@ var self = module.exports = {
 			assert(cardSelected);
 
 			cardSelected.cardEffect.effectChargesCount += card.cardEffect.effectValue;
+		} else if (card.cardEffect.effect == "moveSpacesForwardNonSpecial") {
+			assert("effectValueDependentOn" in card.cardEffect);
+			assert("effectValueIncrement" in card.cardEffect);
+
+			let spacesCountArr = [];
+			if (yourUserId == ctx.roomData.player1Id) {
+				for(let i = 1; i <= boardPath.length - 1; i++) {
+					if ((currBoardIndexYou + i) > (boardPath.length - 1)) {
+						break;
+					} else if (boardMatrix[boardPath[currBoardIndexYou + i][0]][boardPath[currBoardIndexYou + i][1]] == 1) {
+						spacesCountArr.push(i);
+					}
+				}
+			} else {
+				for(let i = 1; i <= boardPath.length - 1; i++) {
+					if ((currBoardIndexYou - i) < 0) {
+						break;
+					} else if (boardMatrix[boardPath[currBoardIndexYou - i][0]][boardPath[currBoardIndexYou - i][1]] == 1) {
+						spacesCountArr.push(i);
+					}
+				}
+			}
+
+			assert(spacesCountArr.length > 0);
+
+			if (card.cardEffect.effectValueDependentOn == "diceRoll") {
+				let operator = card.cardEffect.effectValueIncrement.charAt(0);
+				let incrementValue = card.cardEffect.effectValueIncrement.substr(1);
+				let diceValue = utils.getRandomInt(1, 6);
+				diceValue = updateFieldValue[operator](diceValue, incrementValue);
+
+				let moveSpaces = spacesCountArr[diceValue - 1]
+					|| spacesCountArr[spacesCountArr.length - 1];
+
+				await self.rollDiceBoardHook(ctx, { rollDiceValue: moveSpaces,
+	  			userId: yourUserId, moveBackwardsOnNextRoll: false, moveIfCan: true });
+
+				card.cardEffect.effectValueChosen = diceValue;
+				card.cardEffect.moveSpaces = moveSpaces;
+			}
 		}
 
 		playerState.cardsInHandArr.forEach(function(card) {
@@ -732,6 +690,7 @@ var self = module.exports = {
 		let boardPath = gameState.boardData.boardDataPlayers.boardPath;
 	  let boardMatrix = gameState.boardData.boardMatrix;
 	  let currBoardIndexYou = gameState.playersState[ctx.session.userData.userId].currBoardIndex;
+	  let yourUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player1Id : ctx.roomData.player2Id;
 	  let enemyUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
 		let playerStateEnemy = gameState.playersState[enemyUserId];
 
@@ -746,26 +705,7 @@ var self = module.exports = {
 		}
 
 		if (card.cardEffect.effect == "copySpecialSpacesUpTo") {
-			let availableSpecialSpaces = card.cardEffect.effectValue;
-			if (ctx.session.userData.userId == ctx.roomData.player1Id) {
-				for(let i = 0; i < card.cardEffect.copySpecialSpacesUpTo; i++) {
-					if ((currBoardIndexYou + i) > (boardPath.length - 1)) {
-						availableSpecialSpaces--;
-					} else if (boardMatrix[boardPath[currBoardIndexYou + i][0]][boardPath[currBoardIndexYou + i][1]] <= 1) {
-						availableSpecialSpaces--;
-					}
-				}
-			} else {
-				for(let i = 0; i < card.cardEffect.effectValue; i++) {
-					if ((currBoardIndexYou - i) < 0) {
-						availableSpecialSpaces--;
-					} else if (boardMatrix[boardPath[currBoardIndexYou - i][0]][boardPath[currBoardIndexYou - i][1]] <= 1) {
-						availableSpecialSpaces--;
-					}
-				}
-			}
-
-			assert(availableSpecialSpaces > 0);
+			checkForSpecialBoardSpaces(ctx, card.cardEffect.effectValue, yourUserId);
 		} else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpToEnemy") {
 		} else if (card.cardEffect.effect == "decreaseChargesContinousCardAll") {
 			assert((playerState.cardsOnFieldArr.length > 1) || (playerStateEnemy.cardsOnFieldArr.length > 0));
@@ -1498,6 +1438,68 @@ let checkForEnergyReturn = (ctx, card, chosenValue) => {
 			playerState.energyPoints += energyReturned;
 		}
 	}
+};
+
+let checkForEmptyBoardSpaces = (ctx, cardValue, userId) => {
+	let gameState = ctx.gameplayData.gameState;
+	let playerState = gameState.playersState[userId];
+  let boardPath = gameState.boardData.boardDataPlayers.boardPath;
+  let boardMatrix = gameState.boardData.boardMatrix;
+  let currBoardIndex = gameState.playersState[userId].currBoardIndex;
+
+	let availableSpaces = false;
+	if (userId == ctx.roomData.player1Id) {
+		for(let i = 1; i <= cardValue; i++) {
+			if ((currBoardIndex + i) > (boardPath.length - 1)) {
+				break;
+			} else if (boardMatrix[boardPath[currBoardIndex + i][0]][boardPath[currBoardIndex + i][1]] == 1) {
+				availableSpaces = true;
+				break;
+			}
+		}
+	} else {
+		for(let i = 1; i <= cardValue; i++) {
+			if ((currBoardIndex - i) < 0) {
+				break;
+			} else if (boardMatrix[boardPath[currBoardIndex - i][0]][boardPath[currBoardIndex - i][1]] == 1) {
+				availableSpaces = true;
+				break;
+			}
+		}
+	}
+
+	assert(availableSpaces);
+};
+
+let checkForSpecialBoardSpaces = (ctx, cardValue, userId) => {
+	let gameState = ctx.gameplayData.gameState;
+	let playerState = gameState.playersState[userId];
+  let boardPath = gameState.boardData.boardDataPlayers.boardPath;
+  let boardMatrix = gameState.boardData.boardMatrix;
+  let currBoardIndex = gameState.playersState[userId].currBoardIndex;
+
+	let availableSpaces = false;
+	if (userId == ctx.roomData.player1Id) {
+		for(let i = 1; i <= cardValue; i++) {
+			if ((currBoardIndex + i) > (boardPath.length - 1)) {
+				break;
+			} else if (boardMatrix[boardPath[currBoardIndex + i][0]][boardPath[currBoardIndex + i][1]] > 1) {
+				availableSpaces = true;
+				break;
+			}
+		}
+	} else {
+		for(let i = 1; i <= cardValue; i++) {
+			if ((currBoardIndex - i) < 0) {
+				break;
+			} else if (boardMatrix[boardPath[currBoardIndex - i][0]][boardPath[currBoardIndex - i][1]] > 1) {
+				availableSpaces = true;
+				break;
+			}
+		}
+	}
+
+	assert(availableSpaces);
 };
 
 let putCardInGraveyard = async (card, playerState) => {
