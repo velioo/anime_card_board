@@ -420,6 +420,23 @@ var self = module.exports = {
 		  	} else {
 		  		playerState.cardsToDrawFromEnemyHand += card.cardEffect.effectValue;
 		  	}
+		  } else if (card.cardEffect.effect == "drawCardFromEnemyYourHand") {
+		  	assert(playerStateEnemy.cardsInHandArr.length > 0);
+		  	assert(playerState.cardsInHandArr.length > 0);
+
+		  	playerState.cardsToDrawFromEnemyHand = playerState.cardsToDrawFromEnemyHand ? playerState.cardsToDrawFromEnemyHand : 0;
+		  	if (playerStateEnemy.cardsInHandArr.length < (card.cardEffect.effectValue + playerState.cardsToDrawFromEnemyHand)) {
+		  		playerState.cardsToDrawFromEnemyHand = playerStateEnemy.cardsInHandArr.length;
+		  	} else {
+		  		playerState.cardsToDrawFromEnemyHand += card.cardEffect.effectValue;
+		  	}
+
+		  	playerStateEnemy.cardsToDrawFromEnemyHand = playerStateEnemy.cardsToDrawFromEnemyHand ? playerStateEnemy.cardsToDrawFromEnemyHand : 0;
+		  	if (playerState.cardsInHandArr.length < (card.cardEffect.effectValue + playerStateEnemy.cardsToDrawFromEnemyHand)) {
+		  		playerStateEnemy.cardsToDrawFromEnemyHand = playerState.cardsInHandArr.length;
+		  	} else {
+		  		playerStateEnemy.cardsToDrawFromEnemyHand += card.cardEffect.effectValue;
+		  	}
 		  } else if (card.cardEffect.effect == "destroyCardFromEnemyField") {
 		  	assert(playerStateEnemy.cardsOnFieldArr.length > 0);
 
@@ -588,14 +605,17 @@ var self = module.exports = {
 				let operator = card.cardEffect.effectValueIncrement.charAt(0);
 				let incrementValue = card.cardEffect.effectValueIncrement.substr(1);
 				let diceValue = utils.getRandomInt(1, 6);
+				diceValue = 6;
 				diceValue = updateFieldValue[operator](diceValue, incrementValue);
 
-				await self.rollDiceBoardHook(ctx, { rollDiceValue: diceValue,
+				let successfullyMovedYou = await self.rollDiceBoardHook(ctx, { rollDiceValue: diceValue,
 	  			userId: yourUserId, moveBackwardsOnNextRoll: false, moveIfCan: true });
-				await self.rollDiceBoardHook(ctx, { rollDiceValue: diceValue,
+				let successfullyMovedEnemy = await self.rollDiceBoardHook(ctx, { rollDiceValue: diceValue,
 	  			userId: enemyUserId, moveBackwardsOnNextRoll: true, moveIfCan: true });
 
 				card.cardEffect.effectValueChosen = diceValue;
+				card.playerYouMovedSuccessfully = successfullyMovedYou;
+				card.playerEnemyMovedSuccessfully = successfullyMovedEnemy;
 			}
 		} else if (card.cardEffect.effect == "increaseChargesContinousCard") {
 			assert(finishData.cardId);
@@ -891,20 +911,21 @@ var self = module.exports = {
 		}
 
     let currBoardIndex = gameState.playersState[ctx.session.userData.userId].currBoardIndex;
+    let successfullyMoved = true;
     gameState.playersState[ctx.session.userData.userId].lastBoardIndex = currBoardIndex;
 
     if (ctx.roomData.player1Id == ctx.session.userData.userId) {
     	if (!gameState.playersState[ctx.session.userData.userId].moveBackwardsOnNextRoll) {
     		if (moveIfCan)
     		{
-      		moveBoardForwardIfCan(ctx, rollDiceValue);
+      		successfullyMoved = moveBoardForwardIfCan(ctx, rollDiceValue);
     		} else {
     			moveBoardForward(ctx, rollDiceValue);
     		}
     	} else if (gameState.playersState[ctx.session.userData.userId].moveBackwardsOnNextRoll) {
     		if (moveIfCan)
     		{
-    			moveBoardBackwardsIfCan(ctx, rollDiceValue);
+    			successfullyMoved = moveBoardBackwardsIfCan(ctx, rollDiceValue);
     		} else {
     			moveBoardBackwards(ctx, rollDiceValue);
     		}
@@ -913,14 +934,14 @@ var self = module.exports = {
     	if (!gameState.playersState[ctx.session.userData.userId].moveBackwardsOnNextRoll) {
     		if (moveIfCan)
     		{
-      		moveBoardBackwardsIfCan(ctx, rollDiceValue);
+      		successfullyMoved = moveBoardBackwardsIfCan(ctx, rollDiceValue);
       	} else {
       		moveBoardBackwards(ctx, rollDiceValue);
       	}
     	} else if (gameState.playersState[ctx.session.userData.userId].moveBackwardsOnNextRoll) {
     		if (moveIfCan)
     		{
-    			moveBoardForwardIfCan(ctx, rollDiceValue);
+    			successfullyMoved = moveBoardForwardIfCan(ctx, rollDiceValue);
     		} else {
     			moveBoardForward(ctx, rollDiceValue);
     		}
@@ -975,6 +996,8 @@ var self = module.exports = {
     }
 
     ctx.session.userData.userId = yourUserId;
+
+    return successfullyMoved;
 	},
 	discardCardHook: async (ctx, card) => {
 		let gameState = ctx.gameplayData.gameState;
@@ -1025,6 +1048,8 @@ var self = module.exports = {
 		let playerState = gameState.playersState[ctx.session.userData.userId];
 		let enemyUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
 		let playerStateEnemy = gameState.playersState[enemyUserId];
+
+		playerState.cardsInHandArr = utils.shuffle(playerState.cardsInHandArr);
 
 		playerState.cardsInHandArr.forEach(function(card) {
     	updateCardEffectValueStatus(card, playerState);
@@ -1132,7 +1157,10 @@ let moveBoardForwardIfCan = (ctx, count) => {
 
 	if (ctx.gameplayData.gameState.boardData.boardDataPlayers.boardPath[currBoardIndex + count]) {
   	ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].currBoardIndex = currBoardIndex + count;
+  	return true;
 	}
+
+	return false;
 };
 
 let moveBoardBackwardsIfCan = (ctx, count) => {
@@ -1140,7 +1168,10 @@ let moveBoardBackwardsIfCan = (ctx, count) => {
 
 	if (currBoardIndex - count >= 0) {
   	ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].currBoardIndex = currBoardIndex - count;
+  	return true;
 	}
+
+	return false;
 };
 
 let moveBoardForward = (ctx, count) => {

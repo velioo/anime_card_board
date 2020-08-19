@@ -1060,6 +1060,10 @@ gameController.prototype.canSummonCard = function (card) {
 		if (playerStateEnemy.cardsInHand <= 0) {
 			canSummonCard = false;
 		}
+	} else if (cardEffect.effect == "drawCardFromEnemyYourHand") {
+		if ((playerStateEnemy.cardsInHand <= 0) || (playerStateYou.cardsInHand <= 1)) {
+			canSummonCard = false;
+		}
 	} else if (cardEffect.effect == "destroyCardFromEnemyField") {
 		if (playerStateEnemy.cardsOnFieldArr.length <= 0) {
 			canSummonCard = false;
@@ -1799,6 +1803,9 @@ gameController.prototype.performCardEffectInstantYou = function (card) {
 		} else if (card.cardEffect.effect == "drawCardFromEnemyHand") {
 			_self._postDestroyCard = card;
 			_self.enableMainPhaseActions();
+		} else if (card.cardEffect.effect == "drawCardFromEnemyYourHand") {
+			_self._postDestroyCard = card;
+			_self.checkIfEnemyHasToDoAction(_self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self));
 		} else if (card.cardEffect.effect == "destroyCardFromEnemyField") {
 			_self._postDestroyCard = card;
 			_self.enableMainPhaseActions();
@@ -1812,10 +1819,17 @@ gameController.prototype.performCardEffectInstantYou = function (card) {
 			if (card.cardEffect.isFinished) {
 				_self.rollDiceYou(card.cardEffect.effectValueChosen, noop);
 				_self.moveSpacesTimeout = setTimeout(function() {
-					_self.moveYourCharacter(card.cardEffect.effectValueChosen, null, 0);
-					_self.moveEnemyCharacter(card.cardEffect.effectValueChosen,
-						_self.destroyCardAnimationYou.bind(_self, card, _self.checkIfEnemyHasToDoAction
+					if (card.playerYouMovedSuccessfully) {
+						_self.moveEnemyCharacter(card.cardEffect.effectValueChosen, null, 0);
+						_self.moveYourCharacter(card.cardEffect.effectValueChosen,
+							_self.destroyCardAnimationYou.bind(_self, card, _self.checkIfEnemyHasToDoAction
 							.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self))), 0);
+					} else {
+						_self.moveYourCharacter(card.cardEffect.effectValueChosen, null, 0);
+						_self.moveEnemyCharacter(card.cardEffect.effectValueChosen,
+							_self.destroyCardAnimationYou.bind(_self, card, _self.checkIfEnemyHasToDoAction
+							.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self))), 0);
+					}
 				}, 2000);
 			} else {
 				_self.setRollDiceCardListener(card);
@@ -2701,6 +2715,9 @@ gameController.prototype.performCardEffectInstantEnemy = function (card) {
 		} else if (card.cardEffect.effect == "drawCardFromEnemyHand") {
 			_self._postDestroyCard = card;
 			_self.waitForEnemyActions();
+		} else if (card.cardEffect.effect == "drawCardFromEnemyYourHand") {
+			_self._postDestroyCard = card;
+			_self.checkIfYouHaveToDoAction(_self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self));
 		} else if (card.cardEffect.effect == "destroyCardFromEnemyField") {
 			_self._postDestroyCard = card;
 			_self.waitForEnemyActions();
@@ -2715,10 +2732,17 @@ gameController.prototype.performCardEffectInstantEnemy = function (card) {
 				_self.hideEventsInfo(null, 0);
 				_self.rollDiceEnemy(card.cardEffect.effectValueChosen, noop);
 				_self.moveSpacesTimeout = setTimeout(function() {
-					_self.moveEnemyCharacter(card.cardEffect.effectValueChosen, null, 0);
-					_self.moveYourCharacter(card.cardEffect.effectValueChosen,
-						_self.destroyCardAnimationEnemy.bind(_self, card, _self.checkIfYouHaveToDoAction
-							.bind(_self, _self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self))), 0);
+					if (card.playerYouMovedSuccessfully) {
+						_self.moveYourCharacter(card.cardEffect.effectValueChosen, null, 0);
+						_self.moveEnemyCharacter(card.cardEffect.effectValueChosen,
+							_self.destroyCardAnimationEnemy.bind(_self, card, _self.checkIfYouHaveToDoAction
+								.bind(_self, _self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self))), 0);
+					} else {
+						_self.moveEnemyCharacter(card.cardEffect.effectValueChosen, null, 0);
+						_self.moveYourCharacter(card.cardEffect.effectValueChosen,
+							_self.destroyCardAnimationEnemy.bind(_self, card, _self.checkIfYouHaveToDoAction
+								.bind(_self, _self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self))), 0);
+					}
 				}, 2000);
 			} else {
 				_self.setRollDiceCardListenerEnemy(card);
@@ -3297,8 +3321,8 @@ gameController.prototype.fillInfoCard = function (card) {
 	var cardAttributes = $(card).data("cardAttributes") || "";
 	var cardEffect = $(card).data("cardEffect") || "";
 
-	cardRarity = cardRarity ? cardRarity.toUpperCase() : cardRarity;
-	cardCost = cardCost ? '<span title="' + cardCost + ' Energy cost">[' + cardCost + ']:</span> ' : cardCost;
+	cardRarity = cardRarity ? cardRarity.toUpperCase() + ' [' : cardRarity;
+	cardCost = cardCost ? '<span title="' + cardCost + ' Energy cost">' + cardCost + 'E</span>' : cardCost;
 
 	if ($(card).attr("src") != $(_self.CARD_INFO_IMG_ID).attr("src")) {
   	$(_self.CARD_INFO_IMG_ID).attr("src", $(card).attr("src"));
@@ -3307,16 +3331,26 @@ gameController.prototype.fillInfoCard = function (card) {
   $(_self.CARD_INFO_IMG_ID).css("border", "1px solid white");
   $(_self.CARD_INFO_NAME_ID).text($(card).data("cardName") || "");
 
-  var cardHtml = cardRarity + cardCost;
+  var cardHtml = cardRarity;
+  cardHtml += cardCost;
+
+  if (cardEffect && cardEffect.effectChargesCount) {
+  	cardHtml += ', <span title="Charges count">' + cardEffect.effectChargesCount + 'C</span>';
+  }
+
+  cardHtml += '] &nbsp;';
+
   if (cardEffect && cardEffect.continuous) {
-  	cardHtml += '<img class="anime-cb-card-info-text-img" src="/imgs/continuous.png" title="Continuous card">';
+  	cardHtml += '<img class="anime-cb-card-info-text-img" src="/imgs/continuous.png" title="Continuous card">, ';
   }
 
   if (cardAttributes) {
 	  cardAttributes.forEach(function(cardAttr) {
 	  	cardHtml += '<img class="anime-cb-card-info-text-img" src="/imgs/' + cardAttr
-	  	+ '_attr.png" title="' + (cardAttr.charAt(0).toUpperCase() + cardAttr.slice(1)) + ' attribute">';
+	  	+ '_attr.png" title="' + (cardAttr.charAt(0).toUpperCase() + cardAttr.slice(1)) + ' attribute">,';
 	  });
+
+	  cardHtml = cardHtml.substring(0, cardHtml.length - 1);
   	cardHtml += '<br>';
 	}
 
@@ -4389,7 +4423,9 @@ gameController.prototype.drawCardFromEnemyHandYouAnimation = function(cardObj, c
   	$(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_YOU_CLASS).css("overflow", "hidden");
 
   	if (typeof callback === "function") {
-  		callback();
+  		_self.shuffleCardsInHandYou.call(_self, callback.bind(_self));
+  	} else {
+  		_self.shuffleCardsInHandYou.call(_self);
   	}
   }, 550);
 };
@@ -4440,7 +4476,9 @@ gameController.prototype.drawCardFromEnemyHandEnemyAnimation = function(cardObj,
   	$(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_ENEMY_CLASS).css("overflow", "hidden");
 
   	if (typeof callback === "function") {
-  		callback();
+  		_self.shuffleCardsInHandEnemy.call(_self, callback.bind(_self));
+  	} else {
+  		_self.shuffleCardsInHandEnemy.call(_self);
   	}
   }, 1000);
 };
