@@ -605,7 +605,6 @@ var self = module.exports = {
 				let operator = card.cardEffect.effectValueIncrement.charAt(0);
 				let incrementValue = card.cardEffect.effectValueIncrement.substr(1);
 				let diceValue = utils.getRandomInt(1, 6);
-				diceValue = 6;
 				diceValue = updateFieldValue[operator](diceValue, incrementValue);
 
 				let successfullyMovedYou = await self.rollDiceBoardHook(ctx, { rollDiceValue: diceValue,
