@@ -476,6 +476,11 @@ var self = module.exports = {
 		  	playerState.moveBackwardsOnNextRoll = true;
 		  } else if (card.cardEffect.effect == "moveSpacesForwardNonSpecial") {
 		  	checkForEmptyBoardSpaces(ctx, boardPath.length - 1, yourUserId);
+		  } else if (card.cardEffect.effect == "discardCardTakeCardFromYourGraveyard") {
+		  	playerState.cardsToDiscard += card.cardEffect.effectValue1;
+		  	playerState.cardsToTakeFromYourGraveyard += card.cardEffect.effectValue2;
+		  	assert(playerState.cardsInHandArr.length >= playerState.cardsToDiscard);
+		  	assert(playerState.cardsInGraveyardArr.length >= playerState.cardsToTakeFromYourGraveyard);
 		  }
 		} else {
 			if (card.cardEffect.maxUsesPerTurn) {
@@ -1124,7 +1129,9 @@ var self = module.exports = {
 			let cardsOnFieldCopy = playerState.cardsOnFieldArr.slice().reverse();
 			for (let i = 0; i < cardsOnFieldCopy.length; i++) {
 			  if (!cardsOnFieldCopy[i].cardEffect.continuous
-			  	&& cardsOnFieldCopy[i].cardEffect.effect == "takeCardFromYourGraveyard") {
+			  	&& playerState.cardsToTakeFromYourGraveyard <= 0
+			  	&& (cardsOnFieldCopy[i].cardEffect.effect == "takeCardFromYourGraveyard"
+			  		|| cardsOnFieldCopy[i].cardEffect.effect == "discardCardTakeCardFromYourGraveyard")) {
 			  	await putCardInGraveyard(cardsOnFieldCopy[i], playerState);
 			  	playerState.cardsOnFieldArr.splice(cardsOnFieldCopy.length - 1 - i, 1);
 			  }

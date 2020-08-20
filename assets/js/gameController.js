@@ -906,7 +906,7 @@ gameController.prototype.canSummonCard = function (card) {
 		}
 	});
 
-	if ((!cardEffect) || (!cardRarity) || (!cardCost)) {
+	if ((!cardEffect) || (!cardRarity) || (isNaN(cardCost))) {
 		canSummonCard = false;
 	}
 
@@ -1115,6 +1115,14 @@ gameController.prototype.canSummonCard = function (card) {
 		});
 
 		if (!availableCards) {
+			canSummonCard = false;
+		}
+	} else if (cardEffect.effect == "discardCardTakeCardFromYourGraveyard") {
+		if (playerStateYou.cardsInHand < cardEffect.effectValue1) {
+			canSummonCard = false;
+		}
+
+		if (playerStateYou.cardsInGraveyardArr.length < cardEffect.effectValue2) {
 			canSummonCard = false;
 		}
 	}
@@ -1626,10 +1634,10 @@ gameController.prototype.enableMainPhaseActions = function () {
   	return;
 	} else if (playerStateYou.cardsToDrawFromEnemyHand > 0) {
 		_self.setDrawCardFromEnemyHandListener();
-	} else if (playerStateYou.cardsToTakeFromYourGraveyard > 0) {
-		_self.setTakeCardFromYourGraveyardListener();
 	} else if (playerStateYou.cardsToDiscard > 0) {
 		_self.setCardDiscardListener();
+	} else if (playerStateYou.cardsToTakeFromYourGraveyard > 0) {
+		_self.setTakeCardFromYourGraveyardListener();
 	} else if (playerStateYou.cardsToDestroyFromEnemyField > 0) {
 		_self.setDestroyCardFromEnemyFieldListener();
 	} else if (playerStateYou.canRollDiceBoardCount > 0) {
@@ -1692,10 +1700,10 @@ gameController.prototype.enableActionsInEnemyPhase = function () {
   	return;
 	} else if (playerStateYou.cardsToDrawFromEnemyHand > 0) {
 		_self.setDrawCardFromEnemyHandListener();
-	} else if (playerStateYou.cardsToTakeFromYourGraveyard > 0) {
-		_self.setTakeCardFromYourGraveyardListener();
 	} else if (playerStateYou.cardsToDiscard > 0) {
 		_self.setCardDiscardListener();
+	} else if (playerStateYou.cardsToTakeFromYourGraveyard > 0) {
+		_self.setTakeCardFromYourGraveyardListener();
 	} else if (playerStateYou.cardsToDestroyFromEnemyField > 0) {
 		_self.setDestroyCardFromEnemyFieldListener();
 	} else if (playerStateYou.canRollDiceBoardInRollPhase
@@ -1867,6 +1875,9 @@ gameController.prototype.performCardEffectInstantYou = function (card) {
 			} else {
 				_self.setRollDiceCardListener(card);
 			}
+		} else if (card.cardEffect.effect == "discardCardTakeCardFromYourGraveyard") {
+			_self._postDestroyCard = card;
+			_self.enableMainPhaseActions();
 		}
 	} else if (card.cardEffect.continuous) {
 		_self.enableMainPhaseActions();
@@ -2782,6 +2793,9 @@ gameController.prototype.performCardEffectInstantEnemy = function (card) {
 			} else {
 				_self.setRollDiceCardListenerEnemy(card);
 			}
+		} else if (card.cardEffect.effect == "discardCardTakeCardFromYourGraveyard") {
+			_self._postDestroyCard = card;
+			_self.waitForEnemyActions();
 		}
 	} else {
 		_self.waitForEnemyActions();
@@ -2919,10 +2933,10 @@ gameController.prototype.enableRollPhaseActions = function () {
   	return;
 	} else if (playerStateYou.cardsToDrawFromEnemyHand > 0) {
 		_self.setDrawCardFromEnemyHandListener();
-	} else if (playerStateYou.cardsToTakeFromYourGraveyard > 0) {
-		_self.setTakeCardFromYourGraveyardListener();
 	} else if (playerStateYou.cardsToDiscard > 0) {
 		_self.setCardDiscardListener();
+	} else if (playerStateYou.cardsToTakeFromYourGraveyard > 0) {
+		_self.setTakeCardFromYourGraveyardListener();
 	} else if (playerStateYou.cardsToDestroyFromEnemyField > 0) {
 		_self.setDestroyCardFromEnemyFieldListener();
 	} else if (playerStateYou.canRollDiceBoardInRollPhase
@@ -2987,6 +3001,14 @@ gameController.prototype.waitForEnemyActions = function () {
 		}
 
 		_self.showEventsInfo(eventInfoText);
+	} else if (playerStateEnemy.cardsToDiscard > 0) {
+		var eventInfoText = _self._enemyName + " must discard " + playerStateEnemy.cardsToDiscard;
+		if (playerStateEnemy.cardsToDiscard > 1) {
+			eventInfoText += " cards from his hand";
+		} else {
+			eventInfoText += " card from his hand";
+		}
+		_self.showEventsInfo(eventInfoText);
 	} else if (playerStateEnemy.cardsToTakeFromYourGraveyard > 0) {
 		var eventInfoText = _self._enemyName + " takes " + playerStateEnemy.cardsToTakeFromYourGraveyard;
 		if (playerStateEnemy.cardsToDrawFromEnemyHand > 1) {
@@ -2995,14 +3017,6 @@ gameController.prototype.waitForEnemyActions = function () {
 			eventInfoText += " card from his graveyard";
 		}
 
-		_self.showEventsInfo(eventInfoText);
-	} else if (playerStateEnemy.cardsToDiscard > 0) {
-		var eventInfoText = _self._enemyName + " must discard " + playerStateEnemy.cardsToDiscard;
-		if (playerStateEnemy.cardsToDiscard > 1) {
-			eventInfoText += " cards from his hand";
-		} else {
-			eventInfoText += " card from his hand";
-		}
 		_self.showEventsInfo(eventInfoText);
 	} else if (playerStateEnemy.cardsToDestroyFromEnemyField > 0) {
 		var eventInfoText = _self._enemyName + " destroys " + playerStateEnemy.cardsToDestroyFromEnemyField;
@@ -3317,12 +3331,12 @@ gameController.prototype.fillInfoCard = function (card) {
 
 	var cardRarity = $(card).data("cardRarity") || "";
 	var cardText = $(card).data("cardText") || "";
-	var cardCost = $(card).data("cardCost") || "";
+	var cardCost = !isNaN($(card).data("cardCost")) ? $(card).data("cardCost") : undefined;
 	var cardAttributes = $(card).data("cardAttributes") || "";
 	var cardEffect = $(card).data("cardEffect") || "";
 
 	cardRarity = cardRarity ? cardRarity.toUpperCase() + ' [' : cardRarity;
-	cardCost = cardCost ? '<span title="' + cardCost + ' Energy cost">' + cardCost + 'E</span>' : cardCost;
+	cardCost = !isNaN(cardCost) ? ('<span title="' + cardCost + ' Energy cost">' + cardCost + 'E</span>') : cardCost;
 
 	if ($(card).attr("src") != $(_self.CARD_INFO_IMG_ID).attr("src")) {
   	$(_self.CARD_INFO_IMG_ID).attr("src", $(card).attr("src"));
@@ -3332,13 +3346,13 @@ gameController.prototype.fillInfoCard = function (card) {
   $(_self.CARD_INFO_NAME_ID).text($(card).data("cardName") || "");
 
   var cardHtml = cardRarity;
-  cardHtml += cardCost;
+  cardHtml = cardCost ? cardHtml + cardCost : cardHtml;
 
   if (cardEffect && cardEffect.effectChargesCount) {
   	cardHtml += ', <span title="Charges count">' + cardEffect.effectChargesCount + 'C</span>';
   }
 
-  cardHtml += '] &nbsp;';
+  cardHtml = cardCost ? (cardHtml + '] &nbsp;') : cardHtml;
 
   if (cardEffect && cardEffect.continuous) {
   	cardHtml += '<img class="anime-cb-card-info-text-img" src="/imgs/continuous.png" title="Continuous card">, ';

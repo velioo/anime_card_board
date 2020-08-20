@@ -132,7 +132,7 @@ cardsInfoController.prototype.fillInfoCard = function (card) {
 
 	var cardRarity = $(card).data("cardRarity") || "";
 	var cardText = $(card).data("cardText") || "";
-	var cardCost = $(card).data("cardCost") || "";
+	var cardCost = !isNaN($(card).data("cardCost")) ? $(card).data("cardCost") : undefined
 	var cardAttributes = $(card).data("cardAttributes") || "";
 	var cardEffect = $(card).data("cardEffect") || "";
 
@@ -141,7 +141,7 @@ cardsInfoController.prototype.fillInfoCard = function (card) {
 	}
 
 	cardRarity = cardRarity ? cardRarity.toUpperCase() + ' [' : cardRarity;
-	cardCost = cardCost ? '<span title="' + cardCost + ' Energy cost">' + cardCost + 'E</span>' : cardCost;
+	cardCost = !isNaN(cardCost) ? ('<span title="' + cardCost + ' Energy cost">' + cardCost + 'E</span>') : cardCost;
 
 	if ($(card).attr("src") != $(_self.CARD_INFO_IMG_ID).attr("src")) {
   	$(_self.CARD_INFO_IMG_ID).attr("src", $(card).attr("src"));
@@ -151,13 +151,13 @@ cardsInfoController.prototype.fillInfoCard = function (card) {
   $(_self.CARD_INFO_NAME_ID).text($(card).data("cardName") || "");
 
   var cardHtml = cardRarity;
-  cardHtml += cardCost;
+  cardHtml = cardCost ? cardHtml + cardCost : cardHtml;
 
   if (cardEffect && cardEffect.effectChargesCount) {
   	cardHtml += ', <span title="Charges count">' + cardEffect.effectChargesCount + 'C</span>';
   }
 
-  cardHtml += '] &nbsp;';
+  cardHtml = cardCost ? (cardHtml + '] &nbsp;') : cardHtml;
 
   if (cardEffect && cardEffect.continuous) {
   	cardHtml += '<img class="anime-cb-card-info-text-img" src="/imgs/continuous.png" title="Continuous card">, ';

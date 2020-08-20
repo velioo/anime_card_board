@@ -641,6 +641,10 @@ const self = module.exports = {
         cardAttributes: cardRow.attributes,
         cardSounds: JSON.parse(cardRow.sounds_json),
       };
+
+      cardFromDb.cardEffect.effectValueOriginal = cardFromDb.cardEffect.effectValue;
+      cardFromDb.cardCostOriginal = cardFromDb.cardCost;
+      
       gameState.cardTakenFromGraveyard = cardFromDb;
 
       gameState.cardTakenFromGraveyard.cardInGraveyardIdx = ctx.data.cardIdx;
