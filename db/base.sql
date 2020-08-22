@@ -212,5 +212,5 @@ INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, a
 '{"effect": "drawCardFromEnemyYourHand", "effectValue": 1, "autoEffect": true, "continuous": false}', 0, '{cards}', '{}');
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes, sounds_json) VALUES (33, 'Ryuk', 'Discard 2 cards from your hand, then take 1 card from your Graveyard to your hand.', 'Ryuk.jpg', 'common',
 '{"effect": "discardCardTakeCardFromYourGraveyard", "effectValue1": 2, "effectValue2": 1, "autoEffect": false, "continuous": false}', 0, '{cards}', '{}');
-INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes, sounds_json) VALUES (34, 'Unknown', 'Gain 3 Energy points.', 'Unknown.jpg', 'rare',
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes, sounds_json) VALUES (34, 'Yato', 'Gain 3 Energy points.', 'Yato.jpg', 'rare',
 '{"effect": "energyGain", "effectValue": 3, "autoEffect": true, "continuous": false}', 0, '{energy}', '{}');
