@@ -481,6 +481,12 @@ var self = module.exports = {
 		  	playerState.cardsToTakeFromYourGraveyard += card.cardEffect.effectValue2;
 		  	assert(playerState.cardsInHandArr.length >= playerState.cardsToDiscard);
 		  	assert(playerState.cardsInGraveyardArr.length >= playerState.cardsToTakeFromYourGraveyard);
+		  } else if (card.cardEffect.effect == "energyGain") {
+		  	if ((playerState.energyPoints + card.cardEffect.effectValue) > playerState.maxEnergyPoints) {
+					playerState.energyPoints = playerState.maxEnergyPoints;
+				} else {
+					playerState.energyPoints += card.cardEffect.effectValue;
+				}
 		  }
 		} else {
 			if (card.cardEffect.maxUsesPerTurn) {
@@ -821,6 +827,26 @@ var self = module.exports = {
 				assert(playerStateEnemy.cardsOnFieldArr.length > 0);
 	  		playerStateCurr = playerStateEnemy;
 	  		playerStateCurrEnemy = playerState;
+
+  			let availableTargets = [];
+		    playerStateEnemy.cardsOnFieldArr.forEach(function(cardOnField) {
+		      if (cardOnField.cardEffect.effect == "taunt") {
+		        availableTargets.push(cardOnField);
+		      }
+		    });
+
+		    let canDestroyCard = false;
+		    if (availableTargets.length > 0) {
+		      availableTargets.forEach(function(cardTarget) {
+		        if (finishData.cardId == cardTarget.cardId) {
+		          canDestroyCard = true;
+		        }
+		      });
+		    } else {
+		      canDestroyCard = true;
+		    }
+
+		    assert(canDestroyCard);
 	  	}
 
 	  	let cardSelected;

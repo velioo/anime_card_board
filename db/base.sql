@@ -170,7 +170,7 @@ INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, a
 '{"effect": "destroyCardFromEnemyField", "effectValue": 1, "autoEffect":true, "continuous": false}', 3, '{cards}', '{}');
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes, sounds_json) VALUES (12, 'Yugi', 'Draw 2 cards from the deck and your opponent draws 1.', 'Yugi.jpg', 'common',
 '{"effect": "drawCardFromDeckYouEnemy", "effectValue": 2, "effectValueEnemy": 1, "autoEffect":false, "continuous": false}', 1, '{cards}', '{}');
-INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes, sounds_json) VALUES (13, 'Ononoki', 'While this card is active, your opponent cannot target other cards on your field for destruction. When this card expires (not destroyed), draw 1 card.', 'Ononoki.png', 'common',
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes, sounds_json) VALUES (13, 'Ononoki', 'While this card is active, your opponent cannot target other cards on your field for destruction or decrease their charges. When this card expires (not destroyed), draw 1 card.', 'Ononoki.png', 'common',
 '{"effect": "taunt", "effectExpire": "drawCardFromDeckYou", "chargeConsumedPhase": "standby", "effectValueExpire": 1, "effectChargesCount": 3, "continuousEffectType": "passive", "autoEffect":true, "continuous": true}', 2, '{cards}', '{}');
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes, sounds_json) VALUES (14, 'Sōma', 'While this card is on your field, your Energy regeneration is increased by 2.', 'Souma.png', 'rare',
 '{"effect": "energyRegen", "effectChargesCount": 3, "effectValue": 2, "chargeConsumedPhase": "main", "continuousEffectType": "passive", "autoEffect":true, "continuous": true}', 1, '{energy}', '{}');
@@ -212,3 +212,5 @@ INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, a
 '{"effect": "drawCardFromEnemyYourHand", "effectValue": 1, "autoEffect": true, "continuous": false}', 0, '{cards}', '{}');
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes, sounds_json) VALUES (33, 'Ryuk', 'Discard 2 cards from your hand, then take 1 card from your Graveyard to your hand.', 'Ryuk.jpg', 'common',
 '{"effect": "discardCardTakeCardFromYourGraveyard", "effectValue1": 2, "effectValue2": 1, "autoEffect": false, "continuous": false}', 0, '{cards}', '{}');
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes, sounds_json) VALUES (34, 'Unknown', 'Gain 3 Energy points.', 'Unknown.jpg', 'rare',
+'{"effect": "energyGain", "effectValue": 3, "autoEffect": true, "continuous": false}', 0, '{energy}', '{}');

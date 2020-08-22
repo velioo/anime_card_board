@@ -1878,6 +1878,9 @@ gameController.prototype.performCardEffectInstantYou = function (card) {
 		} else if (card.cardEffect.effect == "discardCardTakeCardFromYourGraveyard") {
 			_self._postDestroyCard = card;
 			_self.enableMainPhaseActions();
+		} else if (card.cardEffect.effect == "energyGain") {
+			_self._postDestroyCard = card;
+			_self.enableMainPhaseActions();
 		}
 	} else if (card.cardEffect.continuous) {
 		_self.enableMainPhaseActions();
@@ -1907,6 +1910,7 @@ gameController.prototype.setCardSelectOnFieldListenerWrapperEnemy = function (ca
 gameController.prototype.setCardSelectFromFieldListener = function (card, playerIdSelectorsArr) {
 	var _self = this;
 
+	var playerStateEnemy = _self._gameplayData.gameState.playersState[_self._enemyUserId];
 	var allowedAttributes = card.cardEffect.allowedAttributes;
 	var cardFromFieldText = "";
 
@@ -1923,9 +1927,19 @@ gameController.prototype.setCardSelectFromFieldListener = function (card, player
 	var eventInfoText = "Select card from" + cardFromFieldText;
 	_self.showEventsInfo(eventInfoText);
 
+	var availableTargetsEnemy = [];
+	if (playerIdSelectorsArr.includes(_self.PLAYER_ENEMY_CLASS)) {
+		playerStateEnemy.cardsOnFieldArr.forEach(function(cardOnField) {
+			if (cardOnField.cardEffect.effect == "taunt") {
+				availableTargetsEnemy.push(cardOnField);
+			}
+		});
+	}
+
 	playerIdSelectorsArr.forEach(function(playerSelectorClass) {
 		$(_self.CARD_ON_FIELD_CLASS + playerSelectorClass).each(function() {
-			var cardAttributes = $(this).data("cardAttributes");
+			var cardOnField = this;
+			var cardAttributes = $(cardOnField).data("cardAttributes");
 			var selectable = false;
 			cardAttributes.forEach(function(attribute) {
 				if (allowedAttributes.includes(attribute)) {
@@ -1933,16 +1947,26 @@ gameController.prototype.setCardSelectFromFieldListener = function (card, player
 				}
 			});
 
-			if ($(this).hasClass("player-you") && $(this).data("cardId") == card.cardId) {
+			if ($(cardOnField).hasClass("player-you") && $(cardOnField).data("cardId") == card.cardId) {
 				selectable = false;
 			}
+
+			if (playerSelectorClass == _self.PLAYER_ENEMY_CLASS
+				&& availableTargetsEnemy.length > 0) {
+				selectable = false;
+		    availableTargetsEnemy.forEach(function(cardTarget) {
+		      if ($(cardOnField).data("cardId") == cardTarget.cardId) {
+		        selectable = true;
+		      }
+		    });
+		  }
 
 			if (!selectable) {
 				return;
 			}
 
-			$(this).attr("data-tooltip", "selectCard");
-			$(this).on("click", function() {
+			$(cardOnField).attr("data-tooltip", "selectCard");
+			$(cardOnField).on("click", function() {
 				$(_self.CARD_ON_FIELD_CLASS).off("click");
 				$(_self.CARD_ON_FIELD_CLASS).removeAttr("data-tooltip");
 				_self.hideEventsInfo(null, 0);
@@ -2794,6 +2818,9 @@ gameController.prototype.performCardEffectInstantEnemy = function (card) {
 				_self.setRollDiceCardListenerEnemy(card);
 			}
 		} else if (card.cardEffect.effect == "discardCardTakeCardFromYourGraveyard") {
+			_self._postDestroyCard = card;
+			_self.waitForEnemyActions();
+		} else if (card.cardEffect.effect == "energyGain") {
 			_self._postDestroyCard = card;
 			_self.waitForEnemyActions();
 		}
