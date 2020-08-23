@@ -746,7 +746,7 @@ function drawCardFromGraveyardYou() {
   }
 
   $('.anime-cb-cards-in-hand.player-you').css("overflow", "visible");
-  $('.anime-cb-cards-in-hand.player-you').append('<img style="animation: take-card-from-your-graveyard-you-' + drawFromDeckAnimationCount + ' 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both; -webkit-animation: take-card-from-your-graveyard-you-' + drawFromDeckAnimationCount + ' 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;" class="anime-cb-card player-you" data-card-text="This is Misaka" data-card-name="Misaka" src="imgs/player_cards/Misaka.jpg">');
+  $('.anime-cb-cards-in-hand.player-you').append('<img style="animation: take-card-from-enemy-graveyard-you-' + drawFromDeckAnimationCount + ' 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both; -webkit-animation: take-card-from-enemy-graveyard-you-' + drawFromDeckAnimationCount + ' 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;" class="anime-cb-card player-you" data-card-text="This is Misaka" data-card-name="Misaka" src="imgs/player_cards/Misaka.jpg">');
 
   increaseYourCardsInHandDensity();
 
@@ -777,7 +777,7 @@ function drawCardFromGraveyardEnemy() {
   }
 
   $('.anime-cb-cards-in-hand.player-enemy').css("overflow", "visible");
-  $('.anime-cb-cards-in-hand.player-enemy').append('<img style="animation: take-card-from-your-graveyard-enemy-' + drawFromDeckAnimationCount + ' 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both; -webkit-animation: take-card-from-your-graveyard-enemy-' + drawFromDeckAnimationCount + ' 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;" class="anime-cb-card player-enemy" data-card-text="This is Misaka" data-card-name="Misaka" src="imgs/player_cards/Misaka.jpg">');
+  $('.anime-cb-cards-in-hand.player-enemy').append('<img style="animation: take-card-from-enemy-graveyard-enemy-' + drawFromDeckAnimationCount + ' 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both; -webkit-animation: take-card-from-enemy-graveyard-enemy-' + drawFromDeckAnimationCount + ' 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;" class="anime-cb-card player-enemy" data-card-text="This is Misaka" data-card-name="Misaka" src="imgs/player_cards/Misaka.jpg">');
 
   increaseEnemyCardsInHandDensity();
 

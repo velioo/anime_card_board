@@ -2260,6 +2260,467 @@ body {
   }
 }
 
+@-webkit-keyframes take-card-from-enemy-graveyard-you-1 {
+  0% {
+    -webkit-transform: translateY(-900px) translateX(850px);
+            transform: translateY(-900px) translateX(850px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes take-card-from-enemy-graveyard-you-1 {
+  0% {
+    -webkit-transform: translateY(-900px) translateX(850px);
+            transform: translateY(-900px) translateX(850px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes take-card-from-enemy-graveyard-you-2 {
+  0% {
+    -webkit-transform: translateY(-900px) translateX(800px);
+            transform: translateY(-900px) translateX(800px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes take-card-from-enemy-graveyard-you-2 {
+  0% {
+    -webkit-transform: translateY(-900px) translateX(800px);
+            transform: translateY(-900px) translateX(800px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes take-card-from-enemy-graveyard-you-3 {
+  0% {
+    -webkit-transform: translateY(-900px) translateX(730px);
+            transform: translateY(-900px) translateX(730px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes take-card-from-enemy-graveyard-you-3 {
+  0% {
+    -webkit-transform: translateY(-900px) translateX(730px);
+            transform: translateY(-900px) translateX(730px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes take-card-from-enemy-graveyard-you-4 {
+  0% {
+    -webkit-transform: translateY(-900px) translateX(650px);
+            transform: translateY(-900px) translateX(650px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes take-card-from-enemy-graveyard-you-4 {
+  0% {
+    -webkit-transform: translateY(-900px) translateX(650px);
+            transform: translateY(-900px) translateX(650px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes take-card-from-enemy-graveyard-you-5 {
+  0% {
+    -webkit-transform: translateY(-900px) translateX(610px);
+            transform: translateY(-900px) translateX(610px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes take-card-from-enemy-graveyard-you-5 {
+  0% {
+    -webkit-transform: translateY(-900px) translateX(610px);
+            transform: translateY(-900px) translateX(610px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes take-card-from-enemy-graveyard-you-6 {
+  0% {
+    -webkit-transform: translateY(-900px) translateX(570px);
+            transform: translateY(-900px) translateX(570px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes take-card-from-enemy-graveyard-you-6 {
+  0% {
+    -webkit-transform: translateY(-900px) translateX(570px);
+            transform: translateY(-900px) translateX(570px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes take-card-from-enemy-graveyard-you-7 {
+  0% {
+    -webkit-transform: translateY(-900px) translateX(530px);
+            transform: translateY(-900px) translateX(530px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes take-card-from-enemy-graveyard-you-7 {
+  0% {
+    -webkit-transform: translateY(-900px) translateX(530px);
+            transform: translateY(-900px) translateX(530px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes take-card-from-enemy-graveyard-you-8 {
+  0% {
+    -webkit-transform: translateY(-900px) translateX(520px);
+            transform: translateY(-900px) translateX(520px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes take-card-from-enemy-graveyard-you-8 {
+  0% {
+    -webkit-transform: translateY(-900px) translateX(520px);
+            transform: translateY(-900px) translateX(520px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes take-card-from-enemy-graveyard-you-9 {
+  0% {
+    -webkit-transform: translateY(-900px) translateX(500px);
+            transform: translateY(-900px) translateX(500px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes take-card-from-enemy-graveyard-you-9 {
+  0% {
+    -webkit-transform: translateY(-900px) translateX(500px);
+            transform: translateY(-900px) translateX(500px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes take-card-from-enemy-graveyard-you-10 {
+  0% {
+    -webkit-transform: translateY(-900px) translateX(490px);
+            transform: translateY(-900px) translateX(490px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes take-card-from-enemy-graveyard-you-10 {
+  0% {
+    -webkit-transform: translateY(-900px) translateX(490px);
+            transform: translateY(-900px) translateX(490px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes take-card-from-enemy-graveyard-you-11 {
+  0% {
+    -webkit-transform: translateY(-900px) translateX(450px);
+            transform: translateY(-900px) translateX(450px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes take-card-from-enemy-graveyard-you-11 {
+  0% {
+    -webkit-transform: translateY(-900px) translateX(450px);
+            transform: translateY(-900px) translateX(450px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes take-card-from-enemy-graveyard-enemy-1 {
+  0% {
+    -webkit-transform: translateY(900px) translateX(850px);
+            transform: translateY(900px) translateX(850px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes take-card-from-enemy-graveyard-enemy-1 {
+  0% {
+    -webkit-transform: translateY(900px) translateX(850px);
+            transform: translateY(900px) translateX(850px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes take-card-from-enemy-graveyard-enemy-2 {
+  0% {
+    -webkit-transform: translateY(900px) translateX(800px);
+            transform: translateY(900px) translateX(800px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes take-card-from-enemy-graveyard-enemy-2 {
+  0% {
+    -webkit-transform: translateY(900px) translateX(800px);
+            transform: translateY(900px) translateX(800px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes take-card-from-enemy-graveyard-enemy-3 {
+  0% {
+    -webkit-transform: translateY(900px) translateX(730px);
+            transform: translateY(900px) translateX(730px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes take-card-from-enemy-graveyard-enemy-3 {
+  0% {
+    -webkit-transform: translateY(900px) translateX(730px);
+            transform: translateY(900px) translateX(730px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes take-card-from-enemy-graveyard-enemy-4 {
+  0% {
+    -webkit-transform: translateY(900px) translateX(650px);
+            transform: translateY(900px) translateX(650px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes take-card-from-enemy-graveyard-enemy-4 {
+  0% {
+    -webkit-transform: translateY(900px) translateX(650px);
+            transform: translateY(900px) translateX(650px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes take-card-from-enemy-graveyard-enemy-5 {
+  0% {
+    -webkit-transform: translateY(900px) translateX(610px);
+            transform: translateY(900px) translateX(610px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes take-card-from-enemy-graveyard-enemy-5 {
+  0% {
+    -webkit-transform: translateY(900px) translateX(610px);
+            transform: translateY(900px) translateX(610px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes take-card-from-enemy-graveyard-enemy-6 {
+  0% {
+    -webkit-transform: translateY(900px) translateX(570px);
+            transform: translateY(900px) translateX(570px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes take-card-from-enemy-graveyard-enemy-6 {
+  0% {
+    -webkit-transform: translateY(900px) translateX(570px);
+            transform: translateY(900px) translateX(570px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes take-card-from-enemy-graveyard-enemy-7 {
+  0% {
+    -webkit-transform: translateY(900px) translateX(530px);
+            transform: translateY(900px) translateX(530px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes take-card-from-enemy-graveyard-enemy-7 {
+  0% {
+    -webkit-transform: translateY(900px) translateX(530px);
+            transform: translateY(900px) translateX(530px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes take-card-from-enemy-graveyard-enemy-8 {
+  0% {
+    -webkit-transform: translateY(900px) translateX(520px);
+            transform: translateY(900px) translateX(520px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes take-card-from-enemy-graveyard-enemy-8 {
+  0% {
+    -webkit-transform: translateY(900px) translateX(520px);
+            transform: translateY(900px) translateX(520px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes take-card-from-enemy-graveyard-enemy-9 {
+  0% {
+    -webkit-transform: translateY(900px) translateX(500px);
+            transform: translateY(900px) translateX(500px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes take-card-from-enemy-graveyard-enemy-9 {
+  0% {
+    -webkit-transform: translateY(900px) translateX(500px);
+            transform: translateY(900px) translateX(500px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes take-card-from-enemy-graveyard-enemy-10 {
+  0% {
+    -webkit-transform: translateY(900px) translateX(490px);
+            transform: translateY(900px) translateX(490px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes take-card-from-enemy-graveyard-enemy-10 {
+  0% {
+    -webkit-transform: translateY(900px) translateX(490px);
+            transform: translateY(900px) translateX(490px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+
+@-webkit-keyframes take-card-from-enemy-graveyard-enemy-11 {
+  0% {
+    -webkit-transform: translateY(900px) translateX(450px);
+            transform: translateY(900px) translateX(450px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
+@keyframes take-card-from-enemy-graveyard-enemy-11 {
+  0% {
+    -webkit-transform: translateY(900px) translateX(450px);
+            transform: translateY(900px) translateX(450px);
+  }
+  100% {
+    -webkit-transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0);
+  }
+}
 /* ----------------------------------------------
  * Generated by Animista on 2020-7-15 4:2:41
  * Licensed under FreeBSD License.

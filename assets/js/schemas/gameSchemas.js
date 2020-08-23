@@ -144,6 +144,8 @@ var startGameResponse = {
 									"cardsToDrawFromEnemyHand": { "type": "integer" },
 									"cardsToDestroyFromEnemyField": { "type": "integer" },
 									"cardsToTakeFromYourGraveyard": { "type": "integer" },
+									"cardsToTakeFromEnemyGraveyard": { "type": "integer" },
+									"playerIdGraveyard": { "type": ["integer", "null"] },
 									"cardsSummonConstraints": {
 										"type": "object",
 										"properties": {
@@ -250,7 +252,7 @@ var activateCardEffectResponse = startGameResponse;
 var finishCardEffectContinuousResponse = startGameResponse;
 var drawCardFromEnemyHandResponse = startGameResponse;
 var destroyCardFromEnemyFieldResponse = startGameResponse;
-var takeCardFromYourGraveyardResponse = startGameResponse;
+var takeCardFromGraveyardResponse = startGameResponse;
 
 var drawCardYouResponse = {
 	"type": "object",

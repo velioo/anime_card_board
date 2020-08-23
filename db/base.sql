@@ -176,7 +176,7 @@ INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, a
 '{"effect": "energyRegen", "effectChargesCount": 3, "effectValue": 2, "chargeConsumedPhase": "main", "continuousEffectType": "passive", "autoEffect":true, "continuous": true}', 1, '{energy}', '{}');
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes, sounds_json) VALUES (15, 'Aladdin', 'Until your next SP, all the effects of the special board spaces you step on by moving to them are nullified.', 'Aladdin.jpg', 'common',
 '{"effect": "nullifyAllSpecialBoardSpaces", "effectChargesCount": 1, "chargeConsumedPhase": "standby", "continuousEffectType": "passive", "autoEffect":true, "continuous": true}', 2, '{field}', '{}');
-INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes, sounds_json) VALUES (16, 'Kabuto', 'Take a card from your Graveyard to your hand, then shuffle your hand.', 'Kabuto.jpg', 'common',
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes, sounds_json) VALUES (16, 'Tobirama', 'Take a card from your Graveyard to your hand, then shuffle your hand.', 'Tobirama.png', 'common',
 '{"effect": "takeCardFromYourGraveyard", "effectValue": 1, "autoEffect":false, "continuous": false}', 2, '{cards}', '{}');
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes, sounds_json) VALUES (17, 'Violet', 'Summon this card on your field. When this card expires (not destroyed), increase your max Energy points by 2.', 'Violet.jpg', 'common',
 '{"effect": "dummy", "effectChargesCount": 3, "effectExpire": "increaseMaxEnergy", "effectValueExpire": 2, "chargeConsumedPhase": "standby", "continuousEffectType": "passive", "autoEffect":true, "continuous": true}', 3, '{energy}', '{}');
@@ -214,3 +214,5 @@ INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, a
 '{"effect": "discardCardTakeCardFromYourGraveyard", "effectValue1": 2, "effectValue2": 1, "autoEffect": false, "continuous": false}', 0, '{cards}', '{}');
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes, sounds_json) VALUES (34, 'Yato', 'Gain 3 Energy points.', 'Yato.jpg', 'rare',
 '{"effect": "energyGain", "effectValue": 3, "autoEffect": true, "continuous": false}', 0, '{energy}', '{}');
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes, sounds_json) VALUES (35, 'Kabuto', 'Take a card from your opponents''s Graveyard to your hand, then shuffle your hand.', 'Kabuto.jpg', 'common',
+'{"effect": "takeCardFromEnemyGraveyard", "effectValue": 1, "autoEffect":false, "continuous": false}', 2, '{cards}', '{}');

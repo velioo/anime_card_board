@@ -368,12 +368,12 @@ const self = module.exports = {
 	  	}
 	  });
 
-	  socket.on('takeCardFromYourGraveyard', async (ctx) => {
+	  socket.on('takeCardFromGraveyard', async (ctx) => {
 	  	try {
 	  		let ctx_c = _.clone(ctx);
 	  		logger.info('Take card from your graveyard data: %o', ctx_c.data);
 
-		  	await gameServer.takeCardFromYourGraveyard(ctx_c, next);
+		  	await gameServer.takeCardFromGraveyard(ctx_c, next);
 
 		  	let isSuccessful = ctx_c.errors.length ? false : true;
 
@@ -381,7 +381,7 @@ const self = module.exports = {
 		  		&& ctx_c.sessions[ctx_c.roomData.player1Id].socketId && ctx_c.sessions[ctx_c.roomData.player2Id].socketId
 		  		&& ctx_c.io.getSocket(ctx_c.sessions[ctx_c.roomData.player1Id].socketId) && ctx_c.io.getSocket(ctx_c.sessions[ctx_c.roomData.player2Id].socketId)) {
 
-			  	ctx.io.getSocket(ctx_c.sessions[ctx_c.roomData.player1Id].socketId).emit('takeCardFromYourGraveyard', {
+			  	ctx.io.getSocket(ctx_c.sessions[ctx_c.roomData.player1Id].socketId).emit('takeCardFromGraveyard', {
 			  		errors: ctx_c.errors,
 				  	isSuccessful: isSuccessful,
 				  	gameplayData: ctx_c.gameplayData,
@@ -390,7 +390,7 @@ const self = module.exports = {
 				  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
 				  });
 
-				  ctx.io.getSocket(ctx_c.sessions[ctx_c.roomData.player2Id].socketId).emit('takeCardFromYourGraveyard', {
+				  ctx.io.getSocket(ctx_c.sessions[ctx_c.roomData.player2Id].socketId).emit('takeCardFromGraveyard', {
 			  		errors: ctx_c.errors,
 				  	isSuccessful: isSuccessful,
 				  	gameplayData: ctx_c.gameplayData,

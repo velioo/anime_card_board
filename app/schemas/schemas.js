@@ -237,7 +237,15 @@ const _DESTROY_CARD_FROM_ENEMY_FIELD = {
   "required": [ "roomId", "cardId" ],
 };
 
-const _TAKE_CARD_FROM_GRAVEYARD = _DRAW_CARD_FROM_ENEMY_HAND;
+const _TAKE_CARD_FROM_GRAVEYARD = {
+  "type": "object",
+  "properties": {
+    "roomId": { "type": "integer" },
+    "cardIdx": { "type": "integer" },
+    "playerIdGraveyard": { "type": "integer" },
+  },
+  "required": [ "roomId", "cardIdx", "playerIdGraveyard" ],
+};
 
 module.exports = {
   SIGN_UP: _SIGN_UP,

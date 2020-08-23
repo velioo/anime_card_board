@@ -42,8 +42,8 @@ const self = module.exports = {
   destroyCardFromEnemyField: async (ctx, next) => {
     await gameController.destroyCardFromEnemyField (ctx, next);
   },
-  takeCardFromYourGraveyard: async (ctx, next) => {
-    await gameController.takeCardFromYourGraveyard (ctx, next);
+  takeCardFromGraveyard: async (ctx, next) => {
+    await gameController.takeCardFromGraveyard (ctx, next);
   },
   rollPhase: async (ctx, next) => {
     await gameController.rollPhase (ctx, next);

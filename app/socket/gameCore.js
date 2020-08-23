@@ -181,6 +181,7 @@ var self = module.exports = {
     assert(playerState.cardsToDrawFromEnemyHand == 0);
     assert(playerState.cardsToDestroyFromEnemyField == 0);
     assert(playerState.cardsToTakeFromYourGraveyard == 0);
+    assert(playerState.cardsToTakeFromEnemyGraveyard == 0);
 
     playerState.cardsInHandArr.forEach(function(card) {
     	updateCardEffectValueStatus(card, playerState);
@@ -456,6 +457,15 @@ var self = module.exports = {
 		  		playerState.cardsToTakeFromYourGraveyard = playerState.cardsInGraveyardArr.length;
 		  	} else {
 		  		playerState.cardsToTakeFromYourGraveyard += card.cardEffect.effectValue;
+		  	}
+		  } else if (card.cardEffect.effect == "takeCardFromEnemyGraveyard") {
+		  	assert(playerStateEnemy.cardsInGraveyardArr.length > 0);
+
+		  	playerState.cardsToTakeFromEnemyGraveyard = playerState.cardsToTakeFromEnemyGraveyard ? playerState.cardsToTakeFromEnemyGraveyard : 0;
+		  	if (playerStateEnemy.cardsInGraveyardArr.length < (card.cardEffect.effectValue + playerState.cardsToTakeFromEnemyGraveyard)) {
+		  		playerState.cardsToTakeFromEnemyGraveyard = playerStateEnemy.cardsInGraveyardArr.length;
+		  	} else {
+		  		playerState.cardsToTakeFromEnemyGraveyard += card.cardEffect.effectValue;
 		  	}
 		  } else if (card.cardEffect.effect == "drawCardFromDeckYouDiscardCardYou") {
 		  	playerState.cardsToDraw += card.cardEffect.effectValue1;
@@ -1063,6 +1073,7 @@ var self = module.exports = {
 			|| gameState.playersState[notCurrPlayerId].cardsToDrawFromEnemyHand > 0
 			|| gameState.playersState[notCurrPlayerId].cardsToDestroyFromEnemyField > 0
 			|| gameState.playersState[notCurrPlayerId].cardsToTakeFromYourGraveyard > 0
+			|| gameState.playersState[notCurrPlayerId].cardsToTakeFromEnemyGraveyard > 0
 			|| gameState.playersState[notCurrPlayerId].cardsSummonConstraints.cardsCanSummonAny) {
 			ctx.gameplayData.gameState.activePlayerId = notCurrPlayerId;
 			ctx.sessions[notCurrPlayerId].pausedTimer = false;
@@ -1145,19 +1156,21 @@ var self = module.exports = {
     	updateCardEffectValueStatus(card, playerStateEnemy);
 		});
 	},
-	takeCardFromYourGraveyardHook: async (ctx) => {
+	takeCardFromGraveyardHook: async (ctx) => {
 		let gameState = ctx.gameplayData.gameState;
 		let playerState = gameState.playersState[ctx.session.userData.userId];
 		let enemyUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
 		let playerStateEnemy = gameState.playersState[enemyUserId];
 
-		if (playerState.cardsToTakeFromYourGraveyard <= 0) {
+		if (playerState.cardsToTakeFromYourGraveyard <= 0 && playerState.cardsToTakeFromEnemyGraveyard <= 0) {
 			let cardsOnFieldCopy = playerState.cardsOnFieldArr.slice().reverse();
 			for (let i = 0; i < cardsOnFieldCopy.length; i++) {
 			  if (!cardsOnFieldCopy[i].cardEffect.continuous
 			  	&& playerState.cardsToTakeFromYourGraveyard <= 0
-			  	&& (cardsOnFieldCopy[i].cardEffect.effect == "takeCardFromYourGraveyard"
-			  		|| cardsOnFieldCopy[i].cardEffect.effect == "discardCardTakeCardFromYourGraveyard")) {
+			  	&& playerState.cardsToTakeFromEnemyGraveyard <= 0
+			  	&& ((cardsOnFieldCopy[i].cardEffect.effect == "takeCardFromYourGraveyard")
+			  		|| (cardsOnFieldCopy[i].cardEffect.effect == "discardCardTakeCardFromYourGraveyard")
+			  		|| (cardsOnFieldCopy[i].cardEffect.effect == "takeCardFromEnemyGraveyard"))) {
 			  	await putCardInGraveyard(cardsOnFieldCopy[i], playerState);
 			  	playerState.cardsOnFieldArr.splice(cardsOnFieldCopy.length - 1 - i, 1);
 			  }

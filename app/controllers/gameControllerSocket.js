@@ -128,6 +128,7 @@ const self = module.exports = {
               cardsToDrawFromEnemyHand: 0,
               cardsToDestroyFromEnemyField: 0,
               cardsToTakeFromYourGraveyard: 0,
+              cardsToTakeFromEnemyGraveyard: 0,
               cardsSummonConstraints: {
                 cardsCanSummonAny: false,
                 cardsCanSummonCommon: true,
@@ -165,6 +166,7 @@ const self = module.exports = {
               cardsToDrawFromEnemyHand: 0,
               cardsToDestroyFromEnemyField: 0,
               cardsToTakeFromYourGraveyard: 0,
+              cardsToTakeFromEnemyGraveyard: 0,
               cardsSummonConstraints: {
                 cardsCanSummonAny: false,
                 cardsCanSummonCommon: true,
@@ -595,8 +597,8 @@ const self = module.exports = {
       logger.info('Failed to draw card from enemy hand: %o', err);
     }
   },
-  takeCardFromYourGraveyard: async (ctx, next) => {
-    logger.info('takeCardFromYourGraveyard gameController');
+  takeCardFromGraveyard: async (ctx, next) => {
+    logger.info('takeCardFromGraveyard gameController');
     ctx.errors = [];
 
     await pg.pool.query('BEGIN');
@@ -604,6 +606,7 @@ const self = module.exports = {
     try {
       ctx.data.roomId = parseInt(ctx.data.roomId);
       ctx.data.cardIdx = parseInt(ctx.data.cardIdx);
+      ctx.data.playerIdGraveyard = parseInt(ctx.data.playerIdGraveyard);
 
       const isSchemaValid = ajv.validate(SCHEMAS.TAKE_CARD_FROM_GRAVEYARD, ctx.data);
       assert(isSchemaValid);
@@ -620,12 +623,28 @@ const self = module.exports = {
 
       let gameState = ctx.gameplayData.gameState;
       let playerState = gameState.playersState[ctx.session.userData.userId];
+      let enemyUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
+      let playerStateEnemy = gameState.playersState[enemyUserId];
 
-      assert(playerState.cardsToTakeFromYourGraveyard > 0);
-      assert(playerState.cardsInGraveyardArr.length > 0);
-      assert((ctx.data.cardIdx >= 0) && (ctx.data.cardIdx < playerState.cardsInGraveyardArr.length));
+      assert(ctx.data.cardIdx >= 0);
 
-      gameState.cardTakenFromGraveyard = playerState.cardsInGraveyardArr[ctx.data.cardIdx];
+      if (ctx.data.playerIdGraveyard == ctx.session.userData.userId) {
+        assert(playerState.cardsToTakeFromYourGraveyard > 0);
+        assert(playerState.cardsInGraveyardArr.length > 0);
+        assert(ctx.data.cardIdx < playerState.cardsInGraveyardArr.length);
+        gameState.cardTakenFromGraveyard = playerState.cardsInGraveyardArr[ctx.data.cardIdx];
+        playerState.cardsInGraveyardArr.splice(ctx.data.cardIdx, 1);
+        playerState.cardsToTakeFromYourGraveyard--;
+      } else if (ctx.data.playerIdGraveyard == enemyUserId) {
+        assert(playerState.cardsToTakeFromEnemyGraveyard > 0);
+        assert(playerStateEnemy.cardsInGraveyardArr.length > 0);
+        assert(ctx.data.cardIdx < playerStateEnemy.cardsInGraveyardArr.length);
+        gameState.cardTakenFromGraveyard = playerStateEnemy.cardsInGraveyardArr[ctx.data.cardIdx];
+        playerStateEnemy.cardsInGraveyardArr.splice(ctx.data.cardIdx, 1);
+        playerState.cardsToTakeFromEnemyGraveyard--;
+      } else {
+        assert(0);
+      }
 
       queryStatus = await utils.selectRowById({ table: 'cards', field: 'id', queryArg: gameState.cardTakenFromGraveyard.cardId });
       let cardRow = queryStatus.rows[0];
@@ -644,18 +663,16 @@ const self = module.exports = {
 
       cardFromDb.cardEffect.effectValueOriginal = cardFromDb.cardEffect.effectValue;
       cardFromDb.cardCostOriginal = cardFromDb.cardCost;
-      
+
       gameState.cardTakenFromGraveyard = cardFromDb;
-
       gameState.cardTakenFromGraveyard.cardInGraveyardIdx = ctx.data.cardIdx;
-
+      gameState.cardTakenFromGraveyard.playerIdGraveyard = ctx.data.playerIdGraveyard;
       gameState.playerIdTakenCardFromGraveyard = ctx.session.userData.userId;
+
       playerState.cardsInHandArr.push(gameState.cardTakenFromGraveyard);
-      playerState.cardsInGraveyardArr.splice(ctx.data.cardIdx, 1);
-      playerState.cardsToTakeFromYourGraveyard--;
       playerState.cardsInHand++;
 
-      await gameCore.takeCardFromYourGraveyardHook(ctx);
+      await gameCore.takeCardFromGraveyardHook(ctx);
       await gameCore.activePlayerHook(ctx);
 
       queryStatus = await utils.updateRowById({ table: 'games', fields: ['data_json', 'room_id'],
