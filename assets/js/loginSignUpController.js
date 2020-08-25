@@ -34,6 +34,15 @@ logInSignUpController.prototype.initConstants = function() {
 	_self.SETTINGS_SUBMIT_BTN_ID = '#anime-cb-submit-settings';
 	_self.SETTINGS_VOLUME_LABEL_ID = '#anime-cb-setting-volume-label';
 	_self.SETTINGS_VOLUME_INPUT_ID = '#anime-cb-setting-volume';
+
+	_self.USER_INFO_HEADER_WRAPPER_CLASS = '.anime-cb-user-info-wrapper';
+	_self.USER_INFO_HEADER_USERNAME_CLASS = '.anime-cb-user-info-username';
+	_self.USER_INFO_HEADER_LEVEL_CLASS = '.anime-cb-user-info-level';
+	_self.USER_INFO_HEADER_WINS_CLASS = '.anime-cb-user-info-wins';
+	_self.USER_INFO_HEADER_LOSES_CLASS = '.anime-cb-user-info-loses';
+	_self.USER_INFO_HEADER_XP_PROGRESS_BAR_WRAPPER_CLASS = '.anime-cb-level-progress-bar-wrapper';
+	_self.USER_INFO_HEADER_XP_PROGRESS_BAR_CLASS = '.anime-cb-level-progress-bar';
+	_self.USER_INFO_HEADER_XP_PROGRESS_BAR_TEXT_CLASS = '.anime-cb-user-info-level-xp';
 };
 
 logInSignUpController.prototype.initElements = function() {
@@ -115,7 +124,7 @@ logInSignUpController.prototype.initListeners = function() {
 logInSignUpController.prototype.initIntervals = function() {
 	var _self = this;
 
-	// _self.logInInterval = setInterval(_self.logInIntervalFunc.bind(_self), 3000);
+	_self.logInInterval = setInterval(_self.logInIntervalFunc.bind(_self), 3000);
 };
 
 logInSignUpController.prototype.logInIntervalFunc = function() {
@@ -171,6 +180,7 @@ logInSignUpController.prototype.processLoginResponse = function(data) {
 		_self._username = data.username;
 		_self.showLoginSuccess(data);
 		_self.updateSettingsStatus(data.settings);
+		_self.updateUserInfoStatus(data);
 	} else {
 		assert(data.errors.length > 0);
 		_self.renderLoginErrors(data);
@@ -191,6 +201,7 @@ logInSignUpController.prototype.processLogoutResponse = function(data) {
 	if (data.isSuccessful) {
 		_self.resetSessionState();
 		_self.showLogOutSuccess(data);
+		$(_self.INFO_HEADER).hide();
 		window.removeEventListener("beforeunload", _self.client.gameController.beforeUnload);
 	} else {
 		assert(data.errors.length > 0);
@@ -236,6 +247,7 @@ logInSignUpController.prototype.processIsUserLoggedInResponse = function(data) {
 			_self._userId = data.userId;
 			_self._username = data.username;
 			_self.updateSettingsStatus(data.settings);
+			_self.updateUserInfoStatus(data);
 		} else {
 			// _self.processSessionExpired();
 		}
@@ -419,6 +431,28 @@ logInSignUpController.prototype.updateSettingsStatus = function (settings) {
 			$(_self.SETTINGS_VOLUME_LABEL_ID).text(settings[setting]);
 		}
 	}
+};
+
+logInSignUpController.prototype.updateUserInfoStatus = function (data) {
+	var _self = this;
+
+	_self.USER_INFO_HEADER_WRAPPER_CLASS = '.anime-cb-user-info-wrapper';
+	_self.USER_INFO_HEADER_USERNAME_CLASS = '.anime-cb-user-info-username';
+	_self.USER_INFO_HEADER_LEVEL_CLASS = '.anime-cb-user-info-level';
+	_self.USER_INFO_HEADER_WINS_CLASS = '.anime-cb-user-info-wins';
+	_self.USER_INFO_HEADER_LOSES_CLASS = '.anime-cb-user-info-loses';
+	_self.USER_INFO_HEADER_LEVEL_XP_CLASS = '.anime-cb-user-info-level-xp';
+
+	$(_self.USER_INFO_HEADER_USERNAME_CLASS).text(data.username + ",");
+	$(_self.USER_INFO_HEADER_LEVEL_CLASS).text("Level " + data.level + ",");
+	$(_self.USER_INFO_HEADER_WINS_CLASS).text("Wins: " + data.winsCount + ",");
+	$(_self.USER_INFO_HEADER_LOSES_CLASS).text("Loses: " + data.losesCount);
+
+	var xpPercentage = Math.floor((data.currentLevelXp / data.maxLevelXp) * 100);
+
+	$(_self.USER_INFO_HEADER_XP_PROGRESS_BAR_TEXT_CLASS).text(xpPercentage + "%");
+	$(_self.USER_INFO_HEADER_XP_PROGRESS_BAR_CLASS).css("width", xpPercentage + "%");
+
 };
 
 logInSignUpController.prototype.preSwitchScreenHookLogInSignUpController = function (screenClass) {

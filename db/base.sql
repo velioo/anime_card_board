@@ -6,6 +6,11 @@ CREATE TABLE "users" (
   "email" character varying(255) NOT NULL,
   "is_confirmed" boolean DEFAULT false NOT NULL,
   "settings_json" text DEFAULT '{}',
+  "level" integer NOT NULL DEFAULT 1,
+  "current_level_xp" integer NOT NULL DEFAULT 0,
+  "max_level_xp" integer NOT NULL DEFAULT 100,
+  "wins_count" integer NOT NULL DEFAULT 0,
+  "loses_count" integer NOT NULL DEFAULT 0,
   "updated_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id)
@@ -216,3 +221,5 @@ INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, a
 '{"effect": "energyGain", "effectValue": 3, "autoEffect": true, "continuous": false}', 0, '{energy}', '{}');
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes, sounds_json) VALUES (35, 'Kabuto', 'Take a card from your opponents''s Graveyard to your hand, then shuffle your hand.', 'Kabuto.jpg', 'common',
 '{"effect": "takeCardFromEnemyGraveyard", "effectValue": 1, "autoEffect":false, "continuous": false}', 2, '{cards}', '{}');
+INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes, sounds_json) VALUES (36, 'Kyōko', 'Choose a card attribute and draw 1 card from the deck. If the card has the attribute that you chose, depending on the chosen attribute the following effect will be applied: ''Field'' -> Go 8 spaces forward; ''Cards'' -> Increase your max cards in hand by 1 and draw 1 more card; ''Energy'' -> Increase your max energy by 1 and gain 3 Energy points. If the card doesn''t have the attribute that you chose, depending on the chosen attribute the following effect will be applied: ''Field'' -> Go 4 spaces backward; ''Cards'' -> Discard 2 cards from your hand; ''Energy'' -> Decrease your current Energy points by 3', 'Kyoko.jpg', 'rare',
+'{"effect": "chooseAttributeVariation1", "effectValue": 1, "effectValue1_MoveSpacesForward": 8, "effectValue1_MoveSpacesBackward": 4, "effectValue2_IncreaseMaxCardsInHand": 1, "effectValue2_DrawCardsFromDeck": 1, "effectValue2_DiscardCards": 2, "effectValue3_IncreaseMaxEnergy": 1, "effectValue3_EnergyGain": 3, "effectValue3_EnergyLose": 3, "autoEffect":false, "continuous": false}', 3, '{field, cards, energy}', '{}');

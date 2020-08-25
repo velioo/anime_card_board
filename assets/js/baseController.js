@@ -29,6 +29,7 @@ baseController.prototype._initConstants = function() {
 	_self.FORM_CLASS = '.anime-cb-form';
 	_self.MAIN_WRAPPER_ID = '#acb-main-wrapper';
 	_self.SUBMAIN_WRAPPER_ID = '#acb-submain-wrapper'
+	_self.INFO_HEADER = '#acb-info-header';
 
 	_self.CHANGE_SCREEN_BTNS_CLASS = '.anime-cb-button';
 
@@ -155,10 +156,13 @@ baseController.prototype.switchToScreen = function(screenClass) {
 };
 
 baseController.prototype.preSwitchScreenHook = function(screenClass) {
-	logger.info('preSwitchScreenHook');
-	console.log('preSwitchScreenHook');
-	console.log(_lastHistoryState);
 	var _self = this;
+
+	if (screenClass == _self.GAME_SCREEN_CLASS || !_self.client.logInSignUpController.isUserLoggedIn()) {
+		$(_self.INFO_HEADER).hide();
+	} else {
+		$(_self.INFO_HEADER).show();
+	}
 
 	if (typeof _self.client.roomController.preSwitchScreenHookRoomController === "function") {
 		_self.client.roomController.preSwitchScreenHookRoomController(screenClass);

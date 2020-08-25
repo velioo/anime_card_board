@@ -99,7 +99,7 @@ var self = module.exports = {
     try {
       const userData = await pg.pool.query(`
 
-        SELECT username, password, salt, id, is_confirmed, settings_json
+        SELECT *
         FROM users
         WHERE
           username = $1
@@ -114,6 +114,11 @@ var self = module.exports = {
           ctx.session.isUserLoggedIn = true;
           ctx.session.userData.settings = JSON.parse(userData.rows[0].settings_json);
           ctx.settings = ctx.session.userData.settings;
+          ctx.level = userData.rows[0].level;
+          ctx.currentLevelXp = userData.rows[0].current_level_xp;
+          ctx.maxLevelXp = userData.rows[0].max_level_xp;
+          ctx.winsCount = userData.rows[0].wins_count;
+          ctx.losesCount = userData.rows[0].loses_count;
         } else {
           ctx.errors.push({ dataPath: '/username', message: 'You must confirm your email before logging in.' });
         }
@@ -129,11 +134,37 @@ var self = module.exports = {
     return self.sendResponse(ctx, next);
   },
   isUserLoggedIn: async (ctx, next) => {
+    let userDataDb;
+    if (ctx.session.isUserLoggedIn) {
+      try {
+        const userData = await pg.pool.query(`
+
+          SELECT *
+          FROM users
+          WHERE
+            id = $1
+
+        `, [ ctx.session.userData.userId ]);
+
+        assert(userData.rowCount == 1);
+
+        userDataDb = userData.rows[0];
+      } catch (err) {
+        ctx.errors.push({ dataPath: '/is_user_logged_in', message: 'There was a problem while getting user data.' });
+        logger.info('Failed to get user data: %o', err);
+      }
+    }
+
     ctx.body = {
       isUserLoggedIn: ctx.session.isUserLoggedIn,
       userId: ctx.session.userData ? ctx.session.userData.userId || null : null,
       username: ctx.session.userData ? ctx.session.userData.username || null : null,
       settings: ctx.session.userData ? ctx.session.userData.settings || null : null,
+      level: userDataDb ? userDataDb.level : null,
+      currentLevelXp: userDataDb ? userDataDb.current_level_xp : null,
+      maxLevelXp: userDataDb ? userDataDb.max_level_xp : null,
+      winsCount: userDataDb ? userDataDb.wins_count : null,
+      losesCount: userDataDb ? userDataDb.loses_count : null,
       isSuccessful: true,
     };
   },
@@ -149,6 +180,26 @@ var self = module.exports = {
 
     if ("settings" in ctx) {
       ctx.body.settings = ctx.settings;
+    }
+
+    if ("level" in ctx) {
+      ctx.body.level = ctx.level;
+    }
+
+    if ("currentLevelXp" in ctx) {
+      ctx.body.currentLevelXp = ctx.currentLevelXp;
+    }
+
+    if ("maxLevelXp" in ctx) {
+      ctx.body.maxLevelXp = ctx.maxLevelXp;
+    }
+
+    if ("winsCount" in ctx) {
+      ctx.body.winsCount = ctx.winsCount;
+    }
+
+    if ("losesCount" in ctx) {
+      ctx.body.losesCount = ctx.losesCount;
     }
 
     ctx.body.userId = ctx.session.userData ? ctx.session.userData.userId : null;

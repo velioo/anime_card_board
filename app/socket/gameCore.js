@@ -497,6 +497,8 @@ var self = module.exports = {
 				} else {
 					playerState.energyPoints += card.cardEffect.effectValue;
 				}
+		  } else if (card.cardEffect.effect == "chooseAttributeVariation1") {
+		  	playerState.cardsToDraw += card.cardEffect.effectValue;
 		  }
 		} else {
 			if (card.cardEffect.maxUsesPerTurn) {
@@ -704,6 +706,61 @@ var self = module.exports = {
 				card.cardEffect.effectValueChosen = diceValue;
 				card.cardEffect.moveSpaces = moveSpaces;
 			}
+		} else if (card.cardEffect.effect == "chooseAttributeVariation1") {
+			assert(finishData.chosenAttribute);
+
+			let lastCardDrawn = playerState.cardsInHandArr[playerState.cardsInHandArr.length - 1];
+
+			if (finishData.chosenAttribute == "field") {
+				if (lastCardDrawn.cardAttributes.includes("field")) {
+					await self.rollDiceBoardHook(ctx, { rollDiceValue: card.cardEffect.effectValue1_MoveSpacesForward,
+	  				userId: yourUserId, moveBackwardsOnNextRoll: false, moveIfCan: true });
+
+					card.cardEffect.moveSpaces = card.cardEffect.effectValue1_MoveSpacesForward;
+				} else {
+					await self.rollDiceBoardHook(ctx, { rollDiceValue: card.cardEffect.effectValue1_MoveSpacesBackward,
+	  				userId: yourUserId, moveBackwardsOnNextRoll: true, moveIfCan: true });
+
+					card.cardEffect.moveSpaces = card.cardEffect.effectValue1_MoveSpacesBackward;
+				}
+			} else if (finishData.chosenAttribute == "cards") {
+				if (lastCardDrawn.cardAttributes.includes("cards")) {
+					playerState.maxCardsInHand += card.cardEffect.effectValue2_IncreaseMaxCardsInHand;
+					playerState.cardsToDraw += card.cardEffect.effectValue2_DrawCardsFromDeck;
+
+					card.cardEffect.cardsToDraw = true;
+				} else {
+					if ((playerState.cardsInHand - playerState.cardsToDiscard - card.cardEffect.effectValue2_DiscardCards) >= 0) {
+						playerState.cardsToDiscard += card.cardEffect.effectValue2_DiscardCards;
+					} else {
+						playerState.cardsToDiscard = playerState.cardsInHand;
+					}
+
+					card.cardEffect.cardsToDiscard = true;
+				}
+			} else if (finishData.chosenAttribute == "energy") {
+				if (lastCardDrawn.cardAttributes.includes("energy")) {
+					playerState.maxEnergyPoints += card.cardEffect.effectValue3_IncreaseMaxEnergy;
+					if ((playerState.energyPoints + card.cardEffect.effectValue3_EnergyGain) > playerState.maxEnergyPoints) {
+						playerState.energyPoints = playerState.maxEnergyPoints;
+					} else {
+						playerState.energyPoints += card.cardEffect.effectValue3_EnergyGain;
+					}
+
+					card.cardEffect.gainEnergy = true;
+				} else {
+					if ((playerState.energyPoints - card.cardEffect.effectValue3_EnergyLose) < 0) {
+						playerState.energyPoints = 0;
+					} else {
+						playerState.energyPoints -= card.cardEffect.effectValue3_EnergyLose;
+					}
+
+					card.cardEffect.loseEnergy = true;
+				}
+			}
+
+			assert(card.cardEffect.moveSpaces || card.cardEffect.cardsToDraw
+				|| card.cardEffect.cardsToDiscard || card.cardEffect.gainEnergy || card.cardEffect.loseEnergy);
 		}
 
 		playerState.cardsInHandArr.forEach(function(card) {
@@ -1031,7 +1088,20 @@ var self = module.exports = {
 
    	if (checkWin(ctx)) {
       ctx.gameplayData.gameState.playerIdWinGame = ctx.session.userData.userId;
-      let success = await winGame(ctx);
+      let playerIdLose = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
+
+      let success;
+      await pg.pool.query('BEGIN');
+      try {
+      	success = await self.winGame(ctx, ctx.session.userData.userId, playerIdLose, ctx.roomData.id);
+      	assert(success);
+
+      	await pg.pool.query('COMMIT');
+      } catch(err) {
+      	await pg.pool.query('ROLLBACK');
+      	logger.info("Failed to win game: %o", err);
+      }
+
       assert(success === true);
     }
 
@@ -1194,6 +1264,31 @@ var self = module.exports = {
 		playerStateEnemy.cardsOnFieldArr.forEach(function(card) {
     	updateCardEffectValueStatus(card, playerStateEnemy);
 		});
+	},
+	winGame: async (ctx, playerIdWin, playerIdLose, roomId) => {
+	  let queryStatus = await pg.pool.query(`
+
+	    UPDATE games
+	    SET status_id = 2,
+	      winning_player_id = $1,
+	      finished_at = now()
+	    WHERE room_id = $2
+	      AND status_id = 1
+	    RETURNING id
+
+	  `, [ playerIdWin, roomId ]);
+
+	  if (queryStatus.rowCount != 1) {
+	  	return false;
+	  }
+
+		let playerWinXp = await calculateXp(ctx, playerIdWin, playerIdWin);
+		let playerLoseXp = await calculateXp(ctx, playerIdLose, playerIdWin);
+
+	  await updateUserLevelStatus(ctx, playerIdWin, playerIdWin, playerWinXp);
+	  await updateUserLevelStatus(ctx, playerIdLose, playerIdWin, playerLoseXp);
+
+	  return true;
 	},
 };
 
@@ -1595,6 +1690,35 @@ let putCardInGraveyard = async (card, playerState) => {
   });
 };
 
+let calculateXp = async (ctx, userId, playerIdWon) => {
+	let gameState = ctx.gameplayData.gameState;
+	let playerState = gameState.playersState[userId];
+
+	let xp = 0;
+	if (playerIdWon == userId) {
+		xp += 100;
+	} else {
+		xp += 50;
+	}
+
+	let xpPerTurn = 10;
+
+	xp += (playerState.totalTurns) * xpPerTurn;
+
+	let xpPerSpaceMoved = 0.5;
+	let currBoardIndex = playerState.currBoardIndex;
+	let spacesMoved = 0;
+	if (userId == ctx.roomData.player1Id) {
+		spacesMoved = currBoardIndex;
+	} else {
+		spacesMoved = gameState.boardData.boardDataPlayers.boardPath.length - currBoardIndex - 1;
+	}
+
+	xp += Math.ceil(xpPerSpaceMoved * spacesMoved);
+
+	return xp;
+};
+
 let checkWin = (ctx) => {
   let boardDataPlayers = ctx.gameplayData.gameState.boardData.boardDataPlayers;
   let boardPath = boardDataPlayers.boardPath;
@@ -1609,20 +1733,48 @@ let checkWin = (ctx) => {
   return false;
 };
 
-let winGame = async (ctx) => {
-  let queryStatus = await pg.pool.query(`
+let updateUserLevelStatus = async (ctx, userId, userIdWin, xpGain) => {
+	let queryStatus = await pg.pool.query(`
 
-    UPDATE games
-    SET status_id = 2,
-      winning_player_id = $1,
-      finished_at = now()
-    WHERE room_id = $2
-      AND status_id = 1
-    RETURNING id
+		SELECT * FROM users WHERE id = $1
 
-  `, [ ctx.session.userData.userId, ctx.roomData.id ]);
+	`, [userId]);
 
-  assert(queryStatus.rows[0].id);
+	assert(queryStatus.rowCount == 1);
 
-  return true;
+	let userRow = queryStatus.rows[0];
+
+	if ((userRow.current_level_xp + xpGain) < userRow.max_level_xp) {
+		userRow.current_level_xp += xpGain;
+	} else if ((userRow.current_level_xp + xpGain) >= userRow.max_level_xp) {
+		userRow.current_level_xp = userRow.current_level_xp + xpGain - userRow.max_level_xp;
+		userRow.max_level_xp = Math.floor(userRow.max_level_xp * 1.1);
+		userRow.level++;
+	}
+
+	if (userId == userIdWin) {
+		userRow.wins_count++;
+	} else {
+		userRow.loses_count++;
+	}
+
+	queryStatus = await pg.pool.query(`
+
+		UPDATE users
+		SET level = $1,
+			current_level_xp = $2,
+			max_level_xp = $3,
+			wins_count = $4,
+			loses_count = $5
+		WHERE
+			id = $6
+
+	`, [userRow.level,
+			userRow.current_level_xp,
+			userRow.max_level_xp,
+			userRow.wins_count,
+			userRow.loses_count,
+			userId]);
+
+	assert(queryStatus.rowCount == 1);
 };

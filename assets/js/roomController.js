@@ -322,12 +322,10 @@ roomController.prototype.processCreateRoomResponse = function(data) {
 roomController.prototype.processLeaveRoomResponse = function(data) {
 	logger.info('processLeaveRoomResponse');
 	logger.info('To validate: ', JSON.stringify(data));
-	console.log('processLeaveRoomResponse, data: ', data);
 
 	var _self = this;
 
   if (_self._roomId && _self._roomId == data.roomId) {
-  	console.log('Room found, refreshing: ', _self._roomId);
   	_self.resetRoomsInterval();
   	_self.client.getCurrentRoomData({ roomId: _self._roomId });
   }

@@ -154,6 +154,7 @@ const self = module.exports = {
               maxEnergyPoints: 10,
               energyPerTurnGain: 5,
               energyRegen: 0,
+              totalTurns: 0,
             },
             [ctx.roomData.player2Id]: {
               name: ctx.roomData.player2Name,
@@ -192,6 +193,7 @@ const self = module.exports = {
               maxEnergyPoints: 10,
               energyPerTurnGain: 5,
               energyRegen: 0,
+              totalTurns: 0,
             },
           },
         },
@@ -923,6 +925,7 @@ const self = module.exports = {
 
       await gameCore.endPhaseHook(ctx);
 
+      playerState.totalTurns++;
       ctx.sessions[ctx.roomData.player1Id].pausedTimer = true;
       ctx.sessions[ctx.roomData.player2Id].pausedTimer = true;
 
@@ -1266,27 +1269,22 @@ const self = module.exports = {
 
       queryStatus = await utils.lockRowById({ table: 'games', field: 'room_id', queryArg: ctx.data.roomId });
 
+      assert(queryStatus.rows[0].player1_id == ctx.session.userData.userId
+        || queryStatus.rows[0].player2_id == ctx.session.userData.userId);
+
       if (player2LeftTheRoom) {
         assert(queryStatus.rows[0].player1_id == ctx.session.userData.userId);
       } else {
         assert(queryStatus.rows[0].player2_id == ctx.session.userData.userId);
       }
 
-      queryStatus = await pg.pool.query(`
+      ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
+      ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
 
-        UPDATE games
-        SET status_id = 2,
-          winning_player_id = $1,
-          finished_at = now()
-        WHERE room_id = $2
-          AND status_id = 1
-        RETURNING id
+      let playerIdLose = ctx.session.userData.userId == queryStatus.rows[0].player1_id
+        ? queryStatus.rows[0].player2_id : queryStatus.rows[0].player1_id;
 
-      `, [ ctx.session.userData.userId, ctx.data.roomId ]);
-
-      logger.info('queryStatus: ', queryStatus);
-
-      // assert(queryStatus.rows[0].id);
+      await gameCore.winGame(ctx, ctx.session.userData.userId, playerIdLose, ctx.data.roomId);
 
       await pg.pool.query('COMMIT');
     } catch(err) {
@@ -1314,22 +1312,13 @@ const self = module.exports = {
 
       assert(userId != ctx.gameplayData.gameState.activePlayerId);
 
-      queryStatus = await pg.pool.query(`
+      let playerIdLose = userId == queryStatus.rows[0].player1_id
+        ? queryStatus.rows[0].player2_id : queryStatus.rows[0].player1_id;
 
-        UPDATE games
-        SET status_id = 2,
-          winning_player_id = $1,
-          finished_at = now()
-        WHERE room_id = $2
-          AND status_id = 1
-        RETURNING id
-
-      `, [ userId, roomId ]);
-
-      logger.info('queryStatus: ', queryStatus);
+      let success = await gameCore.winGame(ctx, userId, playerIdLose, roomId);
 
       let playerIdWinGame = null;
-      if (queryStatus.rowCount >= 1) {
+      if (success) {
         playerIdWinGame = userId;
       }
 

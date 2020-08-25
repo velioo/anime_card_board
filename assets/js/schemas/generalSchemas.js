@@ -37,8 +37,14 @@ var logInResponse = {
 		"userId": { "type": ["integer", "null"] },
 		"username": { "type": ["string", "null"] },
 		"settings": { "type": ["object", "null"] },
+		"level": { "type": ["integer", "null"] },
+		"currentLevelXp": { "type": ["integer", "null"] },
+		"maxLevelXp": { "type": ["integer", "null"] },
+		"winsCount": { "type": ["integer", "null"] },
+		"losesCount": { "type": ["integer", "null"] },
 	},
-	"required": [ "errors", "isSuccessful", "userId", "username", "settings" ],
+	"required": [ "errors", "isSuccessful", "userId", "username", "settings", "level",
+		"currentLevelXp", "maxLevelXp", "winsCount", "losesCount" ],
 };
 
 var logOutResponse = {
@@ -58,8 +64,14 @@ var isUserLoggedInResponse = {
 		"userId": { "type": ["integer", "null"] },
 		"username": { "type": ["string", "null"] },
 		"settings": { "type": ["object", "null"] },
+		"level": { "type": ["integer", "null"] },
+		"currentLevelXp": { "type": ["integer", "null"] },
+		"maxLevelXp": { "type": ["integer", "null"] },
+		"winsCount": { "type": ["integer", "null"] },
+		"losesCount": { "type": ["integer", "null"] },
 	},
-	"required": [ "isSuccessful", "isUserLoggedIn", "userId", "username", "settings" ],
+	"required": [ "isSuccessful", "isUserLoggedIn", "userId", "username", "settings", "level",
+		"currentLevelXp", "maxLevelXp", "winsCount", "losesCount" ],
 };
 
 var createRoomResponse = {

@@ -16,6 +16,32 @@ body {
   display: none;
 }
 
+#acb-info-header {
+  position: sticky;
+  top: 0;
+  color: white;
+  font-size: 16pt;
+  padding: 10px;
+  background-color: #A52A2A;
+  z-index: 10;
+}
+
+.anime-cb-user-info-wrapper {
+}
+
+.anime-cb-level-progress-bar-wrapper {
+  display: inline-block;
+  width: 95%;
+  height: 25px;
+  margin-bottom: 0px;
+  vertical-align: middle;
+}
+
+.anime-cb-level-progress-bar-text {
+  margin-top: 3px;
+  font-size: 12pt;
+}
+
 .anime-cb-screen {
   display: none;
 }
@@ -452,6 +478,7 @@ body {
   max-height: 160px;
   overflow-y: auto;
   font-family: Arial, Helvetica, sans-serif;
+  z-index: 6;
 }
 
 #anime-cb-card-info-card-name2 {
@@ -631,7 +658,7 @@ body {
   margin-left: -750px;
   margin-bottom: -420px;
   display: inline-block;
-  z-index: 1;
+  z-index: 5;
   color: white;
   height: 100px;
   width: 220px;
@@ -1204,12 +1231,13 @@ body {
   }
   99% {
     z-index: 1000;
+    opacity: 1;
   }
   100% {
     z-index: -1;
     -webkit-transform: translate(0);
             transform: translate(0);
-    opacity: 1;
+    opacity: 0;
     border: 2px solid blue;
   }
 }
@@ -1240,12 +1268,13 @@ body {
   }
   99% {
     z-index: 1000;
+    opacity: 1;
   }
   100% {
     z-index: -1;
     -webkit-transform: translate(0);
             transform: translate(0);
-    opacity: 1;
+    opacity: 0;
     border: 2px solid blue;
   }
 }
@@ -1277,12 +1306,13 @@ body {
   }
   99% {
     z-index: 1000;
+    opacity: 1;
   }
   100% {
     z-index: -1;
     -webkit-transform: translate(0);
             transform: translate(0);
-    opacity: 1;
+    opacity: 0;
     border: 2px solid red;
   }
 }
@@ -1313,12 +1343,13 @@ body {
   }
   99% {
     z-index: 1000;
+    opacity: 1;
   }
   100% {
     z-index: -1;
     -webkit-transform: translate(0);
             transform: translate(0);
-    opacity: 1;
+    opacity: 0;
     border: 2px solid red;
   }
 }
