@@ -2995,6 +2995,13 @@ body {
 .center-screen.anime-cb-choose-card-effect > div:first-child {
   padding: 50px;
   background-color: peru;
+  max-width: 100vh;
+}
+
+.anime-cb-choose-card-effect-title {
+  margin-top: -30px;
+  margin-bottom: 20px;
+  font-size: 25pt;
 }
 
 .anime-cb-choose-card-effect {

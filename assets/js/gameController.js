@@ -69,6 +69,7 @@ gameController.prototype.initConstants = function() {
 	_self.CARD_FIELD_CHARGES_CLASS = '.anime-cb-card-field-charges-status';
 	_self.CHOOSE_CARD_EFFECT_CLASS = '.anime-cb-choose-card-effect';
 	_self.CHOOSE_CARD_EFFECT_CHOICE_CLASS = '.anime-cb-choose-card-effect-choice';
+	_self.CHOOSE_CARD_EFFECT_TITLE_CLASS = '.anime-cb-choose-card-effect-title';
 	_self.ENERGY_REGEN_CLASS = '.anime-cb-energy-points-regen';
 };
 
@@ -1137,6 +1138,39 @@ gameController.prototype.canSummonCard = function (card) {
 		if (playerStateYou.cardsInGraveyardArr.length < cardEffect.effectValue2) {
 			canSummonCard = false;
 		}
+	} else if (cardEffect.effect == "destroySpecialBoardSpacesAllRadius") {
+		if (playerStateYou.energyPoints < cardEffect.effectValue) {
+			canSummonCard = false;
+		}
+
+		let availableSpace = false;
+  	let maxRadius = Math.floor(playerStateYou.energyPoints / cardEffect.effectValue);
+
+  	if (_self.isSpecialBoardSpaceNegative(boardMatrix[boardPath[currBoardIndexYou][0]][boardPath[currBoardIndexYou][1]])) {
+  		availableSpace = true;
+  	}
+
+  	for(let i = 1; i <= maxRadius; i++) {
+			if ((currBoardIndexYou + i) > (boardPath.length - 1)) {
+				break;
+			} else if (_self.isSpecialBoardSpaceNegative(boardMatrix[boardPath[currBoardIndexYou + i][0]][boardPath[currBoardIndexYou + i][1]])) {
+				availableSpace = true;
+				break;
+			}
+		}
+
+		for(let i = 1; i <= maxRadius; i++) {
+			if ((currBoardIndexYou - i) < 0) {
+				break;
+			} else if (_self.isSpecialBoardSpaceNegative(boardMatrix[boardPath[currBoardIndexYou - i][0]][boardPath[currBoardIndexYou - i][1]])) {
+				availableSpace = true;
+				break;
+			}
+		}
+
+		if (!availableSpace) {
+			canSummonCard = false;
+		}
 	}
 
 	playerStateYou.cardsOnFieldArr.forEach(function(card, idx) {
@@ -1916,10 +1950,60 @@ gameController.prototype.performCardEffectInstantYou = function (card) {
 			} else {
 				_self.setAttributeListenerVariation1(card);
 			}
+		} else if (card.cardEffect.effect == "destroySpecialBoardSpacesAllRadius") {
+			if (card.cardEffect.isFinished) {
+				card.finishData.destroyedBoardSpacesPositions.forEach(function(boardSpaceData, positionIdx, arr) {
+					if (positionIdx == arr.length - 1) {
+						_self.destroySpecialBoardSpaceAnimation(boardSpaceData,
+							_self.destroyCardAnimationYou.bind(_self, card, _self.enableMainPhaseActions.bind(_self)));
+					} else {
+						_self.destroySpecialBoardSpaceAnimation(boardSpaceData);
+					}
+				});
+			} else {
+				_self.setEnergyListener(card);
+			}
 		}
 	} else if (card.cardEffect.continuous) {
 		_self.enableMainPhaseActions();
 	}
+};
+
+gameController.prototype.setEnergyListener = function (card) {
+	var _self = this;
+
+	var playerState = _self._gameplayData.gameState.playersState[_self._yourUserId];
+	var energyPoints = playerState.energyPoints;
+	var minEnergyToUse = card.cardEffect.minEnergyToUse;
+	var maxEnergyToUse = card.cardEffect.maxEnergyToUse;
+
+	$(_self.CHOOSE_CARD_EFFECT_CLASS + ' > div:first-child').html("");
+	$(_self.CHOOSE_CARD_EFFECT_CLASS + ' > div:first-child')
+		.append('<div class="anime-cb-choose-card-effect-title">Choose Energy to spend</div>');
+
+	for (var i = minEnergyToUse; i <= maxEnergyToUse; i+=card.cardEffect.effectValue) {
+		$(_self.CHOOSE_CARD_EFFECT_CLASS + ' > div:first-child').append('<img class="anime-cb-choose-card-effect-choice"\
+			src="/imgs/number_' + i + '.png" data-energy-chosen="'
+			+ i +  '" style="width: 100px; height: 100px;">');
+	}
+
+	$(_self.CHOOSE_CARD_EFFECT_CLASS).css("opacity", 1);
+	$(_self.CHOOSE_CARD_EFFECT_CLASS).css("z-index", 1);
+
+	$(_self.CHOOSE_CARD_EFFECT_CLASS).on('click', _self.CHOOSE_CARD_EFFECT_CHOICE_CLASS, function() {
+		$(_self.CHOOSE_CARD_EFFECT_CLASS).off("click");
+		$(_self.CHOOSE_CARD_EFFECT_CLASS).css("opacity", 0);
+		$(_self.CHOOSE_CARD_EFFECT_CLASS).css("z-index", -1);
+
+		var finishData = { energyChosen: $(this).data("energyChosen") };
+		_self._lastClientData = { roomId: _self._roomData.id, cardId: card.cardId, finishData: finishData };
+
+		if (card.cardEffect.continuous) {
+			_self.client.finishCardEffectContinuous(_self._lastClientData);
+		} else {
+			_self.client.finishCardEffect(_self._lastClientData);
+		}
+	});
 };
 
 gameController.prototype.setAttributeListenerVariation1 = function (card) {
@@ -1927,16 +2011,18 @@ gameController.prototype.setAttributeListenerVariation1 = function (card) {
 
 	var playerState = _self._gameplayData.gameState.playersState[_self._yourUserId];
 
-	$(_self.CHOOSE_CARD_EFFECT_CLASS + ' div:first-child').html("");
+	$(_self.CHOOSE_CARD_EFFECT_CLASS + ' > div:first-child').html("");
+	$(_self.CHOOSE_CARD_EFFECT_CLASS + ' > div:first-child')
+		.append('<div class="anime-cb-choose-card-effect-title">Choose card attribute</div>');
 
 	_self.CARD_ATTRIBUTES.forEach(function(attribute) {
-		$(_self.CHOOSE_CARD_EFFECT_CLASS + ' div:first-child').append('<img class="anime-cb-choose-card-effect-choice"\
+		$(_self.CHOOSE_CARD_EFFECT_CLASS + ' > div:first-child').append('<img class="anime-cb-choose-card-effect-choice"\
 			src="/imgs/' + _self.CARD_ATTRUBUTES_IMGS[attribute] + '" data-card-attribute="'
 			+ attribute +  '" style="width: 100px; height: 100px;">');
 	});
 
 	$(_self.CHOOSE_CARD_EFFECT_CLASS).css("opacity", 1);
-	$(_self.CHOOSE_CARD_EFFECT_CLASS).css("z-index", 1000);
+	$(_self.CHOOSE_CARD_EFFECT_CLASS).css("z-index", 1);
 
 	$(_self.CHOOSE_CARD_EFFECT_CLASS).on('click', _self.CHOOSE_CARD_EFFECT_CHOICE_CLASS, function() {
 		$(_self.CHOOSE_CARD_EFFECT_CLASS).off("click");
@@ -2420,18 +2506,20 @@ gameController.prototype.setBoardSpaceListenerCreateSpecialBoardSpaceForwardTier
 
 				var boardSpaceTd = this;
 
-				$(_self.CHOOSE_CARD_EFFECT_CLASS + ' div:first-child').html("");
+				$(_self.CHOOSE_CARD_EFFECT_CLASS + ' > div:first-child').html("");
+				$(_self.CHOOSE_CARD_EFFECT_CLASS + ' > div:first-child')
+					.append('<div class="anime-cb-choose-card-effect-title">Choose special board space</div>');
 
 				for (var spaceType in _self.BOARD_FIELDS) {
 					if (spaceType.endsWith("_" + cardTier)) {
-						$(_self.CHOOSE_CARD_EFFECT_CLASS + ' div:first-child').append('<img class="anime-cb-choose-card-effect-choice"\
+						$(_self.CHOOSE_CARD_EFFECT_CLASS + ' > div:first-child').append('<img class="anime-cb-choose-card-effect-choice"\
 							src="/imgs/' + _self.BOARD_FIELDS_IMGS[spaceType] + '" data-special-space-type="'
 							+ _self.BOARD_FIELDS[spaceType] +  '" style="width: 100px; height: 100px;">');
 					}
 				}
 
 				$(_self.CHOOSE_CARD_EFFECT_CLASS).css("opacity", 1);
-				$(_self.CHOOSE_CARD_EFFECT_CLASS).css("z-index", 1000);
+				$(_self.CHOOSE_CARD_EFFECT_CLASS).css("z-index", 1);
 
 				$(_self.CHOOSE_CARD_EFFECT_CLASS).on('click', _self.CHOOSE_CARD_EFFECT_CHOICE_CLASS, function() {
 					$(_self.CHOOSE_CARD_EFFECT_CLASS).off("click");
@@ -2910,8 +2998,17 @@ gameController.prototype.performCardEffectInstantEnemy = function (card) {
 					|| card.cardEffect.gainEnergy || card.cardEffect.loseEnergy) {
 					_self.waitForEnemyActions();
 				}
-			} else {
-				_self.waitForEnemyActions();
+			}
+		} else if (card.cardEffect.effect == "destroySpecialBoardSpacesAllRadius") {
+			if (card.cardEffect.isFinished) {
+				card.finishData.destroyedBoardSpacesPositions.forEach(function(boardSpaceData, positionIdx, arr) {
+					if (positionIdx == arr.length - 1) {
+						_self.destroySpecialBoardSpaceAnimation(boardSpaceData,
+							_self.destroyCardAnimationEnemy.bind(_self, card, _self.waitForEnemyActions.bind(_self)));
+					} else {
+						_self.destroySpecialBoardSpaceAnimation(boardSpaceData);
+					}
+				});
 			}
 		}
 	} else {
@@ -5334,6 +5431,23 @@ gameController.prototype.playSound = function (soundFile) {
 
  	audio.volume = (_self.client.generalClient.logInSignUpController._settings.soundVolume || 0) / 100;
   audio.play();
+};
+
+gameController.prototype.isSpecialBoardSpaceNegative = function (boardSpace) {
+	var _self = this;
+
+	if ([
+		_self.BOARD_FIELDS.ROLL_AGAIN_BACKWARDS_1,
+		_self.BOARD_FIELDS.ROLL_AGAIN_BACKWARDS_2,
+		_self.BOARD_FIELDS.ROLL_AGAIN_BACKWARDS_3,
+		_self.BOARD_FIELDS.CARD_DISCARD_1,
+		_self.BOARD_FIELDS.CARD_DISCARD_2,
+		_self.BOARD_FIELDS.CARD_DISCARD_3
+		].includes(boardSpace)) {
+		return true;
+	}
+
+	return false;
 };
 
 var noop = function(){};

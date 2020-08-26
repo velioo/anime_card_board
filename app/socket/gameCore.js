@@ -499,6 +499,49 @@ var self = module.exports = {
 				}
 		  } else if (card.cardEffect.effect == "chooseAttributeVariation1") {
 		  	playerState.cardsToDraw += card.cardEffect.effectValue;
+		  } else if (card.cardEffect.effect == "destroySpecialBoardSpacesAllRadius") {
+		  	assert(playerState.energyPoints >= card.cardEffect.effectValue);
+
+		  	let availableSpace = false;
+		  	let maxRadius = Math.floor(playerState.energyPoints / card.cardEffect.effectValue);
+		  	let minEnergyToUse = 0;
+		  	let maxEnergyToUse = 0;
+
+		  	if (isSpecialBoardSpaceNegative(boardMatrix[boardPath[currBoardIndexYou][0]][boardPath[currBoardIndexYou][1]])) {
+		  		availableSpace = true;
+		  		minEnergyToUse = card.cardEffect.effectValue;
+		  		maxEnergyToUse = card.cardEffect.effectValue;
+		  	}
+
+		  	for(let i = 1; i <= maxRadius; i++) {
+					if ((currBoardIndexYou + i) > (boardPath.length - 1)) {
+						break;
+					} else if (isSpecialBoardSpaceNegative(boardMatrix[boardPath[currBoardIndexYou + i][0]][boardPath[currBoardIndexYou + i][1]])) {
+						availableSpace = true;
+						minEnergyToUse = minEnergyToUse || (i * card.cardEffect.effectValue);
+						maxEnergyToUse = (i * card.cardEffect.effectValue);
+					}
+				}
+
+				for(let i = 1; i <= maxRadius; i++) {
+					if ((currBoardIndexYou - i) < 0) {
+						break;
+					} else if (isSpecialBoardSpaceNegative(boardMatrix[boardPath[currBoardIndexYou - i][0]][boardPath[currBoardIndexYou - i][1]])) {
+						availableSpace = true;
+						minEnergyToUse = minEnergyToUse || (i * card.cardEffect.effectValue);
+
+						if (maxEnergyToUse < (i * card.cardEffect.effectValue)) {
+							maxEnergyToUse = (i * card.cardEffect.effectValue);
+						}
+					}
+				}
+
+				assert(availableSpace);
+				assert(minEnergyToUse > 0);
+				assert(maxEnergyToUse > 0);
+
+				card.cardEffect.minEnergyToUse = minEnergyToUse;
+				card.cardEffect.maxEnergyToUse = maxEnergyToUse;
 		  }
 		} else {
 			if (card.cardEffect.maxUsesPerTurn) {
@@ -761,6 +804,51 @@ var self = module.exports = {
 
 			assert(card.cardEffect.moveSpaces || card.cardEffect.cardsToDraw
 				|| card.cardEffect.cardsToDiscard || card.cardEffect.gainEnergy || card.cardEffect.loseEnergy);
+		} else if (card.cardEffect.effect == "destroySpecialBoardSpacesAllRadius") {
+	  	assert((finishData.energyChosen >= card.cardEffect.effectValue)
+	  		&& (finishData.energyChosen % card.cardEffect.effectValue == 0)
+	  		&& (finishData.energyChosen >= card.cardEffect.minEnergyToUse));
+	  	assert(playerState.energyPoints >= finishData.energyChosen);
+
+	  	playerState.energyPoints -= finishData.energyChosen;
+
+	  	let availableSpace = false;
+	  	let maxRadius = finishData.energyChosen / card.cardEffect.effectValue;
+	  	let destroyedBoardSpacesPositions = [];
+
+	  	if (isSpecialBoardSpaceNegative(boardMatrix[boardPath[currBoardIndexYou][0]][boardPath[currBoardIndexYou][1]])) {
+	  		availableSpace = true;
+	  		destroyedBoardSpacesPositions.push({ rowIndex: boardPath[currBoardIndexYou][0], columnIndex: boardPath[currBoardIndexYou][1] });
+	  		boardMatrix[boardPath[currBoardIndexYou][0]][boardPath[currBoardIndexYou][1]] = BOARD_FIELDS.NORMAL;
+	  	}
+
+	  	for(let i = 1; i <= maxRadius; i++) {
+				if ((currBoardIndexYou + i) > (boardPath.length - 1)) {
+					break;
+				} else if (isSpecialBoardSpaceNegative(boardMatrix[boardPath[currBoardIndexYou + i][0]][boardPath[currBoardIndexYou + i][1]])) {
+					availableSpace = true;
+					destroyedBoardSpacesPositions.push({ rowIndex: boardPath[currBoardIndexYou + i][0],
+						columnIndex: boardPath[currBoardIndexYou + i][1] });
+					boardMatrix[boardPath[currBoardIndexYou + i][0]][boardPath[currBoardIndexYou + i][1]] = BOARD_FIELDS.NORMAL;
+				}
+			}
+
+			for(let i = 1; i <= maxRadius; i++) {
+				if ((currBoardIndexYou - i) < 0) {
+					break;
+				} else if (isSpecialBoardSpaceNegative(boardMatrix[boardPath[currBoardIndexYou - i][0]][boardPath[currBoardIndexYou - i][1]])) {
+					availableSpace = true;
+					destroyedBoardSpacesPositions.push({ rowIndex: boardPath[currBoardIndexYou - i][0],
+						columnIndex: boardPath[currBoardIndexYou - i][1] });
+					boardMatrix[boardPath[currBoardIndexYou - i][0]][boardPath[currBoardIndexYou - i][1]] = BOARD_FIELDS.NORMAL;
+				}
+			}
+
+			assert(availableSpace);
+
+			card.finishData = {
+				destroyedBoardSpacesPositions: destroyedBoardSpacesPositions,
+			};
 		}
 
 		playerState.cardsInHandArr.forEach(function(card) {
@@ -1671,6 +1759,21 @@ let checkForSpecialBoardSpaces = (ctx, cardValue, userId) => {
 	}
 
 	assert(availableSpaces);
+};
+
+let isSpecialBoardSpaceNegative = (boardSpace) => {
+	if ([
+		BOARD_FIELDS.ROLL_AGAIN_BACKWARDS_1,
+		BOARD_FIELDS.ROLL_AGAIN_BACKWARDS_2,
+		BOARD_FIELDS.ROLL_AGAIN_BACKWARDS_3,
+		BOARD_FIELDS.CARD_DISCARD_1,
+		BOARD_FIELDS.CARD_DISCARD_2,
+		BOARD_FIELDS.CARD_DISCARD_3
+		].includes(boardSpace)) {
+		return true;
+	}
+
+	return false;
 };
 
 let putCardInGraveyard = async (card, playerState) => {
