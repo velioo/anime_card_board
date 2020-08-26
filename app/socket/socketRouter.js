@@ -877,7 +877,10 @@ const self = module.exports = {
 		  	socket.emit('winGameFormally', {
 			  	errors: ctx_c.errors,
 			  	isSuccessful: isSuccessful,
-			  });
+		  		gameplayData: ctx_c.gameplayData,
+			  	roomData: ctx_c.roomData,
+			  	roomId: ctx_c.sessions[ctx_c.session.userData.userId].roomId || ctx_c.data.roomId,
+		  });
 	  	} catch (err) {
 	  		socket.emit('serverError', err);
 	  		logger.error('Error: %o', err);

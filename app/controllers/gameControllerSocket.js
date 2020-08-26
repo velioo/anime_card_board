@@ -47,7 +47,9 @@ const self = module.exports = {
       let queryStatus = await pg.pool.query(`
 
         SELECT
-          R.*, U1.username as player1_name, U2.username as player2_name
+          R.*, U1.username as player1_name, U2.username as player2_name, U1.level as player1_level, U2.level as player2_level,
+          U1.current_level_xp as player1_current_level_xp, U2.current_level_xp as player2_current_level_xp,
+          U1.max_level_xp as player1_max_level_xp, U2.max_level_xp as player2_max_level_xp
         FROM rooms as R
         JOIN users as U1 ON U1.id = R.player1_id
         LEFT JOIN users as U2 ON U2.id = R.player2_id
@@ -66,6 +68,12 @@ const self = module.exports = {
         player2Name: queryStatus.rows[0].player2_name,
         player1Id: queryStatus.rows[0].player1_id,
         player2Id: queryStatus.rows[0].player2_id,
+        player1Level: queryStatus.rows[0].player1_level,
+        player2Level: queryStatus.rows[0].player2_level,
+        player1CurrLevelXp: queryStatus.rows[0].player1_current_level_xp,
+        player2CurrLevelXp: queryStatus.rows[0].player2_current_level_xp,
+        player1MaxLevelXp: queryStatus.rows[0].player1_max_level_xp,
+        player2MaxLevelXp: queryStatus.rows[0].player2_max_level_xp,
       };
 
       let roomSettings = JSON.parse(queryStatus.rows[0].settings_json);
@@ -155,6 +163,7 @@ const self = module.exports = {
               energyPerTurnGain: 5,
               energyRegen: 0,
               totalTurns: 0,
+              totalCardsUsed: 0,
             },
             [ctx.roomData.player2Id]: {
               name: ctx.roomData.player2Name,
@@ -194,6 +203,7 @@ const self = module.exports = {
               energyPerTurnGain: 5,
               energyRegen: 0,
               totalTurns: 0,
+              totalCardsUsed: 0,
             },
           },
         },
@@ -516,6 +526,7 @@ const self = module.exports = {
       playerState.cardsInHandArr.splice(ctx.data.cardIdx, 1);
       playerState.cardsInHand--;
       gameState.playerIdSummonedCard = ctx.session.userData.userId;
+      playerState.totalCardsUsed++;
 
       await gameCore.summonCardHook(ctx);
       await gameCore.activePlayerHook(ctx);
@@ -946,6 +957,9 @@ const self = module.exports = {
       gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
       gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
 
+      ctx.sessions[ctx.roomData.player1Id].pausedTimer = true;
+      ctx.sessions[ctx.roomData.player2Id].pausedTimer = true;
+
       await pg.pool.query('COMMIT');
     } catch (err) {
       ctx.errors.push({ dataPath: '/end_phase', message: 'There was a problem with end phase. Retrying...' });
@@ -1330,6 +1344,7 @@ const self = module.exports = {
           errors: ctx.errors,
           isSuccessful: true,
           roomData: ctx.roomData,
+          gameplayData: ctx.gameplayData,
           roomId: roomId,
           playerIdWinGame: playerIdWinGame,
         });
@@ -1338,6 +1353,7 @@ const self = module.exports = {
           errors: ctx.errors,
           isSuccessful: true,
           roomData: ctx.roomData,
+          gameplayData: ctx.gameplayData,
           roomId: roomId,
           playerIdWinGame: playerIdWinGame,
         });
@@ -1346,6 +1362,7 @@ const self = module.exports = {
           errors: ctx.errors,
           isSuccessful: true,
           roomData: ctx.roomData,
+          gameplayData: ctx.gameplayData,
           roomId: roomId,
           playerIdWinGame: playerIdWinGame,
         });

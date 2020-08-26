@@ -61,7 +61,9 @@ gameController.prototype.initConstants = function() {
 
 	_self.DECK_GLOBAL_ID = '#anime-cb-card-global-deck';
 	_self.DECK_GRAVEYARD_CLASS = '.anime-cb-card-graveyard-deck';
+	_self.DECK_GRAVEYARD_WRAPPER_CLASS = '.anime-cb-card-graveyard-wrapper';
 	_self.MODAL_GRAVEYARD_CLASS = '.graveyard-modal';
+	_self.FOOTER_CLASS = '.anime-cb-screen_footer-game';
 
 	_self.GAME_STATUS_CONTENT_CLASS = '.anime-cb-player-status-content';
 	_self.ENERGY_POINTS_TEXT_CLASS = '.anime-cb-energy-points-text';
@@ -263,8 +265,14 @@ gameController.prototype.resetGameState = function () {
 	}, 500);
 };
 
-gameController.prototype.setLeaveButton = function () {
+gameController.prototype.setLeaveButton = function (playerIdWinGame) {
 	var _self = this;
+
+	var yourUserId = _self._yourUserId;
+	var enemyUserId = _self._enemyUserId;
+	var roomData = _self._roomData;
+	var gameState = _self._gameplayData.gameState;
+	var playerState = gameState.playersState[yourUserId];
 
 	_self.populateGraveyard(_self._yourUserId, _self.PLAYER_YOU_CLASS);
 	_self.populateGraveyard(_self._enemyUserId, _self.PLAYER_ENEMY_CLASS);
@@ -280,7 +288,76 @@ gameController.prototype.setLeaveButton = function () {
 	_self.client.generalClient.roomController.resetRoomsInterval.call(_self.client.generalClient.roomController);
 	_self.client.generalClient.sendLeaveRoomRequest.call(_self.client.generalClient,
 		{ roomId: _self.client.generalClient.roomController._roomId });
-	_self.client.generalClient.logInSignUpController.checkIsUserLoggedIn();
+
+	setTimeout(function() {
+		_self.hideEventsInfo(null, 0);
+
+		var xpPercentage;
+		var xpGain;
+		var xpGainTurns;
+		var xpGainSpaces;
+		var xpGainCardsUsed;
+		var xpGainGameResult;
+		var playerStatusRow;
+		var oldLevel;
+		var spacesMoved;
+
+		if (yourUserId == roomData.player1Id) {
+			xpPercentage = Math.floor((roomData.player1CurrLevelXp / roomData.player1MaxLevelXp) * 100) + "%";
+			xpGain = roomData.player1XpGain;
+			playerStatusRow = roomData.player1StatusRow;
+			oldLevel = roomData.player1Level;
+			xpGainTurns = roomData.player1XpGainTurns;
+			xpGainSpaces = roomData.player1XpGainSpaces;
+			spacesMoved = roomData.player1SpacesMoved;
+			xpGainCardsUsed = roomData.player1XpGainCardsUsed;
+			xpGainGameResult = roomData.player1XpGainGameResult;
+		} else {
+			xpPercentage = Math.floor((roomData.player2CurrLevelXp / roomData.player2MaxLevelXp) * 100) + "%";
+			xpGain = roomData.player2XpGain;
+			playerStatusRow = roomData.player2StatusRow;
+			oldLevel = roomData.player2Level;
+			xpGainTurns = roomData.player2XpGainTurns;
+			xpGainSpaces = roomData.player2XpGainSpaces;
+			spacesMoved = roomData.player2SpacesMoved;
+			xpGainCardsUsed = roomData.player2XpGainCardsUsed;
+			xpGainGameResult = roomData.player2XpGainGameResult;
+		}
+
+		var screenTitle = playerIdWinGame == yourUserId ? "VICTORY" : "DEFEAT";
+		$(_self.CHOOSE_CARD_EFFECT_CLASS + ' > div:first-child').html("");
+		$(_self.CHOOSE_CARD_EFFECT_CLASS + ' > div:first-child')
+			.append('<div class="anime-cb-choose-card-effect-title">' + screenTitle + '</div>');
+		$(_self.CHOOSE_CARD_EFFECT_CLASS + ' > div:first-child').append('<div class="anime-cb-end-screen-xp-gain">+ '
+			+ xpGain + 'XP -> ' + playerStatusRow.current_level_xp + ' / ' + playerStatusRow.max_level_xp + ' XP</div>');
+		$(_self.CHOOSE_CARD_EFFECT_CLASS + ' > div:first-child').append('<span class="anime-cb-end-screen-xp">XP:\
+			</span><div class="progress anime-cb-level-progress-bar-wrapper">\
+		  <div class="progress-bar progress-bar-striped progress-bar-info active anime-cb-level-progress-bar" role="progressbar"\
+		  style="width:' + xpPercentage + ';">\
+		  <div class="anime-cb-level-progress-bar-text anime-cb-user-info-level-xp">' + xpPercentage + '</div>\
+		  </div>\
+		</div>');
+		$(_self.CHOOSE_CARD_EFFECT_CLASS + ' > div:first-child')
+			.append('<div class="anime-cb-end-screen-level-status">Level '
+				+ playerStatusRow.level + (oldLevel < playerStatusRow.level ? ", Level Up!" : "") + '</div>');
+		$(_self.CHOOSE_CARD_EFFECT_CLASS + ' > div:first-child').append('<div class="anime-cb-end-screen-stats-wrapper">\
+			<div class="anime-cb-end-screen-stats-title">Stats</div>\
+			<div class="anime-cb-end-screen-stat">' + (playerIdWinGame == yourUserId ? "Game won" : "Game lost") + ': (+' + xpGainGameResult + 'XP)</div>\
+			<div class="anime-cb-end-screen-stat">Total turns made: ' + playerState.totalTurns + ' (+' + xpGainTurns + 'XP)</div>\
+			<div class="anime-cb-end-screen-stat">Total board spaces traveled: ' + spacesMoved + ' (+' + xpGainSpaces + 'XP)</div>\
+			<div class="anime-cb-end-screen-stat">Total cards used: ' + playerState.totalCardsUsed + ' (+' + xpGainCardsUsed + 'XP)</div>'
+			+ '</div>');
+
+		$(_self.CHOOSE_CARD_EFFECT_CLASS).addClass('fade-in-custom');
+		$(_self.CHOOSE_CARD_EFFECT_CLASS).css("opacity", 1);
+		$(_self.CHOOSE_CARD_EFFECT_CLASS).css("z-index", 21);
+		$(_self.DECK_GRAVEYARD_WRAPPER_CLASS).css("z-index", 22);
+		$(_self.FOOTER_CLASS).css("z-index", 22);
+
+		setTimeout(function() {
+			_self.client.generalClient.logInSignUpController.checkIsUserLoggedIn();
+		}, 1000);
+	}, 1000);
 };
 
 gameController.prototype.processWinGameFormallyResponse = function (data) {
@@ -301,8 +378,11 @@ gameController.prototype.processWinGameFormallyResponse = function (data) {
 		return;
 	}
 
+	_self._gameplayData = data.gameplayData;
+	_self._roomData = data.roomData;
+
 	_self.showEventsInfo("YOU WIN !!!");
-	_self.setLeaveButton();
+	_self.setLeaveButton(_self._yourUserId);
 };
 
 gameController.prototype.processWinGame = function (data) {
@@ -329,7 +409,10 @@ gameController.prototype.processWinGame = function (data) {
 		_self.showEventsInfo("YOU LOSE !!!");
 	}
 
-	_self.setLeaveButton();
+	_self._gameplayData = data.gameplayData;
+	_self._roomData = data.roomData;
+
+	_self.setLeaveButton(data.playerIdWinGame);
 };
 
 gameController.prototype.processStartGameResponse = function (data) {
@@ -1987,11 +2070,17 @@ gameController.prototype.setEnergyListener = function (card) {
 			+ i +  '" style="width: 100px; height: 100px;">');
 	}
 
+	$(_self.CHOOSE_CARD_EFFECT_CLASS).addClass('fade-in-custom');
 	$(_self.CHOOSE_CARD_EFFECT_CLASS).css("opacity", 1);
 	$(_self.CHOOSE_CARD_EFFECT_CLASS).css("z-index", 1);
+  $(_self.BOARD_PLAYER_YOU_ID).css("z-index", "1");
+	$(_self.BOARD_PLAYER_ENEMY_ID).css("z-index", "1");
 
 	$(_self.CHOOSE_CARD_EFFECT_CLASS).on('click', _self.CHOOSE_CARD_EFFECT_CHOICE_CLASS, function() {
 		$(_self.CHOOSE_CARD_EFFECT_CLASS).off("click");
+		$(_self.BOARD_PLAYER_YOU_ID).css("z-index", "3");
+		$(_self.BOARD_PLAYER_ENEMY_ID).css("z-index", "2");
+		$(_self.CHOOSE_CARD_EFFECT_CLASS).removeClass('fade-in-custom');
 		$(_self.CHOOSE_CARD_EFFECT_CLASS).css("opacity", 0);
 		$(_self.CHOOSE_CARD_EFFECT_CLASS).css("z-index", -1);
 
@@ -2021,11 +2110,17 @@ gameController.prototype.setAttributeListenerVariation1 = function (card) {
 			+ attribute +  '" style="width: 100px; height: 100px;">');
 	});
 
+	$(_self.CHOOSE_CARD_EFFECT_CLASS).addClass('fade-in-custom');
 	$(_self.CHOOSE_CARD_EFFECT_CLASS).css("opacity", 1);
 	$(_self.CHOOSE_CARD_EFFECT_CLASS).css("z-index", 1);
+	$(_self.BOARD_PLAYER_YOU_ID).css("z-index", "1");
+	$(_self.BOARD_PLAYER_ENEMY_ID).css("z-index", "1");
 
 	$(_self.CHOOSE_CARD_EFFECT_CLASS).on('click', _self.CHOOSE_CARD_EFFECT_CHOICE_CLASS, function() {
 		$(_self.CHOOSE_CARD_EFFECT_CLASS).off("click");
+		$(_self.BOARD_PLAYER_YOU_ID).css("z-index", "3");
+		$(_self.BOARD_PLAYER_ENEMY_ID).css("z-index", "2");
+		$(_self.CHOOSE_CARD_EFFECT_CLASS).removeClass('fade-in-custom');
 		$(_self.CHOOSE_CARD_EFFECT_CLASS).css("opacity", 0);
 		$(_self.CHOOSE_CARD_EFFECT_CLASS).css("z-index", -1);
 
@@ -2518,11 +2613,17 @@ gameController.prototype.setBoardSpaceListenerCreateSpecialBoardSpaceForwardTier
 					}
 				}
 
+				$(_self.CHOOSE_CARD_EFFECT_CLASS).addClass('fade-in-custom');
 				$(_self.CHOOSE_CARD_EFFECT_CLASS).css("opacity", 1);
 				$(_self.CHOOSE_CARD_EFFECT_CLASS).css("z-index", 1);
+				$(_self.BOARD_PLAYER_YOU_ID).css("z-index", "1");
+				$(_self.BOARD_PLAYER_ENEMY_ID).css("z-index", "1");
 
 				$(_self.CHOOSE_CARD_EFFECT_CLASS).on('click', _self.CHOOSE_CARD_EFFECT_CHOICE_CLASS, function() {
 					$(_self.CHOOSE_CARD_EFFECT_CLASS).off("click");
+					$(_self.BOARD_PLAYER_YOU_ID).css("z-index", "3");
+					$(_self.BOARD_PLAYER_ENEMY_ID).css("z-index", "2");
+					$(_self.CHOOSE_CARD_EFFECT_CLASS).removeClass('fade-in-custom');
 					$(_self.CHOOSE_CARD_EFFECT_CLASS).css("opacity", 0);
 					$(_self.CHOOSE_CARD_EFFECT_CLASS).css("z-index", -1);
 
@@ -3904,12 +4005,12 @@ gameController.prototype.checkForWin = function (callback) {
 		if (_self._gameplayData.gameState.playerIdWinGame == _self._yourUserId) {
 			var yourName = _self._roomData.player1Id == _self._yourUserId ? _self._roomData.player1Name : _self._roomData.player2Name;
 			_self.showEventsInfo("YOU WIN !!!");
-			_self.setLeaveButton();
+			_self.setLeaveButton(_self._yourUserId);
 			return;
 		} else {
 			var enemyName = _self._roomData.player1Id == _self._enemyUserId ? _self._roomData.player1Name : _self._roomData.player2Name;
 			_self.showEventsInfo("YOU LOSE...");
-			_self.setLeaveButton();
+			_self.setLeaveButton(_self._enemyUserId);
 			return;
 		}
 	}

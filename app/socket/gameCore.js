@@ -1373,8 +1373,11 @@ var self = module.exports = {
 		let playerWinXp = await calculateXp(ctx, playerIdWin, playerIdWin);
 		let playerLoseXp = await calculateXp(ctx, playerIdLose, playerIdWin);
 
-	  await updateUserLevelStatus(ctx, playerIdWin, playerIdWin, playerWinXp);
-	  await updateUserLevelStatus(ctx, playerIdLose, playerIdWin, playerLoseXp);
+	  let playerWinRow = await updateUserLevelStatus(ctx, playerIdWin, playerIdWin, playerWinXp);
+	  let playerLoseRow = await updateUserLevelStatus(ctx, playerIdLose, playerIdWin, playerLoseXp);
+
+	  ctx.roomData.player1StatusRow = playerIdWin == ctx.roomData.player1Id ? playerWinRow : playerLoseRow;
+		ctx.roomData.player2StatusRow = playerIdWin == ctx.roomData.player2Id ? playerWinRow : playerLoseRow;
 
 	  return true;
 	},
@@ -1797,29 +1800,61 @@ let calculateXp = async (ctx, userId, playerIdWon) => {
 	let gameState = ctx.gameplayData.gameState;
 	let playerState = gameState.playersState[userId];
 
-	let xp = 0;
+	let totalXp = 0;
+	let xpGameResult;
+	let xpWinGame = 100;
+	let xpLoseGame = 50;
+
 	if (playerIdWon == userId) {
-		xp += 100;
+		totalXp += xpWinGame;
+		xpGameResult = xpWinGame;
 	} else {
-		xp += 50;
+		totalXp += xpLoseGame;
+		xpGameResult = xpLoseGame;
 	}
 
 	let xpPerTurn = 10;
+	let xpFromTurns = (playerState.totalTurns) * xpPerTurn;
 
-	xp += (playerState.totalTurns) * xpPerTurn;
+	totalXp += xpFromTurns;
 
-	let xpPerSpaceMoved = 0.5;
+	let xpPerSpaceMoved = 1;
 	let currBoardIndex = playerState.currBoardIndex;
 	let spacesMoved = 0;
 	if (userId == ctx.roomData.player1Id) {
 		spacesMoved = currBoardIndex;
+		ctx.roomData.player1SpacesMoved = spacesMoved;
 	} else {
 		spacesMoved = gameState.boardData.boardDataPlayers.boardPath.length - currBoardIndex - 1;
+		ctx.roomData.player2SpacesMoved = spacesMoved;
 	}
 
-	xp += Math.ceil(xpPerSpaceMoved * spacesMoved);
+	let xpFromSpacesTraveled = Math.ceil(xpPerSpaceMoved * spacesMoved);
+	totalXp += xpFromSpacesTraveled;
 
-	return xp;
+	let xpPerCardUsed = 1;
+	let xpFromCardsUsed = (playerState.totalCardsUsed) * xpPerCardUsed;
+
+	totalXp += xpFromCardsUsed;
+
+	if (userId == ctx.roomData.player1Id) {
+		ctx.roomData.player1XpGain = totalXp;
+		ctx.roomData.player1XpGainTurns = xpFromTurns;
+		ctx.roomData.player1XpGainSpaces = xpFromSpacesTraveled;
+		ctx.roomData.player1XpGainCardsUsed = xpFromCardsUsed;
+		ctx.roomData.player1XpGainGameResult = xpGameResult;
+	} else {
+		ctx.roomData.player2XpGain = totalXp;
+		ctx.roomData.player2XpGainTurns = xpFromTurns;
+		ctx.roomData.player2XpGainSpaces = xpFromSpacesTraveled;
+		ctx.roomData.player2XpGainCardsUsed = xpFromCardsUsed;
+		ctx.roomData.player2XpGainGameResult = xpGameResult;
+	}
+
+	ctx.roomData.xpPerTurn = xpPerTurn;
+	ctx.roomData.xpPerSpaceMoved = xpPerSpaceMoved;
+
+	return totalXp;
 };
 
 let checkWin = (ctx) => {
@@ -1880,4 +1915,6 @@ let updateUserLevelStatus = async (ctx, userId, userIdWin, xpGain) => {
 			userId]);
 
 	assert(queryStatus.rowCount == 1);
+
+	return userRow;
 };

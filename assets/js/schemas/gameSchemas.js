@@ -42,8 +42,16 @@ var startGameResponse = {
 				"player2Id": { "type": "integer" },
 				"player1Name": { "type": "string" },
 				"player2Name": { "type": "string" },
+				"player1Level": { "type": "integer" },
+				"player2Level": { "type": "integer" },
+				"player1CurrLevelXp": { "type": "integer" },
+				"player2CurrLevelXp": { "type": "integer" },
+				"player1MaxLevelXp": { "type": "integer" },
+				"player2MaxLevelXp": { "type": "integer" },
 			},
-			"required": [ "id", "name", "player1Id", "player2Id", "player1Name", "player2Name" ],
+			"required": [ "id", "name", "player1Id", "player2Id", "player1Name",
+				"player2Name", "player1Level", "player2Level", "player1CurrLevelXp",
+				"player2CurrLevelXp", "player1MaxLevelXp", "player2MaxLevelXp" ],
 		},
 		"gameplayData": {
 			"type": "object",
@@ -217,36 +225,44 @@ var rollDiceBoardResponse = startGameResponse;
 var endPhaseResponse = startGameResponse;
 var discardCardResponse = startGameResponse;
 var finishCardEffectResponse = startGameResponse;
-var winGameResponse = {
-	"type": "object",
-	"properties": {
-		"errors" : {
-			"type": "array",
-			"items": {
-				"type": "object",
-				"properties": {
-					"dataPath": { "type": "string", "pattern": "/.+"  },
-					"message": { "type": "string" },
-				},
-				"required": [ "dataPath", "message" ]
-			}
-		},
-		"isSuccessful": { "type": "boolean" },
-		"roomData": {
-			"type": "object",
-			"properties": {
-				"id": { "type": "integer" },
-				"name": { "type": "string" },
-				"player1Id": { "type": "integer" },
-				"player2Id": { "type": "integer" },
-				"player1Name": { "type": "string" },
-				"player2Name": { "type": "string" },
-			},
-			"required": [ "id", "name", "player1Id", "player2Id", "player1Name", "player2Name" ],
-		},
-		"playerIdWinGame": { "type": ["integer", "null"] },
-	},
-};
+// var winGameResponse = {
+// 	"type": "object",
+// 	"properties": {
+// 		"errors" : {
+// 			"type": "array",
+// 			"items": {
+// 				"type": "object",
+// 				"properties": {
+// 					"dataPath": { "type": "string", "pattern": "/.+"  },
+// 					"message": { "type": "string" },
+// 				},
+// 				"required": [ "dataPath", "message" ]
+// 			}
+// 		},
+// 		"isSuccessful": { "type": "boolean" },
+// 		"roomData": {
+// 			"type": "object",
+// 			"properties": {
+// 				"id": { "type": "integer" },
+// 				"name": { "type": "string" },
+// 				"player1Id": { "type": "integer" },
+// 				"player2Id": { "type": "integer" },
+// 				"player1Name": { "type": "string" },
+// 				"player2Name": { "type": "string" },
+// 				"player1Level": { "type": "integer" },
+// 				"player2Level": { "type": "integer" },
+// 				"player1CurrLevelXp": { "type": "integer" },
+// 				"player2CurrLevelXp": { "type": "integer" },
+// 				"player1MaxLevelXp": { "type": "integer" },
+// 				"player2MaxLevelXp": { "type": "integer" },
+// 			},
+// 			"required": [ "id", "name", "player1Id", "player2Id", "player1Name",
+// 				"player2Name", "player1Level", "player2Level", "player1CurrLevelXp",
+// 				"player2CurrLevelXp", "player1MaxLevelXp", "player2MaxLevelXp" ],
+// 		},
+// 		"playerIdWinGame": { "type": ["integer", "null"] },
+// 	},
+// };
 
 var activateCardEffectResponse = startGameResponse;
 var finishCardEffectContinuousResponse = startGameResponse;

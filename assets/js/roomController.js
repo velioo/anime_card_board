@@ -546,6 +546,12 @@ roomController.prototype.preSwitchScreenHookRoomController = function (screenCla
 		_self.client.sendLeaveRoomRequest({ roomId: _self._roomId, userId: _self.client.logInSignUpController._userId });
 	}
 
+	if (_lastScreenClass == _self.GAME_SCREEN_CLASS) {
+		setTimeout(function() {
+			_self.client.logInSignUpController.checkIsUserLoggedIn();
+		}, 1000);
+	}
+
 	if (screenClass === _self.BROWSE_ROOMS_SCREEN_CLASS) {
 		_self.clearBrowseRoomsTable();
 		_self.showBrowseRoomsSpinner();
