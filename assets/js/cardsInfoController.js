@@ -73,6 +73,19 @@ cardsInfoController.prototype.initListeners = function() {
 	$(_self.FILTER_CARD_ATTRIBUTE_CLASS).on("change", function() {
 		_self.filterCards();
 	});
+
+	_self.$cards.each(function() {
+		var cardSounds = $(this).data("cardSounds");
+		var activateEffectsArr = cardSounds.activateEffects;
+
+		if (activateEffectsArr && activateEffectsArr.length > 0) {
+			$(this).attr("data-tooltip", "playSound");
+			$(this).on("click", function () {
+				var randNum = getRandomInt(0, activateEffectsArr.length - 1);
+				_self.client.gameController.playSound(activateEffectsArr[randNum]);
+			});
+		}
+	});
 };
 
 cardsInfoController.prototype.filterCards = function () {

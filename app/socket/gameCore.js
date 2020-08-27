@@ -1832,7 +1832,7 @@ let calculateXp = async (ctx, userId, playerIdWon) => {
 	let xpFromSpacesTraveled = Math.ceil(xpPerSpaceMoved * spacesMoved);
 	totalXp += xpFromSpacesTraveled;
 
-	let xpPerCardUsed = 1;
+	let xpPerCardUsed = 2;
 	let xpFromCardsUsed = (playerState.totalCardsUsed) * xpPerCardUsed;
 
 	totalXp += xpFromCardsUsed;

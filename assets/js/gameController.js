@@ -285,9 +285,9 @@ gameController.prototype.setLeaveButton = function (playerIdWinGame) {
 	 	_self.processChangeScreen(_self.MAIN_MENU_SCREEN_CLASS);
 	});
 
-	_self.client.generalClient.roomController.resetRoomsInterval.call(_self.client.generalClient.roomController);
+	_self.client.roomController.resetRoomsInterval.call(_self.client.roomController);
 	_self.client.generalClient.sendLeaveRoomRequest.call(_self.client.generalClient,
-		{ roomId: _self.client.generalClient.roomController._roomId });
+		{ roomId: _self.client.roomController._roomId });
 
 	setTimeout(function() {
 		_self.hideEventsInfo(null, 0);
@@ -355,7 +355,7 @@ gameController.prototype.setLeaveButton = function (playerIdWinGame) {
 		$(_self.FOOTER_CLASS).css("z-index", 22);
 
 		setTimeout(function() {
-			_self.client.generalClient.logInSignUpController.checkIsUserLoggedIn();
+			_self.client.logInSignUpController.checkIsUserLoggedIn();
 		}, 1000);
 	}, 1000);
 };
@@ -425,8 +425,8 @@ gameController.prototype.processStartGameResponse = function (data) {
 		assert(data.errors.length > 0);
 
 		_self.retryTimeout = setTimeout(function() {
-			if (_self.client.generalClient.roomController._hostId) {
-				_self.client.generalClient.roomController.startGame();
+			if (_self.client.roomController._hostId) {
+				_self.client.roomController.startGame();
 			}
 		}, 1000);
 
@@ -458,7 +458,7 @@ gameController.prototype.processStartGameResponse = function (data) {
 			_self.hideAllSpinner();
 			_self.hideEventsInfo(null, 2000);
 			_self.drawStartCards();
-			_self.client.generalClient.roomController._matchmaking = false;
+			_self.client.roomController._matchmaking = false;
 			window.addEventListener("beforeunload", _self.beforeUnload);
 		}
 	}, 500);
@@ -469,14 +469,14 @@ gameController.prototype.processStartGameResponse = function (data) {
 gameController.prototype.startBackgroundMusic = function () {
 	var _self = this;
 
-	if (!_self.client.generalClient.logInSignUpController._settings.sound
-		|| !_self.client.generalClient.logInSignUpController._settings.backgroundSound) {
+	if (!_self.client.logInSignUpController._settings.sound
+		|| !_self.client.logInSignUpController._settings.backgroundSound) {
 		return;
 	}
 
 	_self._backgroundMusicFile = "background.mp3";
 	_self._backgroundMusic = new Audio("/sounds/" + _self._backgroundMusicFile);
- 	_self._backgroundMusic.volume = (_self.client.generalClient.logInSignUpController._settings.soundVolume || 0) / 1000;
+ 	_self._backgroundMusic.volume = (_self.client.logInSignUpController._settings.soundVolume || 0) / 1000;
  	_self._backgroundMusic.loop = true;
   _self._backgroundMusic.play();
 };
@@ -530,16 +530,16 @@ gameController.prototype.initGameData = function (data) {
 gameController.prototype.validatePlayers = function () {
 	var _self = this;
 
-	assert(_self.client.generalClient.roomController._roomId == _self._roomData.id);
-	assert(_self.client.generalClient.logInSignUpController._userId == _self._roomData.player1Id
-		|| _self.client.generalClient.logInSignUpController._userId == _self._roomData.player2Id);
+	assert(_self.client.roomController._roomId == _self._roomData.id);
+	assert(_self.client.logInSignUpController._userId == _self._roomData.player1Id
+		|| _self.client.logInSignUpController._userId == _self._roomData.player2Id);
 
-	_self._yourName = _self.client.generalClient.logInSignUpController._username;
-	_self._enemyName = _self.client.generalClient.logInSignUpController._userId == _self._roomData.player1Id
+	_self._yourName = _self.client.logInSignUpController._username;
+	_self._enemyName = _self.client.logInSignUpController._userId == _self._roomData.player1Id
 		? _self._roomData.player2Name : _self._roomData.player1Name;
 
-	_self._yourUserId = _self.client.generalClient.logInSignUpController._userId;
-	_self._enemyUserId = _self.client.generalClient.logInSignUpController._userId == _self._roomData.player1Id
+	_self._yourUserId = _self.client.logInSignUpController._userId;
+	_self._enemyUserId = _self.client.logInSignUpController._userId == _self._roomData.player1Id
 		? _self._roomData.player2Id : _self._roomData.player1Id;
 };
 
@@ -3871,7 +3871,7 @@ gameController.prototype.moveAnimationBoardForward = function (spacesCount, play
 			var currPlayerTd = document.getElementById('anime-cb-board').rows[rowIndex].cells[columnIndex];
 			$(currPlayerTd).append('<span class="anime-cb-player-position" id="' + playerIdSelector.substr(1) + '"></span>');
 
-			_self.client.generalClient.roomController.resetRoomsInterval.call(_self.client.generalClient.roomController);
+			_self.client.roomController.resetRoomsInterval.call(_self.client.roomController);
 			_self.checkForWin(callback);
   	}
   }
@@ -3945,7 +3945,7 @@ gameController.prototype.moveAnimationBoardBackwards = function (spacesCount, pl
 			var currPlayerTd = document.getElementById('anime-cb-board').rows[rowIndex].cells[columnIndex];
 			$(currPlayerTd).append('<span class="anime-cb-player-position" id="' + playerIdSelector.substr(1) + '"></span>');
 
-			_self.client.generalClient.roomController.resetRoomsInterval.call(_self.client.generalClient.roomController);
+			_self.client.roomController.resetRoomsInterval.call(_self.client.roomController);
 			_self.checkForWin(callback);
 	  }
 	}
@@ -4029,8 +4029,8 @@ gameController.prototype.rollDiceYou = function (diceValue, callback, callback2)
     numberOfDice: 1,
     delay: 1500,
     values: [diceValue],
-    noSound: !_self.client.generalClient.logInSignUpController._settings.sound
-    	|| !_self.client.generalClient.logInSignUpController._settings.cardBoardEffectSounds,
+    noSound: !_self.client.logInSignUpController._settings.sound
+    	|| !_self.client.logInSignUpController._settings.cardBoardEffectSounds,
     callback: callback.bind(_self, diceValue, callback2, 2000)
   };
 
@@ -4046,8 +4046,8 @@ gameController.prototype.rollDiceEnemy = function (diceValue, callback, callback
     numberOfDice: 1,
     delay: 1500,
     values: [diceValue],
-    noSound: !_self.client.generalClient.logInSignUpController._settings.sound ||
-    	!_self.client.generalClient.logInSignUpController._settings.cardBoardEffectSounds,
+    noSound: !_self.client.logInSignUpController._settings.sound ||
+    	!_self.client.logInSignUpController._settings.cardBoardEffectSounds,
     callback: callback.bind(_self, diceValue, callback2, 2000)
   };
 
@@ -4116,10 +4116,12 @@ gameController.prototype.showCardActivateOnScreenYou = function (cardObj, callba
 
 	var cardSounds = cardObj.cardSounds;
 
-	if (_self.client.generalClient.logInSignUpController._settings.sound
-		&& _self.client.generalClient.logInSignUpController._settings.cardBoardEffectSounds
-		&& cardSounds.activateEffect) {
-		_self.playSound(cardSounds.activateEffect);
+	if (_self.client.logInSignUpController._settings.sound
+		&& _self.client.logInSignUpController._settings.cardBoardEffectSounds
+		&& cardSounds.activateEffects
+		&& cardSounds.activateEffects[0]) {
+		var randNum = getRandomInt(0, cardSounds.activateEffects.length - 1);
+		_self.playSound(cardSounds.activateEffects[randNum]);
 	}
 
 	$('.anime-cb-card-activate-show').attr("src", "/imgs/player_cards/" + cardObj.cardImg);
@@ -4138,10 +4140,12 @@ gameController.prototype.showCardActivateOnScreenEnemy = function (cardObj, call
 
 	var cardSounds = cardObj.cardSounds;
 
-	if (_self.client.generalClient.logInSignUpController._settings.sound
-		&& _self.client.generalClient.logInSignUpController._settings.cardBoardEffectSounds
-		&& cardSounds.activateEffect) {
-		_self.playSound(cardSounds.activateEffect);
+	if (_self.client.logInSignUpController._settings.sound
+		&& _self.client.logInSignUpController._settings.cardBoardEffectSounds
+		&& cardSounds.activateEffects
+		&& cardSounds.activateEffects[0]) {
+		var randNum = getRandomInt(0,  cardSounds.activateEffects.length - 1);
+		_self.playSound(cardSounds.activateEffects[randNum]);
 	}
 
 	$('.anime-cb-card-activate-show').attr("src", "/imgs/player_cards/" + cardObj.cardImg);
@@ -5530,7 +5534,11 @@ gameController.prototype.playSound = function (soundFile) {
 	var _self = this;
   var audio = new Audio("/sounds/" + soundFile);
 
- 	audio.volume = (_self.client.generalClient.logInSignUpController._settings.soundVolume || 0) / 100;
+  if (!_self.client.logInSignUpController._settings.sound) {
+  	return;
+  }
+
+ 	audio.volume = (_self.client.logInSignUpController._settings.soundVolume || 0) / 100;
   audio.play();
 };
 
