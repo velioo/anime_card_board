@@ -3267,6 +3267,11 @@ input:checked + .slider:after
   margin-left: -100px;
 }
 
+#anime-cb-form-settings {
+  width: auto;
+  max-width: 70%;
+}
+
 @-webkit-keyframes draw-from-enemy-hand-you-1 {
   0% {
     -webkit-transform: translateY(-1150px) translateX(0px);

@@ -38,7 +38,8 @@ let sessions;
 app.use(globalErrHandler);
 
 app.use(new StaticCache('./assets', {
-  maxAge: 1
+  // maxAge: MAX_ASSETS_AGE,
+  maxAge: 1,
 }, dirs));
 app.use(new StaticCache('./uploads', {
   maxAge: MAX_UPLOADS_AGE

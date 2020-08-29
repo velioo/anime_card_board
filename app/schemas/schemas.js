@@ -217,7 +217,8 @@ const _SETTINGS = {
     "cardBoardEffectSounds": { "type": "boolean" },
     "cardAnimations": { "type": "boolean" },
   },
-  "required": [ "sound", "soundVolume", "backgroundSound", "cardBoardEffectSounds", "cardAnimations" ],
+  "required": [ "sound", "soundVolume", "backgroundSound",
+    "cardBoardEffectSounds", "cardAnimations" ],
 };
 
 const _DRAW_CARD_FROM_ENEMY_HAND = {

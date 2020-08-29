@@ -156,7 +156,7 @@ INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, a
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes, sounds_json) VALUES (4, 'Kagura', 'Move your opponent 6 spaces backward.',
 'Kagura.jpg', 'rare', '{"effect": "moveSpacesBackwardsEnemy", "effectValue": 6, "autoEffect":true, "continuous": false}', 3, '{field}', '{}');
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes, sounds_json) VALUES (5, 'Lucy', 'Move 1 space forward or backward.',
-'Lucy.png', 'common', '{"effect": "moveSpacesForwardOrBackwardUpTo", "effectValue": 1, "autoEffect":false, "continuous": false}', 1, '{field}', '{}');
+'Lucy.png', 'common', '{"effect": "moveSpacesForwardOrBackwardUpTo", "effectValue": 1, "autoEffect":false, "continuous": false}', 1, '{field}', '{"activateEffects": ["Lucy.mp3"]}');
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes, sounds_json) VALUES (6, 'Kakashi',
 'Choose a special board space up to <span style="color:rgb(65, 105, 225); font-weight: 700;">|X|</span> spaces forward and apply its effect for yourself. The number of spaces you can choose up to increases by 4 every time you use this card (max 30). Each activation of this card consumes 1 additional Energy compared to the previous use (max 5), you may be returned some of the Energy back depending on the chosen special board space''s position - the further it is from you, the less Energy will be returned, for each 4 board spaces, 1 less Energy will be returned.',
 'Kakashi.jpg', 'epic',
@@ -172,7 +172,7 @@ INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, a
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes, sounds_json) VALUES (10, 'Kazuma', 'Take a card from your opponent''s hand.', 'Kazuma.jpg', 'common',
 '{"effect": "drawCardFromEnemyHand", "effectValue": 1, "autoEffect":true, "continuous": false}', 2, '{cards}', '{"activateEffects": ["Kazuma.mp3", "Kazuma-2.mp3"]}');
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes, sounds_json) VALUES (11, 'Kurumi', 'Choose a card from your opponent''s field and destroy it.', 'Kurumi.gif', 'rare',
-'{"effect": "destroyCardFromEnemyField", "effectValue": 1, "autoEffect":true, "continuous": false}', 3, '{cards}', '{}');
+'{"effect": "destroyCardFromEnemyField", "effectValue": 1, "autoEffect":true, "continuous": false}', 3, '{cards}', '{"activateEffects":["Kurumi.mp3"]}');
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes, sounds_json) VALUES (12, 'Yugi', 'Draw 2 cards from the deck and your opponent draws 1.', 'Yugi.jpg', 'common',
 '{"effect": "drawCardFromDeckYouEnemy", "effectValue": 2, "effectValueEnemy": 1, "autoEffect":false, "continuous": false}', 1, '{cards}', '{"activateEffects": ["Yugi.mp3"]}');
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes, sounds_json) VALUES (13, 'Ononoki', 'While this card is active, your opponent cannot target other cards on your field for destruction or decrease their charges. When this card expires (not destroyed), draw 1 card.', 'Ononoki.png', 'common',
@@ -226,6 +226,6 @@ INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, a
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes, sounds_json) VALUES (37, 'Goblin Slayer', 'Destroy all negative special board spaces around you. The radius of the covered area depends on the Energy points you choose to spend on this card. For every 2 Energy points you spend the radius of the area increases by 1. You cannot activate this card if there are no special board spaces around you or if you don''t have enough Energy to destroy at least 1 special board space.', 'Goblin-Slayer.gif', 'rare',
 '{"effect": "destroySpecialBoardSpacesAllRadius", "effectValue": 2, "autoEffect":false, "continuous": false}', 0, '{field}', '{"activateEffects": ["Goblin-Slayer.mp3", "Goblin-Slayer-2.mp3"]}');
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes, sounds_json) VALUES (38, 'Holo', 'Apply to yourself the effect of the current special board space your opponent is on.', 'Holo.jpg', 'common',
-'{"effect": "reapplyCurrentSpecialBoardSpaceEnemyYou", "effectValue": 1, "autoEffect":false, "continuous": false}', 2, '{cards}', '{}');
+'{"effect": "reapplyCurrentSpecialBoardSpaceEnemyYou", "effectValue": 1, "autoEffect":false, "continuous": false}', 2, '{field}', '{}');
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes, sounds_json) VALUES (39, 'Nine', 'Apply to your opponent the effect of the current special board space you are on.', 'Nine.jpg', 'common',
-'{"effect": "reapplyCurrentSpecialBoardSpaceYouEnemy", "effectValue": 1, "autoEffect":false, "continuous": false}', 2, '{cards}', '{}');
+'{"effect": "reapplyCurrentSpecialBoardSpaceYouEnemy", "effectValue": 1, "autoEffect":false, "continuous": false}', 2, '{field}', '{}');

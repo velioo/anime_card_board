@@ -164,6 +164,12 @@ baseController.prototype.preSwitchScreenHook = function(screenClass) {
 		$(_self.INFO_HEADER).show();
 	}
 
+	if (screenClass == _self.GAME_SCREEN_CLASS) {
+		$(_self.VIDEO_BACKGROUND_WRAPPER_ID).hide();
+	} else if (_self.client.logInSignUpController._settings.videoBackground) {
+		$(_self.VIDEO_BACKGROUND_WRAPPER_ID).show();
+	}
+
 	if (typeof _self.client.roomController.preSwitchScreenHookRoomController === "function") {
 		_self.client.roomController.preSwitchScreenHookRoomController(screenClass);
 	}

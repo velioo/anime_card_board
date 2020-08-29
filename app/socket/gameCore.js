@@ -250,7 +250,7 @@ var self = module.exports = {
 			  if (!cardsOnFieldCopy[i].cardEffect.continuous
 			  	&& cardsOnFieldCopy[i].cardEffect.effect == "drawCardFromDeckYouEnemy") {
 			  	playerStateEnemy.cardsToDraw += cardsOnFieldCopy[i].cardEffect.effectValueEnemy;
-			  	await putCardInGraveyard(cardsOnFieldCopy[i], playerState);
+			  	await self.putCardInGraveyard(cardsOnFieldCopy[i].cardId, playerState);
 			  	playerState.cardsOnFieldArr.splice(cardsOnFieldCopy.length - 1 - i, 1);
 			  }
 			}
@@ -290,7 +290,7 @@ var self = module.exports = {
 
 		if (!card.cardEffect.continuous) {
 			if (card.cardEffect.autoEffect) {
-				await putCardInGraveyard(card, playerState);
+				await self.putCardInGraveyard(card.cardId, playerState);
     		playerState.cardsOnFieldArr.pop();
 				card.cardEffect.isFinished = true;
 			}
@@ -541,7 +541,7 @@ var self = module.exports = {
     let currBoardIndexYou = gameState.playersState[yourUserId].currBoardIndex;
     let currBoardIndexEnemy = gameState.playersState[enemyUserId].currBoardIndex;
 
-    await putCardInGraveyard(card, playerState);
+    await self.putCardInGraveyard(card.cardId, playerState);
 
 		if (card.cardEffect.effect == "moveSpacesForwardUpTo") {
 			assert((finishData.effectValueChosen > 0) && (finishData.effectValueChosen <= card.cardEffect.effectValue));
@@ -1110,7 +1110,7 @@ var self = module.exports = {
 	  if ("effectChargesCount" in card.cardEffect && card.cardEffect.chargesUsedTotal >= card.cardEffect.effectChargesCount) {
 			card.cardEffect.isFinished = true;
 			playerState.cardsOnFieldArr.splice(ctx.cardIdx, 1);
-			await putCardInGraveyard(card, playerState);
+			await self.putCardInGraveyard(card.cardId, playerState);
 		} else {
 			if ("energyPerUseIncrement" in card.cardEffect) {
 				let operator = card.cardEffect.energyPerUseIncrement.charAt(0);
@@ -1396,7 +1396,7 @@ var self = module.exports = {
 			  	&& ((cardsOnFieldCopy[i].cardEffect.effect == "takeCardFromYourGraveyard")
 			  		|| (cardsOnFieldCopy[i].cardEffect.effect == "discardCardTakeCardFromYourGraveyard")
 			  		|| (cardsOnFieldCopy[i].cardEffect.effect == "takeCardFromEnemyGraveyard"))) {
-			  	await putCardInGraveyard(cardsOnFieldCopy[i], playerState);
+			  	await self.putCardInGraveyard(cardsOnFieldCopy[i].cardId, playerState);
 			  	playerState.cardsOnFieldArr.splice(cardsOnFieldCopy.length - 1 - i, 1);
 			  }
 			}
@@ -1447,6 +1447,31 @@ var self = module.exports = {
 		ctx.roomData.player2StatusRow = playerIdWin == ctx.roomData.player2Id ? playerWinRow : playerLoseRow;
 
 	  return true;
+	},
+	putCardInGraveyard: async (cardId, playerState) => {
+		let queryStatus = await utils.selectRowById({ table: 'cards', field: 'id', queryArg: cardId });
+		let cardRow = queryStatus.rows[0];
+
+		var cardEffect = JSON.parse(cardRow.effect_json);
+		cardEffect.effectValueOriginal = cardEffect.effectValue;
+		cardEffect.cardCostOriginal = cardRow.cost;
+
+		if (cardEffect.continuous) {
+	  	cardEffect.energyPerUseOriginal = cardEffect.energyPerUse;
+	  }
+
+		playerState.cardsInGraveyardArr.push({
+			cardId: cardRow.id,
+	    cardName: cardRow.name,
+	    cardText: cardRow.description,
+	    cardTextOriginal: cardRow.description,
+	    cardImg: cardRow.image,
+	    cardRarity: cardRow.rarity_id,
+	    cardEffect: cardEffect,
+	    cardCost: cardRow.cost,
+	    cardAttributes: cardRow.attributes,
+	    cardSounds: JSON.parse(cardRow.sounds_json),
+	  });
 	},
 };
 
@@ -1586,7 +1611,7 @@ let updateEnergyReturnedValueBoardSpaces = {
 
 let checkIfCardExpired = async (card, cardIdx, playerState, playerStateEnemy, cardsOnFieldArrCopy) => {
 	if (card.cardEffect.chargesUsedTotal >= card.cardEffect.effectChargesCount) {
-		await putCardInGraveyard(card, playerState);
+		await self.putCardInGraveyard(card.cardId, playerState);
  		playerState.cardsOnFieldArr.splice(cardsOnFieldArrCopy.length - 1 - cardIdx, 1);
 		playerState.cardsExpired.push(card);
 
@@ -1844,23 +1869,6 @@ let isSpecialBoardSpaceNegative = (boardSpace) => {
 	}
 
 	return false;
-};
-
-let putCardInGraveyard = async (card, playerState) => {
-	let queryStatus = await utils.selectRowById({ table: 'cards', field: 'id', queryArg: card.cardId });
-	let cardRow = queryStatus.rows[0];
-	playerState.cardsInGraveyardArr.push({
-		cardId: cardRow.id,
-    cardName: cardRow.name,
-    cardText: cardRow.description,
-    cardTextOriginal: cardRow.description,
-    cardImg: cardRow.image,
-    cardRarity: cardRow.rarity_id,
-    cardEffect: JSON.parse(cardRow.effect_json),
-    cardCost: cardRow.cost,
-    cardAttributes: cardRow.attributes,
-    cardSounds: JSON.parse(cardRow.sounds_json),
-  });
 };
 
 let calculateXp = async (ctx, userId, playerIdWon) => {

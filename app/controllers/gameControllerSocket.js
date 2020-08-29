@@ -659,25 +659,6 @@ const self = module.exports = {
         assert(0);
       }
 
-      queryStatus = await utils.selectRowById({ table: 'cards', field: 'id', queryArg: gameState.cardTakenFromGraveyard.cardId });
-      let cardRow = queryStatus.rows[0];
-      let cardFromDb = {
-        cardId: cardRow.id,
-        cardName: cardRow.name,
-        cardText: cardRow.description,
-        cardTextOriginal: cardRow.description,
-        cardImg: cardRow.image,
-        cardRarity: cardRow.rarity_id,
-        cardEffect: JSON.parse(cardRow.effect_json),
-        cardCost: cardRow.cost,
-        cardAttributes: cardRow.attributes,
-        cardSounds: JSON.parse(cardRow.sounds_json),
-      };
-
-      cardFromDb.cardEffect.effectValueOriginal = cardFromDb.cardEffect.effectValue;
-      cardFromDb.cardCostOriginal = cardFromDb.cardCost;
-
-      gameState.cardTakenFromGraveyard = cardFromDb;
       gameState.cardTakenFromGraveyard.cardInGraveyardIdx = ctx.data.cardIdx;
       gameState.cardTakenFromGraveyard.playerIdGraveyard = ctx.data.playerIdGraveyard;
       gameState.playerIdTakenCardFromGraveyard = ctx.session.userData.userId;
@@ -752,25 +733,11 @@ const self = module.exports = {
 
       assert(cardToDestroy && cardIdx >= 0);
 
-      queryStatus = await utils.selectRowById({ table: 'cards', field: 'id', queryArg: cardToDestroy.cardId });
-      let cardRow = queryStatus.rows[0];
-      let cardFromDb = {
-        cardId: cardRow.id,
-        cardName: cardRow.name,
-        cardText: cardRow.description,
-        cardTextOriginal: cardRow.description,
-        cardImg: cardRow.image,
-        cardRarity: cardRow.rarity_id,
-        cardEffect: JSON.parse(cardRow.effect_json),
-        cardCost: cardRow.cost,
-        cardAttributes: cardRow.attributes,
-        cardSounds: JSON.parse(cardRow.sounds_json),
-      };
+      await gameCore.putCardInGraveyard(ctx.data.cardId, playerStateEnemy);
 
       gameState.playerIdDestroyedCardFromEnemyField = ctx.session.userData.userId;
       gameState.cardDestroyedFromEnemyField = cardToDestroy;
       playerStateEnemy.cardsOnFieldArr.splice(cardIdx, 1);
-      playerStateEnemy.cardsInGraveyardArr.push(cardFromDb);
       playerState.cardsToDestroyFromEnemyField--;
 
       await gameCore.destroyCardFromEnemyFieldHook(ctx);
@@ -1005,28 +972,13 @@ const self = module.exports = {
 
       assert(cardSelected && cardSelected.cardId == ctx.data.cardId);
 
-      queryStatus = await utils.selectRowById({ table: 'cards', field: 'id', queryArg: cardSelected.cardId });
-      let cardRow = queryStatus.rows[0];
-      let cardFromDb = {
-        cardId: cardRow.id,
-        cardName: cardRow.name,
-        cardText: cardRow.description,
-        cardTextOriginal: cardRow.description,
-        cardImg: cardRow.image,
-        cardRarity: cardRow.rarity_id,
-        cardEffect: JSON.parse(cardRow.effect_json),
-        cardCost: cardRow.cost,
-        cardAttributes: cardRow.attributes,
-        cardSounds: JSON.parse(cardRow.sounds_json),
-      };
+      await gameCore.putCardInGraveyard(ctx.data.cardId, playerState);
 
       gameState.cardDiscarded = cardSelected;
       gameState.cardDiscarded.cardInHandIdx = ctx.data.cardIdx;
       playerState.cardsInHandArr.splice(ctx.data.cardIdx, 1);
       playerState.cardsInHand--;
       gameState.playerIdDiscardedCard = ctx.session.userData.userId;
-
-      playerState.cardsInGraveyardArr.push(cardFromDb);
 
       await gameCore.discardCardHook(ctx);
       await gameCore.activePlayerHook(ctx);
