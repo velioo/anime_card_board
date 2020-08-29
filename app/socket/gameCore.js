@@ -304,7 +304,7 @@ var self = module.exports = {
 		  	checkForEmptyBoardSpaces(ctx, card.cardEffect.effectValue, yourUserId);
 		  } else if (card.cardEffect.effect == "destroySpecialBoardSpaceForward") {
 		  	checkForSpecialBoardSpaces(ctx, card.cardEffect.effectValue, yourUserId);
-		  } else if (card.cardEffect.effect == "moveSpacesClosestBoardSpaceSpecial") {
+		  } else if (card.cardEffect.effect == "moveSpacesClosestBoardSpaceSpecialYou") {
 		  	let closestBoardSpaceBoardForwardSpacesCount = 0;
 		  	let closestBoardSpaceBoardBackwardSpacesCount = 0;
 		  	let closestBoardSpaceForwardAvailable = false;
@@ -329,35 +329,8 @@ var self = module.exports = {
 				assert((closestBoardSpaceForwardAvailable && closestBoardSpaceBoardForwardSpacesCount > 0)
 					|| (closestBoardSpaceBackwardAvailable && closestBoardSpaceBoardBackwardSpacesCount > 0));
 
-				let moveSpaces;
-				let goBackward = false;
-				if (closestBoardSpaceForwardAvailable && closestBoardSpaceBackwardAvailable) {
-					if (closestBoardSpaceBoardForwardSpacesCount > closestBoardSpaceBoardBackwardSpacesCount) {
-						moveSpaces = closestBoardSpaceBoardBackwardSpacesCount;
-						goBackward = yourUserId == ctx.roomData.player1Id ? true : false;
-					} else if (closestBoardSpaceBoardForwardSpacesCount < closestBoardSpaceBoardBackwardSpacesCount) {
-						moveSpaces = closestBoardSpaceBoardForwardSpacesCount;
-						goBackward = yourUserId == ctx.roomData.player1Id ? false : true;
-					} else {
-						moveSpaces = closestBoardSpaceBoardForwardSpacesCount;
-						goBackward = false;
-					}
-				} else if (closestBoardSpaceForwardAvailable) {
-					moveSpaces = closestBoardSpaceBoardForwardSpacesCount;
-					goBackward = yourUserId == ctx.roomData.player1Id ? false : true;
-				} else {
-					moveSpaces = closestBoardSpaceBoardBackwardSpacesCount;
-					goBackward = yourUserId == ctx.roomData.player1Id ? true : false;
-				}
-
-				assert(moveSpaces && moveSpaces > 0);
-
-				await self.rollDiceBoardHook(ctx, { rollDiceValue: moveSpaces,
-		  		userId: yourUserId, moveBackwardsOnNextRoll: goBackward, moveIfCan: false });
-
-				card.finishData = {
-					moveSpaces: moveSpaces,
-				};
+				card.cardEffect.specialBoardSpaceForwardAvailable = closestBoardSpaceForwardAvailable;
+				card.cardEffect.specialBoardSpaceBackwardAvailable = closestBoardSpaceBackwardAvailable;
 		  } else if (card.cardEffect.effect == "moveSpacesClosestBoardSpaceSpecialEnemy") {
 		  	let closestBoardSpaceBoardForwardSpacesCount = 0;
 		  	let closestBoardSpaceBoardBackwardSpacesCount = 0;
@@ -383,35 +356,8 @@ var self = module.exports = {
 				assert((closestBoardSpaceForwardAvailable && closestBoardSpaceBoardForwardSpacesCount > 0)
 					|| (closestBoardSpaceBackwardAvailable && closestBoardSpaceBoardBackwardSpacesCount > 0));
 
-				let moveSpaces;
-				let goBackward = false;
-				if (closestBoardSpaceForwardAvailable && closestBoardSpaceBackwardAvailable) {
-					if (closestBoardSpaceBoardForwardSpacesCount > closestBoardSpaceBoardBackwardSpacesCount) {
-						moveSpaces = closestBoardSpaceBoardBackwardSpacesCount;
-						goBackward = enemyUserId == ctx.roomData.player1Id ? true : false;
-					} else if (closestBoardSpaceBoardForwardSpacesCount < closestBoardSpaceBoardBackwardSpacesCount) {
-						moveSpaces = closestBoardSpaceBoardForwardSpacesCount;
-						goBackward = enemyUserId == ctx.roomData.player1Id ? false : true;
-					} else {
-						moveSpaces = closestBoardSpaceBoardForwardSpacesCount;
-						goBackward = true;
-					}
-				} else if (closestBoardSpaceForwardAvailable) {
-					moveSpaces = closestBoardSpaceBoardForwardSpacesCount;
-					goBackward = enemyUserId == ctx.roomData.player1Id ? false : true;
-				} else {
-					moveSpaces = closestBoardSpaceBoardBackwardSpacesCount;
-					goBackward = enemyUserId == ctx.roomData.player1Id ? true : false;
-				}
-
-				assert(moveSpaces && moveSpaces > 0);
-
-				await self.rollDiceBoardHook(ctx, { rollDiceValue: moveSpaces,
-		  		userId: enemyUserId, moveBackwardsOnNextRoll: goBackward, moveIfCan: false });
-
-				card.finishData = {
-					moveSpaces: moveSpaces,
-				};
+				card.cardEffect.specialBoardSpaceForwardAvailable = closestBoardSpaceForwardAvailable;
+				card.cardEffect.specialBoardSpaceBackwardAvailable = closestBoardSpaceBackwardAvailable;
 		  } else if (card.cardEffect.effect == "drawCardFromEnemyHand") {
 		  	assert(playerStateEnemy.cardsInHandArr.length > 0);
 
@@ -470,13 +416,21 @@ var self = module.exports = {
 		  } else if (card.cardEffect.effect == "drawCardFromDeckYouDiscardCardYou") {
 		  	playerState.cardsToDraw += card.cardEffect.effectValue1;
 		  	playerState.cardsToDiscard += card.cardEffect.effectValue2;
-		  } else if (card.cardEffect.effect == "reapplyCurrentSpecialBoardSpace") {
+		  } else if (card.cardEffect.effect == "reapplyCurrentSpecialBoardSpaceYou") {
 		  	assert(boardMatrix[boardPath[currBoardIndexYou][0]][boardPath[currBoardIndexYou][1]] > 1);
 		  	checkForSpecialBoardSpace(ctx, boardPath[currBoardIndexYou][0], boardPath[currBoardIndexYou][1]);
 		  } else if (card.cardEffect.effect == "reapplyCurrentSpecialBoardSpaceEnemy") {
 		  	assert(boardMatrix[boardPath[currBoardIndexEnemy][0]][boardPath[currBoardIndexEnemy][1]] > 1);
 		  	ctx.session.userData.userId = enemyUserId;
 		  	checkForSpecialBoardSpace(ctx, boardPath[currBoardIndexEnemy][0], boardPath[currBoardIndexEnemy][1]);
+		  	ctx.session.userData.userId = yourUserId;
+		  } else if (card.cardEffect.effect == "reapplyCurrentSpecialBoardSpaceEnemyYou") {
+		  	assert(boardMatrix[boardPath[currBoardIndexEnemy][0]][boardPath[currBoardIndexEnemy][1]] > 1);
+		  	checkForSpecialBoardSpace(ctx, boardPath[currBoardIndexEnemy][0], boardPath[currBoardIndexEnemy][1]);
+		  } else if (card.cardEffect.effect == "reapplyCurrentSpecialBoardSpaceYouEnemy") {
+		  	assert(boardMatrix[boardPath[currBoardIndexYou][0]][boardPath[currBoardIndexYou][1]] > 1);
+		  	ctx.session.userData.userId = enemyUserId;
+		  	checkForSpecialBoardSpace(ctx, boardPath[currBoardIndexYou][0], boardPath[currBoardIndexYou][1]);
 		  	ctx.session.userData.userId = yourUserId;
 		  } else if (card.cardEffect.effect == "increaseChargesContinousCard") {
 		  	assert(playerState.cardsOnFieldArr.length > 0);
@@ -585,6 +539,7 @@ var self = module.exports = {
 		let playerStateEnemy = gameState.playersState[enemyUserId];
     let yourUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player1Id : ctx.roomData.player2Id;
     let currBoardIndexYou = gameState.playersState[yourUserId].currBoardIndex;
+    let currBoardIndexEnemy = gameState.playersState[enemyUserId].currBoardIndex;
 
     await putCardInGraveyard(card, playerState);
 
@@ -848,6 +803,118 @@ var self = module.exports = {
 
 			card.finishData = {
 				destroyedBoardSpacesPositions: destroyedBoardSpacesPositions,
+			};
+		} else if (card.cardEffect.effect == "moveSpacesClosestBoardSpaceSpecialYou") {
+			assert("moveBackward" in finishData);
+
+	  	let closestBoardSpaceBoardForwardSpacesCount = 0;
+	  	let closestBoardSpaceBoardBackwardSpacesCount = 0;
+	  	let closestBoardSpaceForwardAvailable = false;
+	  	let closestBoardSpaceBackwardAvailable = false;
+
+			for(let i = currBoardIndexYou + 1; i < boardPath.length; i++) {
+				closestBoardSpaceBoardForwardSpacesCount++;
+				if (boardMatrix[boardPath[i][0]][boardPath[i][1]] > 1) {
+					closestBoardSpaceForwardAvailable = true;
+					break;
+				}
+			}
+
+			for(let i = currBoardIndexYou - 1; i >= 0; i--) {
+				closestBoardSpaceBoardBackwardSpacesCount++;
+				if (boardMatrix[boardPath[i][0]][boardPath[i][1]] > 1) {
+					closestBoardSpaceBackwardAvailable = true;
+					break;
+				}
+			}
+
+			let moveSpaces;
+			let goBackward = false;
+			if (yourUserId == ctx.roomData.player1Id) {
+				if (finishData.moveBackward) {
+					assert(closestBoardSpaceBackwardAvailable && closestBoardSpaceBoardBackwardSpacesCount > 0);
+					moveSpaces = closestBoardSpaceBoardBackwardSpacesCount;
+					goBackward = true;
+				} else {
+					assert(closestBoardSpaceForwardAvailable && closestBoardSpaceBoardForwardSpacesCount > 0);
+					moveSpaces = closestBoardSpaceBoardForwardSpacesCount;
+					goBackward = false;
+				}
+			} else {
+				if (finishData.moveBackward) {
+					assert(closestBoardSpaceForwardAvailable && closestBoardSpaceBoardForwardSpacesCount > 0);
+					moveSpaces = closestBoardSpaceBoardForwardSpacesCount;
+					goBackward = true;
+				} else {
+					assert(closestBoardSpaceBackwardAvailable && closestBoardSpaceBoardBackwardSpacesCount > 0);
+					moveSpaces = closestBoardSpaceBoardBackwardSpacesCount;
+					goBackward = false;
+				}
+			}
+
+			assert(moveSpaces && moveSpaces > 0);
+
+			await self.rollDiceBoardHook(ctx, { rollDiceValue: moveSpaces,
+	  		userId: yourUserId, moveBackwardsOnNextRoll: goBackward, moveIfCan: false });
+
+			card.finishData = {
+				moveSpaces: moveSpaces,
+			};
+		} else if (card.cardEffect.effect == "moveSpacesClosestBoardSpaceSpecialEnemy") {
+			assert("moveBackward" in finishData);
+
+			let closestBoardSpaceBoardForwardSpacesCount = 0;
+	  	let closestBoardSpaceBoardBackwardSpacesCount = 0;
+	  	let closestBoardSpaceForwardAvailable = false;
+	  	let closestBoardSpaceBackwardAvailable = false;
+
+			for(let i = currBoardIndexEnemy + 1; i < boardPath.length; i++) {
+				closestBoardSpaceBoardForwardSpacesCount++;
+				if (boardMatrix[boardPath[i][0]][boardPath[i][1]] > 1) {
+					closestBoardSpaceForwardAvailable = true;
+					break;
+				}
+			}
+
+			for(let i = currBoardIndexEnemy - 1; i >= 0; i--) {
+				closestBoardSpaceBoardBackwardSpacesCount++;
+				if (boardMatrix[boardPath[i][0]][boardPath[i][1]] > 1) {
+					closestBoardSpaceBackwardAvailable = true;
+					break;
+				}
+			}
+
+			let moveSpaces;
+			let goBackward = false;
+			if (enemyUserId == ctx.roomData.player1Id) {
+				if (finishData.moveBackward) {
+					assert(closestBoardSpaceBackwardAvailable && closestBoardSpaceBoardBackwardSpacesCount > 0);
+					moveSpaces = closestBoardSpaceBoardBackwardSpacesCount;
+					goBackward = true;
+				} else {
+					assert(closestBoardSpaceForwardAvailable && closestBoardSpaceBoardForwardSpacesCount > 0);
+					moveSpaces = closestBoardSpaceBoardForwardSpacesCount;
+					goBackward = false;
+				}
+			} else {
+				if (finishData.moveBackward) {
+					assert(closestBoardSpaceForwardAvailable && closestBoardSpaceBoardForwardSpacesCount > 0);
+					moveSpaces = closestBoardSpaceBoardForwardSpacesCount;
+					goBackward = true;
+				} else {
+					assert(closestBoardSpaceBackwardAvailable && closestBoardSpaceBoardBackwardSpacesCount > 0);
+					moveSpaces = closestBoardSpaceBoardBackwardSpacesCount;
+					goBackward = false;
+				}
+			}
+
+			assert(moveSpaces && moveSpaces > 0);
+
+			await self.rollDiceBoardHook(ctx, { rollDiceValue: moveSpaces,
+	  		userId: enemyUserId, moveBackwardsOnNextRoll: goBackward, moveIfCan: false });
+
+			card.finishData = {
+				moveSpaces: moveSpaces,
 			};
 		}
 

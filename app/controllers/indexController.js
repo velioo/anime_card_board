@@ -24,6 +24,15 @@ var self = module.exports = {
     assert(queryStatus.rowCount >= 0);
     ctx.state.cards = queryStatus.rows;
 
+    ctx.state.cards.forEach(function(card) {
+      card.original_image = card.image;
+      if (ctx.session.userData && ctx.session.userData.settings && !ctx.session.userData.settings.cardAnimations) {
+        if (card.image.split('.').pop() == "gif") {
+          card.image = card.image.substr(0, card.image.lastIndexOf(".")) + ".jpg";
+        }
+      }
+    });
+
 		await ctx.render('./views/home.hbs');
 	},
   renderTestGame: async (ctx) => {

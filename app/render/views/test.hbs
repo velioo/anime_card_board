@@ -707,7 +707,6 @@ function switchPhase(e) {
 
 // -----------------------------------
 
-
 // Timers-------------------------
 var timeLeftSeconds = 60;
 $('.anime-cb-turn-timer-text.player-you').text(timeLeftSeconds);
@@ -725,6 +724,7 @@ var turnTimer = setInterval(function() {
 }, 1000);
 //----------------------
 
+var quickGameInfoShowEnabled = true;
 // Draw card---------------------------
 $('#anime-cb-card-global-deck').on('click', function(e) {
 	// drawCardFromEnemyHandEnemy();
@@ -732,8 +732,29 @@ $('#anime-cb-card-global-deck').on('click', function(e) {
 	drawCardFromGraveyardYou();
 	drawCardFromGraveyardEnemy();
 
+	if (quickGameInfoShowEnabled) {
+		showQuickGameInfo();
+	}
+
 	// drawCardFromEnemyHandYou();
 });
+
+function showQuickGameInfo () {
+	quickGameInfoShowEnabled = false;
+
+	$('.anime-cb-screen-game').append('<div class="anime-cb-quick-game-info">\
+		Cannot sad asd asd as asd asd asdas dasd s\
+	</div>');
+	var $gameInfoElement = $('.anime-cb-quick-game-info').last().css("margin-right", "-" + ($('.anime-cb-quick-game-info').outerWidth() / 2) + "px");
+
+	setTimeout(function() {
+		$gameInfoElement.remove();
+	}, 3000);
+
+	setTimeout(function() {
+		quickGameInfoShowEnabled = true;
+	}, 1000);
+};
 
 function drawCardFromGraveyardYou() {
   var cardsInHandCount = $('.anime-cb-cards-in-hand.player-you .anime-cb-card.player-you').length;

@@ -195,50 +195,6 @@ cardsInfoController.prototype.fillInfoCard = function (card) {
   if ($(_self.CARD_INFO_TEXT_ID).html() != cardHtml) {
   	$(_self.CARD_INFO_TEXT_ID).html(cardHtml);
   }
-
-
-	// var cardRarity = $(card).data("cardRarity") || "";
-	// var cardText = $(card).data("cardText") || "";
-	// var cardCost = $(card).data("cardCost") || "";
-	// var cardAttributes = $(card).data("cardAttributes") || "";
-	// var cardEffect = $(card).data("cardEffect") || "";
-
-	// if (cardAttributes) {
-	// 	cardAttributes = cardAttributes.split(",");
-	// }
-
-	// cardRarity = cardRarity ? cardRarity.toUpperCase() : cardRarity;
-	// cardCost = cardCost ? '<span title="' + cardCost + ' Energy cost">[' + cardCost + ']:</span> ' : cardCost;
-
-	// if ($(card).attr("src") != $(_self.CARD_INFO_IMG_ID).attr("src")) {
- //  	$(_self.CARD_INFO_IMG_ID).attr("src", $(card).attr("src"));
-	// }
-
- //  $(_self.CARD_INFO_IMG_ID).css("border", "1px solid white");
- //  $(_self.CARD_INFO_NAME_ID).text($(card).data("cardName") || "");
-
- //  var cardHtml = cardRarity + cardCost;
- //  if (cardEffect && cardEffect.continuous) {
- //  	cardHtml += '<img class="anime-cb-card-info-text-img" src="/imgs/continuous.png" title="Continuous card">';
- //  }
-
- //  if (cardEffect) {
- //  	cardText = cardText.replace("|X|", cardEffect.effectValue);
- //  }
-
- //  if (cardAttributes) {
-	//   cardAttributes.forEach(function(cardAttr) {
-	//   	cardHtml += '<img class="anime-cb-card-info-text-img" src="/imgs/' + cardAttr
-	//   	+ '_attr.png" title="' + (cardAttr.charAt(0).toUpperCase() + cardAttr.slice(1)) + ' attribute">';
-	//   });
- //  	cardHtml += '<br>';
-	// }
-
- //  cardHtml += cardText;
-
- //  if ($(_self.CARD_INFO_TEXT_ID).html() != cardHtml) {
- //  	$(_self.CARD_INFO_TEXT_ID).html(cardHtml);
- //  }
 };
 
 cardsInfoController.prototype.handleCardHover = function (e, card) {
@@ -258,4 +214,23 @@ cardsInfoController.prototype.handleCardHover = function (e, card) {
   $(card).css("transform", string);
 
   _self.fillInfoCard(card);
+};
+
+cardsInfoController.prototype.switchCardsImgs = function (haveAnimations) {
+	var _self = this;
+
+	_self.$cards.each(function() {
+		var card = this;
+		if (haveAnimations) {
+			if ($(card).data("cardOriginalImage").split('.').pop() == "gif") {
+	    	var newSrc = $(card).attr("src").substr(0, $(card).attr("src").lastIndexOf(".")) + ".gif"
+	      $(card).attr("src", newSrc);
+	    }
+		} else {
+	    if ($(card).attr("src").split('.').pop() == "gif") {
+	    	var newSrc = $(card).attr("src").substr(0, $(card).attr("src").lastIndexOf(".")) + ".jpg"
+	      $(card).attr("src", newSrc);
+	    }
+		}
+  });
 };

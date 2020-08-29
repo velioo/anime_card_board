@@ -73,6 +73,7 @@ gameController.prototype.initConstants = function() {
 	_self.CHOOSE_CARD_EFFECT_CHOICE_CLASS = '.anime-cb-choose-card-effect-choice';
 	_self.CHOOSE_CARD_EFFECT_TITLE_CLASS = '.anime-cb-choose-card-effect-title';
 	_self.ENERGY_REGEN_CLASS = '.anime-cb-energy-points-regen';
+	_self.QUICK_GAME_INFO_CLASS = '.anime-cb-quick-game-info';
 };
 
 gameController.prototype.initElements = function() {
@@ -258,6 +259,10 @@ gameController.prototype.resetGameState = function () {
 	clearTimeout(_self.shuffleTimeout2);
 	clearTimeout(_self.specialSpaceTimeout);
 	clearTimeout(_self.showEnergyTimeout);
+	_self.quickGameInfoEnabled = true;
+	clearTimeout(_self.quickGameInfoShowSwitchTimeout);
+	clearTimeout(_self.quickGameInfoRemoveElementTimeout);
+	_self.quickGameInfoMsg = "";
 
 	_self._postGame = true;
 	setTimeout(function() {
@@ -988,6 +993,8 @@ gameController.prototype.canSummonCard = function (card) {
 	var cardCost;
 	var cardAttributes;
 
+	_self.quickGameInfoMsg = "";
+
 	var cardEffect;
   _self._cardsInHandArr.forEach(function(card, idx) {
 		if (card.cardId == cardId) {
@@ -999,56 +1006,101 @@ gameController.prototype.canSummonCard = function (card) {
 	});
 
 	if ((!cardEffect) || (!cardRarity) || (isNaN(cardCost))) {
-		canSummonCard = false;
+		_self.quickGameInfoMsg = "Problem while summoning this card...";
+		return false;
 	}
 
-	if (cardsOnFieldCount + 1 > playerStateYou.maxCardsOnField
-		|| ! playerStateYou.cardsSummonConstraints.cardsCanSummonAny
-		|| playerStateYou.energyPoints < cardCost) {
-		canSummonCard = false;
+	if (cardsOnFieldCount + 1 > playerStateYou.maxCardsOnField) {
+		_self.quickGameInfoMsg = "Max cards on field";
+		return false;
+	}
+
+	if (! playerStateYou.cardsSummonConstraints.cardsCanSummonAny) {
+		_self.quickGameInfoMsg = "Cannot summon cards";
+		return false;
+	}
+
+	playerStateYou.cardsOnFieldArr.forEach(function(card, idx) {
+		if (card.cardId == cardId) {
+			canSummonCard = false;
+			_self.quickGameInfoMsg = "You can't have more than 1 copy of the same card on your field";
+		}
+	});
+
+	if (!canSummonCard) {
+		return false;
+	}
+
+	playerStateEnemy.cardsOnFieldArr.forEach(function(card, idx) {
+		if ((card.cardEffect.effect == "nullifyCardsFieldSummon") && (cardAttributes.includes("field"))) {
+			canSummonCard = false;
+			_self.quickGameInfoMsg = "You can't summon cards with 'field' attribute while " + card.cardName + " is active on your opponent's field";
+		}
+	});
+
+	if (!canSummonCard) {
+		return false;
+	}
+
+	if (playerStateYou.energyPoints < cardCost) {
+		_self.quickGameInfoMsg = "Not enough Energy";
+		return false;
 	}
 
 	switch(cardRarity) {
 		case _self.CARD_RARITIES.COMMON:
 			if (! playerStateYou.cardsSummonConstraints.cardsCanSummonCommon) {
 				canSummonCard = false;
+				_self.quickGameInfoMsg = "Cannot summon Common cards";
 			}
 			break;
 		case _self.CARD_RARITIES.RARE:
 			if (! playerStateYou.cardsSummonConstraints.cardsCanSummonRare) {
 				canSummonCard = false;
+				_self.quickGameInfoMsg = "Cannot summon Rare cards";
 			}
 			break;
 		case _self.CARD_RARITIES.EPIC:
 					if (! playerStateYou.cardsSummonConstraints.cardsCanSummonEpic) {
 				canSummonCard = false;
+				_self.quickGameInfoMsg = "Cannot summon Epic cards";
 			}
 			break;
+	}
+
+	if (!canSummonCard) {
+		return false;
 	}
 
 	if (cardEffect.effect == "moveSpacesForward") {
 		if (_self._yourUserId == _self._roomData.player1Id) {
 			if (!boardPath[currBoardIndexYou + cardEffect.effectValue]) {
-				canSummonCard = false;
+				_self.quickGameInfoMsg = "Not enough board spaces forward, less than " + cardEffect.effectValue;
+				return false;
 			}
 		} else if (currBoardIndexYou - cardEffect.effectValue < 0) {
-				canSummonCard = false;
+			_self.quickGameInfoMsg = "Not enough board spaces forward, less than " + cardEffect.effectValue;
+			return false;
 		}
 	} else if (cardEffect.effect == "moveSpacesBackwardsUpToEnemy") {
 		if (_self._enemyUserId == _self._roomData.player2Id) {
 			if (currBoardIndexEnemy >= _self._gameplayData.gameState.boardData.boardDataPlayers.player2StartBoardIndex) {
-				canSummonCard = false;
+				_self.quickGameInfoMsg = "You have nowhere to move your opponent";
+				return false;
 			}
 		} else if (currBoardIndexEnemy <= _self._gameplayData.gameState.boardData.boardDataPlayers.player1StartBoardIndex) {
-				canSummonCard = false;
+				_self.quickGameInfoMsg = "You have nowhere to move your opponent";
+				return false;
 		}
 	} else if (cardEffect.effect == "moveSpacesBackwardsEnemy") {
 		if (_self._enemyUserId == _self._roomData.player2Id) {
 			if (!boardPath[currBoardIndexEnemy + cardEffect.effectValue]) {
-				canSummonCard = false;
+				_self.quickGameInfoMsg = "Not enough board spaces backward, less than " + cardEffect.effectValue;
+				return false;
 			}
 		} else if (currBoardIndexEnemy - cardEffect.effectValue < 0) {
-				canSummonCard = false;
+			_self.quickGameInfoMsg = "Not enough board spaces backward, less than " + cardEffect.effectValue;
+			return false;
 		}
 	} else if (cardEffect.effect.match("createSpecialBoardSpaceForwardTier")) {
 		var availableSpace = false;
@@ -1083,7 +1135,8 @@ gameController.prototype.canSummonCard = function (card) {
 		}
 
 		if (!availableSpace) {
-			canSummonCard = false;
+			_self.quickGameInfoMsg = "No empty board spaces in range";
+			return false;
 		}
 	} else if (cardEffect.effect == "destroySpecialBoardSpaceForward") {
 		var availableSpace = false;
@@ -1117,7 +1170,8 @@ gameController.prototype.canSummonCard = function (card) {
 		}
 
 		if (!availableSpace) {
-			canSummonCard = false;
+			_self.quickGameInfoMsg = "No special board spaces in range";
+			return false;
 		}
 	} else if (cardEffect.effect == "moveSpacesForwardNonSpecial") {
 		var availableSpace = false;
@@ -1146,29 +1200,40 @@ gameController.prototype.canSummonCard = function (card) {
 		}
 
 		if (!availableSpace) {
-			canSummonCard = false;
+			_self.quickGameInfoMsg = "No non-special board spaces forward";
+			return false;
 		}
 	} else if (cardEffect.effect == "drawCardFromEnemyHand") {
 		if (playerStateEnemy.cardsInHand <= 0) {
-			canSummonCard = false;
+			_self.quickGameInfoMsg = "Your opponent doesn't have any cards in his hand";
+			return false;
 		}
 	} else if (cardEffect.effect == "drawCardFromEnemyYourHand") {
-		if ((playerStateEnemy.cardsInHand <= 0) || (playerStateYou.cardsInHand <= 1)) {
-			canSummonCard = false;
+		if (playerStateEnemy.cardsInHand <= 0) {
+			_self.quickGameInfoMsg = "Your opponent doesn't have any cards in his hand";
+			return false;
+		}
+
+		if (playerStateYou.cardsInHand <= 1) {
+			_self.quickGameInfoMsg = "Your have less than 2 cards in your hand";
+			return false;
 		}
 	} else if (cardEffect.effect == "destroyCardFromEnemyField") {
 		if (playerStateEnemy.cardsOnFieldArr.length <= 0) {
-			canSummonCard = false;
+			_self.quickGameInfoMsg = "Your opponent doesn't have any cards on his field";
+			return false;
 		}
 	} else if (cardEffect.effect == "takeCardFromYourGraveyard") {
 		if (playerStateYou.cardsInGraveyardArr.length <= 0) {
-			canSummonCard = false		};
-
+			_self.quickGameInfoMsg = "You don't have any cards in your Graveyard";
+			return false;
+		}
 	} else if (cardEffect.effect == "takeCardFromEnemyGraveyard") {
 		if (playerStateEnemy.cardsInGraveyardArr.length <= 0) {
-			canSummonCard = false;
+			_self.quickGameInfoMsg = "Your opponent doesn't have any cards in his Graveyard";
+			return false;
 		}
-	}  else if (cardEffect.effect == "moveSpacesClosestBoardSpaceSpecial") {
+	}  else if (cardEffect.effect == "moveSpacesClosestBoardSpaceSpecialYou") {
 		var availableSpace = false;
 		for(var i = 0; i < boardPath.length; i++) {
 			if ((boardMatrix[boardPath[i][0]][boardPath[i][1]] > 1) && (i != currBoardIndexYou)) {
@@ -1178,7 +1243,8 @@ gameController.prototype.canSummonCard = function (card) {
 		}
 
 		if (!availableSpace) {
-			canSummonCard = false;
+			_self.quickGameInfoMsg = "There aren't any special board spaces on the board or you are on the only one :)";
+			return false;
 		}
 	} else if (cardEffect.effect == "moveSpacesClosestBoardSpaceSpecialEnemy") {
 		var availableSpace = false;
@@ -1190,40 +1256,66 @@ gameController.prototype.canSummonCard = function (card) {
 		}
 
 		if (!availableSpace) {
-			canSummonCard = false;
+			_self.quickGameInfoMsg = "There aren't any special board spaces on the board or your opponent is on the only one :)";
+			return false;
 		}
-	} else if (cardEffect.effect == "reapplyCurrentSpecialBoardSpace") {
+	} else if (cardEffect.effect == "reapplyCurrentSpecialBoardSpaceYou") {
 		if (boardMatrix[boardPath[currBoardIndexYou][0]][boardPath[currBoardIndexYou][1]] <= 1) {
-			canSummonCard = false;
+			_self.quickGameInfoMsg = "You aren't on a special board space";
+			return false;
 		}
 	} else if (cardEffect.effect == "reapplyCurrentSpecialBoardSpaceEnemy") {
 		if (boardMatrix[boardPath[currBoardIndexEnemy][0]][boardPath[currBoardIndexEnemy][1]] <= 1) {
-			canSummonCard = false;
+			_self.quickGameInfoMsg = "Your opponent isn't on a special board space";
+			return false;
+		}
+	} else if (cardEffect.effect == "reapplyCurrentSpecialBoardSpaceEnemyYou") {
+		if (boardMatrix[boardPath[currBoardIndexEnemy][0]][boardPath[currBoardIndexEnemy][1]] <= 1) {
+			_self.quickGameInfoMsg = "Your opponent isn't on a special board space";
+			return false;
+		}
+	} else if (cardEffect.effect == "reapplyCurrentSpecialBoardSpaceYouEnemy") {
+		if (boardMatrix[boardPath[currBoardIndexYou][0]][boardPath[currBoardIndexYou][1]] <= 1) {
+			_self.quickGameInfoMsg = "You aren't on a special board space";
+			return false;
 		}
 	} else if (cardEffect.effect == "increaseChargesContinousCard") {
 		var availableCards = false;
-		playerStateYou.cardsOnFieldArr.forEach(function(cardOnField) {
-			cardOnField.cardAttributes.forEach(function(attribute) {
-				if (cardEffect.allowedAttributes.includes(attribute)) {
-					availableCards = true;
-				}
+
+		if (playerStateYou.cardsOnFieldArr.length <= 0) {
+			_self.quickGameInfoMsg = "You don't have any cards on the field";
+		} else {
+			playerStateYou.cardsOnFieldArr.forEach(function(cardOnField) {
+				cardOnField.cardAttributes.forEach(function(attribute) {
+					if (cardEffect.allowedAttributes.includes(attribute)) {
+						availableCards = true;
+					}
+				});
 			});
-		});
+
+			if (!availableCards) {
+				_self.quickGameInfoMsg = "You don't have cards on the field with any of the following attributes: "
+					+ cardEffect.allowedAttributes.join(", ");
+			}
+		}
 
 		if (!availableCards) {
-			canSummonCard = false;
+			return false;
 		}
 	} else if (cardEffect.effect == "discardCardTakeCardFromYourGraveyard") {
 		if ((playerStateYou.cardsInHand - 1) < cardEffect.effectValue1) {
-			canSummonCard = false;
+			_self.quickGameInfoMsg = "You don't have enough cards to discard";
+			return false;
 		}
 
 		if (playerStateYou.cardsInGraveyardArr.length < cardEffect.effectValue2) {
-			canSummonCard = false;
+			_self.quickGameInfoMsg = "You don't have any cards in your Graveyard";
+			return false;
 		}
 	} else if (cardEffect.effect == "destroySpecialBoardSpacesAllRadius") {
 		if (playerStateYou.energyPoints < cardEffect.effectValue) {
-			canSummonCard = false;
+			_self.quickGameInfoMsg = "You must have at least 2 Energy";
+			return false;
 		}
 
 		let availableSpace = false;
@@ -1252,21 +1344,10 @@ gameController.prototype.canSummonCard = function (card) {
 		}
 
 		if (!availableSpace) {
-			canSummonCard = false;
+			_self.quickGameInfoMsg = "No negative special board spaces in max radius (" + maxRadius + ")";
+			return false;
 		}
 	}
-
-	playerStateYou.cardsOnFieldArr.forEach(function(card, idx) {
-		if (card.cardId == cardId) {
-			canSummonCard = false;
-		}
-	});
-
-	playerStateEnemy.cardsOnFieldArr.forEach(function(card, idx) {
-		if ((card.cardEffect.effect == "nullifyCardsFieldSummon") && (cardAttributes.includes("field"))) {
-			canSummonCard = false;
-		}
-	});
 
 	return canSummonCard;
 };
@@ -1524,6 +1605,7 @@ gameController.prototype.processDiscardCard = function (data) {
 
 		_self.discardCardFromHandYou(_self._gameplayData.gameState.cardDiscarded, callback);
 	} else {
+		_self.hideEventsInfo(null, 0);
 		if (_self._gameplayData.gameState.currPlayerId == _self._enemyUserId) {
 			callback = _self.waitForEnemyActions.bind(_self);
 		} else {
@@ -1787,12 +1869,22 @@ gameController.prototype.enableMainPhaseActions = function () {
 		_self.setUpContinuousCardOnClickListener();
 
 		$(_self.CARDS_IN_HAND_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_YOU_CLASS).each(function() {
-			if (!_self.canSummonCard(this)) {
+			var card = this;
+			var canSummonCard = _self.canSummonCard(card);
+			console.log(_self.quickGameInfoMsg);
+
+			if (!canSummonCard) {
+				var msg = _self.quickGameInfoMsg;
+				$(card).on("click", function(e) {
+					if (_self.quickGameInfoEnabled) {
+						_self.showQuickGameInfo(msg);
+					}
+				});
 				return;
 			}
 
-			$(this).attr("data-tooltip", "summonCard");
-			$(this).on("click", function(e) {
+			$(card).attr("data-tooltip", "summonCard");
+			$(card).on("click", function(e) {
 				$(_self.CARDS_IN_HAND_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_YOU_CLASS).removeAttr("data-tooltip");
 				_self.disableMainPhaseActions();
 				_self.disableContinuousCardOnClickListener();
@@ -1983,17 +2075,31 @@ gameController.prototype.performCardEffectInstantYou = function (card) {
 		} else if (card.cardEffect.effect == "drawCardFromDeckYouDiscardCardYou") {
 			_self._postDestroyCard = card;
 			_self.enableMainPhaseActions();
-		} else if (card.cardEffect.effect == "moveSpacesClosestBoardSpaceSpecial") {
-			_self.moveYourCharacter(card.finishData.moveSpaces,
-				_self.destroyCardAnimationYou.bind(_self, card, _self.enableMainPhaseActions.bind(_self)), 500);
+		} else if (card.cardEffect.effect == "moveSpacesClosestBoardSpaceSpecialYou") {
+			if (card.cardEffect.isFinished) {
+				_self.moveYourCharacter(card.finishData.moveSpaces,
+					_self.destroyCardAnimationYou.bind(_self, card, _self.enableMainPhaseActions.bind(_self)), 500);
+			} else {
+				_self.setDirectionListener(card, _self._yourUserId);
+			}
 		} else if (card.cardEffect.effect == "moveSpacesClosestBoardSpaceSpecialEnemy") {
-			_self.moveEnemyCharacter(card.finishData.moveSpaces,
-				_self.destroyCardAnimationYou.bind(_self, card, _self.checkIfEnemyHasToDoAction
-					.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self))), 500);
-		} else if (card.cardEffect.effect == "reapplyCurrentSpecialBoardSpace") {
+			if (card.cardEffect.isFinished) {
+				_self.moveEnemyCharacter(card.finishData.moveSpaces,
+					_self.destroyCardAnimationYou.bind(_self, card, _self.checkIfEnemyHasToDoAction
+						.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self))), 500);
+			} else {
+				_self.setDirectionListener(card, _self._enemyUserId);
+			}
+		} else if (card.cardEffect.effect == "reapplyCurrentSpecialBoardSpaceYou") {
 			_self._postDestroyCard = card;
 			_self.enableMainPhaseActions();
 		} else if (card.cardEffect.effect == "reapplyCurrentSpecialBoardSpaceEnemy") {
+			_self._postDestroyCard = card;
+			_self.checkIfEnemyHasToDoAction(_self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self));
+		} else if (card.cardEffect.effect == "reapplyCurrentSpecialBoardSpaceEnemyYou") {
+			_self._postDestroyCard = card;
+			_self.enableMainPhaseActions();
+		} else if (card.cardEffect.effect == "reapplyCurrentSpecialBoardSpaceYouEnemy") {
 			_self._postDestroyCard = card;
 			_self.checkIfEnemyHasToDoAction(_self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self));
 		} else if (card.cardEffect.effect == "increaseChargesContinousCard") {
@@ -2052,6 +2158,74 @@ gameController.prototype.performCardEffectInstantYou = function (card) {
 	}
 };
 
+gameController.prototype.setDirectionListener = function (card, playerId) {
+	var _self = this;
+
+	var playerState = _self._gameplayData.gameState.playersState[playerId];
+
+	$(_self.CHOOSE_CARD_EFFECT_CLASS + ' > div:first-child').html("");
+	$(_self.CHOOSE_CARD_EFFECT_CLASS + ' > div:first-child')
+		.append('<div class="anime-cb-choose-card-effect-title">Choose direction</div>');
+
+	if (playerId == _self._roomData.player1Id) {
+		if (card.cardEffect.specialBoardSpaceForwardAvailable) {
+			$(_self.CHOOSE_CARD_EFFECT_CLASS + ' > div:first-child').append('<img class="anime-cb-choose-card-effect-choice"\
+				src="/imgs/direction_forward.png" data-move-backward="false" style="width: 100px; height: 100px;">');
+		}
+
+		if (card.cardEffect.specialBoardSpaceBackwardAvailable) {
+			$(_self.CHOOSE_CARD_EFFECT_CLASS + ' > div:first-child').append('<img class="anime-cb-choose-card-effect-choice"\
+				src="/imgs/direction_backward.png" data-move-backward="true" style="width: 100px; height: 100px;">');
+		}
+	} else {
+		if (card.cardEffect.specialBoardSpaceBackwardAvailable) {
+			$(_self.CHOOSE_CARD_EFFECT_CLASS + ' > div:first-child').append('<img class="anime-cb-choose-card-effect-choice"\
+				src="/imgs/direction_forward.png" data-move-backward="false" style="width: 100px; height: 100px;">');
+		}
+
+		if (card.cardEffect.specialBoardSpaceForwardAvailable) {
+			$(_self.CHOOSE_CARD_EFFECT_CLASS + ' > div:first-child').append('<img class="anime-cb-choose-card-effect-choice"\
+				src="/imgs/direction_backward.png" data-move-backward="true" style="width: 100px; height: 100px;">');
+		}
+	}
+
+	_self.chooseCardEffectInitStyles();
+
+	$(_self.CHOOSE_CARD_EFFECT_CLASS).on('click', _self.CHOOSE_CARD_EFFECT_CHOICE_CLASS, function() {
+		$(_self.CHOOSE_CARD_EFFECT_CLASS).off("click");
+		_self.chooseCardEffectFinishStyles();
+
+		var finishData = { moveBackward: $(this).data("moveBackward") };
+		_self._lastClientData = { roomId: _self._roomData.id, cardId: card.cardId, finishData: finishData };
+
+		if (card.cardEffect.continuous) {
+			_self.client.finishCardEffectContinuous(_self._lastClientData);
+		} else {
+			_self.client.finishCardEffect(_self._lastClientData);
+		}
+	});
+};
+
+gameController.prototype.chooseCardEffectInitStyles = function () {
+	var _self = this;
+
+	$(_self.CHOOSE_CARD_EFFECT_CLASS).addClass('fade-in-custom');
+	$(_self.CHOOSE_CARD_EFFECT_CLASS).css("opacity", 1);
+	$(_self.CHOOSE_CARD_EFFECT_CLASS).css("z-index", 1);
+  $(_self.BOARD_PLAYER_YOU_ID).css("z-index", "1");
+	$(_self.BOARD_PLAYER_ENEMY_ID).css("z-index", "1");
+};
+
+gameController.prototype.chooseCardEffectFinishStyles = function () {
+	var _self = this;
+
+	$(_self.BOARD_PLAYER_YOU_ID).css("z-index", "3");
+	$(_self.BOARD_PLAYER_ENEMY_ID).css("z-index", "2");
+	$(_self.CHOOSE_CARD_EFFECT_CLASS).removeClass('fade-in-custom');
+	$(_self.CHOOSE_CARD_EFFECT_CLASS).css("opacity", 0);
+	$(_self.CHOOSE_CARD_EFFECT_CLASS).css("z-index", -1);
+};
+
 gameController.prototype.setEnergyListener = function (card) {
 	var _self = this;
 
@@ -2070,19 +2244,11 @@ gameController.prototype.setEnergyListener = function (card) {
 			+ i +  '" style="width: 100px; height: 100px;">');
 	}
 
-	$(_self.CHOOSE_CARD_EFFECT_CLASS).addClass('fade-in-custom');
-	$(_self.CHOOSE_CARD_EFFECT_CLASS).css("opacity", 1);
-	$(_self.CHOOSE_CARD_EFFECT_CLASS).css("z-index", 1);
-  $(_self.BOARD_PLAYER_YOU_ID).css("z-index", "1");
-	$(_self.BOARD_PLAYER_ENEMY_ID).css("z-index", "1");
+	_self.chooseCardEffectInitStyles();
 
 	$(_self.CHOOSE_CARD_EFFECT_CLASS).on('click', _self.CHOOSE_CARD_EFFECT_CHOICE_CLASS, function() {
 		$(_self.CHOOSE_CARD_EFFECT_CLASS).off("click");
-		$(_self.BOARD_PLAYER_YOU_ID).css("z-index", "3");
-		$(_self.BOARD_PLAYER_ENEMY_ID).css("z-index", "2");
-		$(_self.CHOOSE_CARD_EFFECT_CLASS).removeClass('fade-in-custom');
-		$(_self.CHOOSE_CARD_EFFECT_CLASS).css("opacity", 0);
-		$(_self.CHOOSE_CARD_EFFECT_CLASS).css("z-index", -1);
+		_self.chooseCardEffectFinishStyles();
 
 		var finishData = { energyChosen: $(this).data("energyChosen") };
 		_self._lastClientData = { roomId: _self._roomData.id, cardId: card.cardId, finishData: finishData };
@@ -2110,19 +2276,11 @@ gameController.prototype.setAttributeListenerVariation1 = function (card) {
 			+ attribute +  '" style="width: 100px; height: 100px;">');
 	});
 
-	$(_self.CHOOSE_CARD_EFFECT_CLASS).addClass('fade-in-custom');
-	$(_self.CHOOSE_CARD_EFFECT_CLASS).css("opacity", 1);
-	$(_self.CHOOSE_CARD_EFFECT_CLASS).css("z-index", 1);
-	$(_self.BOARD_PLAYER_YOU_ID).css("z-index", "1");
-	$(_self.BOARD_PLAYER_ENEMY_ID).css("z-index", "1");
+	_self.chooseCardEffectInitStyles();
 
 	$(_self.CHOOSE_CARD_EFFECT_CLASS).on('click', _self.CHOOSE_CARD_EFFECT_CHOICE_CLASS, function() {
 		$(_self.CHOOSE_CARD_EFFECT_CLASS).off("click");
-		$(_self.BOARD_PLAYER_YOU_ID).css("z-index", "3");
-		$(_self.BOARD_PLAYER_ENEMY_ID).css("z-index", "2");
-		$(_self.CHOOSE_CARD_EFFECT_CLASS).removeClass('fade-in-custom');
-		$(_self.CHOOSE_CARD_EFFECT_CLASS).css("opacity", 0);
-		$(_self.CHOOSE_CARD_EFFECT_CLASS).css("z-index", -1);
+		_self.chooseCardEffectFinishStyles();
 
 		var callBackFunc = function (card, cardAttribute) {
 			var finishData = { chosenAttribute: cardAttribute };
@@ -2613,19 +2771,11 @@ gameController.prototype.setBoardSpaceListenerCreateSpecialBoardSpaceForwardTier
 					}
 				}
 
-				$(_self.CHOOSE_CARD_EFFECT_CLASS).addClass('fade-in-custom');
-				$(_self.CHOOSE_CARD_EFFECT_CLASS).css("opacity", 1);
-				$(_self.CHOOSE_CARD_EFFECT_CLASS).css("z-index", 1);
-				$(_self.BOARD_PLAYER_YOU_ID).css("z-index", "1");
-				$(_self.BOARD_PLAYER_ENEMY_ID).css("z-index", "1");
+				_self.chooseCardEffectInitStyles();
 
 				$(_self.CHOOSE_CARD_EFFECT_CLASS).on('click', _self.CHOOSE_CARD_EFFECT_CHOICE_CLASS, function() {
 					$(_self.CHOOSE_CARD_EFFECT_CLASS).off("click");
-					$(_self.BOARD_PLAYER_YOU_ID).css("z-index", "3");
-					$(_self.BOARD_PLAYER_ENEMY_ID).css("z-index", "2");
-					$(_self.CHOOSE_CARD_EFFECT_CLASS).removeClass('fade-in-custom');
-					$(_self.CHOOSE_CARD_EFFECT_CLASS).css("opacity", 0);
-					$(_self.CHOOSE_CARD_EFFECT_CLASS).css("z-index", -1);
+					_self.chooseCardEffectFinishStyles();
 
 					var finishData = { rowIndex: $(boardSpaceTd).closest('tr').index(),
 						columnIndex: $(boardSpaceTd).index(), specialSpaceType: $(this).data("specialSpaceType") };
@@ -3050,17 +3200,27 @@ gameController.prototype.performCardEffectInstantEnemy = function (card) {
 		} else if (card.cardEffect.effect == "drawCardFromDeckYouDiscardCardYou") {
 			_self._postDestroyCard = card;
 			_self.waitForEnemyActions();
-		} else if (card.cardEffect.effect == "moveSpacesClosestBoardSpaceSpecial") {
-			_self.moveEnemyCharacter(card.finishData.moveSpaces,
-				_self.destroyCardAnimationEnemy.bind(_self, card, _self.waitForEnemyActions.bind(_self)), 500);
+		} else if (card.cardEffect.effect == "moveSpacesClosestBoardSpaceSpecialYou") {
+			if (card.cardEffect.isFinished) {
+				_self.moveEnemyCharacter(card.finishData.moveSpaces,
+					_self.destroyCardAnimationEnemy.bind(_self, card, _self.waitForEnemyActions.bind(_self)), 500);
+			}
 		} else if (card.cardEffect.effect == "moveSpacesClosestBoardSpaceSpecialEnemy") {
-			_self.moveYourCharacter(card.finishData.moveSpaces,
-				_self.destroyCardAnimationEnemy.bind(_self, card, _self.checkIfYouHaveToDoAction
-					.bind(_self, _self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self))), 500);
-		} else if (card.cardEffect.effect == "reapplyCurrentSpecialBoardSpace") {
+			if (card.cardEffect.isFinished) {
+				_self.moveYourCharacter(card.finishData.moveSpaces,
+					_self.destroyCardAnimationEnemy.bind(_self, card, _self.checkIfYouHaveToDoAction
+						.bind(_self, _self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self))), 500);
+			}
+		} else if (card.cardEffect.effect == "reapplyCurrentSpecialBoardSpaceYou") {
 			_self._postDestroyCard = card;
 			_self.waitForEnemyActions();
 		} else if (card.cardEffect.effect == "reapplyCurrentSpecialBoardSpaceEnemy") {
+			_self._postDestroyCard = card;
+			_self.checkIfYouHaveToDoAction(_self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self));
+		} else if (card.cardEffect.effect == "reapplyCurrentSpecialBoardSpaceEnemyYou") {
+			_self._postDestroyCard = card;
+			_self.waitForEnemyActions();
+		} else if (card.cardEffect.effect == "reapplyCurrentSpecialBoardSpaceYouEnemy") {
 			_self._postDestroyCard = card;
 			_self.checkIfYouHaveToDoAction(_self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self));
 		} else if (card.cardEffect.effect == "increaseChargesContinousCard") {
@@ -3470,17 +3630,26 @@ gameController.prototype.setDestroyCardFromEnemyFieldListener = function () {
 	_self.showEventsInfo(eventInfoText);
 
 	$(_self.CARD_ON_FIELD_CLASS + _self.PLAYER_ENEMY_CLASS).each(function() {
-			if (!_self.canDestroyCard(this)) {
-				return;
-			}
+		var card = this;
+		var canDestroyCard = _self.canDestroyCard(card);
 
-			$(this).attr("data-tooltip", "destroyCard");
-			$(this).on("click", function(e) {
-				$(_self.CARD_ON_FIELD_CLASS + _self.PLAYER_ENEMY_CLASS).off("click");
-				$(_self.CARD_ON_FIELD_CLASS + _self.PLAYER_ENEMY_CLASS).removeAttr("data-tooltip");
-				_self.destroyCardFromEnemyField.call(_self, this);
-				_self.hideEventsInfo(null, 0);
+		if (!canDestroyCard) {
+			var msg = _self.quickGameInfoMsg;
+			$(card).on("click", function(e) {
+				if (_self.quickGameInfoEnabled) {
+					_self.showQuickGameInfo(msg);
+				}
 			});
+			return;
+		}
+
+		$(this).attr("data-tooltip", "destroyCard");
+		$(this).on("click", function(e) {
+			$(_self.CARD_ON_FIELD_CLASS + _self.PLAYER_ENEMY_CLASS).off("click");
+			$(_self.CARD_ON_FIELD_CLASS + _self.PLAYER_ENEMY_CLASS).removeAttr("data-tooltip");
+			_self.destroyCardFromEnemyField.call(_self, this);
+			_self.hideEventsInfo(null, 0);
+		});
 	});
 };
 
@@ -3598,6 +3767,11 @@ gameController.prototype.canDestroyCard = function(card) {
     canDestroyCard = true;
   }
 
+  if (!canDestroyCard) {
+  	_self.quickGameInfoMsg = "Can target only cards with 'Taunt' effect: "
+  		+ (availableTargets.map(a => a.cardName)).join(", ");
+  }
+
   return canDestroyCard;
 };
 
@@ -3630,10 +3804,25 @@ gameController.prototype.enableRollDiceBoard = function () {
 
 	_self.showEventsInfo(eventInfoText);
 
+	if (_self._gameplayData.gameState.nextPhase == _self.TURN_PHASES.ROLL) {
+		if (_self._gameplayData.gameState.currPlayerId != _self._yourUserId) {
+			$(_self.PHASE_ROLL_ID).removeClass("player-enemy");
+			$(_self.PHASE_ROLL_ID).addClass("active player-you");
+		}
+	}
+
 	$(_self.PHASE_ROLL_ID).addClass("selectable");
 	$(_self.PHASE_ROLL_ID).on("click", function(e) {
 		$(_self.PHASE_ROLL_ID).off("click");
 		$(_self.PHASE_ROLL_ID).removeClass("selectable");
+
+		if (_self._gameplayData.gameState.nextPhase == _self.TURN_PHASES.ROLL) {
+			if (_self._gameplayData.gameState.currPlayerId != _self._yourUserId) {
+				$(_self.PHASE_ROLL_ID).removeClass("active player-you");
+				$(_self.PHASE_ROLL_ID).addClass("player-enemy");
+			}
+		}
+
 		_self.hideEventsInfo(null, 0);
 		_self._lastClientData = { roomId: _self._roomData.id };
 		_self.client.rollDiceBoard(_self._lastClientData);
@@ -4202,13 +4391,23 @@ gameController.prototype.setUpContinuousCardOnClickListener = function () {
 
 	_self.disableContinuousCardOnClickListener();
 	$(_self.CARD_ON_FIELD_CLASS + _self.PLAYER_YOU_CLASS).each(function(idx) {
-		var cardEffect = $(this).data("cardEffect");
+		var card = this;
+		var cardEffect = $(card).data("cardEffect");
 		if (cardEffect.continuous && cardEffect.continuousEffectType == "onClick") {
-			if (!_self.canActivateCard(this)) {
+			var canActivateCard = _self.canActivateCard(card);
+
+			if (!canActivateCard) {
+				var msg = _self.quickGameInfoMsg;
+				$(card).on("click", function(e) {
+					if (_self.quickGameInfoEnabled) {
+						_self.showQuickGameInfo(msg);
+					}
+				});
 				return;
 			}
-			$(this).attr("data-tooltip", "activateEffect");
-			$(this).on("click", function(e) {
+
+			$(card).attr("data-tooltip", "activateEffect");
+			$(card).on("click", function(e) {
 				_self.disableContinuousCardOnClickListener();
 				_self.disableMainPhaseActions();
 				_self.activateCardEffect(this);
@@ -4245,7 +4444,8 @@ gameController.prototype.canActivateCard = function (card) {
 	});
 
 	if (!cardEffect) {
-		canActivateCard = false;
+		_self.quickGameInfoMsg = "Problem while activating card...";
+		return false;
 	}
 
   if (cardEffect.effect == "copySpecialSpacesUpTo") {
@@ -4279,7 +4479,8 @@ gameController.prototype.canActivateCard = function (card) {
 		}
 
 		if (availableSpaces <= 0) {
-			canActivateCard = false;
+			_self.quickGameInfoMsg = "No special board spaces in range";
+			return false;
 		}
 	} else if (cardEffect.effect == "decreaseChargesContinousCardAll") {
 		var availableCards = false;
@@ -4300,20 +4501,24 @@ gameController.prototype.canActivateCard = function (card) {
 		});
 
 		if (!availableCards) {
-			canActivateCard = false;
+			_self.quickGameInfoMsg = "No available cards to use this effect on";
+			return false;
 		}
 	}
 
 	if (playerStateYou.energyPoints < cardEffect.energyPerUse) {
-		canActivateCard = false;
+		_self.quickGameInfoMsg = "Not enough Energy";
+		return false;
 	}
 
 	if ("activationsCountThisTurn" in cardEffect && cardEffect.activationsCountThisTurn >= cardEffect.maxUsesPerTurn) {
-		canActivateCard = false;
+		_self.quickGameInfoMsg = "Max uses per turn reached";
+		return false;
 	}
 
 	if ("effectChargesCount" in cardEffect && cardEffect.chargesUsedTotal >= cardEffect.effectChargesCount) {
-		canActivateCard = false;
+		_self.quickGameInfoMsg = "No charges";
+		return false;
 	}
 
 	return canActivateCard;
@@ -5557,6 +5762,24 @@ gameController.prototype.isSpecialBoardSpaceNegative = function (boardSpace) {
 	}
 
 	return false;
+};
+
+gameController.prototype.showQuickGameInfo = function (showMsg) {
+	var _self = this;
+
+	_self.quickGameInfoEnabled = false;
+
+	$(_self.GAME_SCREEN_CLASS).append('<div class="anime-cb-quick-game-info">' + showMsg + '</div>');
+	var $lastQuickGameInfoEl = $(_self.QUICK_GAME_INFO_CLASS).last();
+	var $gameInfoElement = $lastQuickGameInfoEl.css("margin-right", "-" + ($lastQuickGameInfoEl.outerWidth() / 2) + "px");
+
+	_self.quickGameInfoRemoveElementTimeout = setTimeout(function() {
+		$lastQuickGameInfoEl.remove();
+	}, 3000);
+
+	_self.quickGameInfoShowSwitchTimeout = setTimeout(function() {
+		_self.quickGameInfoEnabled = true;
+	}, 1000);
 };
 
 var noop = function(){};

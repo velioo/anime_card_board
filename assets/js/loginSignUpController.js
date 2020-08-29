@@ -226,6 +226,7 @@ logInSignUpController.prototype.processSettingsResponse = function(data) {
 	if (data.isSuccessful) {
 		_self.showSettingsSuccess(data);
 		_self.updateSettingsStatus(data.settings);
+		_self.client.cardsInfoController.switchCardsImgs(data.settings.cardAnimations);
 	} else {
 		assert(data.errors.length > 0);
 		_self.renderSettingsErrors(data);
