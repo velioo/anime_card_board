@@ -1229,16 +1229,7 @@ var self = module.exports = {
     let onSameBoardSpace = currBoardIndex == gameState.playersState[ctx.session.userData.userId].lastBoardIndex ? true : false;
 
     if (!onSameBoardSpace) {
-    	let canActivateSpecialBoardSpaces = true;
-  		gameState.playersState[ctx.session.userData.userId].cardsOnFieldArr.forEach(function(card) {
-  			if (card.cardEffect.effect == "nullifyAllSpecialBoardSpaces") {
-  				canActivateSpecialBoardSpaces = false;
-  			}
-  		});
-
- 			if (canActivateSpecialBoardSpaces) {
-    		checkForSpecialBoardSpace(ctx, rowIndex, columnIndex);
- 			}
+    	checkForSpecialBoardSpace(ctx, rowIndex, columnIndex);
     }
 
    	if (checkWin(ctx)) {
@@ -1512,7 +1503,21 @@ let moveBoardBackwards = (ctx, count) => {
 };
 
 let checkForSpecialBoardSpace = (ctx, rowIndex, columnIndex) => {
-	let boardMatrix = ctx.gameplayData.gameState.boardData.boardMatrix;
+	let gameState = ctx.gameplayData.gameState;
+	let boardMatrix = gameState.boardData.boardMatrix;
+
+	let activateNegativeBoardSpace = true;
+	gameState.playersState[ctx.session.userData.userId].cardsOnFieldArr.forEach(function(card) {
+		if (card.cardEffect.effect == "nullifyAllNegativeSpecialBoardSpaces") {
+			if (isSpecialBoardSpaceNegative(boardMatrix[rowIndex][columnIndex])) {
+				activateNegativeBoardSpace = false;
+			}
+		}
+	});
+
+	if (!activateNegativeBoardSpace) {
+		return;
+	}
 
 	var boardFieldsFuncs = [rollAgain, rollAgainBackwards, cardDraw, cardDiscard];
 	var randNum = utils.getRandomInt(0, boardFieldsFuncs.length - 1);

@@ -1264,9 +1264,39 @@ gameController.prototype.canSummonCard = function (card) {
 			_self.quickGameInfoMsg = "You aren't on a special board space";
 			return false;
 		}
+
+		let activateNegativeBoardSpace = true;
+		playerStateYou.cardsOnFieldArr.forEach(function(card, idx) {
+			if (card.cardEffect.effect == "nullifyAllNegativeSpecialBoardSpaces") {
+				if (_self.isSpecialBoardSpaceNegative(boardMatrix[boardPath[currBoardIndexYou][0]][boardPath[currBoardIndexYou][1]])) {
+					activateNegativeBoardSpace = false;
+					_self.quickGameInfoMsg = "You can't apply negative special board spaces's effects to yourself while "
+						+ card.cardName + " is active on your field";
+				}
+			}
+		});
+
+		if (!activateNegativeBoardSpace) {
+			return false;
+		}
 	} else if (cardEffect.effect == "reapplyCurrentSpecialBoardSpaceEnemy") {
 		if (boardMatrix[boardPath[currBoardIndexEnemy][0]][boardPath[currBoardIndexEnemy][1]] <= 1) {
 			_self.quickGameInfoMsg = "Your opponent isn't on a special board space";
+			return false;
+		}
+
+		let activateNegativeBoardSpace = true;
+		playerStateEnemy.cardsOnFieldArr.forEach(function(card, idx) {
+			if (card.cardEffect.effect == "nullifyAllNegativeSpecialBoardSpaces") {
+				if (_self.isSpecialBoardSpaceNegative(boardMatrix[boardPath[currBoardIndexEnemy][0]][boardPath[currBoardIndexEnemy][1]])) {
+					activateNegativeBoardSpace = false;
+					_self.quickGameInfoMsg = "You can't apply negative special board spaces's effects to your opponent while "
+						+ card.cardName + " is active on his field";
+				}
+			}
+		});
+
+		if (!activateNegativeBoardSpace) {
 			return false;
 		}
 	} else if (cardEffect.effect == "reapplyCurrentSpecialBoardSpaceEnemyYou") {
@@ -1274,9 +1304,39 @@ gameController.prototype.canSummonCard = function (card) {
 			_self.quickGameInfoMsg = "Your opponent isn't on a special board space";
 			return false;
 		}
+
+		let activateNegativeBoardSpace = true;
+		playerStateYou.cardsOnFieldArr.forEach(function(card, idx) {
+			if (card.cardEffect.effect == "nullifyAllNegativeSpecialBoardSpaces") {
+				if (_self.isSpecialBoardSpaceNegative(boardMatrix[boardPath[currBoardIndexEnemy][0]][boardPath[currBoardIndexEnemy][1]])) {
+					activateNegativeBoardSpace = false;
+					_self.quickGameInfoMsg = "You can't apply negative special board spaces's effects to yourself while "
+						+ card.cardName + " is active on your field";
+				}
+			}
+		});
+
+		if (!activateNegativeBoardSpace) {
+			return false;
+		}
 	} else if (cardEffect.effect == "reapplyCurrentSpecialBoardSpaceYouEnemy") {
 		if (boardMatrix[boardPath[currBoardIndexYou][0]][boardPath[currBoardIndexYou][1]] <= 1) {
 			_self.quickGameInfoMsg = "You aren't on a special board space";
+			return false;
+		}
+
+		let activateNegativeBoardSpace = true;
+		playerStateEnemy.cardsOnFieldArr.forEach(function(card, idx) {
+			if (card.cardEffect.effect == "nullifyAllNegativeSpecialBoardSpaces") {
+				if (_self.isSpecialBoardSpaceNegative(boardMatrix[boardPath[currBoardIndexYou][0]][boardPath[currBoardIndexYou][1]])) {
+					activateNegativeBoardSpace = false;
+					_self.quickGameInfoMsg = "You can't apply negative special board spaces's effects to your opponent while "
+						+ card.cardName + " is active on his field";
+				}
+			}
+		});
+
+		if (!activateNegativeBoardSpace) {
 			return false;
 		}
 	} else if (cardEffect.effect == "increaseChargesContinousCard") {
