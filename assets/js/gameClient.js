@@ -31,6 +31,7 @@ gameClient.prototype.initGameSocket = function(socket) {
 	socket.on('winGame', this.processWinGame.bind(this));
 	socket.on('activateCardEffect', this.processActivateCardEffect.bind(this));
 	socket.on('finishCardEffectContinuous', this.processFinishCardEffectContinuous.bind(this));
+	socket.on('finishChainEffect', this.processFinishChainEffect.bind(this));
 	socket.on('winGameFormally', this.processWinGameFormally.bind(this));
 };
 
@@ -353,6 +354,26 @@ gameClient.prototype.processFinishCardEffectContinuous = function (_data) {
 	if (_self.generalClient.roomController._roomId && _data.roomId
 		&& _self.generalClient.roomController._roomId == _data.roomId) {
 		_self.gameController.processFinishCardEffectContinuous(_data);
+	}
+};
+
+gameClient.prototype.finishChainEffect = function (_data) {
+	logger.info('finishChainEffect');
+
+	var _self = this;
+
+	_self.socket.emit('finishChainEffect', _data);
+};
+
+gameClient.prototype.processFinishChainEffect = function (_data) {
+	logger.info('processFinishChainEffect');
+	console.log('processFinishChainEffect');
+
+	var _self = this;
+
+	if (_self.generalClient.roomController._roomId && _data.roomId
+		&& _self.generalClient.roomController._roomId == _data.roomId) {
+		_self.gameController.processFinishChainEffect(_data);
 	}
 };
 

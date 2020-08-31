@@ -197,6 +197,7 @@ var startGameResponse = {
 										"type": "array",
 										"items": cardObj,
 									},
+									"canChainCards": { "type": "boolean", },
 								},
 							},
 							"additionalProperties": false,
@@ -269,6 +270,7 @@ var finishCardEffectContinuousResponse = startGameResponse;
 var drawCardFromEnemyHandResponse = startGameResponse;
 var destroyCardFromEnemyFieldResponse = startGameResponse;
 var takeCardFromGraveyardResponse = startGameResponse;
+var finishChainEffectResponse = startGameResponse;
 
 var drawCardYouResponse = {
 	"type": "object",

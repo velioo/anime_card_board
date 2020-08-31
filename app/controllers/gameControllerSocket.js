@@ -164,6 +164,7 @@ const self = module.exports = {
               energyRegen: 0,
               totalTurns: 0,
               totalCardsUsed: 0,
+              chainObj: {},
             },
             [ctx.roomData.player2Id]: {
               name: ctx.roomData.player2Name,
@@ -204,6 +205,7 @@ const self = module.exports = {
               energyRegen: 0,
               totalTurns: 0,
               totalCardsUsed: 0,
+              chainObj: {},
             },
           },
         },
@@ -490,9 +492,10 @@ const self = module.exports = {
 
       assert(playerState.cardsOnFieldArr.length
         < playerState.maxCardsOnField);
-      assert(playerState.cardsSummonConstraints.cardsCanSummonAny);
+      assert(playerState.cardsSummonConstraints.cardsCanSummonAny
+        || (playerState.chainObj && playerState.chainObj.cardsToChain.length > 0));
 
-      playerState.cardsOnFieldArr.forEach(function(card, idx) {
+      playerState.cardsOnFieldArr.forEach(function(card, cardIdx) {
         assert(card.cardId != ctx.data.cardId);
       });
 
@@ -518,6 +521,28 @@ const self = module.exports = {
         default:
           assert(0, "Invalid card rarity: " + cardRarity);
           break;
+      }
+
+      if (playerState.chainObj && playerState.chainObj.cardsToChain
+        && playerState.chainObj.cardsToChain.length > 0) {
+        let canChainCard = false;
+        let cardChainIdx;
+        let cardsToChain = [];
+        playerState.chainObj.cardsToChain.forEach(function(card, cardIdx) {
+          if (card.cardId == cardSelected.cardId && !canChainCard) {
+            canChainCard = true;
+            cardChainIdx = cardIdx;
+            return;
+          }
+
+          if (card.cardCost <= playerState.energyPoints) {
+            cardsToChain.push(card);
+          }
+        });
+
+        assert(canChainCard && cardChainIdx >= 0);
+
+        playerState.chainObj.cardsToChain = cardsToChain;
       }
 
       gameState.cardSummonedIdxInPlayerHand = ctx.data.cardIdx;
@@ -1204,6 +1229,54 @@ const self = module.exports = {
       logger.info('Failed to finish card: %o', err);
     }
   },
+  finishChainEffect: async (ctx, next) => {
+    logger.info('finishChainEffect gameController');
+    ctx.errors = [];
+
+    await pg.pool.query('BEGIN');
+
+    try {
+      ctx.data.roomId = parseInt(ctx.data.roomId);
+
+      const isSchemaValid = ajv.validate(SCHEMAS.FINISH_CHAIN_EFFECT, ctx.data);
+      assert(isSchemaValid);
+
+      assert(ctx.session.userData && ctx.session.userData.userId);
+
+      let queryStatus = await utils.lockRowById({ table: 'games', field: 'room_id', queryArg: ctx.data.roomId });
+
+      assert(queryStatus.rows[0].player1_id == ctx.session.userData.userId
+        || queryStatus.rows[0].player2_id == ctx.session.userData.userId);
+
+      ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
+      ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
+
+      let gameState = ctx.gameplayData.gameState;
+      let playerState = gameState.playersState[ctx.session.userData.userId];
+
+      assert(playerState.chainObj && playerState.chainObj.chainAction);
+
+      await gameCore.chainFinishHook(ctx);
+      await gameCore.activePlayerHook(ctx);
+
+      queryStatus = await utils.updateRowById({ table: 'games', fields: ['data_json', 'room_id'],
+        queryArgs: [JSON.stringify(ctx.gameplayData), ctx.data.roomId] });
+
+      ctx.cardsInHandArrPlayer1 = gameState.playersState[ctx.roomData.player1Id].cardsInHandArr;
+      ctx.cardsInHandArrPlayer2 = gameState.playersState[ctx.roomData.player2Id].cardsInHandArr;
+
+      gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
+      gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
+
+      await pg.pool.query('COMMIT');
+    } catch (err) {
+      ctx.errors.push({ dataPath: '/finish_card', message: 'There was a problem while finishing card effect. Retrying...' });
+
+      await pg.pool.query('ROLLBACK');
+
+      logger.info('Failed to finish card: %o', err);
+    }
+  },
   winGameFormally: async (ctx, next) => {
     logger.info('winGameFormally gameController');
     ctx.errors = [];
@@ -1350,6 +1423,7 @@ let resetTurn = (ctx) => {
         card.cardEffect.activationsCountThisTurn = 0;
       }
     });
+    gameState.playersState[playerId].chainObj = {};
   }
   gameState.playerIdDrawnCard = null;
   gameState.playerIdSummonedCard = null;

@@ -66,4 +66,7 @@ const self = module.exports = {
   finishCardEffectContinuous: async (ctx, next) => {
     await gameController.finishCardEffectContinuous (ctx, next);
   },
+  finishChainEffect: async (ctx, next) => {
+    await gameController.finishChainEffect (ctx, next);
+  },
 };

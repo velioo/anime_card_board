@@ -648,7 +648,7 @@ body {
   margin-left: -940px;
   margin-bottom: -465px;
   display: inline-block;
-  z-index: 2;
+  z-index: 5;
 }
 
 .anime-cb-player-status-wrapper {
@@ -882,6 +882,25 @@ body {
   padding: 10px 30px 0px 30px;
   border-radius: 20px;
   z-index: -1;
+}
+
+.anime-cb-change-chain-decision {
+  position: fixed;
+  top: 50%;
+  right: 50%;
+  color: white;
+  text-align: center;
+  margin-top: -50px;
+  margin-right: -770px;
+  z-index: -1;
+  width: 200px;
+  font-size: 16pt;
+  border-radius: 20px;
+  width: 160px;
+  animation: blink-chain-decision 2s infinite;
+  cursor: pointer;
+  z-index: 10;
+  display: none;
 }
 
 .anime-cb-energy-points-wrapper.player-you {
@@ -4292,5 +4311,44 @@ input:checked + .slider:after
   }
   100% {
     opacity: 1;
+  }
+}
+
+@keyframes border-animation {
+  0% {
+    transition: border-color 0.5s ease-in-out 0.25s;
+    border-color: #FF0000 #fff #fff #fff;
+  }
+  33% {
+    transition: border-color 0.5s ease-in-out 0.25s;
+    border-color: #fff #FF0000 #fff #fff;
+  }
+  66% {
+    transition: border-color 0.5s ease-in-out 0.25s;
+    border-color: #fff #fff #fff #FF0000;
+  }
+}
+
+@-webkit-keyframes blink-chain-decision {
+  0%{
+    background-color: rgba(65, 105, 225, 1);
+  }
+  50% {
+    background-color: rgba(65, 105, 225, 0.5);
+  }
+  100% {
+    background-color: rgba(65, 105, 225, 1);
+  }
+}
+
+@keyframes blink-chain-decision {
+  0%{
+    background-color: rgba(65, 105, 225, 1);
+  }
+  50% {
+    background-color: rgba(65, 105, 225, 0.5);
+  }
+  100% {
+    background-color: rgba(65, 105, 225, 1);
   }
 }

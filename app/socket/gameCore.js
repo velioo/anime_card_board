@@ -427,11 +427,19 @@ var self = module.exports = {
 		  } else if (card.cardEffect.effect == "reapplyCurrentSpecialBoardSpaceEnemyYou") {
 		  	assert(boardMatrix[boardPath[currBoardIndexEnemy][0]][boardPath[currBoardIndexEnemy][1]] > 1);
 		  	checkForSpecialBoardSpace(ctx, boardPath[currBoardIndexEnemy][0], boardPath[currBoardIndexEnemy][1]);
+
+		  	if (playerState.chainObj && playerState.chainObj.cardsToChain) {
+		  		playerState.chainObj.nullifySpecialBoardSpace = true;
+		  	}
 		  } else if (card.cardEffect.effect == "reapplyCurrentSpecialBoardSpaceYouEnemy") {
 		  	assert(boardMatrix[boardPath[currBoardIndexYou][0]][boardPath[currBoardIndexYou][1]] > 1);
 		  	ctx.session.userData.userId = enemyUserId;
 		  	checkForSpecialBoardSpace(ctx, boardPath[currBoardIndexYou][0], boardPath[currBoardIndexYou][1]);
 		  	ctx.session.userData.userId = yourUserId;
+
+		  	if (playerState.chainObj && playerState.chainObj.cardsToChain) {
+		  		playerState.chainObj.nullifySpecialBoardSpace = true;
+		  	}
 		  } else if (card.cardEffect.effect == "increaseChargesContinousCard") {
 		  	assert(playerState.cardsOnFieldArr.length > 0);
 		  } else if (card.cardEffect.effect == "rollDiceForwardBackward") {
@@ -1229,7 +1237,30 @@ var self = module.exports = {
     let onSameBoardSpace = currBoardIndex == gameState.playersState[ctx.session.userData.userId].lastBoardIndex ? true : false;
 
     if (!onSameBoardSpace) {
-    	checkForSpecialBoardSpace(ctx, rowIndex, columnIndex);
+	    let currPlayerId = gameState.currPlayerId;
+	    let playerIdMovedOnBoard = ctx.session.userData.userId;
+
+			let cardsToChain = [];
+			gameState.playersState[currPlayerId].cardsInHandArr.forEach(function(card) {
+				let canChainCard = canChainCardSpecialBoardSpace(ctx, card, currPlayerId, playerIdMovedOnBoard);
+
+				if (canChainCard) {
+					cardsToChain.push(card);
+				}
+			});
+
+			if (cardsToChain.length > 0) {
+				gameState.playersState[currPlayerId].chainObj = {
+					playerIdBoardSpace: ctx.session.userData.userId,
+					rowIndex: rowIndex,
+					columnIndex: columnIndex,
+					cardsToChain: cardsToChain,
+					chainAction: "movedToSpecialBoardSpace",
+					nullifySpecialBoardSpace: false,
+				};
+			} else {
+    		checkForSpecialBoardSpace(ctx, rowIndex, columnIndex);
+			}
     }
 
    	if (checkWin(ctx)) {
@@ -1283,14 +1314,16 @@ var self = module.exports = {
     let currPlayerId = gameState.currPlayerId;
     let notCurrPlayerId = currPlayerId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
 
-		if (gameState.playersState[notCurrPlayerId].canRollDiceBoardCount > 0
+		if ((gameState.playersState[notCurrPlayerId].canRollDiceBoardCount > 0
 			|| gameState.playersState[notCurrPlayerId].cardsToDraw > 0
 			|| gameState.playersState[notCurrPlayerId].cardsToDiscard > 0
 			|| gameState.playersState[notCurrPlayerId].cardsToDrawFromEnemyHand > 0
 			|| gameState.playersState[notCurrPlayerId].cardsToDestroyFromEnemyField > 0
 			|| gameState.playersState[notCurrPlayerId].cardsToTakeFromYourGraveyard > 0
 			|| gameState.playersState[notCurrPlayerId].cardsToTakeFromEnemyGraveyard > 0
-			|| gameState.playersState[notCurrPlayerId].cardsSummonConstraints.cardsCanSummonAny) {
+			|| gameState.playersState[notCurrPlayerId].cardsSummonConstraints.cardsCanSummonAny)
+			&& !(gameState.playersState[currPlayerId].chainObj
+				&& gameState.playersState[currPlayerId].chainObj.chainAction)) {
 			ctx.gameplayData.gameState.activePlayerId = notCurrPlayerId;
 			ctx.sessions[notCurrPlayerId].pausedTimer = false;
 			ctx.sessions[currPlayerId].pausedTimer = true;
@@ -1463,6 +1496,46 @@ var self = module.exports = {
 	    cardAttributes: cardRow.attributes,
 	    cardSounds: JSON.parse(cardRow.sounds_json),
 	  });
+	},
+	chainFinishHook: async (ctx) => {
+		let gameState = ctx.gameplayData.gameState;
+		let boardPath = gameState.boardData.boardDataPlayers.boardPath;
+		let boardMatrix = gameState.boardData.boardMatrix;
+		let playerState = gameState.playersState[ctx.session.userData.userId];
+		let yourUserId = ctx.session.userData.userId;
+		let enemyUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
+		let playerStateEnemy = gameState.playersState[enemyUserId];
+		let chainObj = playerState.chainObj;
+
+		ctx.session.userData.userId = chainObj.playerIdBoardSpace;
+
+		if (chainObj.chainAction == "movedToSpecialBoardSpace") {
+			if (!chainObj.nullifySpecialBoardSpace) {
+				assert((chainObj.rowIndex >= 0) && (chainObj.columnIndex >= 0)
+					&& (chainObj.rowIndex <= (boardMatrix.length - 1))
+					&& (chainObj.columnIndex <= (boardMatrix[0].length - 1)));
+				checkForSpecialBoardSpace(ctx, chainObj.rowIndex, chainObj.columnIndex);
+			}
+		}
+
+		ctx.session.userData.userId = yourUserId;
+		playerState.chainObj = {};
+
+		playerState.cardsInHandArr.forEach(function(card) {
+    	updateCardEffectValueStatus(card, playerState);
+		});
+
+		playerStateEnemy.cardsInHandArr.forEach(function(card) {
+    	updateCardEffectValueStatus(card, playerStateEnemy);
+		});
+
+		playerState.cardsOnFieldArr.forEach(function(card) {
+    	updateCardEffectValueStatus(card, playerState);
+		});
+
+		playerStateEnemy.cardsOnFieldArr.forEach(function(card) {
+    	updateCardEffectValueStatus(card, playerStateEnemy);
+		});
 	},
 };
 
@@ -1875,6 +1948,58 @@ let isSpecialBoardSpaceNegative = (boardSpace) => {
 
 	return false;
 };
+
+let canChainCardSpecialBoardSpace = (ctx, card, currPlayerId, playerIdMovedOnBoard) => {
+	let gameState = ctx.gameplayData.gameState;
+	let boardMatrix = gameState.boardData.boardMatrix;
+	let boardPath = gameState.boardData.boardDataPlayers.boardPath;
+	let currBoardIndex = gameState.playersState[playerIdMovedOnBoard].currBoardIndex;
+  let rowIndex = boardPath[currBoardIndex][0];
+  let columnIndex = boardPath[currBoardIndex][1];
+  let notCurrPlayerId = currPlayerId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
+
+  let canChainCard = false;
+  if ((boardMatrix[rowIndex][columnIndex] <= 1)
+  	|| (card.cardCost > gameState.playersState[currPlayerId].energyPoints)
+  	|| ((gameState.playersState[currPlayerId].cardsOnFieldArr.length + 1)
+			> gameState.playersState[currPlayerId].maxCardsOnField)) {
+  	return false;
+  }
+
+	gameState.playersState[notCurrPlayerId].cardsOnFieldArr.forEach(function(card, idx) {
+		if ((card.cardEffect.effect == "nullifyCardsFieldSummon") && (card.cardAttributes.includes("field"))) {
+			canChainCard = false;
+		}
+	});
+
+  if (currPlayerId == playerIdMovedOnBoard) {
+  	if ((card.cardEffect.effect == "reapplyCurrentSpecialBoardSpaceYou")
+  		&& !((gameState.playersState[currPlayerId].cardsOnFieldArr
+				.find(card => card.cardEffect.effect == "nullifyAllNegativeSpecialBoardSpaces"))
+					&& (isSpecialBoardSpaceNegative(boardMatrix[rowIndex][columnIndex])))) {
+  		canChainCard = true;
+  	} else if ((card.cardEffect.effect == "reapplyCurrentSpecialBoardSpaceYouEnemy")
+			&& !((gameState.playersState[notCurrPlayerId].cardsOnFieldArr
+				.find(card => card.cardEffect.effect == "nullifyAllNegativeSpecialBoardSpaces"))
+					&& (isSpecialBoardSpaceNegative(boardMatrix[rowIndex][columnIndex])))) {
+  		canChainCard = true;
+  	}
+  } else {
+  	if ((card.cardEffect.effect == "reapplyCurrentSpecialBoardSpaceEnemy")
+  		&& !((gameState.playersState[notCurrPlayerId].cardsOnFieldArr
+				.find(card => card.cardEffect.effect == "nullifyAllNegativeSpecialBoardSpaces"))
+				&& (isSpecialBoardSpaceNegative(boardMatrix[rowIndex][columnIndex])))) {
+  		canChainCard = true;
+  	} else if ((card.cardEffect.effect == "reapplyCurrentSpecialBoardSpaceEnemyYou")
+			&& !((gameState.playersState[currPlayerId].cardsOnFieldArr
+				.find(card => card.cardEffect.effect == "nullifyAllNegativeSpecialBoardSpaces"))
+					&& (isSpecialBoardSpaceNegative(boardMatrix[rowIndex][columnIndex])))) {
+  		canChainCard = true;
+  	}
+  }
+
+  return canChainCard;
+}
 
 let calculateXp = async (ctx, userId, playerIdWon) => {
 	let gameState = ctx.gameplayData.gameState;
