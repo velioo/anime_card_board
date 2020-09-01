@@ -770,7 +770,7 @@ gameController.prototype.processDrawCard = function (data) {
 				_self.hideEventsInfo(null, 0);
 			} else if (_self._gameplayData.gameState.playersState[_self._enemyUserId].cardsToDraw > 0
 				&& _self._gameplayData.gameState.nextPhase != _self.TURN_PHASES.DRAW) {
-				var eventInfoText =  _self._enemyName + " draws "
+				var eventInfoText = "Your opponent draws "
 					+ _self._gameplayData.gameState.playersState[_self._enemyUserId].cardsToDraw;
 				if (_self._gameplayData.gameState.playersState[_self._enemyUserId].cardsToDraw > 1) {
 					eventInfoText += " cards from the deck";
@@ -1928,7 +1928,7 @@ gameController.prototype.enableMainPhaseActions = function () {
 
 	var playerStateYou = _self._gameplayData.gameState.playersState[_self._yourUserId];
 
-	if (playerStateYou.chainObj && playerStateYou.chainObj.chainAction) {
+	if (playerStateYou.chainObj && playerStateYou.chainObj.chainTrigger) {
 		if (_self._postDestroyCard) {
 			var card = _self._postDestroyCard;
 			_self._postDestroyCard = null;
@@ -2309,6 +2309,14 @@ gameController.prototype.performCardEffectInstantYou = function (card) {
 			if (card.cardEffect.isFinished) {
 				_self._postDestroyCard = card;
 
+				if (card.cardEffect.successfullyGuessed) {
+					_self.showEventsInfo("Successfully Guessed !");
+				} else {
+					_self.showEventsInfo("Failed to Guess...");
+				}
+
+				_self.hideEventsInfo(null, 1000);
+
 				if (card.cardEffect.moveSpaces) {
 					_self.moveYourCharacter(card.cardEffect.moveSpaces,
 						_self.enableMainPhaseActions.bind(_self));
@@ -2538,13 +2546,21 @@ gameController.prototype.setCardSelectFromFieldListener = function (card, player
 				}
 			});
 
+			if (!selectable) {
+				_self.quickGameInfoMsg = "Cannot target cards without any of the following attributes: " +
+					(allowedAttributes.join(", "));
+			}
+
 			if ($(cardOnField).hasClass("player-you") && $(cardOnField).data("cardId") == card.cardId) {
 				selectable = false;
+				_self.quickGameInfoMsg = "Cannot target the same card";
 			}
 
 			if (playerSelectorClass == _self.PLAYER_ENEMY_CLASS
 				&& availableTargetsEnemy.length > 0) {
 				selectable = false;
+				_self.quickGameInfoMsg = "Can target only cards with 'Taunt' effect: "
+  				+ (availableTargetsEnemy.map(a => a.cardName)).join(", ");
 		    availableTargetsEnemy.forEach(function(cardTarget) {
 		      if ($(cardOnField).data("cardId") == cardTarget.cardId) {
 		        selectable = true;
@@ -2553,6 +2569,10 @@ gameController.prototype.setCardSelectFromFieldListener = function (card, player
 		  }
 
 			if (!selectable) {
+				var msg = _self.quickGameInfoMsg;
+				$(cardOnField).on("click", function(e) {
+					_self.showQuickGameInfo(msg);
+				});
 				return;
 			}
 
@@ -2617,7 +2637,7 @@ gameController.prototype.setRollDiceCardListener = function (card) {
 gameController.prototype.setRollDiceCardListenerEnemy = function (card) {
 	var _self = this;
 
-	var eventInfoText = _self._enemyName + " rolls dice for " + card.cardName;
+	var eventInfoText = "Your opponent rolls dice for " + card.cardName;
 	_self.showEventsInfo(eventInfoText);
 };
 
@@ -3572,7 +3592,7 @@ gameController.prototype.enableRollPhaseActions = function () {
 
 	var playerStateYou = _self._gameplayData.gameState.playersState[_self._yourUserId];
 
-	if (playerStateYou.chainObj && playerStateYou.chainObj.chainAction) {
+	if (playerStateYou.chainObj && playerStateYou.chainObj.chainTrigger) {
 		if (_self._postDestroyCard) {
 			var card = _self._postDestroyCard;
 			_self._postDestroyCard = null;
@@ -3633,7 +3653,7 @@ gameController.prototype.waitForEnemyActions = function () {
 	var playerStateEnemy = _self._gameplayData.gameState.playersState[_self._enemyUserId];
 	$(_self.BOARD_COLUMN_CLASS).removeClass("selectable-enemy");
 
-	if (playerStateEnemy.chainObj && playerStateEnemy.chainObj.chainAction) {
+	if (playerStateEnemy.chainObj && playerStateEnemy.chainObj.chainTrigger) {
 		_self.showEventsInfo("Waiting for opponent's chain decision...");
 		if (_self._postDestroyCard) {
 			var card = _self._postDestroyCard;
@@ -3642,7 +3662,7 @@ gameController.prototype.waitForEnemyActions = function () {
 			return;
 		}
 	} else if (playerStateEnemy.cardsToDraw > 0) {
-		var eventInfoText =  _self._enemyName + " draws " + playerStateEnemy.cardsToDraw;
+		var eventInfoText = "Your opponent draws " + playerStateEnemy.cardsToDraw;
 		if (playerStateEnemy.cardsToDraw > 1) {
 			eventInfoText += " cards from the deck";
 		} else {
@@ -3664,7 +3684,7 @@ gameController.prototype.waitForEnemyActions = function () {
 				.bind(_self, _self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self)));
 		}
 	} else if (playerStateEnemy.cardsToDrawFromEnemyHand > 0) {
-		var eventInfoText = _self._enemyName + " draws " + playerStateEnemy.cardsToDrawFromEnemyHand;
+		var eventInfoText = "Your opponent draws " + playerStateEnemy.cardsToDrawFromEnemyHand;
 		if (playerStateEnemy.cardsToDrawFromEnemyHand > 1) {
 			eventInfoText += " cards from your hand";
 		} else {
@@ -3673,7 +3693,7 @@ gameController.prototype.waitForEnemyActions = function () {
 
 		_self.showEventsInfo(eventInfoText);
 	} else if (playerStateEnemy.cardsToDiscard > 0) {
-		var eventInfoText = _self._enemyName + " must discard " + playerStateEnemy.cardsToDiscard;
+		var eventInfoText = "Your opponent must discard " + playerStateEnemy.cardsToDiscard;
 		if (playerStateEnemy.cardsToDiscard > 1) {
 			eventInfoText += " cards from his hand";
 		} else {
@@ -3681,7 +3701,7 @@ gameController.prototype.waitForEnemyActions = function () {
 		}
 		_self.showEventsInfo(eventInfoText);
 	} else if (playerStateEnemy.cardsToTakeFromYourGraveyard > 0) {
-		var eventInfoText = _self._enemyName + " takes " + playerStateEnemy.cardsToTakeFromYourGraveyard;
+		var eventInfoText = "Your opponent takes " + playerStateEnemy.cardsToTakeFromYourGraveyard;
 		if (playerStateEnemy.cardsToTakeFromYourGraveyard > 1) {
 			eventInfoText += " cards from his graveyard";
 		} else {
@@ -3690,7 +3710,7 @@ gameController.prototype.waitForEnemyActions = function () {
 
 		_self.showEventsInfo(eventInfoText);
 	} else if (playerStateEnemy.cardsToTakeFromEnemyGraveyard > 0) {
-		var eventInfoText = _self._enemyName + " takes " + playerStateEnemy.cardsToTakeFromEnemyGraveyard;
+		var eventInfoText = "Your opponent takes " + playerStateEnemy.cardsToTakeFromEnemyGraveyard;
 		if (playerStateEnemy.cardsToTakeFromEnemyGraveyard > 1) {
 			eventInfoText += " cards from your graveyard";
 		} else {
@@ -3699,7 +3719,7 @@ gameController.prototype.waitForEnemyActions = function () {
 
 		_self.showEventsInfo(eventInfoText);
 	} else if (playerStateEnemy.cardsToDestroyFromEnemyField > 0) {
-		var eventInfoText = _self._enemyName + " destroys " + playerStateEnemy.cardsToDestroyFromEnemyField;
+		var eventInfoText = "Your opponent destroys " + playerStateEnemy.cardsToDestroyFromEnemyField;
 		if (playerStateEnemy.cardsToDestroyFromEnemyField > 1) {
 			eventInfoText += " cards from your field";
 		} else {
@@ -3712,9 +3732,9 @@ gameController.prototype.waitForEnemyActions = function () {
 
 		var eventInfoText = "";
 		if (playerStateEnemy.rollAgain) {
-			eventInfoText += _self._enemyName + " rolls the die again";
+			eventInfoText += "Your opponent rolls the die again";
 		} else {
-			eventInfoText += _self._enemyName + " rolls the die";
+			eventInfoText += "Your opponent rolls the die";
 		}
 
 		if (!playerStateEnemy.moveBackwardsOnNextRoll) {
@@ -4099,8 +4119,14 @@ gameController.prototype.fillInfoCard = function (card) {
 
   cardHtml = cardCost ? (cardHtml + '] &nbsp;') : cardHtml;
 
-  if (cardEffect && cardEffect.continuous) {
-  	cardHtml += '<img class="anime-cb-card-info-text-img" src="/imgs/continuous.png" title="Continuous card">, ';
+  if (cardEffect) {
+  	if (cardEffect.continuous) {
+  		cardHtml += '<img class="anime-cb-card-info-text-img" src="/imgs/continuous.png" title="Continuous card">, ';
+  	}
+
+  	if (cardEffect.chainTrigger) {
+  		cardHtml += '<img class="anime-cb-card-info-text-img" src="/imgs/chainable.png" title="Chainable card">, ';
+  	}
   }
 
   if (cardAttributes) {

@@ -97,6 +97,7 @@ cardsInfoController.prototype.filterCards = function () {
 		var cardName = $(this).data("cardName").toLowerCase();
 		var cardAttributes = $(this).data("cardAttributes");
 		var isContinous = $(this).data("cardEffect").continuous;
+		var isChainable = $(this).data("cardEffect").chainTrigger;
 
 		var shouldHide = false;
 		if (filterCardNameValue && (!cardName.match(filterCardNameValue))) {
@@ -119,6 +120,10 @@ cardsInfoController.prototype.filterCards = function () {
 					}
 				} else if ($(this).val() == "instant") {
 					if (isContinous) {
+						shouldHide = true;
+					}
+				} else if ($(this).val() == "chainable") {
+					if (!isChainable) {
 						shouldHide = true;
 					}
 				}
@@ -172,8 +177,14 @@ cardsInfoController.prototype.fillInfoCard = function (card) {
 
   cardHtml = cardCost ? (cardHtml + '] &nbsp;') : cardHtml;
 
-  if (cardEffect && cardEffect.continuous) {
-  	cardHtml += '<img class="anime-cb-card-info-text-img" src="/imgs/continuous.png" title="Continuous card">, ';
+  if (cardEffect) {
+  	if (cardEffect.continuous) {
+  		cardHtml += '<img class="anime-cb-card-info-text-img" src="/imgs/continuous.png" title="Continuous card">, ';
+  	}
+
+  	if (cardEffect.chainTrigger) {
+  		cardHtml += '<img class="anime-cb-card-info-text-img" src="/imgs/chainable.png" title="Chainable card">, ';
+  	}
   }
 
   if (cardEffect) {

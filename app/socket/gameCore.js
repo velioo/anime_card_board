@@ -8,8 +8,231 @@ const {
   CARD_RARITIES,
   BOARD_FIELDS,
 } = require('../constants/constants');
+const SCHEMAS = require('../schemas/schemas');
+const Ajv = require('ajv');
+const ajv = new Ajv({ allErrors: true, $data: true, jsonPointers: true });
+const ajvErrors = require('ajv-errors')(ajv);
 
 var self = module.exports = {
+	initValidateData: async (ctx, command) => {
+    assert(ctx.session.userData && ctx.session.userData.userId);
+   	ctx.data.roomId = parseInt(ctx.data.roomId);
+   	ctx.data.cardId = parseInt(ctx.data.cardId);
+    ctx.data.cardIdx = parseInt(ctx.data.cardIdx);
+    ctx.data.playerIdGraveyard = parseInt(ctx.data.playerIdGraveyard);
+
+   	const isSchemaValid = ajv.validate(SCHEMAS[command], ctx.data);
+   	assert(isSchemaValid);
+
+    let queryStatus = await utils.lockRowById({ table: 'games', field: 'room_id', queryArg: ctx.data.roomId });
+
+    assert(queryStatus.rows[0].player1_id == ctx.session.userData.userId
+      || queryStatus.rows[0].player2_id == ctx.session.userData.userId);
+
+    ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
+    ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
+    ctx.cardsInDeckArr = JSON.parse(queryStatus.rows[0].deck_json);
+
+    let gameState = ctx.gameplayData.gameState;
+    let playerState = gameState.playersState[ctx.session.userData.userId];
+    let enemyUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
+    let playerStateEnemy = gameState.playersState[enemyUserId];
+
+    switch(command) {
+    	case "DRAW_CARD":
+    		assert(playerState.cardsToDraw > 0);
+    		assert(!playerState.chainObj.chainTrigger);
+    		break;
+    	case "DRAW_PHASE":
+    		assert(gameState.currPlayerId == ctx.session.userData.userId);
+      	assert(gameState.nextPhase == TURN_PHASES.DRAW);
+    		assert(!playerState.chainObj.chainTrigger);
+    		break;
+    	case "STANDBY_PHASE":
+	      assert(gameState.currPlayerId == ctx.session.userData.userId);
+	      assert(gameState.nextPhase == TURN_PHASES.STANDBY);
+    		assert(!playerState.chainObj.chainTrigger);
+    		break;
+    	case "MAIN_PHASE":
+	      assert(gameState.currPlayerId == ctx.session.userData.userId);
+	      assert(gameState.nextPhase == TURN_PHASES.MAIN);
+    		assert(!playerState.chainObj.chainTrigger);
+    		break;
+    	case "SUMMON_CARD":
+    		{
+		      assert(playerState.cardsOnFieldArr.length
+		        < playerState.maxCardsOnField);
+		      assert(playerState.cardsSummonConstraints.cardsCanSummonAny
+		        || (playerState.chainObj && playerState.chainObj.cardsToChain.length > 0));
+
+		      playerState.cardsOnFieldArr.forEach(function(card, cardIdx) {
+		        assert(card.cardId != ctx.data.cardId);
+		      });
+
+		      let cardSelected = playerState.cardsInHandArr[ctx.data.cardIdx];
+		      assert(cardSelected && (cardSelected.cardId == ctx.data.cardId));
+
+		      assert(playerState.energyPoints >= cardSelected.cardCost);
+		      playerState.energyPoints -= cardSelected.cardCost;
+
+		      switch(cardSelected.cardRarity) {
+		        case CARD_RARITIES.COMMON:
+		          assert(playerState.cardsSummonConstraints.cardsCanSummonCommon);
+		          playerState.cardsSummonedThisTurnCount.common++;
+		          break;
+		        case CARD_RARITIES.RARE:
+		          assert(playerState.cardsSummonConstraints.cardsCanSummonRare);
+		          playerState.cardsSummonedThisTurnCount.rare++;
+		          break;
+		        case CARD_RARITIES.EPIC:
+		          assert(playerState.cardsSummonConstraints.cardsCanSummonEpic);
+		          playerState.cardsSummonedThisTurnCount.epic++;
+		          break;
+		        default:
+		          assert(0, "Invalid card rarity: " + cardRarity);
+		          break;
+		      }
+
+		      if (playerState.chainObj && playerState.chainObj.cardsToChain
+		        && playerState.chainObj.cardsToChain.length > 0) {
+		        let canChainCard = false;
+		        let cardChainIdx;
+		        let cardsToChain = [];
+		        playerState.chainObj.cardsToChain.forEach(function(card, cardIdx) {
+		          if (card.cardId == cardSelected.cardId && !canChainCard) {
+		            canChainCard = true;
+		            cardChainIdx = cardIdx;
+		            return;
+		          }
+
+		          if (card.cardCost <= playerState.energyPoints) {
+		            cardsToChain.push(card);
+		          }
+		        });
+
+		        assert(canChainCard && cardChainIdx >= 0);
+
+		        playerState.chainObj.cardsToChain = cardsToChain;
+		      }
+		    }
+	    	break;
+	  	case "DRAW_CARD_FROM_ENEMY_HAND":
+	      assert(playerState.cardsToDrawFromEnemyHand > 0);
+	      assert((ctx.data.cardIdx >= 0) && (ctx.data.cardIdx < playerStateEnemy.cardsInHandArr.length));
+	      assert(!playerState.chainObj.chainTrigger);
+    		break;
+    	case "TAKE_CARD_FROM_GRAVEYARD":
+	      assert(ctx.data.cardIdx >= 0);
+	      assert(!playerState.chainObj.chainTrigger);
+
+	      if (ctx.data.playerIdGraveyard == ctx.session.userData.userId) {
+	        assert(playerState.cardsToTakeFromYourGraveyard > 0);
+	        assert(playerState.cardsInGraveyardArr.length > 0);
+	        assert(ctx.data.cardIdx < playerState.cardsInGraveyardArr.length);
+	      } else if (ctx.data.playerIdGraveyard == enemyUserId) {
+	        assert(playerState.cardsToTakeFromEnemyGraveyard > 0);
+	        assert(playerStateEnemy.cardsInGraveyardArr.length > 0);
+	        assert(ctx.data.cardIdx < playerStateEnemy.cardsInGraveyardArr.length);
+	      } else {
+	        assert(0);
+	      }
+    		break;
+    	case "DESTROY_CARD_FROM_ENEMY_FIELD":
+	      assert(playerState.cardsToDestroyFromEnemyField > 0);
+	      assert(playerStateEnemy.cardsOnFieldArr.length > 0);
+	      assert(!playerState.chainObj.chainTrigger);
+
+	      await self.preDestroyCardFromEnemyFieldHook(ctx);
+
+	      for (let i = 0; i < playerStateEnemy.cardsOnFieldArr.length; i++) {
+	        if (playerStateEnemy.cardsOnFieldArr[i].cardId == ctx.data.cardId) {
+	          ctx.cardToDestroy = playerStateEnemy.cardsOnFieldArr[i];
+	          ctx.cardIdx = i;
+	          break;
+	        }
+	      }
+
+	      assert(ctx.cardToDestroy && ctx.cardIdx >= 0);
+    		break;
+    	case "ROLL_PHASE":
+	      assert(gameState.currPlayerId == ctx.session.userData.userId);
+	      assert(gameState.nextPhase == TURN_PHASES.ROLL);
+	      assert(!playerState.chainObj.chainTrigger);
+    		break;
+    	case "ROLL_DICE_BOARD":
+      	assert(playerState.canRollDiceBoardCount > 0);
+	      assert(!playerState.chainObj.chainTrigger);
+
+	      if (gameState.nextPhase == TURN_PHASES.ROLL) {
+	        assert(playerState.canRollDiceBoardInRollPhase);
+	      }
+    		break;
+    	case "END_PHASE":
+	      assert(gameState.currPlayerId == ctx.session.userData.userId);
+	      assert(gameState.nextPhase == TURN_PHASES.END);
+	      assert(!playerState.chainObj.chainTrigger);
+	      break;
+	   	case "DISCARD_CARD":
+	   	  assert(playerState.cardsToDiscard > 0);
+	      assert(!playerState.chainObj.chainTrigger);
+
+	     	{
+		      let cardSelected = playerState.cardsInHandArr[ctx.data.cardIdx];
+		      assert(cardSelected && cardSelected.cardId == ctx.data.cardId);
+		    }
+	      break;
+	   	case "FINISH_CARD":
+	   	  assert(ctx.data.finishData);
+	      assert(!playerState.chainObj.chainTrigger);
+
+	      for (let i = 0; i < playerState.cardsOnFieldArr.length; i++) {
+	        if (playerState.cardsOnFieldArr[i].cardId == ctx.data.cardId) {
+	          ctx.cardFinish = playerState.cardsOnFieldArr[i];
+	          ctx.cardIdx = i;
+	        }
+	      }
+
+	      assert(ctx.cardFinish);
+	      assert(ctx.cardIdx >= 0);
+	      assert((ctx.cardFinish.cardId == ctx.data.cardId) && (!ctx.cardFinish.cardEffect.isFinished));
+	      break;
+	   	case "ACTIVATE_CARD_EFFECT":
+	      assert(gameState.currPlayerId == ctx.session.userData.userId);
+	      assert(gameState.nextPhase == TURN_PHASES.ROLL);
+	      assert(!playerState.chainObj.chainTrigger);
+
+	      for (let i = 0; i < playerState.cardsOnFieldArr.length; i++) {
+	        if (playerState.cardsOnFieldArr[i].cardId == ctx.data.cardId) {
+	          ctx.cardActivated = playerState.cardsOnFieldArr[i];
+	          break;
+	        }
+	      }
+
+	      assert(ctx.cardActivated);
+	      assert((ctx.cardActivated.cardId == ctx.data.cardId) && (!ctx.cardActivated.cardEffect.isFinished));
+	      break;
+	   	case "FINISH_CARD_CONTINUOUS":
+	   		assert(ctx.data.finishData);
+	      assert(!playerState.chainObj.chainTrigger);
+
+	      for (let i = 0; i < playerState.cardsOnFieldArr.length; i++) {
+	        if (playerState.cardsOnFieldArr[i].cardId == ctx.data.cardId) {
+	          ctx.cardFinishContinuous = playerState.cardsOnFieldArr[i];
+	          ctx.cardIdx = i;
+	        }
+	      }
+
+	      assert(ctx.cardFinishContinuous);
+	      assert(ctx.cardIdx >= 0);
+	      assert((ctx.cardFinishContinuous.cardId == ctx.data.cardId) && (!ctx.cardFinishContinuous.cardEffect.isFinished));
+	      break;
+	   	case "FINISH_CHAIN_EFFECT":
+	   		assert(playerState.chainObj && playerState.chainObj.chainTrigger);
+	      break;
+    	default:
+    		assert(0);
+    }
+	},
 	drawPhaseHook: async (ctx) => {
 		let gameState = ctx.gameplayData.gameState;
 		let playerState = gameState.playersState[ctx.session.userData.userId];
@@ -716,6 +939,7 @@ var self = module.exports = {
 			assert(finishData.chosenAttribute);
 
 			let lastCardDrawn = playerState.cardsInHandArr[playerState.cardsInHandArr.length - 1];
+			card.cardEffect.successfullyGuessed = false;
 
 			if (finishData.chosenAttribute == "field") {
 				if (lastCardDrawn.cardAttributes.includes("field")) {
@@ -723,6 +947,7 @@ var self = module.exports = {
 	  				userId: yourUserId, moveBackwardsOnNextRoll: false, moveIfCan: true });
 
 					card.cardEffect.moveSpaces = card.cardEffect.effectValue1_MoveSpacesForward;
+					card.cardEffect.successfullyGuessed = true;
 				} else {
 					await self.rollDiceBoardHook(ctx, { rollDiceValue: card.cardEffect.effectValue1_MoveSpacesBackward,
 	  				userId: yourUserId, moveBackwardsOnNextRoll: true, moveIfCan: true });
@@ -735,6 +960,7 @@ var self = module.exports = {
 					playerState.cardsToDraw += card.cardEffect.effectValue2_DrawCardsFromDeck;
 
 					card.cardEffect.cardsToDraw = true;
+					card.cardEffect.successfullyGuessed = true;
 				} else {
 					if ((playerState.cardsInHand - playerState.cardsToDiscard - card.cardEffect.effectValue2_DiscardCards) >= 0) {
 						playerState.cardsToDiscard += card.cardEffect.effectValue2_DiscardCards;
@@ -754,6 +980,7 @@ var self = module.exports = {
 					}
 
 					card.cardEffect.gainEnergy = true;
+					card.cardEffect.successfullyGuessed = true;
 				} else {
 					if ((playerState.energyPoints - card.cardEffect.effectValue3_EnergyLose) < 0) {
 						playerState.energyPoints = 0;
@@ -1255,7 +1482,7 @@ var self = module.exports = {
 					rowIndex: rowIndex,
 					columnIndex: columnIndex,
 					cardsToChain: cardsToChain,
-					chainAction: "movedToSpecialBoardSpace",
+					chainTrigger: "movedToSpecialBoardSpace",
 					nullifySpecialBoardSpace: false,
 				};
 			} else {
@@ -1323,7 +1550,7 @@ var self = module.exports = {
 			|| gameState.playersState[notCurrPlayerId].cardsToTakeFromEnemyGraveyard > 0
 			|| gameState.playersState[notCurrPlayerId].cardsSummonConstraints.cardsCanSummonAny)
 			&& !(gameState.playersState[currPlayerId].chainObj
-				&& gameState.playersState[currPlayerId].chainObj.chainAction)) {
+				&& gameState.playersState[currPlayerId].chainObj.chainTrigger)) {
 			ctx.gameplayData.gameState.activePlayerId = notCurrPlayerId;
 			ctx.sessions[notCurrPlayerId].pausedTimer = false;
 			ctx.sessions[currPlayerId].pausedTimer = true;
@@ -1509,7 +1736,7 @@ var self = module.exports = {
 
 		ctx.session.userData.userId = chainObj.playerIdBoardSpace;
 
-		if (chainObj.chainAction == "movedToSpecialBoardSpace") {
+		if (chainObj.chainTrigger == "movedToSpecialBoardSpace") {
 			if (!chainObj.nullifySpecialBoardSpace) {
 				assert((chainObj.rowIndex >= 0) && (chainObj.columnIndex >= 0)
 					&& (chainObj.rowIndex <= (boardMatrix.length - 1))
@@ -1962,7 +2189,9 @@ let canChainCardSpecialBoardSpace = (ctx, card, currPlayerId, playerIdMovedOnBoa
   if ((boardMatrix[rowIndex][columnIndex] <= 1)
   	|| (card.cardCost > gameState.playersState[currPlayerId].energyPoints)
   	|| ((gameState.playersState[currPlayerId].cardsOnFieldArr.length + 1)
-			> gameState.playersState[currPlayerId].maxCardsOnField)) {
+			> gameState.playersState[currPlayerId].maxCardsOnField)
+  	|| !("chainTrigger" in card.cardEffect)
+  	|| (card.cardEffect.chainTrigger != "movedToSpecialBoardSpace")) {
   	return false;
   }
 
