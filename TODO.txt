@@ -1,8 +1,4 @@
-1. Add leveling system. Each matchmade game you play must give you a certain amount of XP, if you win, you get more XP.
-The XP you gain should mainly depend on the total time spent in-game and win/lose. Other factors could be:
-- was the other player higher lvl than you, if yes then gain more XP than usual.
-
-2. Character abilities.
+1. Character abilities.
 There must be a number of characters from which you can choose who give you some kind of passive bonus in-game, example:
 - draw 2 cards on first draw phase
 - roll dice 2 times on first roll phase

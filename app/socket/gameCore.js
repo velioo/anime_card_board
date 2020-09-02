@@ -266,21 +266,7 @@ var self = module.exports = {
 		  }
 		}
 
-		playerState.cardsInHandArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerState);
-		});
-
-		playerStateEnemy.cardsInHandArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerStateEnemy);
-		});
-
-		playerState.cardsOnFieldArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerState);
-		});
-
-		playerStateEnemy.cardsOnFieldArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerStateEnemy);
-		});
+		updateCardsStatus(ctx);
 	},
 	mainPhaseHook: async (ctx) => {
 		let gameState = ctx.gameplayData.gameState;
@@ -314,21 +300,7 @@ var self = module.exports = {
 
 		playerState.energyRegen = playerState.energyPoints - lastEnergy;
 
-		playerState.cardsInHandArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerState);
-		});
-
-		playerStateEnemy.cardsInHandArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerStateEnemy);
-		});
-
-		playerState.cardsOnFieldArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerState);
-		});
-
-		playerStateEnemy.cardsOnFieldArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerStateEnemy);
-		});
+		updateCardsStatus(ctx);
 	},
 	rollPhaseHook: async(ctx) => {
 	let gameState = ctx.gameplayData.gameState;
@@ -363,21 +335,7 @@ var self = module.exports = {
 			playerState.cardsToDiscard += (playerState.cardsInHand - playerState.maxCardsInHand);
 		}
 
-		playerState.cardsInHandArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerState);
-		});
-
-		playerStateEnemy.cardsInHandArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerStateEnemy);
-		});
-
-		playerState.cardsOnFieldArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerState);
-		});
-
-		playerStateEnemy.cardsOnFieldArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerStateEnemy);
-		});
+		updateCardsStatus(ctx);
 	},
 	endPhaseHook: async (ctx) => {
 		let gameState = ctx.gameplayData.gameState;
@@ -406,21 +364,7 @@ var self = module.exports = {
     assert(playerState.cardsToTakeFromYourGraveyard == 0);
     assert(playerState.cardsToTakeFromEnemyGraveyard == 0);
 
-    playerState.cardsInHandArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerState);
-		});
-
-		playerStateEnemy.cardsInHandArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerStateEnemy);
-		});
-
-		playerState.cardsOnFieldArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerState);
-		});
-
-		playerStateEnemy.cardsOnFieldArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerStateEnemy);
-		});
+    updateCardsStatus(ctx);
 	},
 	drawCardHook: async (ctx) => {
 		let gameState = ctx.gameplayData.gameState;
@@ -479,21 +423,7 @@ var self = module.exports = {
 			}
 		}
 
-		playerState.cardsInHandArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerState);
-		});
-
-		playerStateEnemy.cardsInHandArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerStateEnemy);
-		});
-
-		playerState.cardsOnFieldArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerState);
-		});
-
-		playerStateEnemy.cardsOnFieldArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerStateEnemy);
-		});
+		updateCardsStatus(ctx);
 	},
 	summonCardHook: async (ctx) => {
 		let gameState = ctx.gameplayData.gameState;
@@ -738,24 +668,12 @@ var self = module.exports = {
 			}
 		}
 
-		playerState.cardsInHandArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerState);
-		});
-
-		playerStateEnemy.cardsInHandArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerStateEnemy);
-		});
-
-		playerState.cardsOnFieldArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerState);
-		});
+		updateCardsStatus(ctx);
 
 		playerStateEnemy.cardsOnFieldArr.forEach(function(_card) {
 			if (_card.cardEffect.effect == "nullifyCardsFieldSummon") {
 				assert(!card.cardAttributes.includes("field"));
 			}
-
-    	updateCardEffectValueStatus(_card, playerStateEnemy);
 		});
 	},
 	cardFinishHook: async (ctx) => {
@@ -1153,21 +1071,7 @@ var self = module.exports = {
 			};
 		}
 
-		playerState.cardsInHandArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerState);
-		});
-
-		playerStateEnemy.cardsInHandArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerStateEnemy);
-		});
-
-		playerState.cardsOnFieldArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerState);
-		});
-
-		playerStateEnemy.cardsOnFieldArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerStateEnemy);
-		});
+		updateCardsStatus(ctx);
 	},
 	activateCardEffectHook: async (ctx) => {
 		let gameState = ctx.gameplayData.gameState;
@@ -1194,25 +1098,12 @@ var self = module.exports = {
 		if (card.cardEffect.effect == "copySpecialSpacesUpTo") {
 			checkForSpecialBoardSpaces(ctx, card.cardEffect.effectValue, yourUserId);
 		} else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpToEnemy") {
+		} else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpToYou") {
 		} else if (card.cardEffect.effect == "decreaseChargesContinousCardAll") {
 			assert((playerState.cardsOnFieldArr.length > 1) || (playerStateEnemy.cardsOnFieldArr.length > 0));
 		}
 
-		playerState.cardsInHandArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerState);
-		});
-
-		playerStateEnemy.cardsInHandArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerStateEnemy);
-		});
-
-		playerState.cardsOnFieldArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerState);
-		});
-
-		playerStateEnemy.cardsOnFieldArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerStateEnemy);
-		});
+		updateCardsStatus(ctx);
 
 		if ("effectChargesCount" in card.cardEffect) {
 			assert(card.cardEffect.chargesUsedTotal < card.cardEffect.effectChargesCount);
@@ -1267,6 +1158,14 @@ var self = module.exports = {
 	  	card.cardEffect.effectValueChosen = finishData.effectValueChosen;
 	  	await self.rollDiceBoardHook(ctx, { rollDiceValue: card.cardEffect.effectValueChosen,
 	  		userId: enemyUserId, moveBackwardsOnNextRoll: finishData.moveBackward, moveIfCan: false });
+
+	  	checkForEnergyReturn(ctx, card, finishData.effectValueChosen);
+	  } else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpToYou") {
+	  	assert((finishData.effectValueChosen > 0) && (finishData.effectValueChosen <= card.cardEffect.effectValue));
+	  	assert("moveBackward" in finishData);
+	  	card.cardEffect.effectValueChosen = finishData.effectValueChosen;
+	  	await self.rollDiceBoardHook(ctx, { rollDiceValue: card.cardEffect.effectValueChosen,
+	  		userId: yourUserId, moveBackwardsOnNextRoll: finishData.moveBackward, moveIfCan: false });
 
 	  	checkForEnergyReturn(ctx, card, finishData.effectValueChosen);
 	  } else if (card.cardEffect.effect == "decreaseChargesContinousCardAll") {
@@ -1354,21 +1253,7 @@ var self = module.exports = {
 	  	}
 	  }
 
-	  playerState.cardsInHandArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerState);
-		});
-
-		playerStateEnemy.cardsInHandArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerStateEnemy);
-		});
-
-		playerState.cardsOnFieldArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerState);
-		});
-
-		playerStateEnemy.cardsOnFieldArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerStateEnemy);
-		});
+	  updateCardsStatus(ctx);
 	},
 	rollDiceBoardHook: async (ctx, overwriteParams) => {
 		let gameState = ctx.gameplayData.gameState;
@@ -1519,21 +1404,7 @@ var self = module.exports = {
 		let enemyUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
 		let playerStateEnemy = gameState.playersState[enemyUserId];
 
-		playerState.cardsInHandArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerState);
-		});
-
-		playerStateEnemy.cardsInHandArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerStateEnemy);
-		});
-
-		playerState.cardsOnFieldArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerState);
-		});
-
-		playerStateEnemy.cardsOnFieldArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerStateEnemy);
-		});
+		updateCardsStatus(ctx);
 	},
 	activePlayerHook: async (ctx, card) => {
 		let gameState = ctx.gameplayData.gameState;
@@ -1568,21 +1439,7 @@ var self = module.exports = {
 
 		playerState.cardsInHandArr = utils.shuffle(playerState.cardsInHandArr);
 
-		playerState.cardsInHandArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerState);
-		});
-
-		playerStateEnemy.cardsInHandArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerStateEnemy);
-		});
-
-		playerState.cardsOnFieldArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerState);
-		});
-
-		playerStateEnemy.cardsOnFieldArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerStateEnemy);
-		});
+		updateCardsStatus(ctx);
 	},
 	preDestroyCardFromEnemyFieldHook: async (ctx) => {
 		let gameState = ctx.gameplayData.gameState;
@@ -1616,21 +1473,7 @@ var self = module.exports = {
 		let enemyUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
 		let playerStateEnemy = gameState.playersState[enemyUserId];
 
-		playerState.cardsInHandArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerState);
-		});
-
-		playerStateEnemy.cardsInHandArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerStateEnemy);
-		});
-
-		playerState.cardsOnFieldArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerState);
-		});
-
-		playerStateEnemy.cardsOnFieldArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerStateEnemy);
-		});
+		updateCardsStatus(ctx);
 	},
 	takeCardFromGraveyardHook: async (ctx) => {
 		let gameState = ctx.gameplayData.gameState;
@@ -1655,21 +1498,7 @@ var self = module.exports = {
 
 		playerState.cardsInHandArr = utils.shuffle(playerState.cardsInHandArr);
 
-		playerState.cardsInHandArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerState);
-		});
-
-		playerStateEnemy.cardsInHandArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerStateEnemy);
-		});
-
-		playerState.cardsOnFieldArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerState);
-		});
-
-		playerStateEnemy.cardsOnFieldArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerStateEnemy);
-		});
+		updateCardsStatus(ctx);
 	},
 	winGame: async (ctx, playerIdWin, playerIdLose, roomId) => {
 	  let queryStatus = await pg.pool.query(`
@@ -1705,7 +1534,6 @@ var self = module.exports = {
 
 		var cardEffect = JSON.parse(cardRow.effect_json);
 		cardEffect.effectValueOriginal = cardEffect.effectValue;
-		cardEffect.cardCostOriginal = cardRow.cost;
 
 		if (cardEffect.continuous) {
 	  	cardEffect.energyPerUseOriginal = cardEffect.energyPerUse;
@@ -1720,6 +1548,7 @@ var self = module.exports = {
 	    cardRarity: cardRow.rarity_id,
 	    cardEffect: cardEffect,
 	    cardCost: cardRow.cost,
+	    cardCostOriginal: cardRow.cost,
 	    cardAttributes: cardRow.attributes,
 	    cardSounds: JSON.parse(cardRow.sounds_json),
 	  });
@@ -1748,22 +1577,43 @@ var self = module.exports = {
 		ctx.session.userData.userId = yourUserId;
 		playerState.chainObj = {};
 
-		playerState.cardsInHandArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerState);
-		});
-
-		playerStateEnemy.cardsInHandArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerStateEnemy);
-		});
-
-		playerState.cardsOnFieldArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerState);
-		});
-
-		playerStateEnemy.cardsOnFieldArr.forEach(function(card) {
-    	updateCardEffectValueStatus(card, playerStateEnemy);
-		});
+		updateCardsStatus(ctx);
 	},
+};
+
+let updateCardsStatus = function (ctx) {
+	let gameState = ctx.gameplayData.gameState;
+	let playerState = gameState.playersState[ctx.session.userData.userId];
+	let enemyUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
+	let playerStateEnemy = gameState.playersState[enemyUserId];
+
+	playerState.cardsInHandArr.forEach(function(card) {
+  	updateCardEffectValueStatus(card, playerState);
+	});
+
+	playerStateEnemy.cardsInHandArr.forEach(function(card) {
+  	updateCardEffectValueStatus(card, playerStateEnemy);
+	});
+
+	playerState.cardsOnFieldArr.forEach(function(card) {
+  	updateCardEffectValueStatus(card, playerState);
+	});
+
+	playerStateEnemy.cardsOnFieldArr.forEach(function(card) {
+  	updateCardEffectValueStatus(card, playerStateEnemy);
+	});
+
+	playerState.cardsInGraveyardArr.forEach(function(card) {
+		if ("effectValueIncrement" in card.cardEffect) {
+  		updateCardEffectValueStatus(card, playerState);
+		}
+	});
+
+	playerStateEnemy.cardsInGraveyardArr.forEach(function(card) {
+		if ("effectValueIncrement" in card.cardEffect) {
+  		updateCardEffectValueStatus(card, playerStateEnemy);
+		}
+	});
 };
 
 let moveBoardForwardIfCan = (ctx, count) => {
@@ -1896,19 +1746,13 @@ let updateEnergyReturnedValueBoardSpaces = {
 		let energyReturned = -1;
 		let efffectRange = card.cardEffect.effectValueOriginal;
 
-		console.log('efffectRange: ' + efffectRange);
-		console.log('value: ' + value);
-
 		for (let i = 0; i < card.cardEffect.chargesUsedTotal; i++) {
-			console.log('for loop effectRange: ' + efffectRange);
 			if (value <= efffectRange) {
 				energyReturned++;
 			}
 
 			efffectRange *= card.cardEffect.effectValueOriginal;
 		}
-
-		console.log('energyReturned: ' + energyReturned);
 
 		return energyReturned * card.cardEffect.energyReturnedPerLowerTierUsed;
 	},
@@ -2083,6 +1927,8 @@ let checkForEnergyReturn = (ctx, card, chosenValue) => {
 	if (card.cardEffect.effect == "copySpecialSpacesUpTo") {
 		energyReturned = updateEnergyReturnedValueBoardSpaces[operator](card, chosenValue);
 	} else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpToEnemy") {
+		energyReturned = updateEnergyReturnedValueBoardSpaces[operator](card, chosenValue);
+	} else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpToYou") {
 		energyReturned = updateEnergyReturnedValueBoardSpaces[operator](card, chosenValue);
 	} else if (card.cardEffect.effect == "decreaseChargesContinousCardAll") {
 		if (chosenValue < 0) {
