@@ -2321,10 +2321,34 @@ gameController.prototype.performCardEffectInstantYou = function (card) {
 				_self.waitForMsgTimeout = setTimeout(function() {
 					if (card.cardEffect.moveSpaces) {
 						_self.moveYourCharacter(card.cardEffect.moveSpaces,
-							_self.enableMainPhaseActions.bind(_self));
+							_self.enableMainPhaseActions.bind(_self), 0);
 					} else if (card.cardEffect.cardsToDraw || card.cardEffect.cardsToDiscard
 						|| card.cardEffect.gainEnergy || card.cardEffect.loseEnergy) {
 						_self.enableMainPhaseActions();
+					}
+				}, 1500);
+			} else {
+				_self.setAttributeListenerVariation1(card);
+			}
+		} else if (card.cardEffect.effect == "chooseAttributeVariation2") {
+			if (card.cardEffect.isFinished) {
+				_self._postDestroyCard = card;
+
+				if (card.cardEffect.successfullyGuessed) {
+					_self.showEventsInfo("Successfully Guessed !");
+				} else {
+					_self.showEventsInfo("Failed to Guess...");
+				}
+
+				_self.hideEventsInfo(null, 1000);
+
+				_self.waitForMsgTimeout = setTimeout(function() {
+					if (card.cardEffect.moveSpaces) {
+						_self.moveEnemyCharacter(card.cardEffect.moveSpaces, _self.checkIfEnemyHasToDoAction
+							.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self)), 0);
+					} else if (card.cardEffect.cardsToDraw || card.cardEffect.cardsToDiscard
+						|| card.cardEffect.gainEnergy || card.cardEffect.loseEnergy) {
+						_self.checkIfEnemyHasToDoAction(_self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self));
 					}
 				}, 1500);
 			} else {
@@ -3480,10 +3504,32 @@ gameController.prototype.performCardEffectInstantEnemy = function (card) {
 				_self.waitForMsgTimeout = setTimeout(function() {
 					if (card.cardEffect.moveSpaces) {
 						_self.moveEnemyCharacter(card.cardEffect.moveSpaces,
-							_self.waitForEnemyActions.bind(_self));
+							_self.waitForEnemyActions.bind(_self), 0);
 					} else if (card.cardEffect.cardsToDraw || card.cardEffect.cardsToDiscard
 						|| card.cardEffect.gainEnergy || card.cardEffect.loseEnergy) {
 						_self.waitForEnemyActions();
+					}
+				}, 1500);
+			}
+		} else if (card.cardEffect.effect == "chooseAttributeVariation2") {
+			if (card.cardEffect.isFinished) {
+				_self._postDestroyCard = card;
+
+				if (card.cardEffect.successfullyGuessed) {
+					_self.showEventsInfo("Your opponent successfully guessed !");
+				} else {
+					_self.showEventsInfo("Your opponent failed to guess...");
+				}
+
+				_self.hideEventsInfo(null, 1000);
+
+				_self.waitForMsgTimeout = setTimeout(function() {
+					if (card.cardEffect.moveSpaces) {
+						_self.moveYourCharacter(card.cardEffect.moveSpaces, _self.checkIfYouHaveToDoAction
+							.bind(_self, _self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self)), 0);
+					} else if (card.cardEffect.cardsToDraw || card.cardEffect.cardsToDiscard
+						|| card.cardEffect.gainEnergy || card.cardEffect.loseEnergy) {
+						_self.checkIfYouHaveToDoAction(_self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self));
 					}
 				}, 1500);
 			}

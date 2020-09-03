@@ -614,6 +614,8 @@ var self = module.exports = {
 				}
 		  } else if (card.cardEffect.effect == "chooseAttributeVariation1") {
 		  	playerState.cardsToDraw += card.cardEffect.effectValue;
+		  } else if (card.cardEffect.effect == "chooseAttributeVariation2") {
+		  	playerState.cardsToDraw += card.cardEffect.effectValue;
 		  } else if (card.cardEffect.effect == "destroySpecialBoardSpacesAllRadius") {
 		  	assert(playerState.energyPoints >= card.cardEffect.effectValue);
 
@@ -907,6 +909,68 @@ var self = module.exports = {
 					}
 
 					card.cardEffect.loseEnergy = true;
+				}
+			}
+
+			assert(card.cardEffect.moveSpaces || card.cardEffect.cardsToDraw
+				|| card.cardEffect.cardsToDiscard || card.cardEffect.gainEnergy || card.cardEffect.loseEnergy);
+		} else if (card.cardEffect.effect == "chooseAttributeVariation2") {
+			assert(finishData.chosenAttribute);
+
+			let lastCardDrawn = playerState.cardsInHandArr[playerState.cardsInHandArr.length - 1];
+			card.cardEffect.successfullyGuessed = false;
+
+			if (finishData.chosenAttribute == "field") {
+				if (lastCardDrawn.cardAttributes.includes("field")) {
+					await self.rollDiceBoardHook(ctx, { rollDiceValue: card.cardEffect.effectValue1_MoveSpacesBackwardEnemy,
+	  				userId: enemyUserId, moveBackwardsOnNextRoll: true, moveIfCan: true });
+
+					card.cardEffect.moveSpaces = card.cardEffect.effectValue1_MoveSpacesBackwardEnemy;
+					card.cardEffect.successfullyGuessed = true;
+				} else {
+					await self.rollDiceBoardHook(ctx, { rollDiceValue: card.cardEffect.effectValue1_MoveSpacesForwardEnemy,
+	  				userId: enemyUserId, moveBackwardsOnNextRoll: false, moveIfCan: true });
+
+					card.cardEffect.moveSpaces = card.cardEffect.effectValue1_MoveSpacesForwardEnemy;
+				}
+			} else if (finishData.chosenAttribute == "cards") {
+				if (lastCardDrawn.cardAttributes.includes("cards")) {
+					if ((playerStateEnemy.cardsInHand - playerStateEnemy.cardsToDiscard - card.cardEffect.effectValue2_DiscardCardsEnemy) >= 0) {
+						playerStateEnemy.cardsToDiscard += card.cardEffect.effectValue2_DiscardCardsEnemy;
+					} else {
+						playerStateEnemy.cardsToDiscard = playerStateEnemy.cardsInHand;
+					}
+
+					card.cardEffect.cardsToDiscard = true;
+					card.cardEffect.successfullyGuessed = true;
+				} else {
+					playerStateEnemy.cardsToDraw += card.cardEffect.effectValue2_DrawCardsFromDeckEnemy;
+					card.cardEffect.cardsToDraw = true;
+				}
+			} else if (finishData.chosenAttribute == "energy") {
+				if (lastCardDrawn.cardAttributes.includes("energy")) {
+					if ((playerStateEnemy.maxEnergyPoints - card.cardEffect.effectValue3_DecreaseMaxEnergyEnemy) < playerStateEnemy.minMaxEnergyPoints) {
+						playerStateEnemy.maxEnergyPoints = playerStateEnemy.minMaxEnergyPoints;
+					} else {
+						playerStateEnemy.maxEnergyPoints -= card.cardEffect.effectValue3_DecreaseMaxEnergyEnemy;
+					}
+
+					if ((playerStateEnemy.energyPoints - card.cardEffect.effectValue3_EnergyLoseEnemy) < 0) {
+						playerStateEnemy.energyPoints = 0;
+					} else {
+						playerStateEnemy.energyPoints -= card.cardEffect.effectValue3_EnergyLoseEnemy;
+					}
+
+					card.cardEffect.loseEnergy = true;
+					card.cardEffect.successfullyGuessed = true;
+				} else {
+					if ((playerStateEnemy.energyPoints + card.cardEffect.effectValue3_EnergyGainEnemy) > playerStateEnemy.maxEnergyPoints) {
+						playerStateEnemy.energyPoints = playerStateEnemy.maxEnergyPoints;
+					} else {
+						playerStateEnemy.energyPoints += card.cardEffect.effectValue3_EnergyGainEnemy;
+					}
+
+					card.cardEffect.gainEnergy = true;
 				}
 			}
 

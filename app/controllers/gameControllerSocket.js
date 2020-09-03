@@ -162,6 +162,7 @@ const self = module.exports = {
               totalTurns: 0,
               totalCardsUsed: 0,
               chainObj: {},
+              minMaxEnergyPoints: 5,
             },
             [ctx.roomData.player2Id]: {
               name: ctx.roomData.player2Name,
@@ -203,6 +204,7 @@ const self = module.exports = {
               totalTurns: 0,
               totalCardsUsed: 0,
               chainObj: {},
+              minMaxEnergyPoints: 5,
             },
           },
         },
