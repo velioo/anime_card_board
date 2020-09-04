@@ -96,31 +96,29 @@ var createRoomResponse = {
 				"player1Name": { "type": "string" },
 				"roomName": { "type": "string" },
 				"roomId": { "type": ["integer"] },
+				"roomSettings": {
+					"type": "object",
+					"properties": {
+						"boardId": { "type": "integer" },
+						"boardName": { "type": "string" },
+						"player1Character": {
+							"type": "object",
+							"properties": {
+								"id": { "type": "integer" },
+								"name": { "type": "string" },
+								"image": { "type": "string" },
+							},
+							"required": [ "id", "name", "image" ],
+						},
+					},
+					"required": [ "boardId", "boardName", "player1Character" ],
+				},
 			},
-			"required": [ "player1Name", "roomName", "roomId" ],
+			"required": [ "player1Name", "roomName", "roomId", "roomSettings" ],
 		},
 	},
 	"required": [ "errors", "isSuccessful", "isUserLoggedIn", "result" ],
 };
-
-// var leaveRoomResponse = {
-// 	"type": "object",
-// 	"properties": {
-// 		"errors" : {
-// 			"type": "array",
-// 			"items": {
-// 				"type": "object",
-// 				"properties": {
-// 					"dataPath": { "type": "string", "pattern": "/.+"  },
-// 					"message": { "type": "string" },
-// 				},
-// 				"required": [ "dataPath", "message" ]
-// 			}
-// 		},
-// 		"isSuccessful": { "type": "boolean" },
-// 	},
-// 	"required": [ "errors", "isSuccessful" ],
-// };
 
 var browseRoomsResponse = {
 	"type": "object",
@@ -186,8 +184,34 @@ var getCurrentRoomDataResponse = {
 				"player2Name": { "type": ["string", "null"] },
 				"player1Id": { "type": ["integer", "null"] },
 				"player2Id": { "type": ["integer", "null"] },
+				"roomSettings": {
+					"type": ["object", "null"],
+					"properties": {
+						"boardId": { "type": "integer" },
+						"boardName": { "type": "string" },
+						"player1Character": {
+							"type": "object",
+							"properties": {
+								"id": { "type": "integer" },
+								"name": { "type": "string" },
+								"image": { "type": "string" },
+							},
+							"required": [ "id", "name", "image" ],
+						},
+						"player2Character": {
+							"type": "object",
+							"properties": {
+								"id": { "type": "integer" },
+								"name": { "type": "string" },
+								"image": { "type": "string" },
+							},
+							"required": [ "id", "name", "image" ],
+						},
+					},
+					"required": [ "boardId", "boardName", "player1Character" ],
+				},
 			},
-			"required": [ "id", "name", "player1Name", "player2Name", "player1Id", "player2Id" ],
+			"required": [ "id", "name", "player1Name", "player2Name", "player1Id", "player2Id", "roomSettings" ],
 		},
 		"userMessage": { "type": "string" },
 	},
@@ -217,9 +241,35 @@ var matchmakeResponse = {
 				"player1Id": { "type": "integer" },
 				"player2Name": { "type": "string" },
 				"player2Id": { "type": "integer" },
-				"roomId": { "type": ["integer"] },
+				"roomId": { "type": "integer" },
+				"roomSettings": {
+					"type": "object",
+					"properties": {
+						"boardId": { "type": "integer" },
+						"boardName": { "type": "string" },
+						"player1Character": {
+							"type": "object",
+							"properties": {
+								"id": { "type": "integer" },
+								"name": { "type": "string" },
+								"image": { "type": "string" },
+							},
+							"required": [ "id", "name", "image" ],
+						},
+						"player2Character": {
+							"type": "object",
+							"properties": {
+								"id": { "type": "integer" },
+								"name": { "type": "string" },
+								"image": { "type": "string" },
+							},
+							"required": [ "id", "name", "image" ],
+						},
+					},
+					"required": [ "boardId", "boardName", "player1Character", "player2Character" ],
+				},
 			},
-			"required": [ "player1Name", "player1Id", "player2Name", "player2Id", "roomId" ],
+			"required": [ "player1Name", "player1Id", "player2Name", "player2Id", "roomId", "roomSettings" ],
 		},
 	},
 	"required": [ "errors", "isSuccessful", "isUserLoggedIn", "result" ],
@@ -246,4 +296,5 @@ var settingsResponse = {
 	"required": [ "errors", "isSuccessful", "userMessage", "settings" ],
 };
 
-var joinRoomResponse = getCurrentRoomDataResponse;
+var joinRoomResponse = _.cloneDeep(getCurrentRoomDataResponse);
+joinRoomResponse.properties.result.properties.roomSettings.required.push("player2Character");

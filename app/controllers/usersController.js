@@ -231,6 +231,7 @@ var self = module.exports = {
       ctx.request.body.data.cardBoardEffectSounds = (ctx.request.body.data.cardBoardEffectSounds == 'true');
       ctx.request.body.data.cardAnimations = (ctx.request.body.data.cardAnimations == 'true');
       ctx.request.body.data.soundVolume = (+ctx.request.body.data.soundVolume);
+      ctx.request.body.data.defaultCharacter = (+ctx.request.body.data.defaultCharacter);
       const isSchemaValid = ajv.validate(SCHEMAS.SETTINGS, ctx.request.body.data);
 
       if (!isSchemaValid) {
@@ -249,6 +250,7 @@ var self = module.exports = {
         cardBoardEffectSounds: ctx.request.body.data.cardBoardEffectSounds,
         soundVolume: ctx.request.body.data.soundVolume,
         cardAnimations: ctx.request.body.data.cardAnimations,
+        defaultCharacter: ctx.request.body.data.defaultCharacter,
       };
 
       const queryStatus = await pg.pool.query(`
@@ -307,6 +309,7 @@ let getUserData = (ctx) => {
       cardBoardEffectSounds: false,
       soundVolume: 20,
       cardAnimations: true,
+      defaultCharacter: 1,
     }),
   };
 };

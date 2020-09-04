@@ -146,6 +146,29 @@ CREATE table "cards" (
 GRANT ALL ON cards TO velioo;
 GRANT ALL ON cards_id_seq TO velioo;
 
+CREATE table "characters" (
+  "id" serial NOT NULL,
+  "name" text NOT NULL,
+  "description" text NOT NULL,
+  "image" text NOT NULL,
+  "effect_json" text NOT NULL,
+  PRIMARY KEY (id)
+);
+
+INSERT INTO characters (id, name, description, image, effect_json) VALUES (1, 'Lelouch', 'Test text Test text Test text Test text Test text Test text', 'Lelouch.jpg', '{}');
+INSERT INTO characters (id, name, description, image, effect_json) VALUES (2, 'CC', 'Test text', 'CC.jpg', '{}');
+INSERT INTO characters (id, name, description, image, effect_json) VALUES (3, 'Gintoki', 'Test text', 'Gintoki.png', '{}');
+INSERT INTO characters (id, name, description, image, effect_json) VALUES (4, 'Light', 'Test text', 'Light.jpg', '{}');
+INSERT INTO characters (id, name, description, image, effect_json) VALUES (5, 'Erza', 'Test text', 'Erza.png', '{}');
+INSERT INTO characters (id, name, description, image, effect_json) VALUES (6, 'Kurumi', 'Test text', 'Kurumi.png', '{}');
+INSERT INTO characters (id, name, description, image, effect_json) VALUES (7, 'Kagura', 'Test text', 'Kagura.jpg', '{}');
+INSERT INTO characters (id, name, description, image, effect_json) VALUES (8, 'Kakashi', 'Test text', 'Kakashi.jpg', '{}');
+INSERT INTO characters (id, name, description, image, effect_json) VALUES (9, 'Kiritsugu', 'Test text', 'Kiritsugu.jpg', '{}');
+INSERT INTO characters (id, name, description, image, effect_json) VALUES (10, 'Mine', 'Test text', 'Mine.png', '{}');
+
+GRANT ALL ON characters TO velioo;
+GRANT ALL ON characters_id_seq TO velioo;
+
 DELETE FROM cards;
 INSERT INTO cards (id, name, description, image, rarity_id, effect_json, cost, attributes, sounds_json) VALUES (1, 'Misaka', 'Go 6 spaces forward.', 'Misaka.jpg', 'rare',
 '{"effect": "moveSpacesForward", "effectValue": 6, "autoEffect":true, "continuous": false}', 3, '{field}', '{}');

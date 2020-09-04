@@ -34,6 +34,7 @@ logInSignUpController.prototype.initConstants = function() {
 	_self.SETTINGS_SUBMIT_BTN_ID = '#anime-cb-submit-settings';
 	_self.SETTINGS_VOLUME_LABEL_ID = '#anime-cb-setting-volume-label';
 	_self.SETTINGS_VOLUME_INPUT_ID = '#anime-cb-setting-volume';
+	_self.SETTINGS_CHARACTER_IMG_CLASS = '.anime-cb-character-img';
 
 	_self.USER_INFO_HEADER_WRAPPER_CLASS = '.anime-cb-user-info-wrapper';
 	_self.USER_INFO_HEADER_USERNAME_CLASS = '.anime-cb-user-info-username';
@@ -50,7 +51,7 @@ logInSignUpController.prototype.initElements = function() {
 
 	_self.$signUpInputs = $(_self.SIGN_UP_FORM_ID).find('input');
 	_self.$loginInputs = $(_self.LOGIN_FORM_ID).find('input');
-	_self.$settingsInputs = $(_self.SETTINGS_FORM_ID).find('input');
+	_self.$settingsInputs = $(_self.SETTINGS_FORM_ID).find('input, select');
 	_self._userId = null;
 	_self._username = null;
 	_self._settings = {};
@@ -119,6 +120,14 @@ logInSignUpController.prototype.initListeners = function() {
 	});
 
 	_self.reEnableSettingsSubmit();
+
+	$(_self.MAIN_WRAPPER_ID).on('change', _self.CHARACTER_CHOOSE_CLASS, function() {
+		var $characterSelected = $(this).find('option:selected');
+		$(this).parent().find(_self.SETTINGS_CHARACTER_IMG_CLASS)
+			.attr("src", "/imgs/player_pieces/" + $characterSelected.data("characterImage"));
+	});
+
+	$(_self.CHARACTER_CHOOSE_CLASS).val(1);
 };
 
 logInSignUpController.prototype.initIntervals = function() {
@@ -412,7 +421,7 @@ logInSignUpController.prototype.showSettingsSuccess = function(data) {
 logInSignUpController.prototype.updateSettingsStatus = function (settings) {
 	var _self = this;
 
-	if (!settings) {
+	if (!settings || _.isEqual(_self._settings, settings)) {
 		return;
 	}
 
@@ -430,6 +439,11 @@ logInSignUpController.prototype.updateSettingsStatus = function (settings) {
 		if (setting == "soundVolume") {
 			$(_self.SETTINGS_VOLUME_INPUT_ID).slider("value", settings[setting]);
 			$(_self.SETTINGS_VOLUME_LABEL_ID).text(settings[setting]);
+		}
+
+		if (setting == "defaultCharacter") {
+			$(_self.CHARACTER_CHOOSE_CLASS).val(settings[setting] || 1);
+			$(_self.CHARACTER_CHOOSE_CLASS).trigger('change');
 		}
 	}
 };

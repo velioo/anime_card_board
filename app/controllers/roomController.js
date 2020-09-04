@@ -19,6 +19,7 @@ var self = module.exports = {
 
 		ctx.errors = [];
     ctx.request.body.data.board_id = parseInt(ctx.request.body.data.board_id);
+    ctx.request.body.data.character_id = parseInt(ctx.request.body.data.character_id);
 
     try {
       const isSchemaValid = ajv.validate(SCHEMAS.CREATE_ROOM, ctx.request.body.data);
@@ -37,7 +38,15 @@ var self = module.exports = {
       	roomName: ctx.request.body.data.room_name,
       	player1Name: ctx.session.userData.username,
         roomId: null,
-        boardName: ctx.request.body.data.board_name,
+        roomSettings: {
+          boardId: ctx.request.body.data.board_id,
+          boardName: ctx.request.body.data.board_name,
+          player1Character: {
+            id: ctx.request.body.data.character_id,
+            name: ctx.request.body.data.character_name,
+            image: ctx.request.body.data.character_image,
+          },
+        },
   	  };
 
       if (ctx.errors.length) {
@@ -126,6 +135,7 @@ var self = module.exports = {
       player2Name: null,
       player1Id: null,
       player2Id: null,
+      roomSettings: null,
     };
 
     try {
@@ -154,8 +164,11 @@ var self = module.exports = {
           player2Name: queryStatus.rows[0].player2_name,
           player1Id: queryStatus.rows[0].player1_id,
           player2Id: queryStatus.rows[0].player2_id,
+          roomSettings: JSON.parse(queryStatus.rows[0].settings_json),
         };
       }
+
+      logger.info("ROOM SETTINS: %o", ctx.result.roomSettings);
     } catch(err) {
       ctx.errors.push({ dataPath: '/anime-cb-players-lobby', message: 'There was a problem getting room data. Please try again later.' });
 
@@ -176,7 +189,7 @@ var self = module.exports = {
       player2Name: null,
       player1Id: null,
       player2Id: null,
-      boardName: null,
+      roomSettings: null,
     };
 
     await pg.pool.query('BEGIN');
@@ -227,16 +240,32 @@ var self = module.exports = {
       }
 
       let roomSettings = JSON.parse(queryStatus.rows[0].settings_json);
-      assert(roomSettings.board_id);
+      assert(roomSettings.boardId);
+
+      queryStatus = await pg.pool.query(`
+
+        SELECT * FROM characters
+        WHERE id = $1
+
+      `, [ ctx.session.userData.settings.defaultCharacter || 1 ]);
+
+      assert(queryStatus.rowCount == 1);
+
+      roomSettings.player2Character = {
+        id: queryStatus.rows[0].id,
+        name: queryStatus.rows[0].name,
+        image: queryStatus.rows[0].image,
+      };
 
       queryStatus = await pg.pool.query(`
 
         UPDATE rooms
-        SET player2_id = $1
-        WHERE rooms.id = $2
+        SET player2_id = $1,
+          settings_json = $2
+        WHERE rooms.id = $3
         RETURNING id
 
-      `, [ ctx.session.userData.userId, ctx.request.body.data.roomId ]);
+      `, [ ctx.session.userData.userId, JSON.stringify(roomSettings), ctx.request.body.data.roomId ]);
 
       if (queryStatus.rows.length <= 0) {
         logger.info('Could not find room to update, request body: %o', ctx.request.body.data);
@@ -255,7 +284,7 @@ var self = module.exports = {
         LEFT JOIN users as U2 ON U2.id = R.player2_id
         WHERE R.id = $2
 
-      `, [ roomSettings.board_id, ctx.request.body.data.roomId ]);
+      `, [ roomSettings.boardId, ctx.request.body.data.roomId ]);
 
       assert(queryStatus.rows.length === 1);
 
@@ -266,7 +295,7 @@ var self = module.exports = {
         player2Name: queryStatus.rows[0].player2_name,
         player1Id: queryStatus.rows[0].player1_id,
         player2Id: queryStatus.rows[0].player2_id,
-        boardName: queryStatus.rows[0].board_name,
+        roomSettings: JSON.parse(queryStatus.rows[0].settings_json),
       };
 
       await pg.pool.query('COMMIT');
@@ -302,7 +331,7 @@ var self = module.exports = {
 
           let matchmakeSettings2 = JSON.parse(queryStatusMatchmake.rows[k].settings_json);
 
-          if (matchmakeSettings1.board_id != matchmakeSettings2.board_id) {
+          if (matchmakeSettings1.boardId != matchmakeSettings2.boardId) {
             continue;
           }
 
@@ -325,6 +354,13 @@ var self = module.exports = {
             `, [ queryStatusMatchmake.rows[i].user_id, queryStatusMatchmake.rows[k].user_id ]);
 
             const roomName = utils.generateUniqueId(20);
+            const roomSettings = {
+              boardId: matchmakeSettings1.boardId,
+              boardName: matchmakeSettings1.boardName,
+              player1Character: matchmakeSettings1.playerCharacter,
+              player2Character: matchmakeSettings2.playerCharacter,
+            };
+
             queryStatus = await pg.pool.query(`
 
               INSERT INTO rooms (name, player1_id, player2_id, settings_json, is_matchmade)
@@ -332,7 +368,7 @@ var self = module.exports = {
               RETURNING id
 
             `, [ roomName, queryStatusMatchmake.rows[i].user_id, queryStatusMatchmake.rows[k].user_id,
-              JSON.stringify(matchmakeSettings1), true ]);
+              JSON.stringify(roomSettings), true ]);
 
             assert(queryStatus.rows[0].id);
             const roomId = queryStatus.rows[0].id;
@@ -349,6 +385,7 @@ var self = module.exports = {
               player2Name: queryStatusMatchmake.rows[k].username,
               player2Id: queryStatusMatchmake.rows[k].user_id,
               roomId: roomId,
+              roomSettings: roomSettings,
             };
 
             logger.info('Sessions: %o', ctx.sessions);
@@ -410,13 +447,31 @@ let validateCreateRoomFields = async (ctx) => {
   } else {
     ctx.request.body.data.board_name = boardRow.name;
   }
+
+  let characterRow = await Validations.characterExists(ctx);
+  if (!characterRow) {
+    ctx.errors.push({ dataPath: '/character_id', message: 'Invalid character !' });
+  } else {
+    ctx.request.body.data.character_name = characterRow.name;
+    ctx.request.body.data.character_image = characterRow.image;
+  }
 };
 
 let getRoomData = (ctx) => {
+  let settingsJson = {
+    boardId: ctx.request.body.data.board_id,
+    boardName: ctx.request.body.data.board_name,
+    player1Character: {
+      id: ctx.request.body.data.character_id,
+      name: ctx.request.body.data.character_name,
+      image: ctx.request.body.data.character_image,
+    }
+  };
+
   return {
     'name': ctx.request.body.data.room_name,
     'player1_id': ctx.session.userData.userId,
-    'settings_json': '{"board_id":' + ctx.request.body.data.board_id + '}',
+    'settings_json': JSON.stringify(settingsJson),
     'is_matchmade': false,
   };
 };

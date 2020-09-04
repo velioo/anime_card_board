@@ -7,6 +7,15 @@
 		<form id="anime-cb-form-create-room" class="anime-cb-form" action="#">
 			<div class="anime-cb-box anime-cb-box-create-room">
 			  <div class="form-group">
+				<label for="character_id">Character: &nbsp;</label>
+				<img style="margin-top: 0px;" class="anime-cb-character-img" src="/imgs/player_pieces/{{default_character.image}}">
+				<select class="form-control anime-cb-character-choose" name="character_id">
+					{{#each characters}}
+						<option value="{{id}}" data-character-image="{{image}}">{{name}}</option>
+					{{/each}}
+				</select>
+			  </div>
+			  <div class="form-group">
 			    <label for="room_name">Room Name:</label>
 			    <input type="text" class="form-control" id="room_name" name="room_name">
 			    <div class="errors"></div>

@@ -111,14 +111,37 @@ module.exports = {
 
     try {
       ctx.data.board_id = parseInt(ctx.data.board_id);
+      ctx.data.character_id = parseInt(ctx.data.character_id);
 
       const isSchemaValid = ajv.validate(SCHEMAS.MATCHMAKE, ctx.data);
       assert(isSchemaValid);
 
       assert(ctx.session.userData && ctx.session.userData.userId);
 
+      let queryStatusCharacters = await pg.pool.query(`
+
+        SELECT * FROM characters WHERE id = $1
+
+      `, [ ctx.data.character_id ]);
+
+      assert(queryStatusCharacters.rowCount == 1);
+
+      queryStatusBoards = await pg.pool.query(`
+
+        SELECT * FROM boards WHERE id = $1
+
+      `, [ ctx.data.board_id ]);
+
+      assert(queryStatusBoards.rowCount == 1);
+
       const settingsJson = {
-        board_id: ctx.data.board_id,
+        boardId: queryStatusBoards.rows[0].id,
+        boardName: queryStatusBoards.rows[0].name,
+        playerCharacter: {
+          id: queryStatusCharacters.rows[0].id,
+          name: queryStatusCharacters.rows[0].name,
+          image: queryStatusCharacters.rows[0].image,
+        },
       };
 
       let queryStatus = await pg.pool.query(`

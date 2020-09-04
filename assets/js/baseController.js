@@ -50,6 +50,7 @@ baseController.prototype._initConstants = function() {
 	_self.INFO_SCREEN_CLASS = '.anime-cb-screen-info';
 	_self.RULES_SCREEN_CLASS = '.anime-cb-screen-rules';
 	_self.CARDS_SCREEN_CLASS = '.anime-cb-screen-cards';
+	_self.CHARACTER_CHOOSE_CLASS = '.anime-cb-character-choose';
 
 	_self.USER_MESSAGE_CLASS = '.user-message';
 

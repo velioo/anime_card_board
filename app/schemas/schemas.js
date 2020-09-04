@@ -54,16 +54,19 @@ const _CREATE_ROOM = {
   "properties": {
     "room_name": { "type": "string", "minLength": MIN_ROOM_NAME_LEN, "maxLength": MAX_ROOM_NAME_LEN },
     "board_id": { "type": "integer" },
+    "character_id": { "type": "integer" },
   },
-  "required": [ "room_name", "board_id" ],
+  "required": [ "room_name", "board_id", "character_id" ],
   "errorMessage": {
     "properties" : {
       "room_name": `Room name should be between ${MIN_USER_NAME_LEN} and ${MAX_USER_NAME_LEN} characters`,
       "board_id": `Invalid board !`,
+      "character_id": `Invalid character !`,
     },
     "required": {
       "room_name": 'You must enter a room name',
       "board_id": 'Invalid board !',
+      "character_id": `Invalid character !`,
     },
   }
 };
@@ -197,14 +200,17 @@ const _MATCHMAKE = {
   "type": "object",
   "properties": {
     "board_id": { "type": "integer" },
+    "character_id": { "type": "integer" },
   },
-  "required": [ "board_id" ],
+  "required": [ "board_id", "character_id" ],
   "errorMessage": {
     "properties" : {
       "board_id": `Invalid board !`,
+      "character_id": `Invalid character !`,
     },
     "required": {
       "board_id": 'Invalid board !',
+      "character_id": `Invalid character !`,
     },
   }
 };
@@ -217,9 +223,10 @@ const _SETTINGS = {
     "backgroundSound": { "type": "boolean" },
     "cardBoardEffectSounds": { "type": "boolean" },
     "cardAnimations": { "type": "boolean" },
+    "defaultCharacter": { "type": "integer", "minimum": 1 },
   },
   "required": [ "sound", "soundVolume", "backgroundSound",
-    "cardBoardEffectSounds", "cardAnimations" ],
+    "cardBoardEffectSounds", "cardAnimations", "defaultCharacter" ],
 };
 
 const _DRAW_CARD_FROM_ENEMY_HAND = {

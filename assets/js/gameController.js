@@ -649,11 +649,15 @@ gameController.prototype.setBoardPieces = function () {
 	var _self = this;
 
   if (_self._roomData.player1Id == _self._yourUserId) {
-  	$(_self.BOARD_PLAYER_YOU_ID).css("background-image", 'url("/imgs/player_pieces/Lelouch.jpg")');
-  	$(_self.BOARD_PLAYER_ENEMY_ID).css("background-image", 'url("/imgs/player_pieces/CC.jpg")');
+  	$(_self.BOARD_PLAYER_YOU_ID).css("background-image", 'url("/imgs/player_pieces/'
+  		+ _self._roomData.player1Character.characterImg + '")');
+  	$(_self.BOARD_PLAYER_ENEMY_ID).css("background-image", 'url("/imgs/player_pieces/'
+  		+ _self._roomData.player2Character.characterImg + '")');
   } else {
-		$(_self.BOARD_PLAYER_YOU_ID).css("background-image", 'url("/imgs/player_pieces/CC.jpg")');
-		$(_self.BOARD_PLAYER_ENEMY_ID).css("background-image", 'url("/imgs/player_pieces/Lelouch.jpg")');
+  	$(_self.BOARD_PLAYER_YOU_ID).css("background-image", 'url("/imgs/player_pieces/'
+  		+ _self._roomData.player2Character.characterImg + '")');
+  	$(_self.BOARD_PLAYER_ENEMY_ID).css("background-image", 'url("/imgs/player_pieces/'
+  		+ _self._roomData.player1Character.characterImg + '")');
   }
 };
 
@@ -664,11 +668,15 @@ gameController.prototype.setBoardPiecesRotated = function () {
 	$(_self.BOARD_PLAYER_ENEMY_ID).css("transform", "rotate(180deg)");
 
   if (_self._roomData.player1Id == _self._yourUserId) {
-  	$(_self.BOARD_PLAYER_YOU_ID).css("background-image", 'url("/imgs/player_pieces/Lelouch.jpg")');
-  	$(_self.BOARD_PLAYER_ENEMY_ID).css("background-image", 'url("/imgs/player_pieces/CC.jpg")');
+  	$(_self.BOARD_PLAYER_YOU_ID).css("background-image", 'url("/imgs/player_pieces/'
+  		+ _self._roomData.player1Character.characterImg + '")');
+  	$(_self.BOARD_PLAYER_ENEMY_ID).css("background-image", 'url("/imgs/player_pieces/'
+  		+ _self._roomData.player2Character.characterImg + '")');
   } else {
-		$(_self.BOARD_PLAYER_YOU_ID).css("background-image", 'url("/imgs/player_pieces/CC.jpg")');
-		$(_self.BOARD_PLAYER_ENEMY_ID).css("background-image", 'url("/imgs/player_pieces/Lelouch.jpg")');
+  	$(_self.BOARD_PLAYER_YOU_ID).css("background-image", 'url("/imgs/player_pieces/'
+  		+ _self._roomData.player2Character.characterImg + '")');
+  	$(_self.BOARD_PLAYER_ENEMY_ID).css("background-image", 'url("/imgs/player_pieces/'
+  		+ _self._roomData.player1Character.characterImg + '")');
   }
 
   $(_self.BOARD_IMG_CLASS).css("transform", "rotate(180deg)");

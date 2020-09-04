@@ -24,6 +24,19 @@ var self = module.exports = {
     assert(queryStatus.rowCount >= 0);
     ctx.state.cards = queryStatus.rows;
 
+    queryStatus = await pg.pool.query(`
+      SELECT * FROM characters ORDER BY name
+    `);
+
+    assert(queryStatus.rowCount >= 0);
+    ctx.state.characters = queryStatus.rows;
+
+    ctx.state.characters.forEach(function(character) {
+      if (character.id == 1) {
+        ctx.state.default_character = character;
+      }
+    });
+
     ctx.state.cards.forEach(function(card) {
       card.original_image = card.image;
       if (ctx.session.userData && ctx.session.userData.settings && !ctx.session.userData.settings.cardAnimations) {

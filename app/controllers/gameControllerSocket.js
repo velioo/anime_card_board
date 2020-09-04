@@ -74,16 +74,47 @@ const self = module.exports = {
       };
 
       let roomSettings = JSON.parse(queryStatus.rows[0].settings_json);
-      assert(roomSettings.board_id);
+      assert(roomSettings.boardId);
+      assert(roomSettings.player1Character.id);
+      assert(roomSettings.player2Character.id);
 
       let queryStatusBoards = await pg.pool.query(`
 
         SELECT * FROM boards
         WHERE id = $1
 
-      `, [ roomSettings.board_id ]);
+      `, [ roomSettings.boardId ]);
 
       assert(queryStatusBoards.rows.length == 1);
+
+      let queryStatusCharacters = await pg.pool.query(`
+
+        SELECT * FROM characters
+        WHERE id in ($1, $2)
+
+      `, [ roomSettings.player1Character.id, roomSettings.player2Character.id ]);
+
+      assert(queryStatusCharacters.rowCount >= 1 && queryStatusCharacters.rowCount <= 2);
+
+      queryStatusCharacters.rows.forEach(function(character) {
+        let playerCharacter = {
+          characterId: character.id,
+          characterName: character.name,
+          characterImg: character.image,
+          characterText: character.description,
+          characterEffect: JSON.parse(character.effect_json),
+        };
+
+        if (character.id == roomSettings.player1Character.id) {
+          ctx.roomData.player1Character = playerCharacter;
+        }
+
+        if (character.id == roomSettings.player2Character.id) {
+          ctx.roomData.player2Character = playerCharacter;
+        }
+      });
+
+      assert(ctx.roomData.player1Character && ctx.roomData.player2Character);
 
       let boardDataPlayers = JSON.parse(queryStatusBoards.rows[0].board_data_json);
 

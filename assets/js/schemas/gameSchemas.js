@@ -48,10 +48,32 @@ var startGameResponse = {
 				"player2CurrLevelXp": { "type": "integer" },
 				"player1MaxLevelXp": { "type": "integer" },
 				"player2MaxLevelXp": { "type": "integer" },
+				"player1Character": {
+					"type": "object",
+					"properties": {
+						"characterId": { "type": "integer" },
+						"characterName": { "type": "string" },
+						"characterImg": { "type": "string" },
+						"characterText": { "type": "string" },
+						"characterEffect": { "type": "object" },
+					},
+					"required": [ "characterId", "characterName", "characterImg", "characterText", "characterEffect" ],
+				},
+				"player2Character": {
+					"type": "object",
+					"properties": {
+						"characterId": { "type": "integer" },
+						"characterName": { "type": "string" },
+						"characterImg": { "type": "string" },
+						"characterText": { "type": "string" },
+						"characterEffect": { "type": "object" },
+					},
+					"required": [ "characterId", "characterName", "characterImg", "characterText", "characterEffect" ],
+				},
 			},
 			"required": [ "id", "name", "player1Id", "player2Id", "player1Name",
 				"player2Name", "player1Level", "player2Level", "player1CurrLevelXp",
-				"player2CurrLevelXp", "player1MaxLevelXp", "player2MaxLevelXp" ],
+				"player2CurrLevelXp", "player1MaxLevelXp", "player2MaxLevelXp", "player1Character", "player2Character" ],
 		},
 		"gameplayData": {
 			"type": "object",

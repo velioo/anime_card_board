@@ -6,6 +6,15 @@
 		<div class="user-message"></div>
 		<form id="anime-cb-form-settings" class="anime-cb-form" action="#">
 			<div class="anime-cb-box anime-cb-box-settings">
+				<div class="form-group">
+					<div class="anime-cb-setting-label">Default character:</div>
+					<img class="anime-cb-character-img" src="/imgs/player_pieces/{{default_character.image}}">
+					<select class="form-control anime-cb-character-choose" name="defaultCharacter">
+						{{#each characters}}
+							<option value="{{id}}" data-character-image="{{image}}">{{name}}</option>
+						{{/each}}
+					</select>
+				</div>
 				<div style="color:red;">(takes some time to load all the gif images for the first time !!!)</div>
 				<div class="form-group">
 					<div class="anime-cb-setting-label">Card Animations:</div><label class="switch"><input type="checkbox" name="cardAnimations"><div class="slider round"></div></label>
