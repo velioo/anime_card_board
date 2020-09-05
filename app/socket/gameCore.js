@@ -14,6 +14,14 @@ const ajv = new Ajv({ allErrors: true, $data: true, jsonPointers: true });
 const ajvErrors = require('ajv-errors')(ajv);
 
 var self = module.exports = {
+	startGameCharacterEffectsHook: async (ctx) => {
+		let gameState = ctx.gameplayData.gameState;
+		let player1State = gameState.playersState[ctx.roomData.player1Id];
+		let player2State = gameState.playersState[ctx.roomData.player2Id];
+
+		applyCharacterEffect(ctx, player1State, ctx.roomData.player1Character);
+		applyCharacterEffect(ctx, player2State, ctx.roomData.player2Character);
+	},
 	initValidateData: async (ctx, command) => {
     assert(ctx.session.userData && ctx.session.userData.userId);
    	ctx.data.roomId = parseInt(ctx.data.roomId);
@@ -297,8 +305,6 @@ var self = module.exports = {
 		} else {
 			playerState.energyPoints += playerState.energyPerTurnGain;
 		}
-
-		playerState.energyRegen = playerState.energyPoints - lastEnergy;
 
 		updateCardsStatus(ctx);
 	},
@@ -677,6 +683,13 @@ var self = module.exports = {
 				assert(!card.cardAttributes.includes("field"));
 			}
 		});
+
+		let playerCharacter = yourUserId == ctx.roomData.player1Id ? ctx.roomData.player1Character : ctx.roomData.player2Character;
+		if (playerCharacter.characterEffect.effect == "increaseContinuousFieldCardsCharges") {
+			if (card.cardAttributes.includes("field")) {
+				card.cardEffect.effectChargesCount += playerCharacter.characterEffect.effectValue;
+			}
+		}
 	},
 	cardFinishHook: async (ctx) => {
 		let gameState = ctx.gameplayData.gameState;
@@ -1343,6 +1356,15 @@ var self = module.exports = {
 			}
 			if ("moveIfCan" in overwriteParams) {
 				moveIfCan = overwriteParams.moveIfCan;
+			}
+		} else {
+			let playerCharacter = yourUserId == ctx.roomData.player1Id ? ctx.roomData.player1Character : ctx.roomData.player2Character;
+
+			if ((playerCharacter.characterEffect.effect == "rollDiceAgainForwardOnNumber")
+				&& (rollDiceValue == playerCharacter.characterEffect.rollDiceAgainForwardNumber)
+				&& (!gameState.playersState[yourUserId].moveBackwardsOnNextRoll)) {
+				gameState.playersState[yourUserId].canRollDiceBoardCount += playerCharacter.characterEffect.effectValue;
+				gameState.playersState[yourUserId].rollAgain = true;
 			}
 		}
 
@@ -2139,6 +2161,24 @@ let canChainCardSpecialBoardSpace = (ctx, card, currPlayerId, playerIdMovedOnBoa
 
   return canChainCard;
 }
+
+let applyCharacterEffect = (ctx, playerState, playerCharacter) => {
+	switch(playerCharacter.characterEffect.effect) {
+		case "energyPerTurnGain":
+			playerState.energyPerTurnGain += playerCharacter.characterEffect.effectValue;
+			break;
+		case "startBoostCombination1":
+			playerState.maxCardsInHand += playerCharacter.characterEffect.effectValue_IncreaseMaxCardsInHand;
+			playerState.cardsToDraw += playerCharacter.characterEffect.effectValue_CardsToDraw;
+			playerState.energyPoints += playerCharacter.characterEffect.effectValue_EnergyPoints;
+			break;
+		case "increaseMaxEnergy":
+			playerState.maxEnergyPoints += playerCharacter.characterEffect.effectValue;
+			break;
+		default:
+			break;
+	}
+};
 
 let calculateXp = async (ctx, userId, playerIdWon) => {
 	let gameState = ctx.gameplayData.gameState;

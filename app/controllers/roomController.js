@@ -168,7 +168,6 @@ var self = module.exports = {
         };
       }
 
-      logger.info("ROOM SETTINS: %o", ctx.result.roomSettings);
     } catch(err) {
       ctx.errors.push({ dataPath: '/anime-cb-players-lobby', message: 'There was a problem getting room data. Please try again later.' });
 

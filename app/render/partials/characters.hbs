@@ -1,0 +1,22 @@
+<div class="anime-cb-screen-characters anime-cb-screen">
+	<div class="center-screen">
+		<div class="anime-cb-title-page">
+			<h1>Characters Info</h1>
+		</div>
+		<div class="anime-cb-characters-info-characters-wrapper">
+			{{#each characters}}
+			<div class="anime-cb-characters-info-character">
+				<img class="anime-cb-characters-info-img" src="/imgs/player_pieces/{{image}}">
+				<div class="anime-cb-characters-info-character-description-wrapper">
+					<div class="anime-cb-characters-info-character-name">{{name}}</div>
+					<div class="anime-cb-characters-info-character-text">{{description}}</div>
+				</div>
+			</div><br>
+		 	{{/each}}
+	 	</div>
+		<div class="btn-group-vertical anime-cb-btn-group">
+		    <button type="button" class="btn btn-primary anime-cb-button anime-cb-btn-info">Back</button>
+		    <img class="pre-screen-spinner" src="/imgs/spinner.gif">
+	 	</div>
+	</div>
+</div>

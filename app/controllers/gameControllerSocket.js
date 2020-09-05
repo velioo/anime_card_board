@@ -189,7 +189,6 @@ const self = module.exports = {
               energyPoints: 0,
               maxEnergyPoints: 10,
               energyPerTurnGain: 5,
-              energyRegen: 0,
               totalTurns: 0,
               totalCardsUsed: 0,
               chainObj: {},
@@ -231,7 +230,6 @@ const self = module.exports = {
               energyPoints: 0,
               maxEnergyPoints: 10,
               energyPerTurnGain: 5,
-              energyRegen: 0,
               totalTurns: 0,
               totalCardsUsed: 0,
               chainObj: {},
@@ -240,6 +238,8 @@ const self = module.exports = {
           },
         },
       };
+
+      await gameCore.startGameCharacterEffectsHook(ctx);
 
       queryStatus = await pg.pool.query(`
 

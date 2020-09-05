@@ -15,6 +15,7 @@ var hbsPartials = {
   info: '../partials/info',
   rules: '../partials/rules',
   cards: '../partials/cards',
+  characters: '../partials/characters',
 };
 
 module.exports = hbsPartials;

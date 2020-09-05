@@ -50,16 +50,16 @@ baseController.prototype._initConstants = function() {
 	_self.INFO_SCREEN_CLASS = '.anime-cb-screen-info';
 	_self.RULES_SCREEN_CLASS = '.anime-cb-screen-rules';
 	_self.CARDS_SCREEN_CLASS = '.anime-cb-screen-cards';
-	_self.CHARACTER_CHOOSE_CLASS = '.anime-cb-character-choose';
+	_self.CHARACTERS_SCREEN_CLASS = '.anime-cb-screen-characters';
 
 	_self.USER_MESSAGE_CLASS = '.user-message';
-
+	_self.CHARACTER_CHOOSE_CLASS = '.anime-cb-character-choose';
 	_self.SPINNER_CLASS = '.spinner';
 	_self.MAIN_SPINNER_CLASS = '.main.spinner';
 	_self.PRE_SCREEN_SPINNER_CLASS = '.pre-screen-spinner';
 	_self.SCREEN_FOOTER_CLASS = '.anime-cb-screen_footer';
-
 	_self.INPUT_ERRORS_CLASS = '.errors';
+
 
 	_self.LOGGED_IN_BLACKLISTED_SCREENS = [
 		_self.LOGIN_SCREEN_CLASS,
@@ -194,6 +194,8 @@ baseController.prototype.postSwitchScreenHook = function(screenClass) {
 	if (screenClass != _self.GAME_SCREEN_CLASS) {
 		_self.client.gameController.resetGameState();
 	}
+
+	$('html').scrollTop(0);
 };
 
 baseController.prototype.resetAllScreens = function() {

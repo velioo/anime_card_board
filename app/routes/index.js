@@ -40,6 +40,7 @@ router
 	.get('/info', renderHomeScreen)
 	.get('/rules', renderHomeScreen)
 	.get('/cards', renderHomeScreen)
+	.get('/characters', renderHomeScreen)
 	.post('/log_in', new KoaBody(), logIn)
 	.post('/sign_up', new KoaBody(), signUp)
 	.post('/log_out', new KoaBody(), logOut)

@@ -502,8 +502,12 @@ roomController.prototype.showMatchmakingSuccess = function(data) {
 
 		if (_self.matchmakingCountdownValue <= 0) {
 			if (_self.client.logInSignUpController._userId == startGameData.player1Id) {
+				_self._hostId = _self.client.logInSignUpController._userId;
 				_self.client.startGame(startGameData);
+			} else {
+				_self._hostId = null;
 			}
+
 			clearInterval(_self.matchmakingStartGameCountdownInterval);
 			return;
 		}
