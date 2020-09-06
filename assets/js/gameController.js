@@ -75,6 +75,7 @@ gameController.prototype.initConstants = function() {
 	_self.ENERGY_REGEN_CLASS = '.anime-cb-energy-points-regen';
 	_self.QUICK_GAME_INFO_CLASS = '.anime-cb-quick-game-info';
 	_self.CHANGE_CHAIN_DECISION_CLASS = '.anime-cb-change-chain-decision';
+	_self.ROLL_DIE_CLASS = '.anime-cb-roll-die';
 };
 
 gameController.prototype.initElements = function() {
@@ -515,7 +516,7 @@ gameController.prototype.showEventsInfo = function (infoText) {
 gameController.prototype.renderGameField = function () {
 	var _self = this;
 
-	$(_self.GAME_SCREEN_CLASS).html('<div class="anime-cb-title-page-game"><p id="anime-cb-title-page-game-room-name"></p></div><div id="anime-cb-card-info-card-name"></div><div id="anime-cb-card-info-wrapper"><div id="anime-cb-card-info-subwrapper"><img id="anime-cb-card-info-card" src="/imgs/player_cards/card_back.png"></div></div><div id="anime-cb-card-info-text"></div><div class="anime-cb-card-graveyard-wrapper player-enemy"><p class="anime-cb-card-graveyard-text player-enemy">Enemy Graveyard</p><img class="anime-cb-card-graveyard-deck player-enemy bottom"><img class="anime-cb-card-graveyard-deck player-enemy top"></div><div id="anime-cb-card-global-deck-wrapper"><img id="anime-cb-card-global-deck" src="/imgs/player_cards/card_back.png"><p id="anime-cb-card-global-deck-text">Global Deck</p></div><div id="anime-cb-game-events-info"><p id="anime-cb-game-events-info-text"></p></div><div class="anime-cb-turn-timer player-enemy"><p class="anime-cb-turn-timer-text player-enemy"></p></div><div class="anime-cb-turn-timer player-you"><p class="anime-cb-turn-timer-text player-you"></p></div><div class="anime-cb-energy-points-wrapper player-you"><p class="anime-cb-energy-points-title player-you">Energy</p><p class="anime-cb-energy-points-text player-you"></p></div><div class="anime-cb-energy-points-wrapper player-enemy"><p class="anime-cb-energy-points-title player-enemy">Energy</p><p class="anime-cb-energy-points-text player-enemy"></p></div><div class="anime-cb-energy-points-regen player-you"></div><div class="anime-cb-energy-points-regen player-enemy"></div><div class="anime-cb-change-chain-decision">Change Chain Decision</div><table id="anime-cb-phases-wrapper"><tr class="anime-cb-phase-row"><td id="anime-cb-phase-draw" class="anime-cb-phase-column next" data-phase-text="Draw Phase">DP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-standby" class="anime-cb-phase-column next" data-phase-text="Standby Phase">SP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-main" class="anime-cb-phase-column next" data-phase-text="Main Phase">MP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-roll" class="anime-cb-phase-column next" data-phase-text="Roll Phase">RP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-end" class="anime-cb-phase-column next" data-phase-text="End Phase">EP</td></tr></table><div class="center-screen"><div class="anime-cb-cards-in-hand-wrapper player-enemy"><div class="anime-cb-cards-in-hand player-enemy"></div></div><div class="anime-cb-board-player-label player-enemy"></div><div class="anime-cb-card-field-wrapper"><div class="anime-cb-card-field-charges-label player-enemy">Charges | Energy</div><table class="anime-cb-card-field-charges-status-wrapper player-enemy"><tr><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td></tr></table><table class="anime-cb-card-field player-enemy"><tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr></table></div><div id="anime-cb-board-wrapper"><table id="anime-cb-board"></table></div><div class="anime-cb-card-field-wrapper"><table class="anime-cb-card-field player-you"><tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr></table><table class="anime-cb-card-field-charges-status-wrapper player-you"><tr><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td></tr></table><div class="anime-cb-card-field-charges-label player-you">Charges | Energy</div></div><div class="anime-cb-board-player-label player-you"></div><div class="anime-cb-cards-in-hand-wrapper player-you"><div class="anime-cb-cards-in-hand player-you"></div></div></div><div class="anime-cb-card-graveyard-wrapper player-you"><img class="anime-cb-card-graveyard-deck player-you bottom"><img class="anime-cb-card-graveyard-deck player-you top"><p class="anime-cb-card-graveyard-text player-you">Your Graveyard</p></div><div class="anime-cb-screen_footer-game"><button id="anime-cb-surrender" type="button" class="btn btn-primary anime-cb-button-stateless anime-cb-btn-main-menu">Surrender</button></div><div class="anime-cb-player-status-wrapper"><p class="anime-cb-player-status-title">Game Status</p><div class="anime-cb-player-status-content"></div></div><div id="anime-cb-dice-wrapper-player-you"></div><div id="anime-cb-dice-wrapper-player-enemy"></div><div class="modal graveyard-modal player-you"> <div class="modal-content"> <div class="modal-header player-you"> <span class="close">&times;</span> <h2>Your Graveyard</h2> </div> <div class="modal-body"> </div> <div class="modal-footer player-you"> <h3>Your Graveyard</h3> </div> </div></div><div class="modal graveyard-modal player-enemy"> <div class="modal-content"> <div class="modal-header player-enemy"> <span class="close">&times;</span> <h2>Enemy Graveyard</h2> </div> <div class="modal-body"> </div> <div class="modal-footer player-enemy"> <h3>Enemy Graveyard</h3> </div> </div></div><img class="anime-cb-card-activate-show"><div class="center-screen anime-cb-choose-card-effect"><div></div></div>');
+	$(_self.GAME_SCREEN_CLASS).html('<div class="anime-cb-title-page-game"><p id="anime-cb-title-page-game-room-name"></p></div><div id="anime-cb-card-info-card-name"></div><div id="anime-cb-card-info-wrapper"><div id="anime-cb-card-info-subwrapper"><img id="anime-cb-card-info-card" src="/imgs/player_cards/card_back.png"></div></div><div id="anime-cb-card-info-text"></div><div class="anime-cb-card-graveyard-wrapper player-enemy"><p class="anime-cb-card-graveyard-text player-enemy">Enemy Graveyard</p><img class="anime-cb-card-graveyard-deck player-enemy bottom"><img class="anime-cb-card-graveyard-deck player-enemy top"></div><div id="anime-cb-card-global-deck-wrapper"><img id="anime-cb-card-global-deck" src="/imgs/player_cards/card_back.png"><p id="anime-cb-card-global-deck-text">Global Deck</p></div><div id="anime-cb-game-events-info"><p id="anime-cb-game-events-info-text"></p></div><div class="anime-cb-turn-timer player-enemy"><p class="anime-cb-turn-timer-text player-enemy"></p></div><div class="anime-cb-turn-timer player-you"><p class="anime-cb-turn-timer-text player-you"></p></div><div class="anime-cb-energy-points-wrapper player-you"><p class="anime-cb-energy-points-title player-you">Energy</p><p class="anime-cb-energy-points-text player-you"></p></div><div class="anime-cb-energy-points-wrapper player-enemy"><p class="anime-cb-energy-points-title player-enemy">Energy</p><p class="anime-cb-energy-points-text player-enemy"></p></div><div class="anime-cb-energy-points-regen player-you"></div><div class="anime-cb-energy-points-regen player-enemy"></div><div class="anime-cb-change-chain-decision">Change Chain Decision</div><div class="anime-cb-roll-die" data-tooltip="rollDie"></div><table id="anime-cb-phases-wrapper"><tr class="anime-cb-phase-row"><td id="anime-cb-phase-draw" class="anime-cb-phase-column next" data-phase-text="Draw Phase">DP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-standby" class="anime-cb-phase-column next" data-phase-text="Standby Phase">SP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-main" class="anime-cb-phase-column next" data-phase-text="Main Phase">MP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-roll" class="anime-cb-phase-column next" data-phase-text="Roll Phase">RP</td></tr><tr class="anime-cb-phase-row"><td id="anime-cb-phase-end" class="anime-cb-phase-column next" data-phase-text="End Phase">EP</td></tr></table><div class="center-screen"><div class="anime-cb-cards-in-hand-wrapper player-enemy"><div class="anime-cb-cards-in-hand player-enemy"></div></div><div class="anime-cb-board-player-label player-enemy"></div><div class="anime-cb-card-field-wrapper"><div class="anime-cb-card-field-charges-label player-enemy">Charges | Energy</div><table class="anime-cb-card-field-charges-status-wrapper player-enemy"><tr><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td></tr></table><table class="anime-cb-card-field player-enemy"><tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr></table></div><div id="anime-cb-board-wrapper"><table id="anime-cb-board"></table></div><div class="anime-cb-card-field-wrapper"><table class="anime-cb-card-field player-you"><tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr></table><table class="anime-cb-card-field-charges-status-wrapper player-you"><tr><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td><td class="anime-cb-card-field-charges-status"></td></tr></table><div class="anime-cb-card-field-charges-label player-you">Charges | Energy</div></div><div class="anime-cb-board-player-label player-you"></div><div class="anime-cb-cards-in-hand-wrapper player-you"><div class="anime-cb-cards-in-hand player-you"></div></div></div><div class="anime-cb-card-graveyard-wrapper player-you"><img class="anime-cb-card-graveyard-deck player-you bottom"><img class="anime-cb-card-graveyard-deck player-you top"><p class="anime-cb-card-graveyard-text player-you">Your Graveyard</p></div><div class="anime-cb-screen_footer-game"><button id="anime-cb-surrender" type="button" class="btn btn-primary anime-cb-button-stateless anime-cb-btn-main-menu">Surrender</button></div><div class="anime-cb-player-status-wrapper"><p class="anime-cb-player-status-title">Game Status</p><div class="anime-cb-player-status-content"></div></div><div id="anime-cb-dice-wrapper-player-you"></div><div id="anime-cb-dice-wrapper-player-enemy"></div><div class="modal graveyard-modal player-you"> <div class="modal-content"> <div class="modal-header player-you"> <span class="close">&times;</span> <h2>Your Graveyard</h2> </div> <div class="modal-body"> </div> <div class="modal-footer player-you"> <h3>Your Graveyard</h3> </div> </div></div><div class="modal graveyard-modal player-enemy"> <div class="modal-content"> <div class="modal-header player-enemy"> <span class="close">&times;</span> <h2>Enemy Graveyard</h2> </div> <div class="modal-body"> </div> <div class="modal-footer player-enemy"> <h3>Enemy Graveyard</h3> </div> </div></div><img class="anime-cb-card-activate-show"><div class="center-screen anime-cb-choose-card-effect"><div></div></div>');
 };
 
 gameController.prototype.initGameData = function (data) {
@@ -1992,6 +1993,7 @@ gameController.prototype.enableMainPhaseActions = function () {
 gameController.prototype.setCardChainListener = function () {
 	var _self = this;
 
+	_self.hideEventsInfo(null, 0);
 	$(_self.CHOOSE_CARD_EFFECT_CLASS + ' > div:first-child').html("");
 	$(_self.CHOOSE_CARD_EFFECT_CLASS + ' > div:first-child')
 		.append('<div class="anime-cb-choose-card-effect-title">Do you want to chain cards ?</div>');
@@ -2018,7 +2020,7 @@ gameController.prototype.setCardChainListener = function () {
 
 		if ($(this).data("chainCards")) {
 			_self.showEventsInfo("Choose a card to chain");
-			_self.hideEventsInfo(null, 2000);
+			_self.hideEventsInfo(null, 1500);
 
 			$(_self.CARDS_IN_HAND_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_YOU_CLASS).each(function() {
 				var card = this;
@@ -2107,7 +2109,20 @@ gameController.prototype.enableActionsInEnemyPhase = function () {
 
 	var playerStateYou = _self._gameplayData.gameState.playersState[_self._yourUserId];
 
-	if (playerStateYou.cardsToDraw > 0) {
+	if (playerStateYou.chainObj && playerStateYou.chainObj.chainTrigger) {
+		if (_self._postDestroyCard) {
+			var card = _self._postDestroyCard;
+			_self._postDestroyCard = null;
+			_self.destroyCardAnimationYou.call(_self, card, _self.enableActionsInEnemyPhase.bind(_self));
+			return;
+		}
+
+		if (playerStateYou.chainObj.cardsToChain.length > 0) {
+			_self.setCardChainListener();
+		} else {
+			_self.finishChainEffect();
+		}
+	} else if (playerStateYou.cardsToDraw > 0) {
 		_self.setCardDrawListener();
 	  _self.startDrawCardAnimationsFinishedPoll(_self.checkIfYouHaveToDoAction
 	  	.bind(_self, _self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self)));
@@ -2658,12 +2673,10 @@ gameController.prototype.setRollDiceCardListener = function (card) {
 	var eventInfoText = "Roll dice for " + card.cardName;
 	_self.showEventsInfo(eventInfoText);
 
-	$(_self.PHASE_ROLL_ID).attr("data-tooltip", "rollDie");
-	$(_self.PHASE_ROLL_ID).addClass("selectable");
-	$(_self.PHASE_ROLL_ID).on("click", function() {
-		$(_self.PHASE_ROLL_ID).off("click");
-		$(_self.PHASE_ROLL_ID).removeClass("selectable");
-		$(_self.PHASE_ROLL_ID).removeAttr("data-tooltip");
+	$(_self.ROLL_DIE_CLASS).show();
+	$(_self.ROLL_DIE_CLASS).on("click", function() {
+		$(_self.ROLL_DIE_CLASS).off("click");
+		$(_self.ROLL_DIE_CLASS).hide();
 		_self.hideEventsInfo(null, 0);
 		var finishData = { diceValueDummy: 0 };
 		_self._lastClientData = { roomId: _self._roomData.id, cardId: card.cardId, finishData: finishData };
@@ -3770,8 +3783,17 @@ gameController.prototype.waitForEnemyActions = function () {
 
 		_self.drawCardAnimationsFinishedEnemy = false;
 		if (_self._gameplayData.gameState.currPlayerId == _self._yourUserId) {
-			_self.startDrawCardAnimationsFinishedPoll(_self.checkIfEnemyHasToDoAction
-				.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self)));
+			var callback;
+
+			if (_self._gameplayData.gameState.nextPhase == _self.TURN_PHASES.ROLL) {
+				callback = _self.checkIfEnemyHasToDoAction
+				.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self));
+			} else if (_self._gameplayData.gameState.nextPhase == _self.TURN_PHASES.END) {
+				callback = _self.checkIfEnemyHasToDoAction
+					.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableRollPhaseActions.bind(_self));
+			}
+
+			_self.startDrawCardAnimationsFinishedPoll(callback);
 		} else {
 			_self.startDrawCardAnimationsFinishedPoll(_self.checkIfYouHaveToDoAction
 				.bind(_self, _self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self)));
@@ -4113,27 +4135,11 @@ gameController.prototype.enableRollDiceBoard = function () {
 
 	_self.showEventsInfo(eventInfoText);
 
-	$(_self.PHASE_ROLL_ID).attr("data-tooltip", "rollDie");
+	$(_self.ROLL_DIE_CLASS).show();
 
-	if (_self._gameplayData.gameState.currPlayerId != _self._yourUserId) {
-		$(_self.PHASE_ROLL_ID).removeClass("player-enemy");
-		$(_self.PHASE_ROLL_ID).addClass("active player-you");
-	}
-
-	$(_self.PHASE_ROLL_ID).addClass("selectable");
-	$(_self.PHASE_ROLL_ID).on("click", function(e) {
-		$(_self.PHASE_ROLL_ID).off("click");
-		$(_self.PHASE_ROLL_ID).removeClass("selectable");
-		$(_self.PHASE_ROLL_ID).removeAttr("data-tooltip");
-
-		if (_self._gameplayData.gameState.currPlayerId != _self._yourUserId) {
-			$(_self.PHASE_ROLL_ID).removeClass("player-you");
-			$(_self.PHASE_ROLL_ID).addClass("player-enemy");
-
-			if (_self._gameplayData.gameState.nextPhase != _self.TURN_PHASES.END) {
-				$(_self.PHASE_ROLL_ID).removeClass("active");
-			}
-		}
+	$(_self.ROLL_DIE_CLASS).on("click", function(e) {
+		$(_self.ROLL_DIE_CLASS).off("click");
+		$(_self.ROLL_DIE_CLASS).hide();
 
 		_self.hideEventsInfo(null, 0);
 		_self._lastClientData = { roomId: _self._roomData.id };
@@ -5086,6 +5092,7 @@ gameController.prototype.processDestroyCardFromEnemyField = function(data) {
 			}
 		}
 
+		_self.hideEventsInfo(null, 0);
 		_self.destroyCardFromEnemyFieldEnemyAnimation(_self._gameplayData.gameState.cardDestroyedFromEnemyField, callback);
 	}
 };

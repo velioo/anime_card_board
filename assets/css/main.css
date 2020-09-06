@@ -4409,3 +4409,26 @@ input:checked + .slider:after
 .anime-cb-characters-info-character-text {
 
 }
+
+.anime-cb-roll-die {
+  position: fixed;
+  top: 50%;
+  right: 50%;
+  color: white;
+  text-align: center;
+  margin-top: -50px;
+  margin-right: -745px;
+  z-index: -1;
+  width: 200px;
+  font-size: 16pt;
+  border-radius: 20px;
+  width: 160px;
+  animation: blink-chain-decision 2s infinite;
+  cursor: pointer;
+  z-index: 10;
+  display: none;
+  background-image: url('/imgs/dice.webp');
+  background-size: contain;
+  width: 100px;
+  height: 100px;
+}

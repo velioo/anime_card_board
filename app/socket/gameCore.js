@@ -43,35 +43,40 @@ var self = module.exports = {
 
     let gameState = ctx.gameplayData.gameState;
     let playerState = gameState.playersState[ctx.session.userData.userId];
+    let yourUserId = ctx.session.userData.userId;
     let enemyUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
     let playerStateEnemy = gameState.playersState[enemyUserId];
+
+    if (gameState.nextPhase != TURN_PHASES.DRAW) {
+    	assert(gameState.activePlayerId == yourUserId);
+    }
 
     switch(command) {
     	case "DRAW_CARD":
     		assert(playerState.cardsToDraw > 0);
-    		assert(!playerState.chainObj.chainTrigger);
+    		assert((!playerState.chainObj.chainTrigger) && (!playerStateEnemy.chainObj.chainTrigger));
     		break;
     	case "DRAW_PHASE":
-    		assert(gameState.currPlayerId == ctx.session.userData.userId);
+    		assert(gameState.currPlayerId == yourUserId);
       	assert(gameState.nextPhase == TURN_PHASES.DRAW);
-    		assert(!playerState.chainObj.chainTrigger);
+    		assert((!playerState.chainObj.chainTrigger) && (!playerStateEnemy.chainObj.chainTrigger));
     		break;
     	case "STANDBY_PHASE":
-	      assert(gameState.currPlayerId == ctx.session.userData.userId);
+	      assert(gameState.currPlayerId == yourUserId);
 	      assert(gameState.nextPhase == TURN_PHASES.STANDBY);
-    		assert(!playerState.chainObj.chainTrigger);
+    		assert((!playerState.chainObj.chainTrigger) && (!playerStateEnemy.chainObj.chainTrigger));
     		break;
     	case "MAIN_PHASE":
-	      assert(gameState.currPlayerId == ctx.session.userData.userId);
+	      assert(gameState.currPlayerId == yourUserId);
 	      assert(gameState.nextPhase == TURN_PHASES.MAIN);
-    		assert(!playerState.chainObj.chainTrigger);
+    		assert((!playerState.chainObj.chainTrigger) && (!playerStateEnemy.chainObj.chainTrigger));
     		break;
     	case "SUMMON_CARD":
     		{
 		      assert(playerState.cardsOnFieldArr.length
 		        < playerState.maxCardsOnField);
 		      assert(playerState.cardsSummonConstraints.cardsCanSummonAny
-		        || (playerState.chainObj && playerState.chainObj.cardsToChain.length > 0));
+		        || ((playerState.chainObj.cardsToChain) && (playerState.chainObj.cardsToChain.length > 0)));
 
 		      playerState.cardsOnFieldArr.forEach(function(card, cardIdx) {
 		        assert(card.cardId != ctx.data.cardId);
@@ -127,13 +132,13 @@ var self = module.exports = {
 	  	case "DRAW_CARD_FROM_ENEMY_HAND":
 	      assert(playerState.cardsToDrawFromEnemyHand > 0);
 	      assert((ctx.data.cardIdx >= 0) && (ctx.data.cardIdx < playerStateEnemy.cardsInHandArr.length));
-	      assert(!playerState.chainObj.chainTrigger);
+	      assert((!playerState.chainObj.chainTrigger) && (!playerStateEnemy.chainObj.chainTrigger));
     		break;
     	case "TAKE_CARD_FROM_GRAVEYARD":
 	      assert(ctx.data.cardIdx >= 0);
-	      assert(!playerState.chainObj.chainTrigger);
+	      assert((!playerState.chainObj.chainTrigger) && (!playerStateEnemy.chainObj.chainTrigger));
 
-	      if (ctx.data.playerIdGraveyard == ctx.session.userData.userId) {
+	      if (ctx.data.playerIdGraveyard == yourUserId) {
 	        assert(playerState.cardsToTakeFromYourGraveyard > 0);
 	        assert(playerState.cardsInGraveyardArr.length > 0);
 	        assert(ctx.data.cardIdx < playerState.cardsInGraveyardArr.length);
@@ -148,7 +153,7 @@ var self = module.exports = {
     	case "DESTROY_CARD_FROM_ENEMY_FIELD":
 	      assert(playerState.cardsToDestroyFromEnemyField > 0);
 	      assert(playerStateEnemy.cardsOnFieldArr.length > 0);
-	      assert(!playerState.chainObj.chainTrigger);
+	      assert((!playerState.chainObj.chainTrigger) && (!playerStateEnemy.chainObj.chainTrigger));
 
 	      await self.preDestroyCardFromEnemyFieldHook(ctx);
 
@@ -163,26 +168,26 @@ var self = module.exports = {
 	      assert(ctx.cardToDestroy && ctx.cardIdx >= 0);
     		break;
     	case "ROLL_PHASE":
-	      assert(gameState.currPlayerId == ctx.session.userData.userId);
+	      assert(gameState.currPlayerId == yourUserId);
 	      assert(gameState.nextPhase == TURN_PHASES.ROLL);
-	      assert(!playerState.chainObj.chainTrigger);
+	      assert((!playerState.chainObj.chainTrigger) && (!playerStateEnemy.chainObj.chainTrigger));
     		break;
     	case "ROLL_DICE_BOARD":
       	assert(playerState.canRollDiceBoardCount > 0);
-	      assert(!playerState.chainObj.chainTrigger);
+	      assert((!playerState.chainObj.chainTrigger) && (!playerStateEnemy.chainObj.chainTrigger));
 
 	      if (gameState.nextPhase == TURN_PHASES.ROLL) {
 	        assert(playerState.canRollDiceBoardInRollPhase);
 	      }
     		break;
     	case "END_PHASE":
-	      assert(gameState.currPlayerId == ctx.session.userData.userId);
+	      assert(gameState.currPlayerId == yourUserId);
 	      assert(gameState.nextPhase == TURN_PHASES.END);
-	      assert(!playerState.chainObj.chainTrigger);
+	      assert((!playerState.chainObj.chainTrigger) && (!playerStateEnemy.chainObj.chainTrigger));
 	      break;
 	   	case "DISCARD_CARD":
 	   	  assert(playerState.cardsToDiscard > 0);
-	      assert(!playerState.chainObj.chainTrigger);
+	      assert((!playerState.chainObj.chainTrigger) && (!playerStateEnemy.chainObj.chainTrigger));
 
 	     	{
 		      let cardSelected = playerState.cardsInHandArr[ctx.data.cardIdx];
@@ -191,7 +196,7 @@ var self = module.exports = {
 	      break;
 	   	case "FINISH_CARD":
 	   	  assert(ctx.data.finishData);
-	      assert(!playerState.chainObj.chainTrigger);
+	      assert((!playerState.chainObj.chainTrigger) && (!playerStateEnemy.chainObj.chainTrigger));
 
 	      for (let i = 0; i < playerState.cardsOnFieldArr.length; i++) {
 	        if (playerState.cardsOnFieldArr[i].cardId == ctx.data.cardId) {
@@ -205,9 +210,9 @@ var self = module.exports = {
 	      assert((ctx.cardFinish.cardId == ctx.data.cardId) && (!ctx.cardFinish.cardEffect.isFinished));
 	      break;
 	   	case "ACTIVATE_CARD_EFFECT":
-	      assert(gameState.currPlayerId == ctx.session.userData.userId);
+	      assert(gameState.currPlayerId == yourUserId);
 	      assert(gameState.nextPhase == TURN_PHASES.ROLL);
-	      assert(!playerState.chainObj.chainTrigger);
+	      assert((!playerState.chainObj.chainTrigger) && (!playerStateEnemy.chainObj.chainTrigger));
 
 	      for (let i = 0; i < playerState.cardsOnFieldArr.length; i++) {
 	        if (playerState.cardsOnFieldArr[i].cardId == ctx.data.cardId) {
@@ -221,7 +226,7 @@ var self = module.exports = {
 	      break;
 	   	case "FINISH_CARD_CONTINUOUS":
 	   		assert(ctx.data.finishData);
-	      assert(!playerState.chainObj.chainTrigger);
+	      assert((!playerState.chainObj.chainTrigger) && (!playerStateEnemy.chainObj.chainTrigger));
 
 	      for (let i = 0; i < playerState.cardsOnFieldArr.length; i++) {
 	        if (playerState.cardsOnFieldArr[i].cardId == ctx.data.cardId) {
@@ -1339,6 +1344,7 @@ var self = module.exports = {
 	  let boardPath = gameState.boardData.boardDataPlayers.boardPath;
 	  let boardMatrix = gameState.boardData.boardMatrix;
 	  let yourUserId = ctx.session.userData.userId;
+	  let enemyUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
 	  let moveIfCan = true;
     let rollDiceValue;
 
@@ -1439,24 +1445,46 @@ var self = module.exports = {
 	    let currPlayerId = gameState.currPlayerId;
 	    let playerIdMovedOnBoard = ctx.session.userData.userId;
 
-			let cardsToChain = [];
-			gameState.playersState[currPlayerId].cardsInHandArr.forEach(function(card) {
-				let canChainCard = canChainCardSpecialBoardSpace(ctx, card, currPlayerId, playerIdMovedOnBoard);
+			let cardsToChainYou = [];
+			gameState.playersState[yourUserId].cardsInHandArr.forEach(function(card) {
+				let canChainCard = canChainCardSpecialBoardSpace(ctx, card, yourUserId, playerIdMovedOnBoard);
 
 				if (canChainCard) {
-					cardsToChain.push(card);
+					cardsToChainYou.push(card);
 				}
 			});
 
-			if (cardsToChain.length > 0) {
-				gameState.playersState[currPlayerId].chainObj = {
-					playerIdBoardSpace: ctx.session.userData.userId,
-					rowIndex: rowIndex,
-					columnIndex: columnIndex,
-					cardsToChain: cardsToChain,
-					chainTrigger: "movedToSpecialBoardSpace",
-					nullifySpecialBoardSpace: false,
-				};
+			let cardsToChainEnemy = [];
+			gameState.playersState[enemyUserId].cardsInHandArr.forEach(function(card) {
+				let canChainCard = canChainCardSpecialBoardSpace(ctx, card, enemyUserId, playerIdMovedOnBoard);
+
+				if (canChainCard) {
+					cardsToChainEnemy.push(card);
+				}
+			});
+
+			if ((cardsToChainYou.length > 0) || (cardsToChainEnemy.length > 0)) {
+				if (cardsToChainYou.length > 0) {
+					gameState.playersState[yourUserId].chainObj = {
+						playerIdBoardSpace: ctx.session.userData.userId,
+						rowIndex: rowIndex,
+						columnIndex: columnIndex,
+						cardsToChain: cardsToChainYou,
+						chainTrigger: "movedToSpecialBoardSpace",
+						nullifySpecialBoardSpace: false,
+					};
+				}
+
+				if (cardsToChainEnemy.length > 0) {
+					gameState.playersState[enemyUserId].chainObj = {
+						playerIdBoardSpace: ctx.session.userData.userId,
+						rowIndex: rowIndex,
+						columnIndex: columnIndex,
+						cardsToChain: cardsToChainEnemy,
+						chainTrigger: "movedToSpecialBoardSpace",
+						nullifySpecialBoardSpace: false,
+					};
+				}
 			} else {
     		checkForSpecialBoardSpace(ctx, rowIndex, columnIndex);
 			}
@@ -1506,9 +1534,15 @@ var self = module.exports = {
 			|| gameState.playersState[notCurrPlayerId].cardsToDestroyFromEnemyField > 0
 			|| gameState.playersState[notCurrPlayerId].cardsToTakeFromYourGraveyard > 0
 			|| gameState.playersState[notCurrPlayerId].cardsToTakeFromEnemyGraveyard > 0
-			|| gameState.playersState[notCurrPlayerId].cardsSummonConstraints.cardsCanSummonAny)
-			&& !(gameState.playersState[currPlayerId].chainObj
-				&& gameState.playersState[currPlayerId].chainObj.chainTrigger)) {
+			|| gameState.playersState[notCurrPlayerId].cardsSummonConstraints.cardsCanSummonAny
+			|| (gameState.playersState[notCurrPlayerId].chainObj
+				&& gameState.playersState[notCurrPlayerId].chainObj.chainTrigger))
+			&& (!(gameState.playersState[currPlayerId].chainObj
+					&& gameState.playersState[currPlayerId].chainObj.chainTrigger)
+				|| ((gameState.playersState[notCurrPlayerId].chainObj
+						&& gameState.playersState[notCurrPlayerId].chainObj.chainTrigger)
+					&& (gameState.playersState[notCurrPlayerId].chainObj.playerIdBoardSpace &&
+						gameState.playersState[notCurrPlayerId].chainObj.playerIdBoardSpace == notCurrPlayerId)))) {
 			ctx.gameplayData.gameState.activePlayerId = notCurrPlayerId;
 			ctx.sessions[notCurrPlayerId].pausedTimer = false;
 			ctx.sessions[currPlayerId].pausedTimer = true;
@@ -1657,11 +1691,16 @@ var self = module.exports = {
 		let enemyUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
 		let playerStateEnemy = gameState.playersState[enemyUserId];
 		let chainObj = playerState.chainObj;
+		let chainObjEnemy = playerStateEnemy.chainObj;
 
 		ctx.session.userData.userId = chainObj.playerIdBoardSpace;
 
-		if (chainObj.chainTrigger == "movedToSpecialBoardSpace") {
-			if (!chainObj.nullifySpecialBoardSpace) {
+		if ((chainObj.chainTrigger == "movedToSpecialBoardSpace")) {
+			if (chainObj.nullifySpecialBoardSpace && chainObjEnemy.chainTrigger) {
+				chainObjEnemy.nullifySpecialBoardSpace = chainObj.nullifySpecialBoardSpace;
+			}
+
+			if (!chainObj.nullifySpecialBoardSpace && (!chainObjEnemy.chainTrigger)) {
 				assert((chainObj.rowIndex >= 0) && (chainObj.columnIndex >= 0)
 					&& (chainObj.rowIndex <= (boardMatrix.length - 1))
 					&& (chainObj.columnIndex <= (boardMatrix[0].length - 1)));
@@ -2117,51 +2156,51 @@ let isSpecialBoardSpaceNegative = (boardSpace) => {
 	return false;
 };
 
-let canChainCardSpecialBoardSpace = (ctx, card, currPlayerId, playerIdMovedOnBoard) => {
+let canChainCardSpecialBoardSpace = (ctx, card, playerIdChain, playerIdMovedOnBoard) => {
 	let gameState = ctx.gameplayData.gameState;
 	let boardMatrix = gameState.boardData.boardMatrix;
 	let boardPath = gameState.boardData.boardDataPlayers.boardPath;
 	let currBoardIndex = gameState.playersState[playerIdMovedOnBoard].currBoardIndex;
   let rowIndex = boardPath[currBoardIndex][0];
   let columnIndex = boardPath[currBoardIndex][1];
-  let notCurrPlayerId = currPlayerId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
+  let playerIdOther = playerIdChain == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
 
   let canChainCard = false;
   if ((boardMatrix[rowIndex][columnIndex] <= 1)
-  	|| (card.cardCost > gameState.playersState[currPlayerId].energyPoints)
-  	|| ((gameState.playersState[currPlayerId].cardsOnFieldArr.length + 1)
-			> gameState.playersState[currPlayerId].maxCardsOnField)
+  	|| (card.cardCost > gameState.playersState[playerIdChain].energyPoints)
+  	|| ((gameState.playersState[playerIdChain].cardsOnFieldArr.length + 1)
+			> gameState.playersState[playerIdChain].maxCardsOnField)
   	|| !("chainTrigger" in card.cardEffect)
   	|| (card.cardEffect.chainTrigger != "movedToSpecialBoardSpace")) {
   	return false;
   }
 
-	gameState.playersState[notCurrPlayerId].cardsOnFieldArr.forEach(function(card, idx) {
+	gameState.playersState[playerIdOther].cardsOnFieldArr.forEach(function(card, idx) {
 		if ((card.cardEffect.effect == "nullifyCardsFieldSummon") && (card.cardAttributes.includes("field"))) {
 			canChainCard = false;
 		}
 	});
 
-  if (currPlayerId == playerIdMovedOnBoard) {
+  if (playerIdChain == playerIdMovedOnBoard) {
   	if ((card.cardEffect.effect == "reapplyCurrentSpecialBoardSpaceYou")
-  		&& !((gameState.playersState[currPlayerId].cardsOnFieldArr
+  		&& !((gameState.playersState[playerIdChain].cardsOnFieldArr
 				.find(card => card.cardEffect.effect == "nullifyAllNegativeSpecialBoardSpaces"))
 					&& (isSpecialBoardSpaceNegative(boardMatrix[rowIndex][columnIndex])))) {
   		canChainCard = true;
   	} else if ((card.cardEffect.effect == "reapplyCurrentSpecialBoardSpaceYouEnemy")
-			&& !((gameState.playersState[notCurrPlayerId].cardsOnFieldArr
+			&& !((gameState.playersState[playerIdOther].cardsOnFieldArr
 				.find(card => card.cardEffect.effect == "nullifyAllNegativeSpecialBoardSpaces"))
 					&& (isSpecialBoardSpaceNegative(boardMatrix[rowIndex][columnIndex])))) {
   		canChainCard = true;
   	}
   } else {
   	if ((card.cardEffect.effect == "reapplyCurrentSpecialBoardSpaceEnemy")
-  		&& !((gameState.playersState[notCurrPlayerId].cardsOnFieldArr
+  		&& !((gameState.playersState[playerIdOther].cardsOnFieldArr
 				.find(card => card.cardEffect.effect == "nullifyAllNegativeSpecialBoardSpaces"))
 				&& (isSpecialBoardSpaceNegative(boardMatrix[rowIndex][columnIndex])))) {
   		canChainCard = true;
   	} else if ((card.cardEffect.effect == "reapplyCurrentSpecialBoardSpaceEnemyYou")
-			&& !((gameState.playersState[currPlayerId].cardsOnFieldArr
+			&& !((gameState.playersState[playerIdChain].cardsOnFieldArr
 				.find(card => card.cardEffect.effect == "nullifyAllNegativeSpecialBoardSpaces"))
 					&& (isSpecialBoardSpaceNegative(boardMatrix[rowIndex][columnIndex])))) {
   		canChainCard = true;
