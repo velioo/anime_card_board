@@ -270,7 +270,7 @@ var self = module.exports = {
 		  if ((cardsOnFieldCopy[i].cardEffect.continuousEffectType == "passive") && (cardsOnFieldCopy[i].cardEffect.chargeConsumedPhase == "standby")) {
 		  	cardsOnFieldCopy[i].cardEffect.chargesUsedTotal++;
 
-		  	await checkIfCardExpired(cardsOnFieldCopy[i], i, playerState, playerStateEnemy, cardsOnFieldCopy);
+		  	await checkIfCardExpired(ctx, cardsOnFieldCopy[i], i, playerState, playerStateEnemy, cardsOnFieldCopy);
 		  }
 		}
 
@@ -294,7 +294,7 @@ var self = module.exports = {
 		  		playerState.energyPoints += cardsOnFieldCopy[i].cardEffect.effectValue;
 		  	}
 
-		  	await checkIfCardExpired(cardsOnFieldCopy[i], i, playerState, playerStateEnemy, cardsOnFieldCopy);
+		  	await checkIfCardExpired(ctx, cardsOnFieldCopy[i], i, playerState, playerStateEnemy, cardsOnFieldCopy);
 		  }
 		}
 
@@ -329,7 +329,7 @@ var self = module.exports = {
 		  	&& (cardsOnFieldCopy[i].cardEffect.chargeConsumedPhase == "roll")) {
 		  	cardsOnFieldCopy[i].cardEffect.chargesUsedTotal++;
 
-		  	await checkIfCardExpired(cardsOnFieldCopy[i], i, playerState, playerStateEnemy, cardsOnFieldCopy);
+		  	await checkIfCardExpired(ctx, cardsOnFieldCopy[i], i, playerState, playerStateEnemy, cardsOnFieldCopy);
 		  }
 		}
 
@@ -357,7 +357,7 @@ var self = module.exports = {
 		  if ((cardsOnFieldCopy[i].cardEffect.continuousEffectType == "passive") && (cardsOnFieldCopy[i].cardEffect.chargeConsumedPhase == "end")) {
 		  	cardsOnFieldCopy[i].cardEffect.chargesUsedTotal++;
 
-		  	await checkIfCardExpired(cardsOnFieldCopy[i], i, playerState, playerStateEnemy, cardsOnFieldCopy);
+		  	await checkIfCardExpired(ctx, cardsOnFieldCopy[i], i, playerState, playerStateEnemy, cardsOnFieldCopy);
 		  }
 		}
 
@@ -375,6 +375,7 @@ var self = module.exports = {
 	drawCardHook: async (ctx) => {
 		let gameState = ctx.gameplayData.gameState;
 		let playerState = gameState.playersState[ctx.session.userData.userId];
+		let yourUserId = ctx.session.userData.userId;
 		let enemyUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
 		let playerStateEnemy = gameState.playersState[enemyUserId];
 
@@ -423,9 +424,16 @@ var self = module.exports = {
 			  if (!cardsOnFieldCopy[i].cardEffect.continuous
 			  	&& cardsOnFieldCopy[i].cardEffect.effect == "drawCardFromDeckYouEnemy") {
 			  	playerStateEnemy.cardsToDraw += cardsOnFieldCopy[i].cardEffect.effectValueEnemy;
-			  	await self.putCardInGraveyard(cardsOnFieldCopy[i].cardId, playerState);
+			  	await self.putCardInGraveyard(ctx, cardsOnFieldCopy[i].cardId, playerState);
 			  	playerState.cardsOnFieldArr.splice(cardsOnFieldCopy.length - 1 - i, 1);
 			  }
+			}
+		}
+
+		let playerCharacter = yourUserId == ctx.roomData.player1Id ? ctx.roomData.player1Character : ctx.roomData.player2Character;
+		if (playerCharacter.characterEffect.effect == "increaseContinuousFieldCardsCharges") {
+			if (ctx.cardDrawn.cardAttributes.includes("field")) {
+				ctx.cardDrawn.cardEffect.effectChargesCount += playerCharacter.characterEffect.effectValue;
 			}
 		}
 
@@ -449,7 +457,7 @@ var self = module.exports = {
 
 		if (!card.cardEffect.continuous) {
 			if (card.cardEffect.autoEffect) {
-				await self.putCardInGraveyard(card.cardId, playerState);
+				await self.putCardInGraveyard(ctx, card.cardId, playerState);
     		playerState.cardsOnFieldArr.pop();
 				card.cardEffect.isFinished = true;
 			}
@@ -683,13 +691,6 @@ var self = module.exports = {
 				assert(!card.cardAttributes.includes("field"));
 			}
 		});
-
-		let playerCharacter = yourUserId == ctx.roomData.player1Id ? ctx.roomData.player1Character : ctx.roomData.player2Character;
-		if (playerCharacter.characterEffect.effect == "increaseContinuousFieldCardsCharges") {
-			if (card.cardAttributes.includes("field")) {
-				card.cardEffect.effectChargesCount += playerCharacter.characterEffect.effectValue;
-			}
-		}
 	},
 	cardFinishHook: async (ctx) => {
 		let gameState = ctx.gameplayData.gameState;
@@ -705,7 +706,7 @@ var self = module.exports = {
     let currBoardIndexYou = gameState.playersState[yourUserId].currBoardIndex;
     let currBoardIndexEnemy = gameState.playersState[enemyUserId].currBoardIndex;
 
-    await self.putCardInGraveyard(card.cardId, playerState);
+    await self.putCardInGraveyard(ctx, card.cardId, playerState);
 
 		if (card.cardEffect.effect == "moveSpacesForwardUpTo") {
 			assert((finishData.effectValueChosen > 0) && (finishData.effectValueChosen <= card.cardEffect.effectValue));
@@ -1311,7 +1312,7 @@ var self = module.exports = {
 
 			let cardsOnFieldCopy = playerStateCurr.cardsOnFieldArr.slice().reverse();
 
-			await checkIfCardExpired(cardSelected, cardIdx, playerStateCurr, playerStateCurrEnemy, cardsOnFieldCopy);
+			await checkIfCardExpired(ctx, cardSelected, cardIdx, playerStateCurr, playerStateCurrEnemy, cardsOnFieldCopy);
 			card.finishData = {
 				fieldChosen: finishData.fieldChosen,
 				cardChosen: cardSelected,
@@ -1321,7 +1322,7 @@ var self = module.exports = {
 	  if ("effectChargesCount" in card.cardEffect && card.cardEffect.chargesUsedTotal >= card.cardEffect.effectChargesCount) {
 			card.cardEffect.isFinished = true;
 			playerState.cardsOnFieldArr.splice(ctx.cardIdx, 1);
-			await self.putCardInGraveyard(card.cardId, playerState);
+			await self.putCardInGraveyard(ctx, card.cardId, playerState);
 		} else {
 			if ("energyPerUseIncrement" in card.cardEffect) {
 				let operator = card.cardEffect.energyPerUseIncrement.charAt(0);
@@ -1564,6 +1565,7 @@ var self = module.exports = {
 	takeCardFromGraveyardHook: async (ctx) => {
 		let gameState = ctx.gameplayData.gameState;
 		let playerState = gameState.playersState[ctx.session.userData.userId];
+		let yourUserId = ctx.session.userData.userId;
 		let enemyUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
 		let playerStateEnemy = gameState.playersState[enemyUserId];
 
@@ -1576,13 +1578,20 @@ var self = module.exports = {
 			  	&& ((cardsOnFieldCopy[i].cardEffect.effect == "takeCardFromYourGraveyard")
 			  		|| (cardsOnFieldCopy[i].cardEffect.effect == "discardCardTakeCardFromYourGraveyard")
 			  		|| (cardsOnFieldCopy[i].cardEffect.effect == "takeCardFromEnemyGraveyard"))) {
-			  	await self.putCardInGraveyard(cardsOnFieldCopy[i].cardId, playerState);
+			  	await self.putCardInGraveyard(ctx, cardsOnFieldCopy[i].cardId, playerState);
 			  	playerState.cardsOnFieldArr.splice(cardsOnFieldCopy.length - 1 - i, 1);
 			  }
 			}
 		}
 
 		playerState.cardsInHandArr = utils.shuffle(playerState.cardsInHandArr);
+
+		let playerCharacter = yourUserId == ctx.roomData.player1Id ? ctx.roomData.player1Character : ctx.roomData.player2Character;
+		if (playerCharacter.characterEffect.effect == "increaseContinuousFieldCardsCharges") {
+			if (gameState.cardTakenFromGraveyard.cardAttributes.includes("field")) {
+				gameState.cardTakenFromGraveyard.cardEffect.effectChargesCount += playerCharacter.characterEffect.effectValue;
+			}
+		}
 
 		updateCardsStatus(ctx);
 	},
@@ -1614,7 +1623,7 @@ var self = module.exports = {
 
 	  return true;
 	},
-	putCardInGraveyard: async (cardId, playerState) => {
+	putCardInGraveyard: async (ctx, cardId, playerState) => {
 		let queryStatus = await utils.selectRowById({ table: 'cards', field: 'id', queryArg: cardId });
 		let cardRow = queryStatus.rows[0];
 
@@ -1844,9 +1853,9 @@ let updateEnergyReturnedValueBoardSpaces = {
 	},
 };
 
-let checkIfCardExpired = async (card, cardIdx, playerState, playerStateEnemy, cardsOnFieldArrCopy) => {
+let checkIfCardExpired = async (ctx, card, cardIdx, playerState, playerStateEnemy, cardsOnFieldArrCopy) => {
 	if (card.cardEffect.chargesUsedTotal >= card.cardEffect.effectChargesCount) {
-		await self.putCardInGraveyard(card.cardId, playerState);
+		await self.putCardInGraveyard(ctx, card.cardId, playerState);
  		playerState.cardsOnFieldArr.splice(cardsOnFieldArrCopy.length - 1 - cardIdx, 1);
 		playerState.cardsExpired.push(card);
 

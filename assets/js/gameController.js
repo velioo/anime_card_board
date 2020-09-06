@@ -2433,6 +2433,7 @@ gameController.prototype.chooseCardEffectInitStyles = function () {
 	var _self = this;
 
 	$(_self.CHOOSE_CARD_EFFECT_CLASS).addClass('fade-in-custom');
+	$(_self.CHOOSE_CARD_EFFECT_CLASS).addClass("transparent");
 	$(_self.CHOOSE_CARD_EFFECT_CLASS).css("opacity", 1);
 	$(_self.CHOOSE_CARD_EFFECT_CLASS).css("z-index", 1);
   $(_self.BOARD_PLAYER_YOU_ID).css("z-index", "1");
@@ -2445,6 +2446,7 @@ gameController.prototype.chooseCardEffectFinishStyles = function () {
 	$(_self.BOARD_PLAYER_YOU_ID).css("z-index", "3");
 	$(_self.BOARD_PLAYER_ENEMY_ID).css("z-index", "2");
 	$(_self.CHOOSE_CARD_EFFECT_CLASS).removeClass('fade-in-custom');
+	$(_self.CHOOSE_CARD_EFFECT_CLASS).removeClass("transparent");
 	$(_self.CHOOSE_CARD_EFFECT_CLASS).css("opacity", 0);
 	$(_self.CHOOSE_CARD_EFFECT_CLASS).css("z-index", -1);
 };
@@ -4125,8 +4127,12 @@ gameController.prototype.enableRollDiceBoard = function () {
 		$(_self.PHASE_ROLL_ID).removeAttr("data-tooltip");
 
 		if (_self._gameplayData.gameState.currPlayerId != _self._yourUserId) {
-			$(_self.PHASE_ROLL_ID).removeClass("active player-you");
+			$(_self.PHASE_ROLL_ID).removeClass("player-you");
 			$(_self.PHASE_ROLL_ID).addClass("player-enemy");
+
+			if (_self._gameplayData.gameState.nextPhase != _self.TURN_PHASES.END) {
+				$(_self.PHASE_ROLL_ID).removeClass("active");
+			}
 		}
 
 		_self.hideEventsInfo(null, 0);
@@ -4705,26 +4711,24 @@ gameController.prototype.setUpContinuousCardOnClickListener = function () {
 	$(_self.CARD_ON_FIELD_CLASS + _self.PLAYER_YOU_CLASS).each(function(idx) {
 		var card = this;
 		var cardEffect = $(card).data("cardEffect");
-		if (cardEffect.continuous && cardEffect.continuousEffectType == "onClick") {
-			var canActivateCard = _self.canActivateCard(card);
+		var canActivateCard = _self.canActivateCard(card);
 
-			if (!canActivateCard) {
-				var msg = _self.quickGameInfoMsg;
-				$(card).on("click", function(e) {
-					if (_self.quickGameInfoEnabled) {
-						_self.showQuickGameInfo(msg);
-					}
-				});
-				return;
-			}
-
-			$(card).attr("data-tooltip", "activateEffect");
+		if (!canActivateCard) {
+			var msg = _self.quickGameInfoMsg;
 			$(card).on("click", function(e) {
-				_self.disableContinuousCardOnClickListener();
-				_self.disableMainPhaseActions();
-				_self.activateCardEffect(this);
+				if (_self.quickGameInfoEnabled) {
+					_self.showQuickGameInfo(msg);
+				}
 			});
+			return;
 		}
+
+		$(card).attr("data-tooltip", "activateEffect");
+		$(card).on("click", function(e) {
+			_self.disableContinuousCardOnClickListener();
+			_self.disableMainPhaseActions();
+			_self.activateCardEffect(this);
+		});
 	});
 };
 
@@ -4757,6 +4761,11 @@ gameController.prototype.canActivateCard = function (card) {
 
 	if (!cardEffect) {
 		_self.quickGameInfoMsg = "Problem while activating card...";
+		return false;
+	}
+
+	if ((!cardEffect.continuous) || (cardEffect.continuousEffectType != "onClick")) {
+		_self.quickGameInfoMsg = "This card has passive effect";
 		return false;
 	}
 

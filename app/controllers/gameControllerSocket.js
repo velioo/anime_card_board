@@ -571,7 +571,7 @@ const self = module.exports = {
       let enemyUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
       let playerStateEnemy = gameState.playersState[enemyUserId];
 
-      await gameCore.putCardInGraveyard(ctx.data.cardId, playerStateEnemy);
+      await gameCore.putCardInGraveyard(ctx, ctx.data.cardId, playerStateEnemy);
 
       gameState.playerIdDestroyedCardFromEnemyField = ctx.session.userData.userId;
       gameState.cardDestroyedFromEnemyField = ctx.cardToDestroy;
@@ -732,7 +732,7 @@ const self = module.exports = {
       playerState.cardsToDiscard--;
       let cardSelected = playerState.cardsInHandArr[ctx.data.cardIdx];
 
-      await gameCore.putCardInGraveyard(ctx.data.cardId, playerState);
+      await gameCore.putCardInGraveyard(ctx, ctx.data.cardId, playerState);
 
       gameState.cardDiscarded = cardSelected;
       gameState.cardDiscarded.cardInHandIdx = ctx.data.cardIdx;
