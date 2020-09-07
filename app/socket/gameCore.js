@@ -722,12 +722,18 @@ var self = module.exports = {
 	  	card.cardEffect.effectValueChosen = finishData.effectValueChosen;
 	  	await self.rollDiceBoardHook(ctx, { rollDiceValue: card.cardEffect.effectValueChosen,
 	  		userId: enemyUserId, moveBackwardsOnNextRoll: true, moveIfCan: false });
-	  } else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpTo") {
+	  } else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpToYou") {
 	  	assert((finishData.effectValueChosen > 0) && (finishData.effectValueChosen <= card.cardEffect.effectValue));
 	  	assert("moveBackward" in finishData);
 	  	card.cardEffect.effectValueChosen = finishData.effectValueChosen;
 	  	await self.rollDiceBoardHook(ctx, { rollDiceValue: card.cardEffect.effectValueChosen,
 	  		userId: yourUserId, moveBackwardsOnNextRoll: finishData.moveBackward, moveIfCan: false });
+	  } else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpToEnemy") {
+	  	assert((finishData.effectValueChosen > 0) && (finishData.effectValueChosen <= card.cardEffect.effectValue));
+	  	assert("moveBackward" in finishData);
+	  	card.cardEffect.effectValueChosen = finishData.effectValueChosen;
+	  	await self.rollDiceBoardHook(ctx, { rollDiceValue: card.cardEffect.effectValueChosen,
+	  		userId: enemyUserId, moveBackwardsOnNextRoll: finishData.moveBackward, moveIfCan: false });
 	  } else if (card.cardEffect.effect.match("createSpecialBoardSpaceForwardTier")) {
 	  	assert((finishData.rowIndex >= 0) && (finishData.columnIndex >= 0)
 				&& (finishData.rowIndex <= (boardMatrix.length - 1))

@@ -2211,10 +2211,18 @@ gameController.prototype.performCardEffectInstantYou = function (card) {
 			} else {
 				_self.setBoardSpaceListener(card);
 			}
-		} else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpTo") {
+		} else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpToYou") {
 			if (card.cardEffect.isFinished) {
 				_self.moveYourCharacter(card.cardEffect.effectValueChosen,
 					_self.destroyCardAnimationYou.bind(_self, card, _self.enableMainPhaseActions.bind(_self)), 0);
+			} else {
+				_self.setBoardSpaceListener(card);
+			}
+		} else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpToEnemy") {
+			if (card.cardEffect.isFinished) {
+				_self.moveEnemyCharacter(card.cardEffect.effectValueChosen,
+					_self.destroyCardAnimationYou.bind(_self, card, _self.checkIfEnemyHasToDoAction
+						.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self))), 0);
 			} else {
 				_self.setBoardSpaceListener(card);
 			}
@@ -2867,8 +2875,6 @@ gameController.prototype.setBoardSpaceListener = function (card) {
 		_self.setBoardSpaceListenerMoveSpaces(card, _self._yourUserId, "forward");
 	} else if (card.cardEffect.effect == "moveSpacesBackwardsUpToEnemy") {
 		_self.setBoardSpaceListenerMoveSpaces(card, _self._enemyUserId, "backward");
-	} else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpTo") {
-		_self.setBoardSpaceListenerMoveSpaces(card, _self._yourUserId, "both");
 	} else if (card.cardEffect.effect == "copySpecialSpacesUpTo") {
 		_self.setBoardSpaceListenerCopySpecialSpacesUpToYou(card);
 	} else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpToEnemy") {
@@ -3298,8 +3304,6 @@ gameController.prototype.setBoardSpaceListenerEnemy = function (card) {
 		_self.setBoardSpaceListenerMoveSpacesEnemy(card, _self._enemyUserId, "forward");
 	} else if (card.cardEffect.effect == "moveSpacesBackwardsUpToEnemy") {
 		_self.setBoardSpaceListenerMoveSpacesEnemy(card, _self._yourUserId, "backward");
-	} else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpTo") {
-		_self.setBoardSpaceListenerMoveSpacesEnemy(card, _self._enemyUserId, "both");
 	} else if (card.cardEffect.effect == "copySpecialSpacesUpTo") {
 		_self.setBoardSpaceListenerCopySpecialSpacesUpToEnemy(card);
 	} else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpToEnemy") {
@@ -3395,10 +3399,18 @@ gameController.prototype.performCardEffectInstantEnemy = function (card) {
 			} else {
 				_self.setBoardSpaceListenerEnemy(card);
 			}
-		} else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpTo") {
+		} else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpToYou") {
 			if (card.cardEffect.isFinished) {
 				_self.moveEnemyCharacter(card.cardEffect.effectValueChosen,
 					_self.destroyCardAnimationEnemy.bind(_self, card, _self.waitForEnemyActions.bind(_self)), 0);
+			} else {
+				_self.setBoardSpaceListenerEnemy(card);
+			}
+		} else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpToEnemy") {
+			if (card.cardEffect.isFinished) {
+				_self.moveYourCharacter(card.cardEffect.effectValueChosen,
+					_self.destroyCardAnimationEnemy.bind(_self, card, _self.checkIfYouHaveToDoAction
+						.bind(_self, _self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self))), 0);
 			} else {
 				_self.setBoardSpaceListenerEnemy(card);
 			}
