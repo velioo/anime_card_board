@@ -261,4 +261,7 @@ const self = module.exports = {
     }
     return a;
   },
+  getKeyByValue: (object, value) => {
+    return Object.keys(object).find(key => object[key] === value);
+  },
 };

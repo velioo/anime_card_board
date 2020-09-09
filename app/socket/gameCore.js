@@ -1190,8 +1190,7 @@ var self = module.exports = {
 				= boardMatrix[finishData.moveFromRowIndex][finishData.moveFromColumnIndex];
 			boardMatrix[finishData.moveFromRowIndex][finishData.moveFromColumnIndex] = BOARD_FIELDS.NORMAL;
 
-			let spaceType = Object.keys(BOARD_FIELDS).find(key => BOARD_FIELDS[key]
-				=== boardMatrix[finishData.moveToRowIndex][finishData.moveToColumnIndex]);
+			let spaceType = utils.getKeyByValue(BOARD_FIELDS, boardMatrix[finishData.moveToRowIndex][finishData.moveToColumnIndex]);
 			assert(spaceType);
 
 			card.finishData = {
@@ -1852,7 +1851,7 @@ let checkForSpecialBoardSpace = (ctx, rowIndex, columnIndex) => {
 		return;
 	}
 
-	var boardFieldsFuncs = [rollAgain, rollAgainBackwards, cardDraw, cardDiscard];
+	var boardFieldsFuncs = [rollAgain, rollAgainBackwards, cardDraw, cardDiscard, energyGain, energyLose];
 	var randNum = utils.getRandomInt(0, boardFieldsFuncs.length - 1);
 
   if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.ROLL_AGAIN_1) {
@@ -1879,6 +1878,18 @@ let checkForSpecialBoardSpace = (ctx, rowIndex, columnIndex) => {
   	cardDiscard(ctx, 2);
   } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.CARD_DISCARD_3) {
   	cardDiscard(ctx, 3);
+  } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.ENERGY_GAIN_1) {
+  	energyGain(ctx, 1);
+  } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.ENERGY_GAIN_2) {
+  	energyGain(ctx, 2);
+  } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.ENERGY_GAIN_3) {
+  	energyGain(ctx, 3);
+  } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.ENERGY_LOSE_1) {
+  	energyLose(ctx, 1);
+  } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.ENERGY_LOSE_2) {
+  	energyLose(ctx, 2);
+  } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.ENERGY_LOSE_3) {
+  	energyLose(ctx, 3);
   } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.RANDOM_1) {
   	boardFieldsFuncs[randNum](ctx, 1);
   } else if (boardMatrix[rowIndex][columnIndex] == BOARD_FIELDS.RANDOM_2) {
@@ -1889,28 +1900,56 @@ let checkForSpecialBoardSpace = (ctx, rowIndex, columnIndex) => {
 };
 
 let rollAgain = (ctx, count) => {
-	ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].rollAgain = true;
-	ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].canRollDiceBoardCount += count;
+	let playerState = ctx.gameplayData.gameState.playersState[ctx.session.userData.userId];
+
+	playerState.rollAgain = true;
+	playerState.canRollDiceBoardCount += count;
 };
 
 let rollAgainBackwards = (ctx, count) => {
-	ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].rollAgain = true;
-	ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].canRollDiceBoardCount += count;
-	ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].canRollDiceBoardCountBackward += count;
-	ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].moveBackwardsOnNextRoll = true;
+	let playerState = ctx.gameplayData.gameState.playersState[ctx.session.userData.userId];
+
+	playerState.rollAgain = true;
+	playerState.canRollDiceBoardCount += count;
+	playerState.canRollDiceBoardCountBackward += count;
+	playerState.moveBackwardsOnNextRoll = true;
 };
 
 let cardDraw = (ctx, count) => {
-	ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsToDraw += count;
+	let playerState = ctx.gameplayData.gameState.playersState[ctx.session.userData.userId];
+
+	playerState.cardsToDraw += count;
 };
 
 let cardDiscard = (ctx, count) => {
-	if (ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsInHand
-		- ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsToDiscard - count >= 0) {
-		ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsToDiscard += count;
+	let playerState = ctx.gameplayData.gameState.playersState[ctx.session.userData.userId];
+
+	if (playerState.cardsInHand
+		- playerState.cardsToDiscard - count >= 0) {
+		playerState.cardsToDiscard += count;
 	} else {
-		ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsToDiscard
-			= ctx.gameplayData.gameState.playersState[ctx.session.userData.userId].cardsInHand;
+		playerState.cardsToDiscard
+			= playerState.cardsInHand;
+	}
+};
+
+let energyGain = (ctx, count) => {
+	let playerState = ctx.gameplayData.gameState.playersState[ctx.session.userData.userId];
+
+	if ((playerState.energyPoints + count) > playerState.maxEnergyPoints) {
+		playerState.energyPoints = playerState.maxEnergyPoints;
+	} else {
+		playerState.energyPoints += count;
+	}
+};
+
+let energyLose = (ctx, count) => {
+	let playerState = ctx.gameplayData.gameState.playersState[ctx.session.userData.userId];
+
+	if ((playerState.energyPoints - count) < 0) {
+		playerState.energyPoints = 0;
+	} else {
+		playerState.energyPoints -= count;
 	}
 };
 
@@ -2197,7 +2236,10 @@ let isSpecialBoardSpaceNegative = (boardSpace) => {
 		BOARD_FIELDS.ROLL_AGAIN_BACKWARDS_3,
 		BOARD_FIELDS.CARD_DISCARD_1,
 		BOARD_FIELDS.CARD_DISCARD_2,
-		BOARD_FIELDS.CARD_DISCARD_3
+		BOARD_FIELDS.CARD_DISCARD_3,
+		BOARD_FIELDS.ENERGY_LOSE_1,
+		BOARD_FIELDS.ENERGY_LOSE_2,
+		BOARD_FIELDS.ENERGY_LOSE_3,
 		].includes(boardSpace)) {
 		return true;
 	}

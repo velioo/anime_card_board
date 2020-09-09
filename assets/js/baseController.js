@@ -31,7 +31,7 @@ baseController.prototype._initConstants = function() {
 	_self.SUBMAIN_WRAPPER_ID = '#acb-submain-wrapper'
 	_self.INFO_HEADER = '#acb-info-header';
 
-	_self.CHANGE_SCREEN_BTNS_CLASS = '.anime-cb-button';
+	_self.CHANGE_SCREEN_BTNS_CLASS = '.anime-cb-button, .anime-cb-button-no-style';
 
 	_self.SCREEN_CLASS_PREFIX = '.anime-cb-screen-';
 	_self.SCREENS_CLASS = '.anime-cb-screen';
@@ -97,10 +97,9 @@ baseController.prototype._initListeners = function() {
 	window.addEventListener('popstate', function(e) {
 	  var stateObj = e.state;
 
-	  _lastScreenClass = _lastHistoryState.screenClass;
-	  if (history.state) {
-			console.log('History popstate: ', stateObj.screenClass);
-		}
+	  if (_lastHistoryState) {
+	  	_lastScreenClass = _lastHistoryState.screenClass;
+	  }
 
 	  if ((stateObj === null) || (_self.IGNORE_SCREENS.includes(stateObj.screenClass))) {
 	  	_self.switchToScreen(_self.MAIN_MENU_SCREEN_CLASS);
@@ -370,4 +369,8 @@ var getRandomInt = function (min, max) {
 	min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+var getKeyByValue = function (object, value) {
+	return Object.keys(object).find(key => object[key] === value);
 };
