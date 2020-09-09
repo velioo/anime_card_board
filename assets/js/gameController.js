@@ -1156,7 +1156,7 @@ gameController.prototype.canSummonCard = function (card) {
 		  rowIndex = boardPath[currBoardIndexYouCopy][0];
 		  columnIndex = boardPath[currBoardIndexYouCopy][1];
 
-		  if (boardMatrix[rowIndex][columnIndex] == 1) {
+		  if (boardMatrix[rowIndex][columnIndex] == _self.BOARD_FIELDS.NORMAL) {
 		  	availableSpace = true;
 		  	break;
 			}
@@ -1192,7 +1192,7 @@ gameController.prototype.canSummonCard = function (card) {
 		  rowIndex = boardPath[currBoardIndexYouCopy][0];
 		  columnIndex = boardPath[currBoardIndexYouCopy][1];
 
-		  if (boardMatrix[rowIndex][columnIndex] > 1) {
+		  if (boardMatrix[rowIndex][columnIndex] > _self.BOARD_FIELDS.NORMAL) {
 		  	availableSpace = true;
 			}
 		}
@@ -1213,14 +1213,14 @@ gameController.prototype.canSummonCard = function (card) {
 			if (moveBoardForward) {
 				if ((currBoardIndexYouCopy + i) > (boardPath.length - 1)) {
 					break;
-				} else if ((boardMatrix[boardPath[currBoardIndexYouCopy + i][0]][boardPath[currBoardIndexYouCopy + i][1]] == 1)) {
+				} else if ((boardMatrix[boardPath[currBoardIndexYouCopy + i][0]][boardPath[currBoardIndexYouCopy + i][1]] == _self.BOARD_FIELDS.NORMAL)) {
 					availableSpace = true;
 					break;
 				}
 			} else {
 				if ((currBoardIndexYouCopy - i) < 0) {
 					break;
-				} else if ((boardMatrix[boardPath[currBoardIndexYouCopy - 1][0]][boardPath[currBoardIndexYouCopy - i][1]] == 1)) {
+				} else if ((boardMatrix[boardPath[currBoardIndexYouCopy - 1][0]][boardPath[currBoardIndexYouCopy - i][1]] == _self.BOARD_FIELDS.NORMAL)) {
 					availableSpace = true;
 					break;
 				}
@@ -1264,7 +1264,7 @@ gameController.prototype.canSummonCard = function (card) {
 	}  else if (cardEffect.effect == "moveSpacesClosestBoardSpaceSpecialYou") {
 		var availableSpace = false;
 		for(var i = 0; i < boardPath.length; i++) {
-			if ((boardMatrix[boardPath[i][0]][boardPath[i][1]] > 1) && (i != currBoardIndexYou)) {
+			if ((boardMatrix[boardPath[i][0]][boardPath[i][1]] > _self.BOARD_FIELDS.NORMAL) && (i != currBoardIndexYou)) {
 				availableSpace = true;
 				break;
 			}
@@ -1277,7 +1277,7 @@ gameController.prototype.canSummonCard = function (card) {
 	} else if (cardEffect.effect == "moveSpacesClosestBoardSpaceSpecialEnemy") {
 		var availableSpace = false;
 		for(var i = 0; i < boardPath.length; i++) {
-			if ((boardMatrix[boardPath[i][0]][boardPath[i][1]] > 1) && (i != currBoardIndexEnemy)) {
+			if ((boardMatrix[boardPath[i][0]][boardPath[i][1]] > _self.BOARD_FIELDS.NORMAL) && (i != currBoardIndexEnemy)) {
 				availableSpace = true;
 				break;
 			}
@@ -1288,7 +1288,7 @@ gameController.prototype.canSummonCard = function (card) {
 			return false;
 		}
 	} else if (cardEffect.effect == "reapplyCurrentSpecialBoardSpaceYou") {
-		if (boardMatrix[boardPath[currBoardIndexYou][0]][boardPath[currBoardIndexYou][1]] <= 1) {
+		if (boardMatrix[boardPath[currBoardIndexYou][0]][boardPath[currBoardIndexYou][1]] <= _self.BOARD_FIELDS.NORMAL) {
 			_self.quickGameInfoMsg = "You aren't on a special board space";
 			return false;
 		}
@@ -1308,7 +1308,7 @@ gameController.prototype.canSummonCard = function (card) {
 			return false;
 		}
 	} else if (cardEffect.effect == "reapplyCurrentSpecialBoardSpaceEnemy") {
-		if (boardMatrix[boardPath[currBoardIndexEnemy][0]][boardPath[currBoardIndexEnemy][1]] <= 1) {
+		if (boardMatrix[boardPath[currBoardIndexEnemy][0]][boardPath[currBoardIndexEnemy][1]] <= _self.BOARD_FIELDS.NORMAL) {
 			_self.quickGameInfoMsg = "Your opponent isn't on a special board space";
 			return false;
 		}
@@ -1328,7 +1328,7 @@ gameController.prototype.canSummonCard = function (card) {
 			return false;
 		}
 	} else if (cardEffect.effect == "reapplyCurrentSpecialBoardSpaceEnemyYou") {
-		if (boardMatrix[boardPath[currBoardIndexEnemy][0]][boardPath[currBoardIndexEnemy][1]] <= 1) {
+		if (boardMatrix[boardPath[currBoardIndexEnemy][0]][boardPath[currBoardIndexEnemy][1]] <= _self.BOARD_FIELDS.NORMAL) {
 			_self.quickGameInfoMsg = "Your opponent isn't on a special board space";
 			return false;
 		}
@@ -1348,7 +1348,7 @@ gameController.prototype.canSummonCard = function (card) {
 			return false;
 		}
 	} else if (cardEffect.effect == "reapplyCurrentSpecialBoardSpaceYouEnemy") {
-		if (boardMatrix[boardPath[currBoardIndexYou][0]][boardPath[currBoardIndexYou][1]] <= 1) {
+		if (boardMatrix[boardPath[currBoardIndexYou][0]][boardPath[currBoardIndexYou][1]] <= _self.BOARD_FIELDS.NORMAL) {
 			_self.quickGameInfoMsg = "You aren't on a special board space";
 			return false;
 		}
@@ -1433,6 +1433,26 @@ gameController.prototype.canSummonCard = function (card) {
 
 		if (!availableSpace) {
 			_self.quickGameInfoMsg = "No negative special board spaces in max radius (" + maxRadius + ")";
+			return false;
+		}
+	} else if (cardEffect.effect == "moveSpecialBoardSpace") {
+		var availableSpecialSpace = false;
+  	var availableEmptySpace = false;
+
+		for(var i = 0; i < boardPath.length; i++) {
+			if (boardMatrix[boardPath[i][0]][boardPath[i][1]] > _self.BOARD_FIELDS.NORMAL) {
+				availableSpecialSpace = true;
+			} else if (boardMatrix[boardPath[i][0]][boardPath[i][1]] == _self.BOARD_FIELDS.NORMAL) {
+				availableEmptySpace = true;
+			}
+
+			if (availableSpecialSpace && availableEmptySpace) {
+				break;
+			}
+		}
+
+		if (!availableSpecialSpace || !availableEmptySpace) {
+			_self.quickGameInfoMsg = "No special board spaces or empty board spaces available";
 			return false;
 		}
 	}
@@ -2398,6 +2418,14 @@ gameController.prototype.performCardEffectInstantYou = function (card) {
 			} else {
 				_self.setEnergyListener(card);
 			}
+		} else if (card.cardEffect.effect == "moveSpecialBoardSpace") {
+			if (card.cardEffect.isFinished) {
+				_self.createNewSpecialBoardSpaceAnimation({ rowIndex: card.finishData.moveToRowIndex,
+					columnIndex: card.finishData.moveToColumnIndex, spaceType: card.finishData.spaceType },
+					_self.destroyCardAnimationYou.bind(_self, card, _self.enableMainPhaseActions.bind(_self)));
+			} else {
+				_self.setBoardSpaceListener(card);
+			}
 		}
 	} else if (card.cardEffect.continuous) {
 		_self.enableMainPhaseActions();
@@ -2885,6 +2913,69 @@ gameController.prototype.setBoardSpaceListener = function (card) {
 		_self.setBoardSpaceListenerCreateSpecialBoardSpaceForwardTierYou(card);
 	} else if (card.cardEffect.effect == "destroySpecialBoardSpaceForward") {
 		_self.setBoardSpaceListenerDestroySpecialBoardSpaceForwardYou(card);
+	} else if (card.cardEffect.effect == "moveSpecialBoardSpace") {
+		_self.setBoardSpaceListenerMoveSpecialBoardSpace(card);
+	}
+};
+
+gameController.prototype.setBoardSpaceListenerMoveSpecialBoardSpace = function (card) {
+	var _self = this;
+
+	var boardMatrix = _self._gameplayData.gameState.boardData.boardMatrix;
+	var boardPath = _self._gameplayData.gameState.boardData.boardDataPlayers.boardPath;
+  var moveFromRowIndex;
+  var moveFromColumnIndex;
+  var moveToRowIndex;
+  var moveToColumnIndex;
+
+	$(_self.BOARD_ID).css("z-index", 4);
+	for (var i = 0; i < boardPath.length; i++) {
+	  moveFromRowIndex = boardPath[i][0];
+	  moveFromColumnIndex = boardPath[i][1];
+
+	  if (boardMatrix[moveFromRowIndex][moveFromColumnIndex] > _self.BOARD_FIELDS.NORMAL) {
+		  var selectorTd = _self.BOARD_ROW_CLASS + ':nth-child(' + (moveFromRowIndex + 1) + ')' + ' ' + _self.BOARD_COLUMN_CLASS
+				+ ':nth-child(' + (moveFromColumnIndex + 1) + ')';
+		  $(selectorTd).addClass("selectable-you");
+			$(selectorTd).on("click", function () {
+				$(_self.BOARD_COLUMN_CLASS).off("click");
+				$(_self.BOARD_COLUMN_CLASS).removeClass("selectable-you");
+				$(_self.BOARD_ID).css("z-index", 1);
+
+				var finishData = { moveFromRowIndex: $(this).closest('tr').index(), moveFromColumnIndex: $(this).index() };
+
+				_self.destroySpecialBoardSpaceAnimation({ rowIndex: finishData.moveFromRowIndex, columnIndex: finishData.moveFromColumnIndex });
+
+				$(_self.BOARD_ID).css("z-index", 4);
+				for (var k = 0; k < boardPath.length; k++) {
+				  moveToRowIndex = boardPath[k][0];
+				  moveToColumnIndex = boardPath[k][1];
+
+					if (boardMatrix[moveToRowIndex][moveToColumnIndex] == _self.BOARD_FIELDS.NORMAL) {
+					  selectorTd = _self.BOARD_ROW_CLASS + ':nth-child(' + (moveToRowIndex + 1) + ')' + ' ' + _self.BOARD_COLUMN_CLASS
+							+ ':nth-child(' + (moveToColumnIndex + 1) + ')';
+					  $(selectorTd).addClass("selectable-you");
+
+					  $(selectorTd).on("click", function () {
+					  	$(_self.BOARD_COLUMN_CLASS).off("click");
+							$(_self.BOARD_COLUMN_CLASS).removeClass("selectable-you");
+							$(_self.BOARD_ID).css("z-index", 1);
+
+							finishData.moveToRowIndex = $(this).closest('tr').index();
+							finishData.moveToColumnIndex = $(this).index();
+
+							_self._lastClientData = { roomId: _self._roomData.id, cardId: card.cardId, finishData: finishData };
+
+							if (card.cardEffect.continuous) {
+								_self.client.finishCardEffectContinuous(_self._lastClientData);
+							} else {
+								_self.client.finishCardEffect(_self._lastClientData);
+							}
+					  });
+					}
+				}
+			});
+		}
 	}
 };
 
@@ -3016,7 +3107,7 @@ gameController.prototype.setBoardSpaceListenerCreateSpecialBoardSpaceForwardTier
 	  rowIndex = boardPath[currBoardIndex][0];
 	  columnIndex = boardPath[currBoardIndex][1];
 
-	  if (boardMatrix[rowIndex][columnIndex] == 1) {
+	  if (boardMatrix[rowIndex][columnIndex] == _self.BOARD_FIELDS.NORMAL) {
 		  var selectorTd = _self.BOARD_ROW_CLASS + ':nth-child(' + (rowIndex + 1) + ')' + ' ' + _self.BOARD_COLUMN_CLASS
 				+ ':nth-child(' + (columnIndex + 1) + ')';
 		  $(selectorTd).addClass("selectable-you");
@@ -3095,7 +3186,7 @@ gameController.prototype.setBoardSpaceListenerDestroySpecialBoardSpaceForwardYou
 	  rowIndex = boardPath[currBoardIndex][0];
 	  columnIndex = boardPath[currBoardIndex][1];
 
-	  if (boardMatrix[rowIndex][columnIndex] > 1) {
+	  if (boardMatrix[rowIndex][columnIndex] > _self.BOARD_FIELDS.NORMAL) {
 		  var selectorTd = _self.BOARD_ROW_CLASS + ':nth-child(' + (rowIndex + 1) + ')' + ' ' + _self.BOARD_COLUMN_CLASS
 				+ ':nth-child(' + (columnIndex + 1) + ')';
 		  $(selectorTd).addClass("selectable-you");
@@ -3152,7 +3243,7 @@ gameController.prototype.setBoardSpaceListenerCreateSpecialBoardSpaceForwardTier
 	  rowIndex = boardPath[currBoardIndex][0];
 	  columnIndex = boardPath[currBoardIndex][1];
 
-	  if (boardMatrix[rowIndex][columnIndex] == 1) {
+	  if (boardMatrix[rowIndex][columnIndex] == _self.BOARD_FIELDS.NORMAL) {
 		  var selectorTd = _self.BOARD_ROW_CLASS + ':nth-child(' + (rowIndex + 1) + ')' + ' ' + _self.BOARD_COLUMN_CLASS
 				+ ':nth-child(' + (columnIndex + 1) + ')';
 		  $(selectorTd).addClass("selectable-enemy");
@@ -3192,7 +3283,7 @@ gameController.prototype.setBoardSpaceListenerDestroySpecialBoardSpaceForwardEne
 	  rowIndex = boardPath[currBoardIndex][0];
 	  columnIndex = boardPath[currBoardIndex][1];
 
-	  if (boardMatrix[rowIndex][columnIndex] > 1) {
+	  if (boardMatrix[rowIndex][columnIndex] > _self.BOARD_FIELDS.NORMAL) {
 		  var selectorTd = _self.BOARD_ROW_CLASS + ':nth-child(' + (rowIndex + 1) + ')' + ' ' + _self.BOARD_COLUMN_CLASS
 				+ ':nth-child(' + (columnIndex + 1) + ')';
 		  $(selectorTd).addClass("selectable-enemy");
@@ -3233,7 +3324,7 @@ gameController.prototype.setBoardSpaceListenerCopySpecialSpacesUpToYou = functio
 	  rowIndex = boardPath[currBoardIndex][0];
 	  columnIndex = boardPath[currBoardIndex][1];
 
-	  if (boardMatrix[rowIndex][columnIndex] > 0 && boardMatrix[rowIndex][columnIndex] != 1) {
+	  if (boardMatrix[rowIndex][columnIndex] > 0 && boardMatrix[rowIndex][columnIndex] != _self.BOARD_FIELDS.NORMAL) {
 		  var selectorTd = _self.BOARD_ROW_CLASS + ':nth-child(' + (rowIndex + 1) + ')' + ' ' + _self.BOARD_COLUMN_CLASS
 				+ ':nth-child(' + (columnIndex + 1) + ')';
 		  $(selectorTd).addClass("selectable-you");
@@ -3289,7 +3380,7 @@ gameController.prototype.setBoardSpaceListenerCopySpecialSpacesUpToEnemy = funct
 	  rowIndex = boardPath[currBoardIndex][0];
 	  columnIndex = boardPath[currBoardIndex][1];
 
-	  if (boardMatrix[rowIndex][columnIndex] > 0 && boardMatrix[rowIndex][columnIndex] != 1) {
+	  if (boardMatrix[rowIndex][columnIndex] > 0 && boardMatrix[rowIndex][columnIndex] != _self.BOARD_FIELDS.NORMAL) {
 		  var selectorTd = _self.BOARD_ROW_CLASS + ':nth-child(' + (rowIndex + 1) + ')' + ' ' + _self.BOARD_COLUMN_CLASS
 				+ ':nth-child(' + (columnIndex + 1) + ')';
 		  $(selectorTd).addClass("selectable-enemy");
@@ -3314,6 +3405,30 @@ gameController.prototype.setBoardSpaceListenerEnemy = function (card) {
 		_self.setBoardSpaceListenerCreateSpecialBoardSpaceForwardTierEnemy(card);
 	} else if (card.cardEffect.effect == "destroySpecialBoardSpaceForward") {
 		_self.setBoardSpaceListenerDestroySpecialBoardSpaceForwardEnemy(card);
+	} else if (card.cardEffect.effect == "moveSpecialBoardSpace") {
+		_self.setBoardSpaceListenerMoveSpecialBoardSpaceEnemy(card);
+	}
+};
+
+gameController.prototype.setBoardSpaceListenerMoveSpecialBoardSpaceEnemy = function (card) {
+	var _self = this;
+
+	var boardMatrix = _self._gameplayData.gameState.boardData.boardMatrix;
+	var boardPath = _self._gameplayData.gameState.boardData.boardDataPlayers.boardPath;
+  var moveFromRowIndex;
+  var moveFromColumnIndex;
+
+  _self.showEventsInfo("Opponent moves a special board space to another location");
+
+	for (var i = 0; i < boardPath.length; i++) {
+	  moveFromRowIndex = boardPath[i][0];
+	  moveFromColumnIndex = boardPath[i][1];
+
+	  if (boardMatrix[moveFromRowIndex][moveFromColumnIndex] > _self.BOARD_FIELDS.NORMAL) {
+		  var selectorTd = _self.BOARD_ROW_CLASS + ':nth-child(' + (moveFromRowIndex + 1) + ')' + ' ' + _self.BOARD_COLUMN_CLASS
+				+ ':nth-child(' + (moveFromColumnIndex + 1) + ')';
+		  $(selectorTd).addClass("selectable-enemy");
+		}
 	}
 };
 
@@ -3578,6 +3693,18 @@ gameController.prototype.performCardEffectInstantEnemy = function (card) {
 						_self.destroySpecialBoardSpaceAnimation(boardSpaceData);
 					}
 				});
+			}
+		} else if (card.cardEffect.effect == "moveSpecialBoardSpace") {
+			if (card.cardEffect.isFinished) {
+				_self.hideEventsInfo(null, 0);
+				$(_self.BOARD_COLUMN_CLASS).removeClass("selectable-enemy");
+				_self.destroySpecialBoardSpaceAnimation({ rowIndex: card.finishData.moveFromRowIndex,
+					columnIndex: card.finishData.moveFromColumnIndex }, _self.createNewSpecialBoardSpaceAnimation.bind(_self,
+						{ rowIndex: card.finishData.moveToRowIndex, columnIndex: card.finishData.moveToColumnIndex,
+							spaceType: card.finishData.spaceType }));
+				_self.destroyCardAnimationEnemy(card, _self.waitForEnemyActions.bind(_self));
+			} else {
+				_self.setBoardSpaceListenerEnemy(card);
 			}
 		}
 	} else {
@@ -4812,7 +4939,7 @@ gameController.prototype.canActivateCard = function (card) {
 		  rowIndex = boardPath[currBoardIndex][0];
 		  columnIndex = boardPath[currBoardIndex][1];
 
-		  if (boardMatrix[rowIndex][columnIndex] > 1) {
+		  if (boardMatrix[rowIndex][columnIndex] > _self.BOARD_FIELDS.NORMAL) {
 		  	availableSpaces++;
 			}
 		}

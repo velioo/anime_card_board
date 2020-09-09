@@ -484,7 +484,7 @@ var self = module.exports = {
 
 				for(let i = currBoardIndexYou + 1; i < boardPath.length; i++) {
 					closestBoardSpaceBoardForwardSpacesCount++;
-					if (boardMatrix[boardPath[i][0]][boardPath[i][1]] > 1) {
+					if (boardMatrix[boardPath[i][0]][boardPath[i][1]] > BOARD_FIELDS.NORMAL) {
 						closestBoardSpaceForwardAvailable = true;
 						break;
 					}
@@ -492,7 +492,7 @@ var self = module.exports = {
 
 				for(let i = currBoardIndexYou - 1; i >= 0; i--) {
 					closestBoardSpaceBoardBackwardSpacesCount++;
-					if (boardMatrix[boardPath[i][0]][boardPath[i][1]] > 1) {
+					if (boardMatrix[boardPath[i][0]][boardPath[i][1]] > BOARD_FIELDS.NORMAL) {
 						closestBoardSpaceBackwardAvailable = true;
 						break;
 					}
@@ -511,7 +511,7 @@ var self = module.exports = {
 
 				for(let i = currBoardIndexEnemy + 1; i < boardPath.length; i++) {
 					closestBoardSpaceBoardForwardSpacesCount++;
-					if (boardMatrix[boardPath[i][0]][boardPath[i][1]] > 1) {
+					if (boardMatrix[boardPath[i][0]][boardPath[i][1]] > BOARD_FIELDS.NORMAL) {
 						closestBoardSpaceForwardAvailable = true;
 						break;
 					}
@@ -519,7 +519,7 @@ var self = module.exports = {
 
 				for(let i = currBoardIndexEnemy - 1; i >= 0; i--) {
 					closestBoardSpaceBoardBackwardSpacesCount++;
-					if (boardMatrix[boardPath[i][0]][boardPath[i][1]] > 1) {
+					if (boardMatrix[boardPath[i][0]][boardPath[i][1]] > BOARD_FIELDS.NORMAL) {
 						closestBoardSpaceBackwardAvailable = true;
 						break;
 					}
@@ -589,22 +589,22 @@ var self = module.exports = {
 		  	playerState.cardsToDraw += card.cardEffect.effectValue1;
 		  	playerState.cardsToDiscard += card.cardEffect.effectValue2;
 		  } else if (card.cardEffect.effect == "reapplyCurrentSpecialBoardSpaceYou") {
-		  	assert(boardMatrix[boardPath[currBoardIndexYou][0]][boardPath[currBoardIndexYou][1]] > 1);
+		  	assert(boardMatrix[boardPath[currBoardIndexYou][0]][boardPath[currBoardIndexYou][1]] > BOARD_FIELDS.NORMAL);
 		  	checkForSpecialBoardSpace(ctx, boardPath[currBoardIndexYou][0], boardPath[currBoardIndexYou][1]);
 		  } else if (card.cardEffect.effect == "reapplyCurrentSpecialBoardSpaceEnemy") {
-		  	assert(boardMatrix[boardPath[currBoardIndexEnemy][0]][boardPath[currBoardIndexEnemy][1]] > 1);
+		  	assert(boardMatrix[boardPath[currBoardIndexEnemy][0]][boardPath[currBoardIndexEnemy][1]] > BOARD_FIELDS.NORMAL);
 		  	ctx.session.userData.userId = enemyUserId;
 		  	checkForSpecialBoardSpace(ctx, boardPath[currBoardIndexEnemy][0], boardPath[currBoardIndexEnemy][1]);
 		  	ctx.session.userData.userId = yourUserId;
 		  } else if (card.cardEffect.effect == "reapplyCurrentSpecialBoardSpaceEnemyYou") {
-		  	assert(boardMatrix[boardPath[currBoardIndexEnemy][0]][boardPath[currBoardIndexEnemy][1]] > 1);
+		  	assert(boardMatrix[boardPath[currBoardIndexEnemy][0]][boardPath[currBoardIndexEnemy][1]] > BOARD_FIELDS.NORMAL);
 		  	checkForSpecialBoardSpace(ctx, boardPath[currBoardIndexEnemy][0], boardPath[currBoardIndexEnemy][1]);
 
 		  	if (playerState.chainObj && playerState.chainObj.cardsToChain) {
 		  		playerState.chainObj.nullifySpecialBoardSpace = true;
 		  	}
 		  } else if (card.cardEffect.effect == "reapplyCurrentSpecialBoardSpaceYouEnemy") {
-		  	assert(boardMatrix[boardPath[currBoardIndexYou][0]][boardPath[currBoardIndexYou][1]] > 1);
+		  	assert(boardMatrix[boardPath[currBoardIndexYou][0]][boardPath[currBoardIndexYou][1]] > BOARD_FIELDS.NORMAL);
 		  	ctx.session.userData.userId = enemyUserId;
 		  	checkForSpecialBoardSpace(ctx, boardPath[currBoardIndexYou][0], boardPath[currBoardIndexYou][1]);
 		  	ctx.session.userData.userId = yourUserId;
@@ -678,6 +678,22 @@ var self = module.exports = {
 
 				card.cardEffect.minEnergyToUse = minEnergyToUse;
 				card.cardEffect.maxEnergyToUse = maxEnergyToUse;
+		  } else if (card.cardEffect.effect == "moveSpecialBoardSpace") {
+		  	var availableSpecialSpace = false;
+		  	var availableEmptySpace = false;
+				for(var i = 0; i < boardPath.length; i++) {
+					if (boardMatrix[boardPath[i][0]][boardPath[i][1]] > BOARD_FIELDS.NORMAL) {
+						availableSpecialSpace = true;
+					} else if (boardMatrix[boardPath[i][0]][boardPath[i][1]] == BOARD_FIELDS.NORMAL) {
+						availableEmptySpace = true;
+					}
+
+					if (availableSpecialSpace && availableEmptySpace) {
+						break;
+					}
+				}
+
+				assert(availableSpecialSpace && availableEmptySpace);
 		  }
 		} else {
 			if (card.cardEffect.maxUsesPerTurn) {
@@ -738,7 +754,7 @@ var self = module.exports = {
 	  	assert((finishData.rowIndex >= 0) && (finishData.columnIndex >= 0)
 				&& (finishData.rowIndex <= (boardMatrix.length - 1))
 				&& (finishData.columnIndex <= (boardMatrix[0].length - 1)));
-			assert(boardMatrix[finishData.rowIndex][finishData.columnIndex] == 1);
+			assert(boardMatrix[finishData.rowIndex][finishData.columnIndex] == BOARD_FIELDS.NORMAL);
 			assert("specialSpaceType" in finishData);
 
 			let cardTier = (+card.cardEffect.effect.slice(-1));
@@ -766,7 +782,7 @@ var self = module.exports = {
 	  	assert((finishData.rowIndex >= 0) && (finishData.columnIndex >= 0)
 				&& (finishData.rowIndex <= (boardMatrix.length - 1))
 				&& (finishData.columnIndex <= (boardMatrix[0].length - 1)));
-			assert(boardMatrix[finishData.rowIndex][finishData.columnIndex] > 1);
+			assert(boardMatrix[finishData.rowIndex][finishData.columnIndex] > BOARD_FIELDS.NORMAL);
 
 			checkForSpecialBoardSpaces(ctx, card.cardEffect.effectValue, yourUserId);
 
@@ -1056,7 +1072,7 @@ var self = module.exports = {
 
 			for(let i = currBoardIndexYou + 1; i < boardPath.length; i++) {
 				closestBoardSpaceBoardForwardSpacesCount++;
-				if (boardMatrix[boardPath[i][0]][boardPath[i][1]] > 1) {
+				if (boardMatrix[boardPath[i][0]][boardPath[i][1]] > BOARD_FIELDS.NORMAL) {
 					closestBoardSpaceForwardAvailable = true;
 					break;
 				}
@@ -1064,7 +1080,7 @@ var self = module.exports = {
 
 			for(let i = currBoardIndexYou - 1; i >= 0; i--) {
 				closestBoardSpaceBoardBackwardSpacesCount++;
-				if (boardMatrix[boardPath[i][0]][boardPath[i][1]] > 1) {
+				if (boardMatrix[boardPath[i][0]][boardPath[i][1]] > BOARD_FIELDS.NORMAL) {
 					closestBoardSpaceBackwardAvailable = true;
 					break;
 				}
@@ -1112,7 +1128,7 @@ var self = module.exports = {
 
 			for(let i = currBoardIndexEnemy + 1; i < boardPath.length; i++) {
 				closestBoardSpaceBoardForwardSpacesCount++;
-				if (boardMatrix[boardPath[i][0]][boardPath[i][1]] > 1) {
+				if (boardMatrix[boardPath[i][0]][boardPath[i][1]] > BOARD_FIELDS.NORMAL) {
 					closestBoardSpaceForwardAvailable = true;
 					break;
 				}
@@ -1120,7 +1136,7 @@ var self = module.exports = {
 
 			for(let i = currBoardIndexEnemy - 1; i >= 0; i--) {
 				closestBoardSpaceBoardBackwardSpacesCount++;
-				if (boardMatrix[boardPath[i][0]][boardPath[i][1]] > 1) {
+				if (boardMatrix[boardPath[i][0]][boardPath[i][1]] > BOARD_FIELDS.NORMAL) {
 					closestBoardSpaceBackwardAvailable = true;
 					break;
 				}
@@ -1157,6 +1173,33 @@ var self = module.exports = {
 
 			card.finishData = {
 				moveSpaces: moveSpaces,
+			};
+		} else if (card.cardEffect.effect == "moveSpecialBoardSpace") {
+			assert((finishData.moveFromRowIndex >= 0) && (finishData.moveFromColumnIndex >= 0)
+				&& (finishData.moveFromRowIndex <= (boardMatrix.length - 1))
+				&& (finishData.moveFromColumnIndex <= (boardMatrix[0].length - 1)));
+			assert((finishData.moveToRowIndex >= 0) && (finishData.moveToColumnIndex >= 0)
+				&& (finishData.moveToRowIndex <= (boardMatrix.length - 1))
+				&& (finishData.moveToColumnIndex <= (boardMatrix[0].length - 1)));
+			assert(boardMatrix[finishData.moveFromRowIndex][finishData.moveFromColumnIndex] > BOARD_FIELDS.NORMAL);
+			assert(boardMatrix[finishData.moveToRowIndex][finishData.moveToColumnIndex] == BOARD_FIELDS.NORMAL);
+			assert((finishData.moveToRowIndex != finishData.moveFromRowIndex)
+				|| (finishData.moveToColumnIndex != finishData.moveFromColumnIndex));
+
+			boardMatrix[finishData.moveToRowIndex][finishData.moveToColumnIndex]
+				= boardMatrix[finishData.moveFromRowIndex][finishData.moveFromColumnIndex];
+			boardMatrix[finishData.moveFromRowIndex][finishData.moveFromColumnIndex] = BOARD_FIELDS.NORMAL;
+
+			let spaceType = Object.keys(BOARD_FIELDS).find(key => BOARD_FIELDS[key]
+				=== boardMatrix[finishData.moveToRowIndex][finishData.moveToColumnIndex]);
+			assert(spaceType);
+
+			card.finishData = {
+				moveToRowIndex: finishData.moveToRowIndex,
+				moveToColumnIndex: finishData.moveToColumnIndex,
+				spaceType: spaceType,
+				moveFromRowIndex: finishData.moveFromRowIndex,
+				moveFromColumnIndex: finishData.moveFromColumnIndex,
 			};
 		}
 
@@ -1216,7 +1259,7 @@ var self = module.exports = {
 			assert((finishData.rowIndex >= 0) && (finishData.columnIndex >= 0)
 				&& (finishData.rowIndex <= (boardMatrix.length - 1))
 				&& (finishData.columnIndex <= (boardMatrix[0].length - 1)));
-			assert(boardMatrix[finishData.rowIndex][finishData.columnIndex] > 1);
+			assert(boardMatrix[finishData.rowIndex][finishData.columnIndex] > BOARD_FIELDS.NORMAL);
 
 			let validSpace = false;
 			let spacesCount;
@@ -2097,7 +2140,7 @@ let checkForEmptyBoardSpaces = (ctx, cardValue, userId) => {
 		for(let i = 1; i <= cardValue; i++) {
 			if ((currBoardIndex + i) > (boardPath.length - 1)) {
 				break;
-			} else if (boardMatrix[boardPath[currBoardIndex + i][0]][boardPath[currBoardIndex + i][1]] == 1) {
+			} else if (boardMatrix[boardPath[currBoardIndex + i][0]][boardPath[currBoardIndex + i][1]] == BOARD_FIELDS.NORMAL) {
 				availableSpaces = true;
 				break;
 			}
@@ -2106,7 +2149,7 @@ let checkForEmptyBoardSpaces = (ctx, cardValue, userId) => {
 		for(let i = 1; i <= cardValue; i++) {
 			if ((currBoardIndex - i) < 0) {
 				break;
-			} else if (boardMatrix[boardPath[currBoardIndex - i][0]][boardPath[currBoardIndex - i][1]] == 1) {
+			} else if (boardMatrix[boardPath[currBoardIndex - i][0]][boardPath[currBoardIndex - i][1]] == BOARD_FIELDS.NORMAL) {
 				availableSpaces = true;
 				break;
 			}
@@ -2128,7 +2171,7 @@ let checkForSpecialBoardSpaces = (ctx, cardValue, userId) => {
 		for(let i = 1; i <= cardValue; i++) {
 			if ((currBoardIndex + i) > (boardPath.length - 1)) {
 				break;
-			} else if (boardMatrix[boardPath[currBoardIndex + i][0]][boardPath[currBoardIndex + i][1]] > 1) {
+			} else if (boardMatrix[boardPath[currBoardIndex + i][0]][boardPath[currBoardIndex + i][1]] > BOARD_FIELDS.NORMAL) {
 				availableSpaces = true;
 				break;
 			}
@@ -2137,7 +2180,7 @@ let checkForSpecialBoardSpaces = (ctx, cardValue, userId) => {
 		for(let i = 1; i <= cardValue; i++) {
 			if ((currBoardIndex - i) < 0) {
 				break;
-			} else if (boardMatrix[boardPath[currBoardIndex - i][0]][boardPath[currBoardIndex - i][1]] > 1) {
+			} else if (boardMatrix[boardPath[currBoardIndex - i][0]][boardPath[currBoardIndex - i][1]] > BOARD_FIELDS.NORMAL) {
 				availableSpaces = true;
 				break;
 			}
