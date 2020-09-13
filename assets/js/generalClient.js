@@ -17,6 +17,7 @@ generalClient.prototype.clientConnectToServer = function() {
   this.socket.on('matchmake', this.processMatchmake.bind(this));
   this.socket.on('joinRoom', this.processJoinRoom.bind(this));
   this.socket.on('leaveRoom', this.processLeaveRoom.bind(this));
+  this.socket.on('chatMsg', this.processChatMsg.bind(this));
   this.socket.on('reconnect', this.sendServerReconnect.bind(this));
   this.socket.on('disconnect', this.processDisconnect.bind(this));
  	this.socket.on('serverError', this.processServerSocketError.bind(this));
@@ -211,6 +212,20 @@ generalClient.prototype.processLeaveRoom = function(_data) {
 	var _self = this;
 
 	 _self.roomController.processLeaveRoomResponse(_data);
+};
+
+generalClient.prototype.sendChatMsg = function (_data) {
+  var _self = this;
+
+  _self.socket.emit('chatMsg', _data);
+};
+
+generalClient.prototype.processChatMsg = function (_data) {
+  var _self = this;
+
+  if (_data && _self.logInSignUpController.isUserLoggedIn) {
+    _self.logInSignUpController.processChatMsg(_data);
+  }
 };
 
 generalClient.prototype.failHandler = function (xhr, status, errorThrown) {

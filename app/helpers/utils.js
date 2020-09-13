@@ -264,4 +264,7 @@ const self = module.exports = {
   getKeyByValue: (object, value) => {
     return Object.keys(object).find(key => object[key] === value);
   },
+  htmlEntities: (str) => {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  },
 };

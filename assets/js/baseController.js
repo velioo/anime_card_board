@@ -29,7 +29,8 @@ baseController.prototype._initConstants = function() {
 	_self.FORM_CLASS = '.anime-cb-form';
 	_self.MAIN_WRAPPER_ID = '#acb-main-wrapper';
 	_self.SUBMAIN_WRAPPER_ID = '#acb-submain-wrapper'
-	_self.INFO_HEADER = '#acb-info-header';
+	_self.INFO_HEADER_ID = '#acb-info-header';
+	_self.CHAT_WRAPPER_ID = '#acb-chat-wrapper';
 
 	_self.CHANGE_SCREEN_BTNS_CLASS = '.anime-cb-button, .anime-cb-button-no-style';
 
@@ -59,7 +60,6 @@ baseController.prototype._initConstants = function() {
 	_self.PRE_SCREEN_SPINNER_CLASS = '.pre-screen-spinner';
 	_self.SCREEN_FOOTER_CLASS = '.anime-cb-screen_footer';
 	_self.INPUT_ERRORS_CLASS = '.errors';
-
 
 	_self.LOGGED_IN_BLACKLISTED_SCREENS = [
 		_self.LOGIN_SCREEN_CLASS,
@@ -159,9 +159,11 @@ baseController.prototype.preSwitchScreenHook = function(screenClass) {
 	var _self = this;
 
 	if (screenClass == _self.GAME_SCREEN_CLASS || !_self.client.logInSignUpController.isUserLoggedIn()) {
-		$(_self.INFO_HEADER).hide();
+		$(_self.INFO_HEADER_ID).hide();
+		$(_self.CHAT_WRAPPER_ID).hide();
 	} else {
-		$(_self.INFO_HEADER).show();
+		$(_self.INFO_HEADER_ID).show();
+		$(_self.CHAT_WRAPPER_ID).show();
 	}
 
 	if (screenClass == _self.GAME_SCREEN_CLASS) {

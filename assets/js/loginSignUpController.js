@@ -44,6 +44,10 @@ logInSignUpController.prototype.initConstants = function() {
 	_self.USER_INFO_HEADER_XP_PROGRESS_BAR_WRAPPER_CLASS = '.anime-cb-level-progress-bar-wrapper';
 	_self.USER_INFO_HEADER_XP_PROGRESS_BAR_CLASS = '.anime-cb-level-progress-bar';
 	_self.USER_INFO_HEADER_XP_PROGRESS_BAR_TEXT_CLASS = '.anime-cb-user-info-level-xp';
+
+	_self.CHAT_BOX_CLASS = '.anime-cb-chat-box';
+	_self.CHAT_INPUT_ID = '#anime-cb-chat-input';
+	_self.CHAT_MSG_CLASS = '.anime-cb-chat-msg';
 };
 
 logInSignUpController.prototype.initElements = function() {
@@ -55,6 +59,7 @@ logInSignUpController.prototype.initElements = function() {
 	_self._userId = null;
 	_self._username = null;
 	_self._settings = {};
+	_self._scrollToBottom = true;
 };
 
 logInSignUpController.prototype.initListeners = function() {
@@ -128,6 +133,23 @@ logInSignUpController.prototype.initListeners = function() {
 	});
 
 	$(_self.CHARACTER_CHOOSE_CLASS).val(1);
+
+	$(_self.CHAT_INPUT_ID).on('keypress', function (e) {
+		var key = e.which;
+
+		if (key == 13 && $(_self.CHAT_INPUT_ID).val()) {
+			_self.client.sendChatMsg({ msg: $(_self.CHAT_INPUT_ID).val() })
+			$(_self.CHAT_INPUT_ID).val("");
+		}
+	});
+
+  $(_self.CHAT_BOX_CLASS).on('scroll', function() {
+    if($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
+    	_self._scrollToBottom = true;
+    } else {
+    	_self._scrollToBottom = false;
+    }
+	})
 };
 
 logInSignUpController.prototype.initIntervals = function() {
@@ -210,7 +232,8 @@ logInSignUpController.prototype.processLogoutResponse = function(data) {
 	if (data.isSuccessful) {
 		_self.resetSessionState();
 		_self.showLogOutSuccess(data);
-		$(_self.INFO_HEADER).hide();
+		$(_self.INFO_HEADER_ID).hide();
+		$(_self.CHAT_WRAPPER_ID).hide();
 		window.removeEventListener("beforeunload", _self.client.gameController.beforeUnload);
 	} else {
 		assert(data.errors.length > 0);
@@ -278,6 +301,24 @@ logInSignUpController.prototype.processSessionExpired = function(data) {
 	_self.showLogOutSuccess();
 	_self.resetSessionState();
 	_self.processChangeScreen(_self.MAIN_MENU_SCREEN_CLASS);
+};
+
+logInSignUpController.prototype.processChatMsg = function (data) {
+	var _self = this;
+
+	if (data.isSuccessful) {
+		_self.showChatMsg(data);
+	}
+};
+
+logInSignUpController.prototype.showChatMsg = function (data) {
+	var _self = this;
+
+	$(_self.CHAT_BOX_CLASS).append('<span class="anime-cb-chat-msg">' + data.time + ' ' + data.username + ': ' + data.msg + '</span><br>');
+
+	if (_self._scrollToBottom) {
+		$(_self.CHAT_BOX_CLASS).scrollTop($(_self.CHAT_BOX_CLASS)[0].scrollHeight);
+	}
 };
 
 logInSignUpController.prototype.resetSessionState = function () {

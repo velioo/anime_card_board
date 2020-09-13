@@ -927,6 +927,25 @@ const self = module.exports = {
 	  	}
 	  });
 
+	  socket.on('chatMsg', async (ctx) => {
+	  	try {
+	  		assert(ctx.session.userData && ctx.session.userData.username);
+
+	  		let date = new Date();
+	  		let currTime = date.getHours() + ':' + date.getMinutes();
+
+		  	socket.broadcast('chatMsg', {
+			  	isSuccessful: true,
+			  	username: ctx.session.userData.username,
+			  	msg: utils.htmlEntities(ctx.data.msg),
+			  	time: currTime,
+		  });
+	  	} catch (err) {
+	  		socket.emit('serverError', err);
+	  		logger.error('Error: %o', err);
+	  	}
+	  });
+
 	  socket.on('winGameFormally', async (ctx) => {
 	  	try {
 	  		let ctx_c = _.clone(ctx);
