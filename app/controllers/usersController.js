@@ -83,6 +83,11 @@ var self = module.exports = {
   logIn: async (ctx, next) => {
     ctx.errors = [];
     ctx.settings = null;
+    ctx.level = null;
+    ctx.currentLevelXp = null;
+    ctx.maxLevelXp = null;
+    ctx.winsCount = null;
+    ctx.losesCount = null;
 
     const isSchemaValid = ajv.validate(SCHEMAS.LOGIN, ctx.request.body.data);
 
