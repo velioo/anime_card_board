@@ -1,4 +1,4 @@
-const EMAIL_PASS = 'AnimeWars1337!';
+const EMAIL_PASS = 'aanbhadaxvmhczdc';
 const { PORT, ROOT } = require('../app');
 const FRONTEND_LOGGER_INTERVAL = 1000;
 // cookies
