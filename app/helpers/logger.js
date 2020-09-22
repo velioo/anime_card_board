@@ -10,6 +10,9 @@ var timeOffset = 12;
 var BulgariaTime = new Date(utcTime + (3600000 * timeOffset)).toJSON().slice(0,10);
 
 var winstonLogLevel = process.env.NODE_ENV ? 'error' : 'info';
+var winstonTransport = process.env.NODE_ENV
+    ? new winston.transports.Console()
+    : new winston.transports.File({ filename: `./logs/server_${BulgariaTime}.log` });
 
 const logger = module.exports = winston.createLogger({
     level: winstonLogLevel,
@@ -19,12 +22,10 @@ const logger = module.exports = winston.createLogger({
         myFormat
     ),
     transports: [
-        // new winston.transports.File({ filename: `./logs/server_${BulgariaTime}.log` }),
-        new winston.transports.Console(),
+        winstonTransport,
     ],
     exceptionHandlers: [
-        // new winston.transports.File({ filename: `./logs/exceptions_${BulgariaTime}.log` })
-        new winston.transports.Console(),
+        winstonTransport,
     ],
     exitOnError: false
 });

@@ -3,15 +3,11 @@ var gameClient = function() {
 };
 
 gameClient.prototype.initSocket = function() {
-	console.log('Init Socket');
-
 	this.socket = this.generalClient.socket;
 	this.initGameSocket(this.socket);
 };
 
 gameClient.prototype.initGameSocket = function(socket) {
-	console.log('SOCKET: ', socket);
-
 	socket.on('startGame', this.processStartGame.bind(this));
 	socket.on('drawCard', this.processDrawCard.bind(this));
 	socket.on('drawCardYou', this.processDrawCardYou.bind(this));
@@ -41,6 +37,8 @@ gameClient.prototype.processStartGame = function(_data) {
 
 	var _self = this;
 
+	clearInterval(_self.gameController.retryLastCommandInterval);
+
 	if (_self.generalClient.roomController._roomId && _data.roomId
 		&& _self.generalClient.roomController._roomId == _data.roomId) {
 		_self.gameController.processStartGameResponse(_data);
@@ -52,13 +50,20 @@ gameClient.prototype.drawCard = function (_data) {
 	var _self = this;
 
 	_self.socket.emit('drawCard', _data);
+
+	clearInterval(_self.gameController.retryLastCommandInterval);
+
+	_self.gameController.retryLastCommandInterval = setInterval(function() {
+		_self.socket.emit('drawCard', _data);
+	}, 2000);
 };
 
 gameClient.prototype.processDrawCard = function (_data) {
 	logger.info('processDrawCard');
-	console.log('Draw caard: ');
 
 	var _self = this;
+
+	clearInterval(_self.gameController.retryLastCommandInterval);
 
 	if (_self.generalClient.roomController._roomId && _data.roomId
 		&& _self.generalClient.roomController._roomId == _data.roomId) {
@@ -70,6 +75,8 @@ gameClient.prototype.processDrawCardYou = function (_data) {
 	logger.info('processDrawCardYou');
 
 	var _self = this;
+
+	clearInterval(_self.gameController.retryLastCommandInterval);
 
 	if (_self.generalClient.roomController._roomId && _data.roomId
 		&& _self.generalClient.roomController._roomId == _data.roomId) {
@@ -83,13 +90,20 @@ gameClient.prototype.drawPhase = function (_data) {
 	var _self = this;
 
 	_self.socket.emit('drawPhase', _data);
+
+	clearInterval(_self.gameController.retryLastCommandInterval);
+
+	_self.gameController.retryLastCommandInterval = setInterval(function() {
+		_self.socket.emit('drawPhase', _data);
+	}, 2000);
 };
 
 gameClient.prototype.processDrawPhase = function (_data) {
 	logger.info('processDrawPhase');
-	console.log('processDrawPhase');
 
 	var _self = this;
+
+	clearInterval(_self.gameController.retryLastCommandInterval);
 
 	if (_self.generalClient.roomController._roomId && _data.roomId
 		&& _self.generalClient.roomController._roomId == _data.roomId) {
@@ -103,13 +117,20 @@ gameClient.prototype.standByPhase = function (_data) {
 	var _self = this;
 
 	_self.socket.emit('standByPhase', _data);
+
+	clearInterval(_self.gameController.retryLastCommandInterval);
+
+	_self.gameController.retryLastCommandInterval = setInterval(function() {
+		_self.socket.emit('standByPhase', _data);
+	}, 2000);
 };
 
 gameClient.prototype.processStandByPhase = function (_data) {
 	logger.info('processStandByPhase');
-	console.log('processStandByPhase');
 
 	var _self = this;
+
+	clearInterval(_self.gameController.retryLastCommandInterval);
 
 	if (_self.generalClient.roomController._roomId && _data.roomId
 		&& _self.generalClient.roomController._roomId == _data.roomId) {
@@ -123,13 +144,20 @@ gameClient.prototype.mainPhase = function (_data) {
 	var _self = this;
 
 	_self.socket.emit('mainPhase', _data);
+
+	clearInterval(_self.gameController.retryLastCommandInterval);
+
+	_self.gameController.retryLastCommandInterval = setInterval(function() {
+		_self.socket.emit('mainPhase', _data);
+	}, 2000);
 };
 
 gameClient.prototype.processMainPhase = function (_data) {
 	logger.info('processMainPhase');
-	console.log('processMainPhase');
 
 	var _self = this;
+
+	clearInterval(_self.gameController.retryLastCommandInterval);
 
 	if (_self.generalClient.roomController._roomId && _data.roomId
 		&& _self.generalClient.roomController._roomId == _data.roomId) {
@@ -143,13 +171,20 @@ gameClient.prototype.summonCard = function (_data) {
 	var _self = this;
 
 	_self.socket.emit('summonCard', _data);
+
+	clearInterval(_self.gameController.retryLastCommandInterval);
+
+	_self.gameController.retryLastCommandInterval = setInterval(function() {
+		_self.socket.emit('summonCard', _data);
+	}, 2000);
 };
 
 gameClient.prototype.processSummonCard = function (_data) {
 	logger.info('processSummonCard');
-	console.log('processSummonCard');
 
 	var _self = this;
+
+	clearInterval(_self.gameController.retryLastCommandInterval);
 
 	if (_self.generalClient.roomController._roomId && _data.roomId
 		&& _self.generalClient.roomController._roomId == _data.roomId) {
@@ -163,13 +198,20 @@ gameClient.prototype.drawCardFromEnemyHand = function (_data) {
 	var _self = this;
 
 	_self.socket.emit('drawCardFromEnemyHand', _data);
+
+	clearInterval(_self.gameController.retryLastCommandInterval);
+
+	_self.gameController.retryLastCommandInterval = setInterval(function() {
+		_self.socket.emit('drawCardFromEnemyHand', _data);
+	}, 2000);
 };
 
 gameClient.prototype.processDrawCardFromEnemyHand = function (_data) {
 	logger.info('processDrawCardFromEnemyHand');
-	console.log('processDrawCardFromEnemyHand');
 
 	var _self = this;
+
+	clearInterval(_self.gameController.retryLastCommandInterval);
 
 	if (_self.generalClient.roomController._roomId && _data.roomId
 		&& _self.generalClient.roomController._roomId == _data.roomId) {
@@ -183,13 +225,20 @@ gameClient.prototype.destroyCardFromEnemyField = function (_data) {
 	var _self = this;
 
 	_self.socket.emit('destroyCardFromEnemyField', _data);
+
+	clearInterval(_self.gameController.retryLastCommandInterval);
+
+	_self.gameController.retryLastCommandInterval = setInterval(function() {
+		_self.socket.emit('destroyCardFromEnemyField', _data);
+	}, 2000);
 };
 
 gameClient.prototype.processDestroyCardFromEnemyField = function (_data) {
 	logger.info('processDestroyCardFromEnemyField');
-	console.log('processDestroyCardFromEnemyField');
 
 	var _self = this;
+
+	clearInterval(_self.gameController.retryLastCommandInterval);
 
 	if (_self.generalClient.roomController._roomId && _data.roomId
 		&& _self.generalClient.roomController._roomId == _data.roomId) {
@@ -203,13 +252,20 @@ gameClient.prototype.takeCardFromGraveyard = function (_data) {
 	var _self = this;
 
 	_self.socket.emit('takeCardFromGraveyard', _data);
+
+	clearInterval(_self.gameController.retryLastCommandInterval);
+
+	_self.gameController.retryLastCommandInterval = setInterval(function() {
+		_self.socket.emit('takeCardFromGraveyard', _data);
+	}, 2000);
 };
 
 gameClient.prototype.processTakeCardFromGraveyard = function (_data) {
 	logger.info('processTakeCardFromGraveyard');
-	console.log('processTakeCardFromGraveyard');
 
 	var _self = this;
+
+	clearInterval(_self.gameController.retryLastCommandInterval);
 
 	if (_self.generalClient.roomController._roomId && _data.roomId
 		&& _self.generalClient.roomController._roomId == _data.roomId) {
@@ -223,13 +279,20 @@ gameClient.prototype.rollPhase = function (_data) {
 	var _self = this;
 
 	_self.socket.emit('rollPhase', _data);
+
+	clearInterval(_self.gameController.retryLastCommandInterval);
+
+	_self.gameController.retryLastCommandInterval = setInterval(function() {
+		_self.socket.emit('rollPhase', _data);
+	}, 2000);
 };
 
 gameClient.prototype.processRollPhase = function (_data) {
 	logger.info('processRollPhase');
-	console.log('processRollPhase');
 
 	var _self = this;
+
+	clearInterval(_self.gameController.retryLastCommandInterval);
 
 	if (_self.generalClient.roomController._roomId && _data.roomId
 		&& _self.generalClient.roomController._roomId == _data.roomId) {
@@ -243,13 +306,20 @@ gameClient.prototype.rollDiceBoard = function (_data) {
 	var _self = this;
 
 	_self.socket.emit('rollDiceBoard', _data);
+
+	clearInterval(_self.gameController.retryLastCommandInterval);
+
+	_self.gameController.retryLastCommandInterval = setInterval(function() {
+		_self.socket.emit('rollDiceBoard', _data);
+	}, 2000);
 };
 
 gameClient.prototype.processRollDiceBoard = function (_data) {
 	logger.info('processRollDiceBoard');
-	console.log('processRollDiceBoard');
 
 	var _self = this;
+
+	clearInterval(_self.gameController.retryLastCommandInterval);
 
 	if (_self.generalClient.roomController._roomId &&_data.roomId
 		&& _self.generalClient.roomController._roomId == _data.roomId) {
@@ -263,13 +333,20 @@ gameClient.prototype.endPhase = function (_data) {
 	var _self = this;
 
 	_self.socket.emit('endPhase', _data);
+
+	clearInterval(_self.gameController.retryLastCommandInterval);
+
+	_self.gameController.retryLastCommandInterval = setInterval(function() {
+		_self.socket.emit('endPhase', _data);
+	}, 2000);
 };
 
 gameClient.prototype.processEndPhase = function (_data) {
 	logger.info('processEndPhase');
-	console.log('processEndPhase');
 
 	var _self = this;
+
+	clearInterval(_self.gameController.retryLastCommandInterval);
 
 	if (_self.generalClient.roomController._roomId && _data.roomId
 		&& _self.generalClient.roomController._roomId == _data.roomId) {
@@ -283,13 +360,20 @@ gameClient.prototype.discardCard = function (_data) {
 	var _self = this;
 
 	_self.socket.emit('discardCard', _data);
+
+	clearInterval(_self.gameController.retryLastCommandInterval);
+
+	_self.gameController.retryLastCommandInterval = setInterval(function() {
+		_self.socket.emit('discardCard', _data);
+	}, 2000);
 };
 
 gameClient.prototype.processDiscardCard = function (_data) {
 	logger.info('processDiscardCard');
-	console.log('processDiscardCard');
 
 	var _self = this;
+
+	clearInterval(_self.gameController.retryLastCommandInterval);
 
 	if (_self.generalClient.roomController._roomId && _data.roomId
 		&& _self.generalClient.roomController._roomId == _data.roomId) {
@@ -303,13 +387,20 @@ gameClient.prototype.finishCardEffect = function (_data) {
 	var _self = this;
 
 	_self.socket.emit('finishCardEffect', _data);
+
+	clearInterval(_self.gameController.retryLastCommandInterval);
+
+	_self.gameController.retryLastCommandInterval = setInterval(function() {
+		_self.socket.emit('finishCardEffect', _data);
+	}, 2000);
 };
 
 gameClient.prototype.processFinishCardEffect = function (_data) {
 	logger.info('processFinishCardEffect');
-	console.log('processFinishCardEffect');
 
 	var _self = this;
+
+	clearInterval(_self.gameController.retryLastCommandInterval);
 
 	if (_self.generalClient.roomController._roomId && _data.roomId
 		&& _self.generalClient.roomController._roomId == _data.roomId) {
@@ -323,13 +414,20 @@ gameClient.prototype.activateCardEffect = function (_data) {
 	var _self = this;
 
 	_self.socket.emit('activateCardEffect', _data);
+
+	clearInterval(_self.gameController.retryLastCommandInterval);
+
+	_self.gameController.retryLastCommandInterval = setInterval(function() {
+		_self.socket.emit('activateCardEffect', _data);
+	}, 2000);
 };
 
 gameClient.prototype.processActivateCardEffect = function (_data) {
 	logger.info('processActivateCardEffect');
-	console.log('processActivateCardEffect');
 
 	var _self = this;
+
+	clearInterval(_self.gameController.retryLastCommandInterval);
 
 	if (_self.generalClient.roomController._roomId && _data.roomId
 		&& _self.generalClient.roomController._roomId == _data.roomId) {
@@ -343,13 +441,20 @@ gameClient.prototype.finishCardEffectContinuous = function (_data) {
 	var _self = this;
 
 	_self.socket.emit('finishCardEffectContinuous', _data);
+
+	clearInterval(_self.gameController.retryLastCommandInterval);
+
+	_self.gameController.retryLastCommandInterval = setInterval(function() {
+		_self.socket.emit('finishCardEffectContinuous', _data);
+	}, 2000);
 };
 
 gameClient.prototype.processFinishCardEffectContinuous = function (_data) {
 	logger.info('processFinishCardEffectContinuous');
-	console.log('processFinishCardEffectContinuous');
 
 	var _self = this;
+
+	clearInterval(_self.gameController.retryLastCommandInterval);
 
 	if (_self.generalClient.roomController._roomId && _data.roomId
 		&& _self.generalClient.roomController._roomId == _data.roomId) {
@@ -363,13 +468,20 @@ gameClient.prototype.finishChainEffect = function (_data) {
 	var _self = this;
 
 	_self.socket.emit('finishChainEffect', _data);
+
+	clearInterval(_self.gameController.retryLastCommandInterval);
+
+	_self.gameController.retryLastCommandInterval = setInterval(function() {
+		_self.socket.emit('finishChainEffect', _data);
+	}, 2000);
 };
 
 gameClient.prototype.processFinishChainEffect = function (_data) {
 	logger.info('processFinishChainEffect');
-	console.log('processFinishChainEffect');
 
 	var _self = this;
+
+	clearInterval(_self.gameController.retryLastCommandInterval);
 
 	if (_self.generalClient.roomController._roomId && _data.roomId
 		&& _self.generalClient.roomController._roomId == _data.roomId) {
@@ -379,17 +491,20 @@ gameClient.prototype.processFinishChainEffect = function (_data) {
 
 gameClient.prototype.winGameFormally = function(_data) {
 	logger.info('winGameFormally');
-	console.log('winGameFormally');
 
 	var _self = this;
 
 	_self.socket.emit('winGameFormally', _data);
+
+	clearInterval(_self.gameController.retryLastCommandInterval);
+
+	_self.gameController.retryLastCommandInterval = setInterval(function() {
+		_self.socket.emit('winGameFormally', _data);
+	}, 2000);
 };
 
 gameClient.prototype.processTimerValues = function(_data) {
 	var _self = this;
-
-	console.log('processTimerValues');
 
 	if (_self.generalClient.roomController._roomId && _data.roomId
 		&& _self.generalClient.roomController._roomId == _data.roomId) {
@@ -397,29 +512,22 @@ gameClient.prototype.processTimerValues = function(_data) {
 	}
 };
 
-// gameClient.prototype.winGameEnemyTimeout = function(_data) {
-// 	logger.info('winGameEnemyTimeout');
-// 	console.log('winGameEnemyTimeout');
-
-// 	var _self = this;
-
-// 	_self.socket.emit('winGameEnemyTimeout', _data);
-// };
-
 gameClient.prototype.processWinGameFormally = function(_data) {
 	logger.info('processWinGameFormally');
-	console.log('processWinGameFormally');
 
 	var _self = this;
+
+	clearInterval(_self.gameController.retryLastCommandInterval);
 
 	_self.gameController.processWinGameFormallyResponse(_data);
 };
 
 gameClient.prototype.processWinGame = function(_data) {
 	logger.info('processWinGame');
-	console.log('processWinGame');
 
 	var _self = this;
+
+	clearInterval(_self.gameController.retryLastCommandInterval);
 
 	if (_self.generalClient.roomController._roomId && _data.roomId
 		&& _self.generalClient.roomController._roomId == _data.roomId) {

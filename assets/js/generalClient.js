@@ -175,11 +175,16 @@ generalClient.prototype.removeFromMatchmaking = function () {
 
 generalClient.prototype.startGame = function(_data) {
   logger.info('startGame');
-  console.log('START GAME');
 
   var _self = this;
 
   _self.socket.emit('startGame', _data);
+
+  clearInterval(_self.gameController.retryLastCommandInterval);
+
+  _self.gameController.retryLastCommandInterval = setInterval(function() {
+    _self.socket.emit('startGame', _data);
+  }, 2000);
 };
 
 generalClient.prototype.processServerSocketError = function(_data) {

@@ -1,7 +1,6 @@
 var gameController = function(client) {
 	var _self = this;
 
-	console.log('INIT GAME CONTROLLER');
 	baseController.call(_self, client);
 
 	_self.initConstants();
@@ -221,8 +220,6 @@ gameController.prototype.initIntervals = function() {
 gameController.prototype.resetGameState = function () {
 	var _self = this;
 
-	console.log('RESET GAME STATE');
-
 	if (_self._backgroundMusic) {
 		_self._backgroundMusic.pause();
 	}
@@ -278,6 +275,7 @@ gameController.prototype.resetGameState = function () {
 	clearTimeout(_self.quickGameInfoRemoveElementTimeout);
 	_self.quickGameInfoMsg = "";
 	clearTimeout(_self.waitForMsgTimeout);
+	clearInterval(_self.retryLastCommandInterval);
 
 	_self._postGame = true;
 	setTimeout(function() {
@@ -381,9 +379,7 @@ gameController.prototype.setLeaveButton = function (playerIdWinGame) {
 };
 
 gameController.prototype.processWinGameFormallyResponse = function (data) {
-	logger.info('processWinGameFormallyResponse');
-	console.log('processWinGameFormallyResponse');
-	console.log('data: ', data);
+	console.log('processWinGameFormallyResponse data', data);
 
 	var _self = this;
 
@@ -406,9 +402,7 @@ gameController.prototype.processWinGameFormallyResponse = function (data) {
 };
 
 gameController.prototype.processWinGame = function (data) {
-	logger.info('processWinGame');
-	console.log('processWinGame');
-	console.log('data: ', data);
+	console.log('processWinGame data: ', data);
 
 	var _self = this;
 
@@ -436,8 +430,7 @@ gameController.prototype.processWinGame = function (data) {
 };
 
 gameController.prototype.processStartGameResponse = function (data) {
-	console.log('processStartGameResponse');
-	console.log('data: ', data);
+	console.log('processStartGameResponse data: ', data);
 
 	var _self = this;
 
@@ -532,17 +525,13 @@ gameController.prototype.renderGameField = function () {
 };
 
 gameController.prototype.initGameData = function (data) {
-	logger.info('initGameData');
-	console.log('initGameData');
-	console.log('Data: ', data);
+	console.log('initGameData: ', data);
 
 	var _self = this;
 
 	_self._gameplayData = data.gameplayData;
 	_self._roomData = data.roomData;
 	_self._cardsInHandArr = data.cardsInHandArr;
-
-	console.log('Gameplay Data: ', _self._gameplayData);
 
 	_self.validatePlayers();
 };
@@ -713,7 +702,6 @@ gameController.prototype.drawCard = function () {
 
 	if (cardsToDraw > 0) {
 		_self.drawCardAnimationsFinishedYou = false;
-		console.log('Sending draw card request');
 		_self._lastClientData = { roomId: _self._roomData.id };
 		_self.client.drawCard(_self._lastClientData);
 	} else {
@@ -722,7 +710,6 @@ gameController.prototype.drawCard = function () {
 };
 
 gameController.prototype.processDrawCard = function (data) {
-	console.log('processDrawCard');
 	console.log('processDrawCard data: ', data);
 
 	var _self = this;
@@ -798,7 +785,6 @@ gameController.prototype.processDrawCard = function (data) {
 };
 
 gameController.prototype.processDrawCardYou = function (data) {
-	console.log('processDrawCardYou');
 	console.log('processDrawCardYou data: ', data);
 
 	var _self = this;
@@ -854,7 +840,6 @@ gameController.prototype.startDrawPhase = function () {
 };
 
 gameController.prototype.processDrawPhase = function (data) {
-	console.log('processDrawPhase');
 	console.log('processDrawPhase data: ', data);
 
 	var _self = this;
@@ -891,7 +876,6 @@ gameController.prototype.processDrawPhase = function (data) {
 };
 
 gameController.prototype.processStandByPhase = function (data) {
-	console.log('processStandByPhase');
 	console.log('processStandByPhase data: ', data);
 
 	var _self = this;
@@ -929,7 +913,6 @@ gameController.prototype.processStandByPhase = function (data) {
 };
 
 gameController.prototype.processMainPhase = function (data) {
-	console.log('processMainPhase');
 	console.log('processMainPhase data: ', data);
 
 	var _self = this;
@@ -1449,7 +1432,6 @@ gameController.prototype.canSummonCard = function (card) {
 };
 
 gameController.prototype.processSummonCard = function (data) {
-	console.log('processSummonCard');
 	console.log('processSummonCard data: ', data);
 
 	var _self = this;
@@ -1489,7 +1471,6 @@ gameController.prototype.processSummonCard = function (data) {
 };
 
 gameController.prototype.processRollPhase = function (data) {
-	console.log('processRollPhase');
 	console.log('processRollPhase data: ', data);
 
 	var _self = this;
@@ -1526,7 +1507,6 @@ gameController.prototype.processRollPhase = function (data) {
 };
 
 gameController.prototype.processRollDiceBoard = function (data) {
-	console.log('processRollDiceBoard');
 	console.log('processRollDiceBoard data: ', data);
 
 	var _self = this;
@@ -1585,7 +1565,6 @@ gameController.prototype.processRollDiceBoard = function (data) {
 };
 
 gameController.prototype.processEndPhase = function (data) {
-	console.log('processEndPhase');
 	console.log('processEndPhase data: ', data);
 
 	var _self = this;
@@ -1667,7 +1646,6 @@ gameController.prototype.takeCardFromGraveyard = function (card, playerId) {
 };
 
 gameController.prototype.processDiscardCard = function (data) {
-	console.log('processDiscardCard');
 	console.log('processDiscardCard data: ', data);
 
 	var _self = this;
@@ -1726,7 +1704,6 @@ gameController.prototype.processDiscardCard = function (data) {
 };
 
 gameController.prototype.processFinishCardEffect = function (data) {
-	console.log('processFinishCardEffect');
 	console.log('processFinishCardEffect data: ', data);
 
 	var _self = this;
@@ -4151,7 +4128,6 @@ gameController.prototype.setTakeCardFromYourGraveyardListener = function () {
 gameController.prototype.setTakeCardFromEnemyGraveyardListener = function () {
 	var _self = this;
 
-	console.log('setTakeCardFromEnemyGraveyardListener');
 	var playerState = _self._gameplayData.gameState.playersState[_self._yourUserId];
 	var playerStateEnemy = _self._gameplayData.gameState.playersState[_self._enemyUserId];
 
@@ -4999,7 +4975,6 @@ gameController.prototype.activateCardEffect = function (card) {
 };
 
 gameController.prototype.processActivateCardEffect = function (data) {
-	console.log('processActivateCardEffect');
 	console.log('processActivateCardEffect data: ', data);
 
 	var _self = this;
@@ -5038,7 +5013,6 @@ gameController.prototype.processActivateCardEffect = function (data) {
 };
 
 gameController.prototype.processFinishCardEffectContinuous = function (data) {
-	console.log('processFinishCardEffectContinuous');
 	console.log('processFinishCardEffectContinuous data: ', data);
 
 	var _self = this;
@@ -5074,7 +5048,6 @@ gameController.prototype.processFinishCardEffectContinuous = function (data) {
 };
 
 gameController.prototype.processFinishChainEffect = function (data) {
-	console.log('processFinishChainEffect');
 	console.log('processFinishChainEffect data: ', data);
 
 	var _self = this;
@@ -5114,7 +5087,6 @@ gameController.prototype.processFinishChainEffect = function (data) {
 };
 
 gameController.prototype.processDrawCardFromEnemyHand = function(data) {
-	console.log('processDrawCardFromEnemyHand');
 	console.log('processDrawCardFromEnemyHand data: ', data);
 
 	var _self = this;
@@ -5172,7 +5144,6 @@ gameController.prototype.processDrawCardFromEnemyHand = function(data) {
 };
 
 gameController.prototype.processDestroyCardFromEnemyField = function(data) {
-	console.log('processDestroyCardFromEnemyField');
 	console.log('processDestroyCardFromEnemyField data: ', data);
 
 	var _self = this;
@@ -5230,7 +5201,6 @@ gameController.prototype.processDestroyCardFromEnemyField = function(data) {
 };
 
 gameController.prototype.processTakeCardFromGraveyard = function(data) {
-	console.log('processTakeCardFromGraveyard');
 	console.log('processTakeCardFromGraveyard data: ', data);
 
 	var _self = this;
