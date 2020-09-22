@@ -17,10 +17,12 @@ const logger = module.exports = winston.createLogger({
         myFormat
     ),
     transports: [
-        new winston.transports.File({ filename: `./logs/server_${BulgariaTime}.log` })
+        // new winston.transports.File({ filename: `./logs/server_${BulgariaTime}.log` }),
+        new winston.transports.Console(),
     ],
     exceptionHandlers: [
-        new winston.transports.File({ filename: `./logs/exceptions_${BulgariaTime}.log` })
+        // new winston.transports.File({ filename: `./logs/exceptions_${BulgariaTime}.log` })
+        new winston.transports.Console(),
     ],
     exitOnError: false
 });
