@@ -7,6 +7,8 @@ const {
 	IDLE_TIMEOUT_MILLIS,
 } = require('../constants/constants');
 
+
+
 var pg = require('pg');
 var config = {
 	connectionString: process.env.DATABASE_URL,
@@ -17,6 +19,12 @@ var config = {
   // database: PGDATABASE, // name of the database
   max: CONNECTION_LIMIT, // max number of clients in the pool
   idleTimeoutMillis: IDLE_TIMEOUT_MILLIS,
+}
+
+if (!config.connectionString) {
+	config.user = PGUSER;
+	config.database = PGDATABASE;
+	delete config.ssl;
 }
 
 var pool = new pg.Pool(config);

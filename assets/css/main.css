@@ -24,6 +24,7 @@ body {
   padding: 10px;
   background-color: #A52A2A;
   z-index: 10;
+  display: none;
 }
 
 .anime-cb-user-info-wrapper {
@@ -4451,6 +4452,7 @@ input:checked + .slider:after
   height: 160px;
   font-family: Arial, Helvetica, sans-serif;
   z-index: 1;
+  display: none;
 }
 
 .anime-cb-chat-title {
