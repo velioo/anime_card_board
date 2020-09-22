@@ -177,7 +177,6 @@ logInSignUpController.prototype.isUserLoggedIn = function() {
 };
 
 logInSignUpController.prototype.processSignUpResponse = function(data) {
-	logger.info('processSignUpResponse');
 	logger.info('To validate: ', JSON.stringify(data));
 
 	var _self = this;
@@ -197,7 +196,6 @@ logInSignUpController.prototype.processSignUpResponse = function(data) {
 };
 
 logInSignUpController.prototype.processLoginResponse = function(data) {
-	logger.info('processLoginResponse');
 	logger.info('To validate: ', JSON.stringify(data));
 
 	var _self = this;
@@ -221,7 +219,6 @@ logInSignUpController.prototype.processLoginResponse = function(data) {
 };
 
 logInSignUpController.prototype.processLogoutResponse = function(data) {
-	logger.info('processLogoutResponse');
 	logger.info('To validate: ', JSON.stringify(data));
 
 	var _self = this;
@@ -242,9 +239,7 @@ logInSignUpController.prototype.processLogoutResponse = function(data) {
 };
 
 logInSignUpController.prototype.processSettingsResponse = function(data) {
-	logger.info('processSettingsResponse');
 	logger.info('To validate: ', JSON.stringify(data));
-	console.log('To validate: ', data);
 
 	var _self = this;
 
@@ -266,9 +261,6 @@ logInSignUpController.prototype.processSettingsResponse = function(data) {
 };
 
 logInSignUpController.prototype.processIsUserLoggedInResponse = function(data) {
-	//logger.info('processIsUserLoggedInResponse');
-	console.log(data);
-
 	var _self = this;
 
   assert(ajv.validate(isUserLoggedInResponse, data), 'isUserLoggedInResponse is invalid' +
@@ -294,8 +286,6 @@ logInSignUpController.prototype.processIsUserLoggedInResponse = function(data) {
 };
 
 logInSignUpController.prototype.processSessionExpired = function(data) {
-	logger.info('processSessionExpired');
-	console.log('processSessionExpired');
 	var _self = this;
 
 	_self.showLogOutSuccess();
@@ -492,6 +482,9 @@ logInSignUpController.prototype.updateSettingsStatus = function (settings) {
 logInSignUpController.prototype.updateUserInfoStatus = function (data) {
 	var _self = this;
 
+	$(_self.INFO_HEADER_ID).show();
+	$(_self.CHAT_WRAPPER_ID).show();
+
 	_self.USER_INFO_HEADER_WRAPPER_CLASS = '.anime-cb-user-info-wrapper';
 	_self.USER_INFO_HEADER_USERNAME_CLASS = '.anime-cb-user-info-username';
 	_self.USER_INFO_HEADER_LEVEL_CLASS = '.anime-cb-user-info-level';
@@ -508,7 +501,6 @@ logInSignUpController.prototype.updateUserInfoStatus = function (data) {
 
 	$(_self.USER_INFO_HEADER_XP_PROGRESS_BAR_TEXT_CLASS).text(xpPercentage + "%");
 	$(_self.USER_INFO_HEADER_XP_PROGRESS_BAR_CLASS).css("width", xpPercentage + "%");
-
 };
 
 logInSignUpController.prototype.preSwitchScreenHookLogInSignUpController = function (screenClass) {
