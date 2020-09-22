@@ -117,6 +117,36 @@ const self = module.exports = {
       assert(ctx.roomData.player1Character && ctx.roomData.player2Character);
 
       let boardDataPlayers = JSON.parse(queryStatusBoards.rows[0].board_data_json);
+      let boardMatrix = JSON.parse(queryStatusBoards.rows[0].board_matrix_json);
+
+      let timesGenerated = 0;
+      if ("random" in boardDataPlayers) {
+        assert("rows" in boardDataPlayers);
+        assert("columns" in boardDataPlayers);
+
+        let minSpacesDefault = (boardDataPlayers.rows * boardDataPlayers.columns) / 2;
+        let minSpaces = boardDataPlayers.minSpaces || minSpacesDefault;
+
+        assert(minSpaces && minSpaces <= minSpacesDefault);
+
+        do {
+          let result = gameCore.generateRandomBoard(ctx, boardDataPlayers);
+          boardMatrixTmp = result[0];
+          boardDataPlayersTmp = result[1];
+          timesGenerated++;
+
+          assert(boardMatrixTmp);
+          assert(boardDataPlayersTmp);
+        } while (boardDataPlayersTmp.boardPath.length < minSpaces);
+
+        boardMatrix = boardMatrixTmp;
+        boardDataPlayers = boardDataPlayersTmp;
+
+        assert(boardMatrix);
+        assert(boardDataPlayers);
+      }
+
+      console.log('Times generated: ' + timesGenerated);
 
       ctx.gameplayData = {
         gameState: {
@@ -125,7 +155,7 @@ const self = module.exports = {
           roomId: ctx.roomData.id,
           boardData: {
             id: queryStatusBoards.rows[0].board_id,
-            boardMatrix: JSON.parse(queryStatusBoards.rows[0].board_matrix_json),
+            boardMatrix: boardMatrix,
             boardDataPlayers: boardDataPlayers,
           },
           timerSeconds: 300,

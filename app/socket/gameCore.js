@@ -7,6 +7,8 @@ const {
   TURN_PHASES,
   CARD_RARITIES,
   BOARD_FIELDS,
+  BOARD_FIELDS_TIERS,
+  DIRECTIONS,
 } = require('../constants/constants');
 const SCHEMAS = require('../schemas/schemas');
 const Ajv = require('ajv');
@@ -1761,6 +1763,121 @@ var self = module.exports = {
 
 		updateCardsStatus(ctx);
 	},
+	generateRandomBoard: (ctx, boardData) => {
+		let cols = boardData.columns;
+		let rows = boardData.rows;
+		let boardMatrix = [];
+		let boardDataPlayers = { player1StartBoardIndex: 0, boardPath: [] };
+
+		for (let row = 0; row < rows; row++) {
+			boardMatrix[row] = [];
+			for (let col = 0; col < cols; col++) {
+				boardMatrix[row][col] = 0;
+			}
+		}
+
+		let boardStartPositionRow = utils.getRandomInt(0, rows - 1);
+		let boardStartPositionCol = 0;
+		boardDataPlayers.boardPath[0] = [boardStartPositionRow, boardStartPositionCol];
+		boardMatrix[boardStartPositionRow][boardStartPositionCol] = generateRandomBoardSpace();
+
+		let currBoardIndex = 1;
+		let canMoveUp = true;
+		let canMoveRight = true;
+		let canMoveDown = true;
+		let canMoveLeft = true;
+
+		while(1) {
+			let randNum = utils.getRandomInt(1, 4);
+
+			let prevRow = boardDataPlayers.boardPath[currBoardIndex - 1][0];
+			let prevCol = boardDataPlayers.boardPath[currBoardIndex - 1][1];
+			let movedCurrLoop = false;
+
+			switch(randNum) {
+				case DIRECTIONS.UP:
+					if (!canMoveUp
+						|| (prevRow <= 0)
+						|| (boardMatrix[prevRow - 1][prevCol] > 0)
+						|| (((prevCol - 1) >= 0) && (boardMatrix[prevRow - 1][prevCol - 1] > 0))
+						|| (((prevCol + 1) < cols) && (boardMatrix[prevRow - 1][prevCol + 1] > 0))
+						|| ((prevRow - 2 >= 0) && (boardMatrix[prevRow - 2][prevCol] > 0))) {
+						canMoveUp = false;
+						break;
+					}
+ 
+					boardDataPlayers.boardPath[currBoardIndex] = [ prevRow - 1, prevCol ];
+
+					boardMatrix[prevRow - 1][prevCol] = generateRandomBoardSpace();
+
+					currBoardIndex++;
+					movedCurrLoop = true;
+					break;
+				case DIRECTIONS.RIGHT:
+					if (!canMoveRight
+						|| (prevCol >= (cols - 1))
+						|| (boardMatrix[prevRow][prevCol + 1] > 0)
+						|| (((prevRow - 1) >= 0) && (boardMatrix[prevRow - 1][prevCol + 1] > 0))
+						|| (((prevRow + 1) < rows) && (boardMatrix[prevRow + 1][prevCol + 1] > 0))
+						|| ((prevCol + 2 < cols) && (boardMatrix[prevRow][prevCol + 2] > 0))) {
+						canMoveRight = false;
+						break;
+					}
+
+					boardDataPlayers.boardPath[currBoardIndex] = [ prevRow, prevCol + 1 ];
+					boardMatrix[prevRow][prevCol + 1] = generateRandomBoardSpace();
+					currBoardIndex++;
+					movedCurrLoop = true;
+					break;
+				case DIRECTIONS.DOWN:
+					if (!canMoveDown
+						|| (prevRow >= (rows - 1))
+						|| (boardMatrix[prevRow + 1][prevCol] > 0)
+						|| (((prevCol - 1) >= 0) && (boardMatrix[prevRow + 1][prevCol - 1] > 0))
+						|| (((prevCol + 1) < cols) && (boardMatrix[prevRow + 1][prevCol + 1] > 0))
+						|| ((prevRow + 2 < rows) && (boardMatrix[prevRow + 2][prevCol] > 0))) {
+						canMoveDown = false;
+						break;
+					}
+
+					boardDataPlayers.boardPath[currBoardIndex] = [ prevRow + 1, prevCol ];
+					boardMatrix[prevRow + 1][prevCol] = generateRandomBoardSpace();
+					currBoardIndex++;
+					movedCurrLoop = true;
+					break;
+				case DIRECTIONS.LEFT:
+					if (!canMoveLeft
+						|| (prevCol <= 0)
+						|| (boardMatrix[prevRow][prevCol - 1] > 0)
+						|| (((prevRow - 1) >= 0) && (boardMatrix[prevRow - 1][prevCol - 1] > 0))
+						|| (((prevRow + 1) < rows) && (boardMatrix[prevRow + 1][prevCol - 1] > 0))
+						|| ((prevCol - 2 >= 0) && (boardMatrix[prevRow][prevCol - 2] > 0))) {
+						canMoveLeft = false;
+						break;
+					}
+
+					boardDataPlayers.boardPath[currBoardIndex] = [ prevRow, prevCol - 1 ];
+					boardMatrix[prevRow][ prevCol - 1] = generateRandomBoardSpace();
+					currBoardIndex++;
+					movedCurrLoop = true;
+					break;
+			}
+
+			if (movedCurrLoop) {
+				canMoveUp = true;
+				canMoveRight = true;
+				canMoveDown = true;
+				canMoveLeft = true;
+			}
+
+			if (!canMoveUp && !canMoveRight && !canMoveDown && !canMoveLeft) {
+				boardDataPlayers.player2StartBoardIndex = currBoardIndex - 1;
+				break;
+			}
+		}
+
+		return [boardMatrix, boardDataPlayers];
+	},
 };
 
 let updateCardsStatus = function (ctx) {
@@ -2440,4 +2557,26 @@ let updateUserLevelStatus = async (ctx, userId, userIdWin, xpGain) => {
 	assert(queryStatus.rowCount == 1);
 
 	return userRow;
+};
+
+let generateRandomBoardSpace = () => {
+	let randNum = utils.getRandomInt(0, 1);
+
+	if (!randNum) {
+		return 1;
+	}
+
+	let tiersCount = Object.keys(BOARD_FIELDS_TIERS).length;
+	randNum = utils.getRandomInt(1, 100);
+
+	if (randNum <= 10) {
+		randNum = utils.getRandomInt(0, BOARD_FIELDS_TIERS[tiersCount].length - 1);
+		return BOARD_FIELDS_TIERS[tiersCount][randNum];
+	} else if (randNum <= 50) {
+		randNum = utils.getRandomInt(0, BOARD_FIELDS_TIERS[tiersCount - 1].length - 1);
+		return BOARD_FIELDS_TIERS[tiersCount - 1][randNum];
+	} else {
+		randNum = utils.getRandomInt(0, BOARD_FIELDS_TIERS[tiersCount - 2].length - 1);
+		return BOARD_FIELDS_TIERS[tiersCount - 2][randNum];
+	}
 };

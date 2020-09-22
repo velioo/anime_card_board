@@ -286,6 +286,10 @@ body {
   border: 2px double white !important;
 }
 
+.anime-cb-column:not(.active) {
+  background-color: rgba(0, 0, 0, 0);
+}
+
 .anime-cb-column.selectable-you {
   cursor: pointer;
   -webkit-animation: active-phase-blink 2s infinite;
@@ -397,7 +401,7 @@ body {
   cursor: pointer;
   transform: scale(1.2);
   transform-origin: center;
-  box-shadow: 0px 0px 30px rgba(0,0,0, 0.6);
+  box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.6);
 }
 
 .anime-cb-cards-in-hand-wrapper.player-enemy {
