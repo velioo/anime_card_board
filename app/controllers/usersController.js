@@ -309,11 +309,11 @@ let getUserData = (ctx) => {
     'password': sha256(ctx.request.body.data.password + salt),
     'salt': salt,
     'settings_json': JSON.stringify({
-      sound: false,
+      sound: true,
       backgroundSound: false,
-      cardBoardEffectSounds: false,
+      cardBoardEffectSounds: true,
       soundVolume: 20,
-      cardAnimations: true,
+      cardAnimations: false,
       defaultCharacter: 1,
     }),
   };
