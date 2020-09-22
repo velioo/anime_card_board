@@ -1,5 +1,7 @@
 const PORT = process.env.PORT || 8882;
-const ROOT = 'http://localhost:' + PORT + '/';
+const prod_url = 'https://anime-card-board.herokuapp.com/';
+const dev_url = 'http://localhost:' + PORT + '/';
+const ROOT = (process.env.NODE_ENV ? prod_url : dev_url);
 
 exports.PORT = PORT;
 exports.ROOT = ROOT;
