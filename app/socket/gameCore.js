@@ -2383,11 +2383,15 @@ let canChainCardSpecialBoardSpace = (ctx, card, playerIdChain, playerIdMovedOnBo
   	return false;
   }
 
-	gameState.playersState[playerIdOther].cardsOnFieldArr.forEach(function(card, idx) {
-		if ((card.cardEffect.effect == "nullifyCardsFieldSummon") && (card.cardAttributes.includes("field"))) {
+	gameState.playersState[playerIdOther].cardsOnFieldArr.forEach(function(cardOnField, idx) {
+		if ((cardOnField.cardEffect.effect == "nullifyCardsFieldSummon") && (card.cardAttributes.includes("field"))) {
 			canChainCard = false;
 		}
 	});
+
+	if (!canChainCard) {
+		return false;
+	}
 
   if (playerIdChain == playerIdMovedOnBoard) {
   	if ((card.cardEffect.effect == "reapplyCurrentSpecialBoardSpaceYou")
