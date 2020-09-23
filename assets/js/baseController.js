@@ -52,6 +52,7 @@ baseController.prototype._initConstants = function() {
 	_self.RULES_SCREEN_CLASS = '.anime-cb-screen-rules';
 	_self.CARDS_SCREEN_CLASS = '.anime-cb-screen-cards';
 	_self.CHARACTERS_SCREEN_CLASS = '.anime-cb-screen-characters';
+	_self.ABOUT_SCREEN_CLASS = '.anime-cb-screen-about';
 
 	_self.USER_MESSAGE_CLASS = '.user-message';
 	_self.CHARACTER_CHOOSE_CLASS = '.anime-cb-character-choose';
@@ -75,6 +76,7 @@ baseController.prototype._initConstants = function() {
 		_self.INFO_SCREEN_CLASS,
 		_self.RULES_SCREEN_CLASS,
 		_self.CARDS_SCREEN_CLASS,
+		_self.ABOUT_SCREEN_CLASS,
 	];
 
 	_self.IGNORE_SCREENS = [
@@ -84,7 +86,7 @@ baseController.prototype._initConstants = function() {
 };
 
 baseController.prototype._initElements = function() {
-	this.$allInputs = $(this.FORM_CLASS).find('input');
+	this.$allInputs = $(this.FORM_CLASS).find('input, textarea');
 };
 
 baseController.prototype._initListeners = function() {

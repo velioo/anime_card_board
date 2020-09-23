@@ -4223,12 +4223,58 @@ input:checked + .slider:after
   background: white;
 }
 
+.anime-cb-about-wrapper-title {
+  font-size: 16pt;
+  font-weight: 700;
+}
+
+.anime-cb-screen-about .anime-cb-title-page {
+  margin-bottom: 0px;
+}
+
+.anime-cb-about-wrapper {
+  width: 64%;
+  text-align: left;
+  font-family: Arial, Helvetica, sans-serif;
+  border-radius: 10px;
+  font-size: 14pt;
+  padding: 20px;
+  color: black;
+  background: white;
+}
+
+.anime-cb-about-wrapper .spinner {
+  margin-left: 120px;
+  margin-top: -30px;
+}
+
+.anime-cb-about-wrapper .anime-cb-form {
+  width: 100%;
+  max-width: 100%;
+}
+
+.anime-cb-about-wrapper .errors {
+  font-size: 12pt;
+}
+
+.anime-cb-about-wrapper textarea {
+  max-width: 100%;
+  min-width: 100%;
+  min-height: 50px;
+}
+
+#anime-cb-submit-contact {
+  font-size: 12pt;
+  font-weight: 600;
+}
+
 .anime-cb-screen-rules .anime-cb-title-page, .anime-cb-screen-cards .anime-cb-title-page,
-.anime-cb-screen-characters .anime-cb-title-page {
+.anime-cb-screen-characters .anime-cb-title-page, .anime-cb-screen-about .anime-cb-title-page {
   margin-top: 50px;
 }
 
-.anime-cb-screen-rules .anime-cb-btn-group, .anime-cb-screen-cards .anime-cb-btn-group {
+.anime-cb-screen-rules .anime-cb-btn-group, .anime-cb-screen-cards .anime-cb-btn-group,
+.anime-cb-screen-about .anime-cb-btn-group {
   margin-top: 50px;
 }
 

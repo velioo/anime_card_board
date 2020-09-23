@@ -25,6 +25,7 @@ logInSignUpController.prototype.initConstants = function() {
 	_self.SIGN_UP_FORM_ID = '#anime-cb-form-sign-up';
 	_self.LOGIN_FORM_ID = '#anime-cb-form-login';
 	_self.SETTINGS_FORM_ID = '#anime-cb-form-settings';
+	_self.CONTACT_FORM_ID = '#anime-cb-form-contact';
 
 	_self.SIGN_UP_SUBMIT_BTN_ID = '#anime-cb-submit-sign-up';
 	_self.RESET_SIGN_UP_BTN_ID = '#anime-cb-reset-sign-up';
@@ -35,6 +36,7 @@ logInSignUpController.prototype.initConstants = function() {
 	_self.SETTINGS_VOLUME_LABEL_ID = '#anime-cb-setting-volume-label';
 	_self.SETTINGS_VOLUME_INPUT_ID = '#anime-cb-setting-volume';
 	_self.SETTINGS_CHARACTER_IMG_CLASS = '.anime-cb-character-img';
+	_self.CONTACT_SUBMIT_BTN_ID = '#anime-cb-submit-contact';
 
 	_self.USER_INFO_HEADER_WRAPPER_CLASS = '.anime-cb-user-info-wrapper';
 	_self.USER_INFO_HEADER_USERNAME_CLASS = '.anime-cb-user-info-username';
@@ -56,6 +58,7 @@ logInSignUpController.prototype.initElements = function() {
 	_self.$signUpInputs = $(_self.SIGN_UP_FORM_ID).find('input');
 	_self.$loginInputs = $(_self.LOGIN_FORM_ID).find('input');
 	_self.$settingsInputs = $(_self.SETTINGS_FORM_ID).find('input, select');
+	_self.$contactInputs = $(_self.CONTACT_FORM_ID).find('input, textarea');
 	_self._userId = null;
 	_self._username = null;
 	_self._settings = {};
@@ -78,7 +81,7 @@ logInSignUpController.prototype.initListeners = function() {
 
 	  var values = {};
 	  _self.$signUpInputs.each(function() {
-	      values[this.name] = $(this).val();
+	    values[this.name] = $(this).val();
 	  });
 
 	  _self.showSignUpSpinner();
@@ -92,13 +95,27 @@ logInSignUpController.prototype.initListeners = function() {
 
 	  var values = {};
 	  _self.$loginInputs.each(function() {
-	      values[this.name] = $(this).val();
+	    values[this.name] = $(this).val();
 	  });
 
 	  _self.showLoginSpinner();
 	  _self.disableElement(_self.LOGIN_SUBMIT_BTN_ID);
 
 	  _self.client.sendLoginData(values);
+	});
+
+	$(_self.CONTACT_SUBMIT_BTN_ID).on('click', function(e) {
+		e.preventDefault();
+
+	  var values = {};
+	  _self.$contactInputs.each(function() {
+	    values[this.name] = $(this).val();
+	  });
+
+	  _self.showContactSpinner();
+	  _self.disableElement(_self.CONTACT_SUBMIT_BTN_ID);
+
+	  _self.client.sendContactData(values);
 	});
 
 	$(_self.RESET_SIGN_UP_BTN_ID).on('click', function(e) {
@@ -200,10 +217,9 @@ logInSignUpController.prototype.processLoginResponse = function(data) {
 
 	var _self = this;
 
-  assert(ajv.validate(logInResponse, data), 'LogInResponse is invalid' +
-  	JSON.stringify(ajv.errors, null, 2));
-
 	if (data.isSuccessful) {
+  	assert(ajv.validate(logInResponse, data), 'LogInResponse is invalid' +
+  		JSON.stringify(ajv.errors, null, 2));
 		_self.setIsUserLoggedIn(true);
 		_self._userId = data.userId;
 		_self._username = data.username;
@@ -216,6 +232,24 @@ logInSignUpController.prototype.processLoginResponse = function(data) {
 	}
 
 	_self.enableElement(_self.LOGIN_SUBMIT_BTN_ID);
+};
+
+logInSignUpController.prototype.processContactData = function(data) {
+	logger.info('To validate: ', JSON.stringify(data));
+
+	var _self = this;
+
+	_self.enableElement(_self.CONTACT_SUBMIT_BTN_ID);
+	_self.hideAllSpinner();
+
+	if (data.isSuccessful) {
+  	assert(ajv.validate(contactResponse, data), 'ContactResponse is invalid' +
+  		JSON.stringify(ajv.errors, null, 2));
+		_self.showContactSuccess(data);
+	} else {
+		assert(data.errors.length > 0);
+		_self.renderContactErrors(data);
+	}
 };
 
 logInSignUpController.prototype.processLogoutResponse = function(data) {
@@ -416,6 +450,26 @@ logInSignUpController.prototype.renderSettingsErrors = function(data) {
 	_self.hideAllSpinner();
 };
 
+logInSignUpController.prototype.renderContactErrors = function(data) {
+	logger.info('renderContactErrors');
+
+	var _self = this;
+
+	_self.clearContactErrors();
+	_self.hideContactErrors();
+
+	_self.$contactInputs.each(function(idx, input) {
+		data.errors.forEach(function (el) {
+			var elName = el.dataPath.split('/')[1];
+
+			if (input.name === elName) {
+				$(input).parent().find(_self.INPUT_ERRORS_CLASS).html('<span>' + el.message + '</span>');
+				$(input).parent().find(_self.INPUT_ERRORS_CLASS).show();
+			}
+		});
+	 });
+};
+
 logInSignUpController.prototype.showSignUpSuccess = function(data) {
 	logger.info('showSignUpSuccess');
 
@@ -430,6 +484,17 @@ logInSignUpController.prototype.showLoginSuccess = function(data) {
 	this.switchMainMenuToLoggedIn();
 	this.processChangeScreen(this.MAIN_MENU_SCREEN_CLASS);
 	window.location.reload();
+};
+
+logInSignUpController.prototype.showContactSuccess = function(data) {
+	logger.info('showContactSuccess');
+
+	var _self = this;
+
+	_self.clearContactErrors();
+	_self.hideContactErrors();
+
+	$(_self.USER_MESSAGE_CLASS).html('<span>' + data.userMessage + '</span>');
 };
 
 logInSignUpController.prototype.showLogOutSuccess = function(data) {
@@ -557,6 +622,10 @@ logInSignUpController.prototype.showLoginSpinner = function() {
 	$(this.LOGIN_FORM_ID).find(this.SPINNER_CLASS).show();
 };
 
+logInSignUpController.prototype.showContactSpinner = function() {
+	$(this.CONTACT_FORM_ID).find(this.SPINNER_CLASS).show();
+};
+
 logInSignUpController.prototype.showSignUpSpinner = function() {
 	$(this.SIGN_UP_FORM_ID).find(this.SPINNER_CLASS).show();
 };
@@ -575,4 +644,12 @@ logInSignUpController.prototype.clearSettingsErrors = function() {
 
 logInSignUpController.prototype.hideSettingsErrors = function() {
 	$(this.SETTINGS_SCREEN_CLASS).find(this.INPUT_ERRORS_CLASS).hide();
+};
+
+logInSignUpController.prototype.clearContactErrors = function() {
+	$(this.ABOUT_SCREEN_CLASS).find(this.INPUT_ERRORS_CLASS).html('');
+};
+
+logInSignUpController.prototype.hideContactErrors = function() {
+	$(this.ABOUT_SCREEN_CLASS).find(this.INPUT_ERRORS_CLASS).hide();
 };

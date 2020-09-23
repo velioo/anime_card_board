@@ -7,6 +7,8 @@ const {
   MIN_USER_PASSWORD_LEN,
   MIN_ROOM_NAME_LEN,
   MAX_ROOM_NAME_LEN,
+  MIN_EMAIL_CONTENT_LEN,
+  MAX_EMAIL_CONTENT_LEN,
 } = require('../constants/constants');
 
 const _SIGN_UP = {
@@ -45,6 +47,25 @@ const _LOGIN = {
     "required": {
       "username": 'You must enter a username',
       "password": 'You must enter a password',
+    },
+  }
+};
+
+const _CONTACT_DATA = {
+  "type": "object",
+  "properties": {
+    "email": { "type": "string", "minLength": MIN_USER_EMAIL_LEN, "maxLength": MAX_USER_EMAIL_LEN, "format": "email" },
+    "content": { "type": "string", "minLength": MIN_EMAIL_CONTENT_LEN, "maxLength": MAX_EMAIL_CONTENT_LEN },
+  },
+  "required": [ "email", "content" ],
+  "errorMessage": {
+    "properties": {
+      "email": `The entered email should be valid and at least ${MIN_USER_EMAIL_LEN} characters long`,
+      "content": `Email content should be between ${MIN_EMAIL_CONTENT_LEN} and ${MAX_EMAIL_CONTENT_LEN} characters`,
+    },
+    "required": {
+      "email": 'You must enter an email',
+      "content": 'Email content can\'t be empty.',
     },
   }
 };
@@ -287,4 +308,5 @@ module.exports = {
   TAKE_CARD_FROM_GRAVEYARD: _TAKE_CARD_FROM_GRAVEYARD,
   FINISH_CHAIN_EFFECT: _FINISH_CHAIN_EFFECT,
   ROLL_DICE_BOARD: _ROLL_DICE_BOARD,
+  CONTACT_DATA: _CONTACT_DATA,
 };

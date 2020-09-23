@@ -47,6 +47,26 @@ var logInResponse = {
 		"currentLevelXp", "maxLevelXp", "winsCount", "losesCount" ],
 };
 
+var contactResponse = {
+	"type": "object",
+	"properties": {
+		"errors" : {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"dataPath": { "type": "string", "pattern": "/.+"  },
+					"message": { "type": "string" },
+				},
+				"required": [ "dataPath", "message" ]
+			}
+		},
+		"isSuccessful": { "type": "boolean" },
+		"userMessage": { "type": ["string", "null"] },
+	},
+	"required": [ "errors", "isSuccessful" ],
+};
+
 var logOutResponse = {
 	"type": "object",
 	"properties": {

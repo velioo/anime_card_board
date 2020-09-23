@@ -2,6 +2,7 @@ const {
   renderHomeScreen,
   renderTestGame,
   confirmAccount,
+  contactData,
   frontendLogger,
 } = require('../controllers/indexController');
 const {
@@ -41,6 +42,7 @@ router
 	.get('/rules', renderHomeScreen)
 	.get('/cards', renderHomeScreen)
 	.get('/characters', renderHomeScreen)
+	.get('/about', renderHomeScreen)
 	.post('/log_in', new KoaBody(), logIn)
 	.post('/sign_up', new KoaBody(), signUp)
 	.post('/log_out', new KoaBody(), logOut)
@@ -50,6 +52,7 @@ router
 	.post('/browse_rooms', new KoaBody(), browseRooms)
 	.post('/room_data', new KoaBody(), getRoomData)
 	.post('/join_room', new KoaBody(), joinRoom)
+	.post('/contact_data', new KoaBody(), contactData)
 	.get('/confirm_account/:code', confirmAccount)
 	.post('/frontend_logger', new KoaBody(), frontendLogger);
 

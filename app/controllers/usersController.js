@@ -329,11 +329,13 @@ let sendConfirmationEmail = async (ctx, tempCode) => {
   });
 
   const mailOptions = {
-    from: `Anime Card Board Game, ${SERVICE_EMAIL}`,
+    from: `"Anime Card Board Game" ${SERVICE_EMAIL}`,
     to: ctx.request.body.data.email,
     subject: 'Confirm email',
-    text: 'Please confirm your account by clicking the link below.',
-    html: `Confirm Account: <a href="${ROOT}confirm_account/${tempCode}">Click Here</a>`,
+    text: `Please confirm your account by clicking the link below. <br>
+      Confirm Account: <a href="${ROOT}confirm_account/${tempCode}">Click Here</a>`,
+    html: `Please confirm your account by clicking the link below. <br>
+      Confirm Account: <a href="${ROOT}confirm_account/${tempCode}">Click Here</a>`,
   };
 
   try {

@@ -49,6 +49,16 @@ generalClient.prototype.sendLoginData = function(_data) {
   }).fail(_self.failHandler.bind(_self));
 };
 
+generalClient.prototype.sendContactData = function(_data) {
+  logger.info('sendContactData');
+
+  var _self = this;
+
+  $.post('/contact_data', { data: _data }, function (data, status) {
+    _self.logInSignUpController.processContactData(data);
+  }).fail(_self.failHandler.bind(_self));
+};
+
 generalClient.prototype.sendLogOutRequest = function() {
 	logger.info('sendLogOutRequest');
 
