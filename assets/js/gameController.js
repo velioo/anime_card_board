@@ -482,14 +482,14 @@ gameController.prototype.processStartGameResponse = function (data) {
 gameController.prototype.startBackgroundMusic = function () {
 	var _self = this;
 
-	if (!_self.client.logInSignUpController._settings.sound
-		|| !_self.client.logInSignUpController._settings.backgroundSound) {
+	if (!_self.client.settingsController._settings.sound
+		|| !_self.client.settingsController._settings.backgroundSound) {
 		return;
 	}
 
 	_self._backgroundMusicFile = "background.mp3";
 	_self._backgroundMusic = new Audio("/sounds/" + _self._backgroundMusicFile);
- 	_self._backgroundMusic.volume = (_self.client.logInSignUpController._settings.soundVolume || 0) / 1000;
+ 	_self._backgroundMusic.volume = (_self.client.settingsController._settings.soundVolume || 0) / 1000;
  	_self._backgroundMusic.loop = true;
   _self._backgroundMusic.play();
 };
@@ -4391,7 +4391,7 @@ gameController.prototype.populateGraveyard = function (playerId, playerSelectorC
 		var cardId = card.cardId;
 		var cardName = card.cardName;
 		var cardText = card.cardText;
-		var cardImg = card.cardImg;
+		var cardImg = _self.switchCardImg(card.cardImg);
 		var cardRarity = card.cardRarity;
 		var cardEffect = card.cardEffect;
 		var cardCost = card.cardCost;
@@ -4656,8 +4656,8 @@ gameController.prototype.rollDiceYou = function (diceValue, callback, callback2)
     numberOfDice: 1,
     delay: 1500,
     values: [diceValue],
-    noSound: !_self.client.logInSignUpController._settings.sound
-    	|| !_self.client.logInSignUpController._settings.cardBoardEffectSounds,
+    noSound: !_self.client.settingsController._settings.sound
+    	|| !_self.client.settingsController._settings.cardBoardEffectSounds,
     callback: callback.bind(_self, diceValue, callback2, 2000)
   };
 
@@ -4673,8 +4673,8 @@ gameController.prototype.rollDiceEnemy = function (diceValue, callback, callback
     numberOfDice: 1,
     delay: 1500,
     values: [diceValue],
-    noSound: !_self.client.logInSignUpController._settings.sound ||
-    	!_self.client.logInSignUpController._settings.cardBoardEffectSounds,
+    noSound: !_self.client.settingsController._settings.sound ||
+    	!_self.client.settingsController._settings.cardBoardEffectSounds,
     callback: callback.bind(_self, diceValue, callback2, 2000)
   };
 
@@ -4692,7 +4692,7 @@ gameController.prototype.summonCardFromHandAnimationYou = function (cardObj, cal
 	var cardId = cardObj.cardId;
 	var cardName = cardObj.cardName;
 	var cardText = cardObj.cardText;
-	var cardImg = cardObj.cardImg;
+	var cardImg = _self.switchCardImg(cardObj.cardImg);
 	var cardRarity = cardObj.cardRarity;
 	var cardEffect = cardObj.cardEffect;
 	var cardCost = cardObj.cardCost;
@@ -4743,15 +4743,17 @@ gameController.prototype.showCardActivateOnScreenYou = function (cardObj, callba
 
 	var cardSounds = cardObj.cardSounds;
 
-	if (_self.client.logInSignUpController._settings.sound
-		&& _self.client.logInSignUpController._settings.cardBoardEffectSounds
+	if (_self.client.settingsController._settings.sound
+		&& _self.client.settingsController._settings.cardBoardEffectSounds
 		&& cardSounds.activateEffects
 		&& cardSounds.activateEffects[0]) {
 		var randNum = getRandomInt(0, cardSounds.activateEffects.length - 1);
 		_self.playSound(cardSounds.activateEffects[randNum]);
 	}
 
-	$('.anime-cb-card-activate-show').attr("src", "/imgs/player_cards/" + cardObj.cardImg);
+	var cardImg = _self.switchCardImg(cardObj.cardImg);
+
+	$('.anime-cb-card-activate-show').attr("src", "/imgs/player_cards/" + cardImg);
 	$('.anime-cb-card-activate-show').css("animation", "vibrate-card-activate-you 0.3s linear 5 both");
 
 	_self.showCardTimeout = setTimeout(function() {
@@ -4767,15 +4769,17 @@ gameController.prototype.showCardActivateOnScreenEnemy = function (cardObj, call
 
 	var cardSounds = cardObj.cardSounds;
 
-	if (_self.client.logInSignUpController._settings.sound
-		&& _self.client.logInSignUpController._settings.cardBoardEffectSounds
+	if (_self.client.settingsController._settings.sound
+		&& _self.client.settingsController._settings.cardBoardEffectSounds
 		&& cardSounds.activateEffects
 		&& cardSounds.activateEffects[0]) {
 		var randNum = getRandomInt(0,  cardSounds.activateEffects.length - 1);
 		_self.playSound(cardSounds.activateEffects[randNum]);
 	}
 
-	$('.anime-cb-card-activate-show').attr("src", "/imgs/player_cards/" + cardObj.cardImg);
+	var cardImg = _self.switchCardImg(cardObj.cardImg);
+
+	$('.anime-cb-card-activate-show').attr("src", "/imgs/player_cards/" + cardImg);
 	$('.anime-cb-card-activate-show').css("animation", "vibrate-card-activate-enemy 0.3s linear 5 both");
 
 	_self.showCardTimeout = setTimeout(function() {
@@ -5276,7 +5280,7 @@ gameController.prototype.summonCardFromHandAnimationEnemy = function (cardObj, c
 	var cardId = cardObj.cardId;
 	var cardName = cardObj.cardName;
 	var cardText = cardObj.cardText;
-	var cardImg = cardObj.cardImg;
+	var cardImg = _self.switchCardImg(cardObj.cardImg);
 	var cardRarity = cardObj.cardRarity;
 	var cardEffect = cardObj.cardEffect;
 	var cardCost = cardObj.cardCost;
@@ -5323,7 +5327,7 @@ gameController.prototype.drawCardFromDeckYouAnimation = function (card) {
 	var cardId = card.cardId;
 	var cardName = card.cardName;
 	var cardText = card.cardText;
-	var cardImg = card.cardImg;
+	var cardImg = _self.switchCardImg(card.cardImg);
 	var cardRarity = card.cardRarity;
 	var cardEffect = card.cardEffect;
 	var cardCost = card.cardCost;
@@ -5439,7 +5443,7 @@ gameController.prototype.drawCardFromEnemyHandYouAnimation = function(cardObj, c
 	var cardId = cardObj.cardId;
 	var cardName = cardObj.cardName;
 	var cardText = cardObj.cardText;
-	var cardImg = cardObj.cardImg;
+	var cardImg = _self.switchCardImg(cardObj.cardImg);
 	var cardRarity = cardObj.cardRarity;
 	var cardEffect = cardObj.cardEffect;
 	var cardCost = cardObj.cardCost;
@@ -5601,8 +5605,9 @@ gameController.prototype.discardCardFromHandYou = function (card, callback) {
 	$(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_YOU_CLASS + '.top')
 		.css("animation", "discard-card-from-hand-you 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both");
 
+	var cardImg = _self.switchCardImg(card.cardImg);
 	var $graveyardTopCard = $(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_YOU_CLASS + '.top');
-	$graveyardTopCard.attr("src", "/imgs/player_cards/" + card.cardImg);
+	$graveyardTopCard.attr("src", "/imgs/player_cards/" + cardImg);
 	$graveyardTopCard.data("cardId", card.cardId);
 	$graveyardTopCard.data("cardName", card.cardName);
 	$graveyardTopCard.data("cardText", card.cardText);
@@ -5637,8 +5642,9 @@ gameController.prototype.discardCardFromHandEnemy = function (card, callback) {
 	$(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_ENEMY_CLASS + '.top')
 		.css("animation", "discard-card-from-hand-enemy 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both");
 
+	var cardImg = _self.switchCardImg(card.cardImg);
 	var $graveyardTopCard = $(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_ENEMY_CLASS + '.top');
-	$graveyardTopCard.attr("src", "/imgs/player_cards/" + card.cardImg);
+	$graveyardTopCard.attr("src", "/imgs/player_cards/" + cardImg);
 	$graveyardTopCard.data("cardId", card.cardId);
 	$graveyardTopCard.data("cardName", card.cardName);
 	$graveyardTopCard.data("cardText", card.cardText);
@@ -5671,7 +5677,7 @@ gameController.prototype.takeCardFromYourGraveyardYouAnimation = function (cardO
 	var cardId = cardObj.cardId;
 	var cardName = cardObj.cardName;
 	var cardText = cardObj.cardText;
-	var cardImg = cardObj.cardImg;
+	var cardImg = _self.switchCardImg(cardObj.cardImg);
 	var cardRarity = cardObj.cardRarity;
 	var cardEffect = cardObj.cardEffect;
 	var cardCost = cardObj.cardCost;
@@ -5714,7 +5720,7 @@ gameController.prototype.takeCardFromYourGraveyardYouAnimation = function (cardO
 		var $graveyardTopCard = $(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_YOU_CLASS + '.top');
 		if (playerStateYou.cardsInGraveyardArr.length > 1) {
 			var prevCardObj = playerStateYou.cardsInGraveyardArr[playerStateYou.cardsInGraveyardArr.length - 2];
-			$graveyardTopCard.attr("src", "/imgs/player_cards/" + prevCardObj.cardImg);
+			$graveyardTopCard.attr("src", "/imgs/player_cards/" + _self.switchCardImg(prevCardObj.cardImg));
 			$graveyardTopCard.data("cardId", prevCardObj.cardId);
 			$graveyardTopCard.data("cardName", prevCardObj.cardName);
 			$graveyardTopCard.data("cardText", prevCardObj.cardText);
@@ -5762,7 +5768,7 @@ gameController.prototype.takeCardFromEnemyGraveyardYouAnimation = function (card
 	var cardId = cardObj.cardId;
 	var cardName = cardObj.cardName;
 	var cardText = cardObj.cardText;
-	var cardImg = cardObj.cardImg;
+	var cardImg = _self.switchCardImg(cardObj.cardImg);
 	var cardRarity = cardObj.cardRarity;
 	var cardEffect = cardObj.cardEffect;
 	var cardCost = cardObj.cardCost;
@@ -5805,7 +5811,7 @@ gameController.prototype.takeCardFromEnemyGraveyardYouAnimation = function (card
 		var $graveyardTopCard = $(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_ENEMY_CLASS + '.top');
 		if (playerStateEnemy.cardsInGraveyardArr.length > 0) {
 			var prevCardObj = playerStateEnemy.cardsInGraveyardArr[playerStateEnemy.cardsInGraveyardArr.length - 1];
-			$graveyardTopCard.attr("src", "/imgs/player_cards/" + prevCardObj.cardImg);
+			$graveyardTopCard.attr("src", "/imgs/player_cards/" + _self.switchCardImg(prevCardObj.cardImg));
 			$graveyardTopCard.data("cardId", prevCardObj.cardId);
 			$graveyardTopCard.data("cardName", prevCardObj.cardName);
 			$graveyardTopCard.data("cardText", prevCardObj.cardText);
@@ -5853,7 +5859,7 @@ gameController.prototype.takeCardFromYourGraveyardEnemyAnimation = function (car
 	var cardId = cardObj.cardId;
 	var cardName = cardObj.cardName;
 	var cardText = cardObj.cardText;
-	var cardImg = cardObj.cardImg;
+	var cardImg = _self.switchCardImg(cardObj.cardImg);
 	var cardRarity = cardObj.cardRarity;
 	var cardEffect = cardObj.cardEffect;
 	var cardCost = cardObj.cardCost;
@@ -5887,7 +5893,7 @@ gameController.prototype.takeCardFromYourGraveyardEnemyAnimation = function (car
 		var $graveyardTopCard = $(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_ENEMY_CLASS + '.top');
 		if (playerStateEnemy.cardsInGraveyardArr.length > 1) {
 			var prevCardObj = playerStateEnemy.cardsInGraveyardArr[playerStateEnemy.cardsInGraveyardArr.length - 2];
-			$graveyardTopCard.attr("src", "/imgs/player_cards/" + prevCardObj.cardImg);
+			$graveyardTopCard.attr("src", "/imgs/player_cards/" + _self.switchCardImg(prevCardObj.cardImg));
 			$graveyardTopCard.data("cardId", prevCardObj.cardId);
 			$graveyardTopCard.data("cardName", prevCardObj.cardName);
 			$graveyardTopCard.data("cardText", prevCardObj.cardText);
@@ -5935,7 +5941,7 @@ gameController.prototype.takeCardFromEnemyGraveyardEnemyAnimation = function (ca
 	var cardId = cardObj.cardId;
 	var cardName = cardObj.cardName;
 	var cardText = cardObj.cardText;
-	var cardImg = cardObj.cardImg;
+	var cardImg = _self.switchCardImg(cardObj.cardImg);
 	var cardRarity = cardObj.cardRarity;
 	var cardEffect = cardObj.cardEffect;
 	var cardCost = cardObj.cardCost;
@@ -5969,7 +5975,7 @@ gameController.prototype.takeCardFromEnemyGraveyardEnemyAnimation = function (ca
 		var $graveyardTopCard = $(_self.DECK_GRAVEYARD_CLASS + _self.PLAYER_YOU_CLASS + '.top');
 		if (playerStateYou.cardsInGraveyardArr.length > 0) {
 			var prevCardObj = playerStateYou.cardsInGraveyardArr[playerStateYou.cardsInGraveyardArr.length - 1];
-			$graveyardTopCard.attr("src", "/imgs/player_cards/" + prevCardObj.cardImg);
+			$graveyardTopCard.attr("src", "/imgs/player_cards/" + _self.switchCardImg(prevCardObj.cardImg));
 			$graveyardTopCard.data("cardId", prevCardObj.cardId);
 			$graveyardTopCard.data("cardName", prevCardObj.cardName);
 			$graveyardTopCard.data("cardText", prevCardObj.cardText);
@@ -6012,7 +6018,8 @@ gameController.prototype.takeCardFromEnemyGraveyardEnemyAnimation = function (ca
 gameController.prototype.showCardOnScreen = function (cardObj, playerSelectorClass, callback) {
 	var _self = this;
 
-	$('.anime-cb-card-activate-show').attr("src", "/imgs/player_cards/" + cardObj.cardImg);
+	var cardImg = _self.switchCardImg(cardObj.cardImg);
+	$('.anime-cb-card-activate-show').attr("src", "/imgs/player_cards/" + cardImg);
 	$('.anime-cb-card-activate-show').css("animation", "show-card-on-screen-"
 		+ (playerSelectorClass.substr(1)) + " 1.5s both");
 
@@ -6034,9 +6041,10 @@ gameController.prototype.shuffleCardsInHandYou = function (callback) {
 
 	_self.shuffleTimeout2 = setTimeout(function() {
 		_self._cardsInHandArr.forEach(function(card, cardIdx) {
+			var cardImg = _self.switchCardImg(card.cardImg);
 			var $currCardEl = $(_self.CARDS_IN_HAND_CLASS + _self.PLAYER_YOU_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_YOU_CLASS
 				+ ':nth-child(' + (cardIdx + 1));
-			$currCardEl.attr("src", "/imgs/player_cards/" + card.cardImg);
+			$currCardEl.attr("src", "/imgs/player_cards/" + cardImg);
 		  $currCardEl.data("cardId", card.cardId);
 		  $currCardEl.data("cardName", card.cardName);
 		  $currCardEl.data("cardText", card.cardText);
@@ -6219,11 +6227,11 @@ gameController.prototype.playSound = function (soundFile) {
 	var _self = this;
   var audio = new Audio("/sounds/" + soundFile);
 
-  if (!_self.client.logInSignUpController._settings.sound) {
+  if (!_self.client.settingsController._settings.sound) {
   	return;
   }
 
- 	audio.volume = (_self.client.logInSignUpController._settings.soundVolume || 0) / 100;
+ 	audio.volume = (_self.client.settingsController._settings.soundVolume || 0) / 100;
   audio.play();
 };
 
@@ -6263,6 +6271,16 @@ gameController.prototype.showQuickGameInfo = function (showMsg) {
 	_self.quickGameInfoShowSwitchTimeout = setTimeout(function() {
 		_self.quickGameInfoEnabled = true;
 	}, 1000);
+};
+
+gameController.prototype.switchCardImg = function(cardImg) {
+	var _self = this;
+
+	if (!_self.client.settingsController._settings.cardAnimations && cardImg.split('.').pop() == "gif") {
+    cardImg = cardImg.substr(0, cardImg.lastIndexOf(".")) + ".jpg";
+	}
+
+	return cardImg;
 };
 
 var noop = function(){};

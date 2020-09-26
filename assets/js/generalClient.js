@@ -1,12 +1,19 @@
 var generalClient = function() {
-	this.logInSignUpController = new logInSignUpController(this);
-	this.roomController = new roomController(this);
-  this.cardsInfoController = new cardsInfoController(this);
-	this.clientConnectToServer();
+  var _self = this;
+
+	_self.logInSignUpController = new logInSignUpController(_self);
+	_self.roomController = new roomController(_self);
+  _self.cardsInfoController = new cardsInfoController(_self);
+  _self.chatController = new chatController(_self);
+  _self.settingsController = new settingsController(_self);
+
+	_self.clientConnectToServer();
 };
 
 generalClient.prototype.clientConnectToServer = function() {
-	this.socket = io.connect('/', {
+  var _self = this;
+
+	_self.socket = io.connect('/', {
     "reconnection": true,
     "reconnectionDelay": 1000,
     "reconnectionDelayMax" : 1500,
@@ -14,13 +21,13 @@ generalClient.prototype.clientConnectToServer = function() {
     "forceNew":true,
   });
 
-  this.socket.on('matchmake', this.processMatchmake.bind(this));
-  this.socket.on('joinRoom', this.processJoinRoom.bind(this));
-  this.socket.on('leaveRoom', this.processLeaveRoom.bind(this));
-  this.socket.on('chatMsg', this.processChatMsg.bind(this));
-  this.socket.on('reconnect', this.sendServerReconnect.bind(this));
-  this.socket.on('disconnect', this.processDisconnect.bind(this));
- 	this.socket.on('serverError', this.processServerSocketError.bind(this));
+  _self.socket.on('matchmake', _self.processMatchmake.bind(_self));
+  _self.socket.on('joinRoom', _self.processJoinRoom.bind(_self));
+  _self.socket.on('leaveRoom', _self.processLeaveRoom.bind(_self));
+  _self.socket.on('chatMsg', _self.processChatMsg.bind(_self));
+  _self.socket.on('reconnect', _self.sendServerReconnect.bind(_self));
+  _self.socket.on('disconnect', _self.processDisconnect.bind(_self));
+ 	_self.socket.on('serverError', _self.processServerSocketError.bind(_self));
 };
 
 generalClient.prototype.sendServerReconnect = function () {
@@ -75,7 +82,7 @@ generalClient.prototype.sendSettingsData = function (_data) {
   var _self = this;
 
   $.post('/settings', { data: _data }, function (data, status) {
-    _self.logInSignUpController.processSettingsResponse(data);
+    _self.settingsController.processSettingsResponse(data);
   }).fail(_self.failHandler.bind(_self));
 };
 
@@ -239,7 +246,7 @@ generalClient.prototype.processChatMsg = function (_data) {
   var _self = this;
 
   if (_data && _self.logInSignUpController.isUserLoggedIn) {
-    _self.logInSignUpController.processChatMsg(_data);
+    _self.chatController.processChatMsg(_data);
   }
 };
 

@@ -24,7 +24,6 @@ logInSignUpController.prototype.initConstants = function() {
 
 	_self.SIGN_UP_FORM_ID = '#anime-cb-form-sign-up';
 	_self.LOGIN_FORM_ID = '#anime-cb-form-login';
-	_self.SETTINGS_FORM_ID = '#anime-cb-form-settings';
 	_self.CONTACT_FORM_ID = '#anime-cb-form-contact';
 
 	_self.SIGN_UP_SUBMIT_BTN_ID = '#anime-cb-submit-sign-up';
@@ -32,10 +31,6 @@ logInSignUpController.prototype.initConstants = function() {
 	_self.LOGIN_SUBMIT_BTN_ID = '#anime-cb-submit-login';
 	_self.RESET_LOGIN_BTN_ID = '#anime-cb-reset-login';
 	_self.SIGN_OUT_BTN_ID = '#anime-cb-logout-btn';
-	_self.SETTINGS_SUBMIT_BTN_ID = '#anime-cb-submit-settings';
-	_self.SETTINGS_VOLUME_LABEL_ID = '#anime-cb-setting-volume-label';
-	_self.SETTINGS_VOLUME_INPUT_ID = '#anime-cb-setting-volume';
-	_self.SETTINGS_CHARACTER_IMG_CLASS = '.anime-cb-character-img';
 	_self.CONTACT_SUBMIT_BTN_ID = '#anime-cb-submit-contact';
 
 	_self.USER_INFO_HEADER_WRAPPER_CLASS = '.anime-cb-user-info-wrapper';
@@ -46,10 +41,6 @@ logInSignUpController.prototype.initConstants = function() {
 	_self.USER_INFO_HEADER_XP_PROGRESS_BAR_WRAPPER_CLASS = '.anime-cb-level-progress-bar-wrapper';
 	_self.USER_INFO_HEADER_XP_PROGRESS_BAR_CLASS = '.anime-cb-level-progress-bar';
 	_self.USER_INFO_HEADER_XP_PROGRESS_BAR_TEXT_CLASS = '.anime-cb-user-info-level-xp';
-
-	_self.CHAT_BOX_CLASS = '.anime-cb-chat-box';
-	_self.CHAT_INPUT_ID = '#anime-cb-chat-input';
-	_self.CHAT_MSG_CLASS = '.anime-cb-chat-msg';
 };
 
 logInSignUpController.prototype.initElements = function() {
@@ -57,12 +48,9 @@ logInSignUpController.prototype.initElements = function() {
 
 	_self.$signUpInputs = $(_self.SIGN_UP_FORM_ID).find('input');
 	_self.$loginInputs = $(_self.LOGIN_FORM_ID).find('input');
-	_self.$settingsInputs = $(_self.SETTINGS_FORM_ID).find('input, select');
 	_self.$contactInputs = $(_self.CONTACT_FORM_ID).find('input, textarea');
 	_self._userId = null;
 	_self._username = null;
-	_self._settings = {};
-	_self._scrollToBottom = true;
 };
 
 logInSignUpController.prototype.initListeners = function() {
@@ -131,42 +119,6 @@ logInSignUpController.prototype.initListeners = function() {
 	  _self.clearLoginErrors();
 	  _self.hideLoginErrors();
 	});
-
-	$(_self.SETTINGS_VOLUME_INPUT_ID).slider({
-		min: 1,
-		max: 100,
-		range: "min",
-		slide: function (event, ui) {
-			$(_self.SETTINGS_VOLUME_LABEL_ID).text(ui.value);
-		},
-	});
-
-	_self.reEnableSettingsSubmit();
-
-	$(_self.MAIN_WRAPPER_ID).on('change', _self.CHARACTER_CHOOSE_CLASS, function() {
-		var $characterSelected = $(this).find('option:selected');
-		$(this).parent().find(_self.SETTINGS_CHARACTER_IMG_CLASS)
-			.attr("src", "/imgs/player_pieces/" + $characterSelected.data("characterImage"));
-	});
-
-	$(_self.CHARACTER_CHOOSE_CLASS).val(1);
-
-	$(_self.CHAT_INPUT_ID).on('keypress', function (e) {
-		var key = e.which;
-
-		if (key == 13 && $(_self.CHAT_INPUT_ID).val()) {
-			_self.client.sendChatMsg({ msg: $(_self.CHAT_INPUT_ID).val() })
-			$(_self.CHAT_INPUT_ID).val("");
-		}
-	});
-
-  $(_self.CHAT_BOX_CLASS).on('scroll', function() {
-    if($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
-    	_self._scrollToBottom = true;
-    } else {
-    	_self._scrollToBottom = false;
-    }
-	})
 };
 
 logInSignUpController.prototype.initIntervals = function() {
@@ -224,7 +176,7 @@ logInSignUpController.prototype.processLoginResponse = function(data) {
 		_self._userId = data.userId;
 		_self._username = data.username;
 		_self.showLoginSuccess(data);
-		_self.updateSettingsStatus(data.settings);
+		_self.client.settingsController.updateSettingsStatus(data.settings);
 		_self.updateUserInfoStatus(data);
 	} else {
 		assert(data.errors.length > 0);
@@ -261,36 +213,11 @@ logInSignUpController.prototype.processLogoutResponse = function(data) {
   	JSON.stringify(ajv.errors, null, 2));
 
 	if (data.isSuccessful) {
-		_self.resetSessionState();
-		_self.showLogOutSuccess(data);
-		$(_self.INFO_HEADER_ID).hide();
-		$(_self.CHAT_WRAPPER_ID).hide();
+		_self.processSessionExpired();
 		window.removeEventListener("beforeunload", _self.client.gameController.beforeUnload);
 	} else {
 		assert(data.errors.length > 0);
 		_self.showAlertError();
-	}
-};
-
-logInSignUpController.prototype.processSettingsResponse = function(data) {
-	logger.info('To validate: ', JSON.stringify(data));
-
-	var _self = this;
-
-	_self.reEnableSettingsSubmit();
-	_self.enableElement(_self.SETTINGS_SUBMIT_BTN_ID);
-	_self.hideAllSpinner();
-
-  assert(ajv.validate(settingsResponse, data), 'settingsResponse is invalid' +
-  	JSON.stringify(ajv.errors, null, 2));
-
-	if (data.isSuccessful) {
-		_self.showSettingsSuccess(data);
-		_self.updateSettingsStatus(data.settings);
-		_self.client.cardsInfoController.switchCardsImgs(data.settings.cardAnimations);
-	} else {
-		assert(data.errors.length > 0);
-		_self.renderSettingsErrors(data);
 	}
 };
 
@@ -305,7 +232,7 @@ logInSignUpController.prototype.processIsUserLoggedInResponse = function(data) {
 			_self.setIsUserLoggedIn(true);
 			_self._userId = data.userId;
 			_self._username = data.username;
-			_self.updateSettingsStatus(data.settings);
+			_self.client.settingsController.updateSettingsStatus(data.settings);
 			_self.updateUserInfoStatus(data);
 		} else {
 			// _self.processSessionExpired();
@@ -325,24 +252,7 @@ logInSignUpController.prototype.processSessionExpired = function(data) {
 	_self.showLogOutSuccess();
 	_self.resetSessionState();
 	_self.processChangeScreen(_self.MAIN_MENU_SCREEN_CLASS);
-};
-
-logInSignUpController.prototype.processChatMsg = function (data) {
-	var _self = this;
-
-	if (data.isSuccessful) {
-		_self.showChatMsg(data);
-	}
-};
-
-logInSignUpController.prototype.showChatMsg = function (data) {
-	var _self = this;
-
-	$(_self.CHAT_BOX_CLASS).append('<span class="anime-cb-chat-msg">' + data.time + ' ' + data.username + ': ' + data.msg + '</span><br>');
-
-	if (_self._scrollToBottom) {
-		$(_self.CHAT_BOX_CLASS).scrollTop($(_self.CHAT_BOX_CLASS)[0].scrollHeight);
-	}
+	window.location.reload();
 };
 
 logInSignUpController.prototype.resetSessionState = function () {
@@ -365,32 +275,6 @@ logInSignUpController.prototype.resetUserState = function () {
 	_self.setIsUserLoggedIn(false);
 	_self._userId = null;
 	_self._username = null;
-};
-
-logInSignUpController.prototype.reEnableSettingsSubmit = function () {
-	var _self = this;
-
-	$(_self.SETTINGS_SUBMIT_BTN_ID).one('click', function(e) {
-		e.preventDefault();
-
-	  var values = {};
-	  _self.$settingsInputs.each(function() {
-	  	if ($(this).attr("type") == "checkbox") {
-	  		values[this.name] = $(this).is(':checked');
-	  	} else {
-	      values[this.name] = $(this).val();
-	  	}
-	  });
-
-	  values["soundVolume"] = $(_self.SETTINGS_VOLUME_INPUT_ID).slider("value");
-
-	  logger.info('Form settings values: ', JSON.stringify(values));
-
-	  _self.showSettingsSpinner();
-	  _self.disableElement(_self.SETTINGS_SUBMIT_BTN_ID);
-
-	  _self.client.sendSettingsData(values);
-	});
 };
 
 logInSignUpController.prototype.renderSignUpErrors = function(data) {
@@ -432,21 +316,6 @@ logInSignUpController.prototype.renderLoginErrors = function(data) {
 		});
 	 });
 
-	_self.hideAllSpinner();
-};
-
-logInSignUpController.prototype.renderSettingsErrors = function(data) {
-	logger.info('renderSettingsErrors');
-
-	var _self = this;
-
-	_self.clearSettingsErrors();
-	_self.hideSettingsErrors();
-
-	$(_self.SETTINGS_SCREEN_CLASS).find(_self.INPUT_ERRORS_CLASS).append('<span>' + data.userMessage + '</span>');
-
-	$(_self.SETTINGS_SCREEN_CLASS).find(_self.INPUT_ERRORS_CLASS).show();
-	_self.enableElement(_self.SETTINGS_SUBMIT_BTN_ID);
 	_self.hideAllSpinner();
 };
 
@@ -504,51 +373,8 @@ logInSignUpController.prototype.showLogOutSuccess = function(data) {
 	this.switchMainMenuToLoggedOut();
 };
 
-logInSignUpController.prototype.showSettingsSuccess = function(data) {
-	var _self = this;
-
-	_self.clearSettingsErrors();
-	_self.hideSettingsErrors();
-	_self.enableElement(_self.SETTINGS_SUBMIT_BTN_ID);
-
-	$(_self.USER_MESSAGE_CLASS).html('<span>' + data.userMessage + '</span>');
-};
-
-logInSignUpController.prototype.updateSettingsStatus = function (settings) {
-	var _self = this;
-
-	if (!settings || _.isEqual(_self._settings, settings)) {
-		return;
-	}
-
-	for (setting in settings) {
-		_self._settings[setting] = settings[setting];
-
-		var $input = $(_self.SETTINGS_FORM_ID).find('input[name="' + setting + '"]');
-
-		if ($input.attr("type") != "checkbox") {
-			$input.val(settings[setting]);
-		} else {
-			$input.prop("checked", settings[setting]);
-		}
-
-		if (setting == "soundVolume") {
-			$(_self.SETTINGS_VOLUME_INPUT_ID).slider("value", settings[setting]);
-			$(_self.SETTINGS_VOLUME_LABEL_ID).text(settings[setting]);
-		}
-
-		if (setting == "defaultCharacter") {
-			$(_self.CHARACTER_CHOOSE_CLASS).val(settings[setting] || 1);
-			$(_self.CHARACTER_CHOOSE_CLASS).trigger('change');
-		}
-	}
-};
-
 logInSignUpController.prototype.updateUserInfoStatus = function (data) {
 	var _self = this;
-
-	$(_self.INFO_HEADER_ID).show();
-	$(_self.CHAT_WRAPPER_ID).show();
 
 	_self.USER_INFO_HEADER_WRAPPER_CLASS = '.anime-cb-user-info-wrapper';
 	_self.USER_INFO_HEADER_USERNAME_CLASS = '.anime-cb-user-info-username';
@@ -566,14 +392,6 @@ logInSignUpController.prototype.updateUserInfoStatus = function (data) {
 
 	$(_self.USER_INFO_HEADER_XP_PROGRESS_BAR_TEXT_CLASS).text(xpPercentage + "%");
 	$(_self.USER_INFO_HEADER_XP_PROGRESS_BAR_CLASS).css("width", xpPercentage + "%");
-};
-
-logInSignUpController.prototype.preSwitchScreenHookLogInSignUpController = function (screenClass) {
-	var _self = this;
-
-	if (screenClass === _self.SETTINGS_SCREEN_CLASS) {
-		_self.updateSettingsStatus(_self._settings);
-	}
 };
 
 logInSignUpController.prototype.switchMainMenuToLoggedIn = function() {
@@ -632,18 +450,6 @@ logInSignUpController.prototype.showSignUpSpinner = function() {
 
 logInSignUpController.prototype.showLogOutSpinner = function() {
 	$(this.MAIN_MENU_SCREEN_CLASS).find(this.PRE_SCREEN_SPINNER_CLASS).show();
-};
-
-logInSignUpController.prototype.showSettingsSpinner = function () {
-	$(this.SETTINGS_FORM_ID).find(this.SPINNER_CLASS).show();
-};
-
-logInSignUpController.prototype.clearSettingsErrors = function() {
-	$(this.SETTINGS_SCREEN_CLASS).find(this.INPUT_ERRORS_CLASS).html('');
-};
-
-logInSignUpController.prototype.hideSettingsErrors = function() {
-	$(this.SETTINGS_SCREEN_CLASS).find(this.INPUT_ERRORS_CLASS).hide();
 };
 
 logInSignUpController.prototype.clearContactErrors = function() {

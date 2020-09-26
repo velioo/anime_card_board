@@ -62,6 +62,7 @@ baseController.prototype._initConstants = function() {
 	_self.SCREEN_FOOTER_CLASS = '.anime-cb-screen_footer';
 	_self.INPUT_ERRORS_CLASS = '.errors';
 
+	_self.DEFAULT_SCREEN_CLASS = _self.MAIN_MENU_SCREEN_CLASS;
 	_self.LOGGED_IN_BLACKLISTED_SCREENS = [
 		_self.LOGIN_SCREEN_CLASS,
 		_self.SIGN_UP_SCREEN_CLASS,
@@ -76,12 +77,18 @@ baseController.prototype._initConstants = function() {
 		_self.INFO_SCREEN_CLASS,
 		_self.RULES_SCREEN_CLASS,
 		_self.CARDS_SCREEN_CLASS,
+		_self.CHARACTERS_SCREEN_CLASS,
 		_self.ABOUT_SCREEN_CLASS,
 	];
 
 	_self.IGNORE_SCREENS = [
 		_self.LOBBY_SCREEN_CLASS,
 		_self.GAME_SCREEN_CLASS,
+	];
+
+	_self.GAME_HIDE_WRAPPERS = [
+		_self.INFO_HEADER_ID,
+		_self.CHAT_WRAPPER_ID,
 	];
 };
 
@@ -119,6 +126,8 @@ baseController.prototype._initState = function() {
 		if (!_self.IGNORE_SCREENS.includes(stateObj.screenClass)) {
 	  	_self.switchToScreen(stateObj.screenClass);
 		}
+	} else {
+		_self.processChangeScreen(_self.DEFAULT_SCREEN_CLASS);
 	}
 
 	$(_self.SUBMAIN_WRAPPER_ID).show();
@@ -160,26 +169,18 @@ baseController.prototype.switchToScreen = function(screenClass) {
 baseController.prototype.preSwitchScreenHook = function(screenClass) {
 	var _self = this;
 
-	if (screenClass == _self.GAME_SCREEN_CLASS || !_self.client.logInSignUpController.isUserLoggedIn()) {
-		$(_self.INFO_HEADER_ID).hide();
-		$(_self.CHAT_WRAPPER_ID).hide();
+	if (screenClass == _self.GAME_SCREEN_CLASS || (!_self.client.logInSignUpController.isUserLoggedIn())) {
+		_self.GAME_HIDE_WRAPPERS.forEach(wrapper => $(wrapper).hide());
 	} else {
-		$(_self.INFO_HEADER_ID).show();
-		$(_self.CHAT_WRAPPER_ID).show();
-	}
-
-	if (screenClass == _self.GAME_SCREEN_CLASS) {
-		$(_self.VIDEO_BACKGROUND_WRAPPER_ID).hide();
-	} else if (_self.client.logInSignUpController._settings.videoBackground) {
-		$(_self.VIDEO_BACKGROUND_WRAPPER_ID).show();
+		_self.GAME_HIDE_WRAPPERS.forEach(wrapper => $(wrapper).show());
 	}
 
 	if (typeof _self.client.roomController.preSwitchScreenHookRoomController === "function") {
 		_self.client.roomController.preSwitchScreenHookRoomController(screenClass);
 	}
 
-	if (typeof _self.client.logInSignUpController.preSwitchScreenHookLogInSignUpController === "function") {
-		_self.client.logInSignUpController.preSwitchScreenHookLogInSignUpController(screenClass);
+	if (typeof _self.client.settingsController.preSwitchScreenHookSettingsController === "function") {
+		_self.client.settingsController.preSwitchScreenHookSettingsController(screenClass);
 	}
 };
 
