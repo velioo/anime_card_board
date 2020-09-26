@@ -1900,16 +1900,12 @@ gameController.prototype.showEnergyChangeAnimation = function (playerId, playerS
 		showValue = "+" + showValue;
 	}
 
-	clearTimeout(_self.showEnergyTimeout);
-	$(_self.ENERGY_REGEN_CLASS + playerSelectorClass).css("animation", "");
-	$(_self.ENERGY_REGEN_CLASS + playerSelectorClass).css("-webkit-animation", "");
-
 	var playerState = _self._gameplayData.gameState.playersState[playerId];
 	$(_self.ENERGY_REGEN_CLASS + playerSelectorClass).html(showValue);
 	$(_self.ENERGY_REGEN_CLASS + playerSelectorClass).css("animation", "energy-regen-" + (playerSelectorClass.substr(1)) + " 2s ease-out")
 	$(_self.ENERGY_REGEN_CLASS + playerSelectorClass).css("-webkit-animation", "energy-regen-" + (playerSelectorClass.substr(1)) + " 2s ease-out")
 
-	_self.showEnergyTimeout = setTimeout(function() {
+	setTimeout(function() {
 		$(_self.ENERGY_REGEN_CLASS + playerSelectorClass).css("animation", "");
 		$(_self.ENERGY_REGEN_CLASS + playerSelectorClass).css("-webkit-animation", "");
 	}, 2000);
@@ -2182,76 +2178,82 @@ gameController.prototype.checkForExpiredCardsEnemy = function (callback) {
 gameController.prototype.performCardEffectInstantYou = function (card) {
 	var _self = this;
 
+	var callbackCheckIfEnemyHasToDoAction;
+	if (_self._gameplayData.gameState.nextPhase == _self.TURN_PHASES.ROLL) {
+		callbackCheckIfEnemyHasToDoAction = _self.checkIfEnemyHasToDoAction
+		.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self));
+	} else if (_self._gameplayData.gameState.nextPhase == _self.TURN_PHASES.END) {
+		callbackCheckIfEnemyHasToDoAction = _self.checkIfEnemyHasToDoAction
+			.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableRollPhaseActions.bind(_self));
+	}
+
 	if (!card.cardEffect.continuous) {
 		if (card.cardEffect.effect == "moveSpacesForwardUpTo") {
 			if (card.cardEffect.isFinished) {
 				_self.moveYourCharacter(card.cardEffect.effectValueChosen,
-					_self.destroyCardAnimationYou.bind(_self, card, _self.enableMainPhaseActions.bind(_self)), 0);
+					_self.destroyCardAnimationYou.bind(_self, card, callbackCheckIfEnemyHasToDoAction), 0);
 			} else {
 				_self.setBoardSpaceListener(card);
 			}
 		} else if (card.cardEffect.effect == "moveSpacesBackwardsUpToEnemy") {
 			if (card.cardEffect.isFinished) {
 				_self.moveEnemyCharacter(card.cardEffect.effectValueChosen,
-					_self.destroyCardAnimationYou.bind(_self, card, _self.checkIfEnemyHasToDoAction
-						.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self))), 0);
+					_self.destroyCardAnimationYou.bind(_self, card, callbackCheckIfEnemyHasToDoAction), 0);
 			} else {
 				_self.setBoardSpaceListener(card);
 			}
 		} else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpToYou") {
 			if (card.cardEffect.isFinished) {
 				_self.moveYourCharacter(card.cardEffect.effectValueChosen,
-					_self.destroyCardAnimationYou.bind(_self, card, _self.enableMainPhaseActions.bind(_self)), 0);
+					_self.destroyCardAnimationYou.bind(_self, card, callbackCheckIfEnemyHasToDoAction), 0);
 			} else {
 				_self.setBoardSpaceListener(card);
 			}
 		} else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpToEnemy") {
 			if (card.cardEffect.isFinished) {
 				_self.moveEnemyCharacter(card.cardEffect.effectValueChosen,
-					_self.destroyCardAnimationYou.bind(_self, card, _self.checkIfEnemyHasToDoAction
-						.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self))), 0);
+					_self.destroyCardAnimationYou.bind(_self, card, callbackCheckIfEnemyHasToDoAction), 0);
 			} else {
 				_self.setBoardSpaceListener(card);
 			}
 		}	else if (card.cardEffect.effect == "moveSpacesForward") {
 			_self.moveYourCharacter(card.cardEffect.effectValue,
-				_self.destroyCardAnimationYou.bind(_self, card, _self.enableMainPhaseActions.bind(_self)), 500);
+				_self.destroyCardAnimationYou.bind(_self, card, callbackCheckIfEnemyHasToDoAction), 500);
 		} else if (card.cardEffect.effect == "moveSpacesBackwardsEnemy") {
 			_self.moveEnemyCharacter(card.cardEffect.effectValue,
-				_self.destroyCardAnimationYou.bind(_self, card, _self.checkIfEnemyHasToDoAction
-					.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self))), 0);
+				_self.destroyCardAnimationYou.bind(_self, card, callbackCheckIfEnemyHasToDoAction), 0);
 		} else if (card.cardEffect.effect.match("createSpecialBoardSpaceForwardTier")) {
 			if (card.cardEffect.isFinished) {
 				_self.createNewSpecialBoardSpaceAnimation(card.finishData,
-					_self.destroyCardAnimationYou.bind(_self, card, _self.enableMainPhaseActions.bind(_self)));
+					_self.destroyCardAnimationYou.bind(_self, card, callbackCheckIfEnemyHasToDoAction));
 			} else {
 				_self.setBoardSpaceListener(card);
 			}
 		} else if (card.cardEffect.effect == "destroySpecialBoardSpaceForward") {
 			if (card.cardEffect.isFinished) {
 				_self.destroySpecialBoardSpaceAnimation(card.finishData,
-					_self.destroyCardAnimationYou.bind(_self, card, _self.enableMainPhaseActions.bind(_self)));
+					_self.destroyCardAnimationYou.bind(_self, card, callbackCheckIfEnemyHasToDoAction));
 			} else {
 				_self.setBoardSpaceListener(card);
 			}
 		} else if (card.cardEffect.effect == "drawCardFromEnemyHand") {
 			_self._postDestroyCard = card;
-			_self.enableMainPhaseActions();
+			callbackCheckIfEnemyHasToDoAction.call();
 		} else if (card.cardEffect.effect == "drawCardFromEnemyYourHand") {
 			_self._postDestroyCard = card;
-			_self.checkIfEnemyHasToDoAction(_self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self));
+			callbackCheckIfEnemyHasToDoAction.call();
 		} else if (card.cardEffect.effect == "destroyCardFromEnemyField") {
 			_self._postDestroyCard = card;
-			_self.enableMainPhaseActions();
+			callbackCheckIfEnemyHasToDoAction.call();
 		} else if (card.cardEffect.effect == "drawCardFromDeckYouEnemy") {
 			_self._postDestroyCard = card;
-			_self.enableMainPhaseActions();
+			callbackCheckIfEnemyHasToDoAction.call();
 		} else if (card.cardEffect.effect == "takeCardFromYourGraveyard") {
 			_self._postDestroyCard = card;
-			_self.enableMainPhaseActions();
+			callbackCheckIfEnemyHasToDoAction.call();
 		} else if (card.cardEffect.effect == "takeCardFromEnemyGraveyard") {
 			_self._postDestroyCard = card;
-			_self.enableMainPhaseActions();
+			callbackCheckIfEnemyHasToDoAction.call();
 		} else if (card.cardEffect.effect == "moveSpacesForwardMoveSpacesBackwardEnemyX") {
 			if (card.cardEffect.isFinished) {
 				_self.rollDiceYou(card.cardEffect.effectValueChosen, noop);
@@ -2259,13 +2261,11 @@ gameController.prototype.performCardEffectInstantYou = function (card) {
 					if (card.playerYouMovedSuccessfully) {
 						_self.moveEnemyCharacter(card.cardEffect.effectValueChosen, null, 0);
 						_self.moveYourCharacter(card.cardEffect.effectValueChosen,
-							_self.destroyCardAnimationYou.bind(_self, card, _self.checkIfEnemyHasToDoAction
-							.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self))), 0);
+							_self.destroyCardAnimationYou.bind(_self, card, callbackCheckIfEnemyHasToDoAction), 0);
 					} else {
 						_self.moveYourCharacter(card.cardEffect.effectValueChosen, null, 0);
 						_self.moveEnemyCharacter(card.cardEffect.effectValueChosen,
-							_self.destroyCardAnimationYou.bind(_self, card, _self.checkIfEnemyHasToDoAction
-							.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self))), 0);
+							_self.destroyCardAnimationYou.bind(_self, card, callbackCheckIfEnemyHasToDoAction), 0);
 					}
 				}, 2000);
 			} else {
@@ -2273,57 +2273,56 @@ gameController.prototype.performCardEffectInstantYou = function (card) {
 			}
 		} else if (card.cardEffect.effect == "drawCardFromDeckYouDiscardCardYou") {
 			_self._postDestroyCard = card;
-			_self.enableMainPhaseActions();
+			callbackCheckIfEnemyHasToDoAction.call();
 		} else if (card.cardEffect.effect == "moveSpacesClosestBoardSpaceSpecialYou") {
 			if (card.cardEffect.isFinished) {
 				_self.moveYourCharacter(card.finishData.moveSpaces,
-					_self.destroyCardAnimationYou.bind(_self, card, _self.enableMainPhaseActions.bind(_self)), 500);
+					_self.destroyCardAnimationYou.bind(_self, card, callbackCheckIfEnemyHasToDoAction), 500);
 			} else {
 				_self.setDirectionListener(card, _self._yourUserId);
 			}
 		} else if (card.cardEffect.effect == "moveSpacesClosestBoardSpaceSpecialEnemy") {
 			if (card.cardEffect.isFinished) {
 				_self.moveEnemyCharacter(card.finishData.moveSpaces,
-					_self.destroyCardAnimationYou.bind(_self, card, _self.checkIfEnemyHasToDoAction
-						.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self))), 500);
+					_self.destroyCardAnimationYou.bind(_self, card, callbackCheckIfEnemyHasToDoAction), 500);
 			} else {
 				_self.setDirectionListener(card, _self._enemyUserId);
 			}
 		} else if (card.cardEffect.effect == "reapplyCurrentSpecialBoardSpaceYou") {
 			_self._postDestroyCard = card;
-			_self.enableMainPhaseActions();
+			callbackCheckIfEnemyHasToDoAction.call();
 		} else if (card.cardEffect.effect == "reapplyCurrentSpecialBoardSpaceEnemy") {
 			_self._postDestroyCard = card;
-			_self.checkIfEnemyHasToDoAction(_self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self));
+			callbackCheckIfEnemyHasToDoAction.call();
 		} else if (card.cardEffect.effect == "reapplyCurrentSpecialBoardSpaceEnemyYou") {
 			_self._postDestroyCard = card;
-			_self.enableMainPhaseActions();
+			callbackCheckIfEnemyHasToDoAction.call();
 		} else if (card.cardEffect.effect == "reapplyCurrentSpecialBoardSpaceYouEnemy") {
 			_self._postDestroyCard = card;
-			_self.checkIfEnemyHasToDoAction(_self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self));
+			callbackCheckIfEnemyHasToDoAction.call();
 		} else if (card.cardEffect.effect == "increaseChargesContinousCard") {
 			if (card.cardEffect.isFinished) {
-				_self.destroyCardAnimationYou(card, _self.enableMainPhaseActions.bind(_self));
+				_self.destroyCardAnimationYou(card, callbackCheckIfEnemyHasToDoAction);
 			} else {
 				_self.setCardSelectOnFieldListenerWrapper(card);
 			}
 		} else if (card.cardEffect.effect == "rollDiceForwardBackward") {
 			_self._postDestroyCard = card;
-			_self.enableMainPhaseActions();
+			callbackCheckIfEnemyHasToDoAction.call();
 		} else if (card.cardEffect.effect == "moveSpacesForwardNonSpecial") {
 			if (card.cardEffect.isFinished) {
 				_self.rollDiceYou(card.cardEffect.effectValueChosen,
 					_self.moveYourCharacter.bind(_self, card.cardEffect.moveSpaces,
-						_self.destroyCardAnimationYou.bind(_self, card, _self.enableMainPhaseActions.bind(_self)), 2000));
+						_self.destroyCardAnimationYou.bind(_self, card, callbackCheckIfEnemyHasToDoAction), 2000));
 			} else {
 				_self.setRollDiceCardListener(card);
 			}
 		} else if (card.cardEffect.effect == "discardCardTakeCardFromYourGraveyard") {
 			_self._postDestroyCard = card;
-			_self.enableMainPhaseActions();
+			callbackCheckIfEnemyHasToDoAction.call();
 		} else if (card.cardEffect.effect == "energyGain") {
 			_self._postDestroyCard = card;
-			_self.enableMainPhaseActions();
+			callbackCheckIfEnemyHasToDoAction.call();
 		} else if (card.cardEffect.effect == "chooseAttributeVariation1") {
 			if (card.cardEffect.isFinished) {
 				_self._postDestroyCard = card;
@@ -2339,10 +2338,10 @@ gameController.prototype.performCardEffectInstantYou = function (card) {
 				_self.waitForMsgTimeout = setTimeout(function() {
 					if (card.cardEffect.moveSpaces) {
 						_self.moveYourCharacter(card.cardEffect.moveSpaces,
-							_self.enableMainPhaseActions.bind(_self), 0);
+							callbackCheckIfEnemyHasToDoAction, 0);
 					} else if (card.cardEffect.cardsToDraw || card.cardEffect.cardsToDiscard
 						|| card.cardEffect.gainEnergy || card.cardEffect.loseEnergy) {
-						_self.enableMainPhaseActions();
+						callbackCheckIfEnemyHasToDoAction.call();
 					}
 				}, 1500);
 			} else {
@@ -2362,11 +2361,10 @@ gameController.prototype.performCardEffectInstantYou = function (card) {
 
 				_self.waitForMsgTimeout = setTimeout(function() {
 					if (card.cardEffect.moveSpaces) {
-						_self.moveEnemyCharacter(card.cardEffect.moveSpaces, _self.checkIfEnemyHasToDoAction
-							.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self)), 0);
+						_self.moveEnemyCharacter(card.cardEffect.moveSpaces, callbackCheckIfEnemyHasToDoAction, 0);
 					} else if (card.cardEffect.cardsToDraw || card.cardEffect.cardsToDiscard
 						|| card.cardEffect.gainEnergy || card.cardEffect.loseEnergy) {
-						_self.checkIfEnemyHasToDoAction(_self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self));
+						callbackCheckIfEnemyHasToDoAction.call();
 					}
 				}, 1500);
 			} else {
@@ -2377,7 +2375,7 @@ gameController.prototype.performCardEffectInstantYou = function (card) {
 				card.finishData.destroyedBoardSpacesPositions.forEach(function(boardSpaceData, positionIdx, arr) {
 					if (positionIdx == arr.length - 1) {
 						_self.destroySpecialBoardSpaceAnimation(boardSpaceData,
-							_self.destroyCardAnimationYou.bind(_self, card, _self.enableMainPhaseActions.bind(_self)));
+							_self.destroyCardAnimationYou.bind(_self, card, callbackCheckIfEnemyHasToDoAction));
 					} else {
 						_self.destroySpecialBoardSpaceAnimation(boardSpaceData);
 					}
@@ -2389,13 +2387,13 @@ gameController.prototype.performCardEffectInstantYou = function (card) {
 			if (card.cardEffect.isFinished) {
 				_self.createNewSpecialBoardSpaceAnimation({ rowIndex: card.finishData.moveToRowIndex,
 					columnIndex: card.finishData.moveToColumnIndex, spaceType: card.finishData.spaceType },
-					_self.destroyCardAnimationYou.bind(_self, card, _self.enableMainPhaseActions.bind(_self)));
+					_self.destroyCardAnimationYou.bind(_self, card, callbackCheckIfEnemyHasToDoAction));
 			} else {
 				_self.setBoardSpaceListener(card);
 			}
 		}
 	} else if (card.cardEffect.continuous) {
-		_self.enableMainPhaseActions();
+		callbackCheckIfEnemyHasToDoAction.call();
 	}
 };
 
@@ -2727,39 +2725,42 @@ gameController.prototype.performCardEffectContinuousEnemy = function (card) {
 gameController.prototype.performCardEffectContinuousFinishYou = function (card) {
 	var _self = this;
 
+	var callbackCheckIfEnemyHasToDoAction;
+	if (_self._gameplayData.gameState.nextPhase == _self.TURN_PHASES.ROLL) {
+		callbackCheckIfEnemyHasToDoAction = _self.checkIfEnemyHasToDoAction
+		.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self));
+	} else if (_self._gameplayData.gameState.nextPhase == _self.TURN_PHASES.END) {
+		callbackCheckIfEnemyHasToDoAction = _self.checkIfEnemyHasToDoAction
+			.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableRollPhaseActions.bind(_self));
+	}
+
 	if (card.cardEffect.continuous) {
 		if (card.cardEffect.effect == "copySpecialSpacesUpTo") {
 			if (card.cardEffect.isFinished) {
-				_self.destroyCardAnimationYou(card, _self.enableMainPhaseActions.bind(_self));
+				_self.destroyCardAnimationYou(card, callbackCheckIfEnemyHasToDoAction);
 			} else {
-				_self.enableMainPhaseActions();
+				callbackCheckIfEnemyHasToDoAction.call();
 			}
 		} else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpToEnemy") {
 			if (card.cardEffect.isFinished) {
 				_self.moveEnemyCharacter(card.cardEffect.effectValueChosen,
-					_self.destroyCardAnimationYou.bind(_self, card, _self.checkIfEnemyHasToDoAction
-						.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self))), 0);
+					_self.destroyCardAnimationYou.bind(_self, card, callbackCheckIfEnemyHasToDoAction), 0);
 			} else {
-				_self.moveEnemyCharacter(card.cardEffect.effectValueChosen, _self.checkIfEnemyHasToDoAction
-					.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self)), 0);
+				_self.moveEnemyCharacter(card.cardEffect.effectValueChosen, callbackCheckIfEnemyHasToDoAction, 0);
 			}
 		} else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpToYou") {
 			if (card.cardEffect.isFinished) {
 				_self.moveYourCharacter(card.cardEffect.effectValueChosen,
-					_self.destroyCardAnimationYou.bind(_self, card, _self.checkIfEnemyHasToDoAction
-						.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self))), 0);
+					_self.destroyCardAnimationYou.bind(_self, card, callbackCheckIfEnemyHasToDoAction), 0);
 			} else {
-				_self.moveYourCharacter(card.cardEffect.effectValueChosen, _self.checkIfEnemyHasToDoAction
-					.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self)), 0);
+				_self.moveYourCharacter(card.cardEffect.effectValueChosen, callbackCheckIfEnemyHasToDoAction, 0);
 			}
 		} else if (card.cardEffect.effect == "decreaseChargesContinousCardAll") {
 			var callback = function (card) {
 				if (card.finishData.fieldChosen == "your") {
-					_self.checkForExpiredCardsYou(_self.checkIfEnemyHasToDoAction
-						.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self)));
+					_self.checkForExpiredCardsYou(callbackCheckIfEnemyHasToDoAction);
 				} else {
-					_self.checkForExpiredCardsEnemy(_self.checkIfEnemyHasToDoAction
-						.bind(_self, _self.waitForEnemyActions.bind(_self), _self.enableMainPhaseActions.bind(_self)));
+					_self.checkForExpiredCardsEnemy(callbackCheckIfEnemyHasToDoAction);
 				}
 			};
 
@@ -2771,7 +2772,7 @@ gameController.prototype.performCardEffectContinuousFinishYou = function (card) 
 				_self.showCardOnScreen(card.finishData.cardChosen, playerSelectorClass, callback.bind(_self, card));
 			}
 		} else {
-			_self.enableMainPhaseActions();
+			callbackCheckIfEnemyHasToDoAction.call();
 		}
 	}
 };
@@ -2779,40 +2780,37 @@ gameController.prototype.performCardEffectContinuousFinishYou = function (card) 
 gameController.prototype.performCardEffectContinuousFinishEnemy = function (card) {
 	var _self = this;
 
+	var callbackCheckIfYouHaveToDoAction =
+		_self.checkIfYouHaveToDoAction.bind(_self, _self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self));
+
 	if (card.cardEffect.continuous) {
 		if (card.cardEffect.effect == "copySpecialSpacesUpTo") {
 			if (card.cardEffect.isFinished) {
-				_self.destroyCardAnimationEnemy(card, _self.waitForEnemyActions.bind(_self));
+				_self.destroyCardAnimationEnemy(card, callbackCheckIfYouHaveToDoAction);
 			} else {
-				_self.waitForEnemyActions();
+				callbackCheckIfYouHaveToDoAction.call();
 			}
 		} else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpToEnemy") {
 			if (card.cardEffect.isFinished) {
 				_self.moveYourCharacter(card.cardEffect.effectValueChosen,
-					_self.destroyCardAnimationEnemy.bind(_self, card, _self.checkIfYouHaveToDoAction
-						.bind(_self, _self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self))), 0);
+					_self.destroyCardAnimationEnemy.bind(_self, card, callbackCheckIfYouHaveToDoAction), 0);
 			} else {
-				_self.moveYourCharacter(card.cardEffect.effectValueChosen, _self.checkIfYouHaveToDoAction
-					.bind(_self, _self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self)), 0);
+				_self.moveYourCharacter(card.cardEffect.effectValueChosen, callbackCheckIfYouHaveToDoAction, 0);
 			}
 		} else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpToYou") {
 			if (card.cardEffect.isFinished) {
 				_self.moveEnemyCharacter(card.cardEffect.effectValueChosen,
-					_self.destroyCardAnimationEnemy.bind(_self, card, _self.checkIfYouHaveToDoAction
-						.bind(_self, _self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self))), 0);
+					_self.destroyCardAnimationEnemy.bind(_self, card, callbackCheckIfYouHaveToDoAction), 0);
 			} else {
-				_self.moveEnemyCharacter(card.cardEffect.effectValueChosen, _self.checkIfYouHaveToDoAction
-					.bind(_self, _self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self)), 0);
+				_self.moveEnemyCharacter(card.cardEffect.effectValueChosen, callbackCheckIfYouHaveToDoAction, 0);
 			}
 		} else if (card.cardEffect.effect == "decreaseChargesContinousCardAll") {
 			_self.hideEventsInfo(null, 0);
 			var callback = function (card) {
 				if (card.finishData.fieldChosen == "your") {
-					_self.checkForExpiredCardsEnemy(_self.checkIfYouHaveToDoAction
-						.bind(_self, _self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self)));
+					_self.checkForExpiredCardsEnemy(callbackCheckIfYouHaveToDoAction);
 				} else {
-					_self.checkForExpiredCardsYou(_self.checkIfYouHaveToDoAction
-						.bind(_self, _self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self)));
+					_self.checkForExpiredCardsYou(callbackCheckIfYouHaveToDoAction);
 				}
 			};
 
@@ -2824,7 +2822,7 @@ gameController.prototype.performCardEffectContinuousFinishEnemy = function (card
 				_self.showCardOnScreen(card.finishData.cardChosen, playerSelectorClass, callback.bind(_self, card));
 			}
 		} else {
-			_self.waitForEnemyActions();
+			callbackCheckIfYouHaveToDoAction.call();
 		}
 	}
 };
@@ -3463,76 +3461,76 @@ gameController.prototype.setBoardSpaceListenerMoveSpacesEnemy = function (card, 
 gameController.prototype.performCardEffectInstantEnemy = function (card) {
 	var _self = this;
 
+	var callbackCheckIfYouHaveToDoAction =
+		_self.checkIfYouHaveToDoAction.bind(_self, _self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self));
+
 	if (!card.cardEffect.continuous) {
 		if (card.cardEffect.effect == "moveSpacesForwardUpTo") {
 			if (card.cardEffect.isFinished) {
 				_self.moveEnemyCharacter(card.cardEffect.effectValueChosen,
-					_self.destroyCardAnimationEnemy.bind(_self, card, _self.waitForEnemyActions.bind(_self)), 0);
+					_self.destroyCardAnimationEnemy.bind(_self, card, callbackCheckIfYouHaveToDoAction), 0);
 			} else {
 				_self.setBoardSpaceListenerEnemy(card);
 			}
 		} else if (card.cardEffect.effect == "moveSpacesBackwardsUpToEnemy") {
 			if (card.cardEffect.isFinished) {
 				_self.moveYourCharacter(card.cardEffect.effectValueChosen,
-					_self.destroyCardAnimationEnemy.bind(_self, card, _self.checkIfYouHaveToDoAction
-						.bind(_self, _self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self))), 0);
+					_self.destroyCardAnimationEnemy.bind(_self, card, callbackCheckIfYouHaveToDoAction), 0);
 			} else {
 				_self.setBoardSpaceListenerEnemy(card);
 			}
 		} else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpToYou") {
 			if (card.cardEffect.isFinished) {
 				_self.moveEnemyCharacter(card.cardEffect.effectValueChosen,
-					_self.destroyCardAnimationEnemy.bind(_self, card, _self.waitForEnemyActions.bind(_self)), 0);
+					_self.destroyCardAnimationEnemy.bind(_self, card, callbackCheckIfYouHaveToDoAction), 0);
 			} else {
 				_self.setBoardSpaceListenerEnemy(card);
 			}
 		} else if (card.cardEffect.effect == "moveSpacesForwardOrBackwardUpToEnemy") {
 			if (card.cardEffect.isFinished) {
 				_self.moveYourCharacter(card.cardEffect.effectValueChosen,
-					_self.destroyCardAnimationEnemy.bind(_self, card, _self.checkIfYouHaveToDoAction
-						.bind(_self, _self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self))), 0);
+					_self.destroyCardAnimationEnemy.bind(_self, card, callbackCheckIfYouHaveToDoAction), 0);
 			} else {
 				_self.setBoardSpaceListenerEnemy(card);
 			}
 		} else if (card.cardEffect.effect == "moveSpacesForward") {
 			_self.moveEnemyCharacter(card.cardEffect.effectValue,
-				_self.destroyCardAnimationEnemy.bind(_self, card, _self.waitForEnemyActions.bind(_self)), 500);
+				_self.destroyCardAnimationEnemy.bind(_self, card, callbackCheckIfYouHaveToDoAction), 500);
 		} else if (card.cardEffect.effect == "moveSpacesBackwardsEnemy") {
 			_self.moveYourCharacter(card.cardEffect.effectValue,
-				_self.destroyCardAnimationEnemy.bind(_self, card, _self.checkIfYouHaveToDoAction
-					.bind(_self, _self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self))), 0);
+				_self.destroyCardAnimationEnemy.bind(_self, card, callbackCheckIfYouHaveToDoAction), 0);
 		} else if (card.cardEffect.effect.match("createSpecialBoardSpaceForwardTier")) {
 			if (card.cardEffect.isFinished) {
 				_self.createNewSpecialBoardSpaceAnimation(card.finishData,
-					_self.destroyCardAnimationEnemy.bind(_self, card, _self.waitForEnemyActions.bind(_self)));
+					_self.destroyCardAnimationEnemy.bind(_self, card, callbackCheckIfYouHaveToDoAction));
 			} else {
 				_self.setBoardSpaceListenerEnemy(card);
 			}
 		} else if (card.cardEffect.effect == "destroySpecialBoardSpaceForward") {
 			if (card.cardEffect.isFinished) {
 				_self.destroySpecialBoardSpaceAnimation(card.finishData,
-					_self.destroyCardAnimationEnemy.bind(_self, card, _self.waitForEnemyActions.bind(_self)));
+					_self.destroyCardAnimationEnemy.bind(_self, card, callbackCheckIfYouHaveToDoAction));
 			} else {
 				_self.setBoardSpaceListenerEnemy(card);
 			}
 		} else if (card.cardEffect.effect == "drawCardFromEnemyHand") {
 			_self._postDestroyCard = card;
-			_self.waitForEnemyActions();
+			callbackCheckIfYouHaveToDoAction.call();
 		} else if (card.cardEffect.effect == "drawCardFromEnemyYourHand") {
 			_self._postDestroyCard = card;
-			_self.checkIfYouHaveToDoAction(_self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self));
+			callbackCheckIfYouHaveToDoAction.call();
 		} else if (card.cardEffect.effect == "destroyCardFromEnemyField") {
 			_self._postDestroyCard = card;
-			_self.waitForEnemyActions();
+			callbackCheckIfYouHaveToDoAction.call();
 		} else if (card.cardEffect.effect == "drawCardFromDeckYouEnemy") {
 			_self._postDestroyCard = card;
-			_self.waitForEnemyActions();
+			callbackCheckIfYouHaveToDoAction.call();
 		} else if (card.cardEffect.effect == "takeCardFromYourGraveyard") {
 			_self._postDestroyCard = card;
-			_self.waitForEnemyActions();
+			callbackCheckIfYouHaveToDoAction.call();
 		} else if (card.cardEffect.effect == "takeCardFromEnemyGraveyard") {
 			_self._postDestroyCard = card;
-			_self.waitForEnemyActions();
+			callbackCheckIfYouHaveToDoAction.call();
 		} else if (card.cardEffect.effect == "moveSpacesForwardMoveSpacesBackwardEnemyX") {
 			if (card.cardEffect.isFinished) {
 				_self.hideEventsInfo(null, 0);
@@ -3541,13 +3539,11 @@ gameController.prototype.performCardEffectInstantEnemy = function (card) {
 					if (card.playerYouMovedSuccessfully) {
 						_self.moveYourCharacter(card.cardEffect.effectValueChosen, null, 0);
 						_self.moveEnemyCharacter(card.cardEffect.effectValueChosen,
-							_self.destroyCardAnimationEnemy.bind(_self, card, _self.checkIfYouHaveToDoAction
-								.bind(_self, _self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self))), 0);
+							_self.destroyCardAnimationEnemy.bind(_self, card, callbackCheckIfYouHaveToDoAction), 0);
 					} else {
 						_self.moveEnemyCharacter(card.cardEffect.effectValueChosen, null, 0);
 						_self.moveYourCharacter(card.cardEffect.effectValueChosen,
-							_self.destroyCardAnimationEnemy.bind(_self, card, _self.checkIfYouHaveToDoAction
-								.bind(_self, _self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self))), 0);
+							_self.destroyCardAnimationEnemy.bind(_self, card, callbackCheckIfYouHaveToDoAction), 0);
 					}
 				}, 2000);
 			} else {
@@ -3555,55 +3551,54 @@ gameController.prototype.performCardEffectInstantEnemy = function (card) {
 			}
 		} else if (card.cardEffect.effect == "drawCardFromDeckYouDiscardCardYou") {
 			_self._postDestroyCard = card;
-			_self.waitForEnemyActions();
+			callbackCheckIfYouHaveToDoAction.call();
 		} else if (card.cardEffect.effect == "moveSpacesClosestBoardSpaceSpecialYou") {
 			if (card.cardEffect.isFinished) {
 				_self.moveEnemyCharacter(card.finishData.moveSpaces,
-					_self.destroyCardAnimationEnemy.bind(_self, card, _self.waitForEnemyActions.bind(_self)), 500);
+					_self.destroyCardAnimationEnemy.bind(_self, card, callbackCheckIfYouHaveToDoAction), 500);
 			}
 		} else if (card.cardEffect.effect == "moveSpacesClosestBoardSpaceSpecialEnemy") {
 			if (card.cardEffect.isFinished) {
 				_self.moveYourCharacter(card.finishData.moveSpaces,
-					_self.destroyCardAnimationEnemy.bind(_self, card, _self.checkIfYouHaveToDoAction
-						.bind(_self, _self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self))), 500);
+					_self.destroyCardAnimationEnemy.bind(_self, card, callbackCheckIfYouHaveToDoAction), 500);
 			}
 		} else if (card.cardEffect.effect == "reapplyCurrentSpecialBoardSpaceYou") {
 			_self._postDestroyCard = card;
-			_self.waitForEnemyActions();
+			callbackCheckIfYouHaveToDoAction.call();
 		} else if (card.cardEffect.effect == "reapplyCurrentSpecialBoardSpaceEnemy") {
 			_self._postDestroyCard = card;
-			_self.checkIfYouHaveToDoAction(_self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self));
+			callbackCheckIfYouHaveToDoAction.call();
 		} else if (card.cardEffect.effect == "reapplyCurrentSpecialBoardSpaceEnemyYou") {
 			_self._postDestroyCard = card;
-			_self.waitForEnemyActions();
+			callbackCheckIfYouHaveToDoAction.call();
 		} else if (card.cardEffect.effect == "reapplyCurrentSpecialBoardSpaceYouEnemy") {
 			_self._postDestroyCard = card;
-			_self.checkIfYouHaveToDoAction(_self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self));
+			callbackCheckIfYouHaveToDoAction.call();
 		} else if (card.cardEffect.effect == "increaseChargesContinousCard") {
 			if (card.cardEffect.isFinished) {
 				_self.hideEventsInfo(null, 0);
-				_self.destroyCardAnimationEnemy(card, _self.waitForEnemyActions.bind(_self));
+				_self.destroyCardAnimationEnemy(card, callbackCheckIfYouHaveToDoAction);
 			} else {
 				_self.setCardSelectOnFieldListenerWrapperEnemy(card);
 			}
 		} else if (card.cardEffect.effect == "rollDiceForwardBackward") {
 			_self._postDestroyCard = card;
-			_self.waitForEnemyActions();
+			callbackCheckIfYouHaveToDoAction.call();
 		} else if (card.cardEffect.effect == "moveSpacesForwardNonSpecial") {
 			if (card.cardEffect.isFinished) {
 				_self.hideEventsInfo(null, 0);
 				_self.rollDiceEnemy(card.cardEffect.effectValueChosen,
 					_self.moveEnemyCharacter.bind(_self, card.cardEffect.moveSpaces,
-						_self.destroyCardAnimationEnemy.bind(_self, card, _self.waitForEnemyActions.bind(_self)), 2000));
+						_self.destroyCardAnimationEnemy.bind(_self, card, callbackCheckIfYouHaveToDoAction), 2000));
 			} else {
 				_self.setRollDiceCardListenerEnemy(card);
 			}
 		} else if (card.cardEffect.effect == "discardCardTakeCardFromYourGraveyard") {
 			_self._postDestroyCard = card;
-			_self.waitForEnemyActions();
+			callbackCheckIfYouHaveToDoAction.call();
 		} else if (card.cardEffect.effect == "energyGain") {
 			_self._postDestroyCard = card;
-			_self.waitForEnemyActions();
+			callbackCheckIfYouHaveToDoAction.call();
 		} else if (card.cardEffect.effect == "chooseAttributeVariation1") {
 			if (card.cardEffect.isFinished) {
 				_self._postDestroyCard = card;
@@ -3619,10 +3614,10 @@ gameController.prototype.performCardEffectInstantEnemy = function (card) {
 				_self.waitForMsgTimeout = setTimeout(function() {
 					if (card.cardEffect.moveSpaces) {
 						_self.moveEnemyCharacter(card.cardEffect.moveSpaces,
-							_self.waitForEnemyActions.bind(_self), 0);
+							callbackCheckIfYouHaveToDoAction, 0);
 					} else if (card.cardEffect.cardsToDraw || card.cardEffect.cardsToDiscard
 						|| card.cardEffect.gainEnergy || card.cardEffect.loseEnergy) {
-						_self.waitForEnemyActions();
+						callbackCheckIfYouHaveToDoAction.call();
 					}
 				}, 1500);
 			}
@@ -3640,11 +3635,10 @@ gameController.prototype.performCardEffectInstantEnemy = function (card) {
 
 				_self.waitForMsgTimeout = setTimeout(function() {
 					if (card.cardEffect.moveSpaces) {
-						_self.moveYourCharacter(card.cardEffect.moveSpaces, _self.checkIfYouHaveToDoAction
-							.bind(_self, _self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self)), 0);
+						_self.moveYourCharacter(card.cardEffect.moveSpaces, callbackCheckIfYouHaveToDoAction, 0);
 					} else if (card.cardEffect.cardsToDraw || card.cardEffect.cardsToDiscard
 						|| card.cardEffect.gainEnergy || card.cardEffect.loseEnergy) {
-						_self.checkIfYouHaveToDoAction(_self.enableActionsInEnemyPhase.bind(_self), _self.waitForEnemyActions.bind(_self));
+						callbackCheckIfYouHaveToDoAction.call();
 					}
 				}, 1500);
 			}
@@ -3653,7 +3647,7 @@ gameController.prototype.performCardEffectInstantEnemy = function (card) {
 				card.finishData.destroyedBoardSpacesPositions.forEach(function(boardSpaceData, positionIdx, arr) {
 					if (positionIdx == arr.length - 1) {
 						_self.destroySpecialBoardSpaceAnimation(boardSpaceData,
-							_self.destroyCardAnimationEnemy.bind(_self, card, _self.waitForEnemyActions.bind(_self)));
+							_self.destroyCardAnimationEnemy.bind(_self, card, callbackCheckIfYouHaveToDoAction));
 					} else {
 						_self.destroySpecialBoardSpaceAnimation(boardSpaceData);
 					}
@@ -3667,13 +3661,13 @@ gameController.prototype.performCardEffectInstantEnemy = function (card) {
 					columnIndex: card.finishData.moveFromColumnIndex }, _self.createNewSpecialBoardSpaceAnimation.bind(_self,
 						{ rowIndex: card.finishData.moveToRowIndex, columnIndex: card.finishData.moveToColumnIndex,
 							spaceType: card.finishData.spaceType }));
-				_self.destroyCardAnimationEnemy(card, _self.waitForEnemyActions.bind(_self));
+				_self.destroyCardAnimationEnemy(card, callbackCheckIfYouHaveToDoAction);
 			} else {
 				_self.setBoardSpaceListenerEnemy(card);
 			}
 		}
 	} else {
-		_self.waitForEnemyActions();
+		callbackCheckIfYouHaveToDoAction.call();
 	}
 };
 
