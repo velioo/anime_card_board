@@ -308,7 +308,11 @@ const self = module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
-      await gameCore.initValidateData(ctx, "DRAW_CARD");
+      let retry = await gameCore.initValidateData(ctx, "DRAW_CARD");
+
+      if (retry) {
+        return;
+      }
 
       let gameState = ctx.gameplayData.gameState;
       let playerState = gameState.playersState[ctx.session.userData.userId];
@@ -348,7 +352,11 @@ const self = module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
-      await gameCore.initValidateData(ctx, "DRAW_PHASE");
+      let retry = await gameCore.initValidateData(ctx, "DRAW_PHASE");
+
+      if (retry) {
+        return;
+      }
 
       let gameState = ctx.gameplayData.gameState;
       let playerState = gameState.playersState[ctx.session.userData.userId];
@@ -385,7 +393,11 @@ const self = module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
-      await gameCore.initValidateData(ctx, "STANDBY_PHASE");
+      let retry = await gameCore.initValidateData(ctx, "STANDBY_PHASE");
+
+      if (retry) {
+        return;
+      }
 
       let gameState = ctx.gameplayData.gameState;
       let playerState = gameState.playersState[ctx.session.userData.userId];
@@ -420,7 +432,11 @@ const self = module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
-      await gameCore.initValidateData(ctx, "MAIN_PHASE");
+      let retry = await gameCore.initValidateData(ctx, "MAIN_PHASE");
+
+      if (retry) {
+        return;
+      }
 
       let gameState = ctx.gameplayData.gameState;
       let playerState = gameState.playersState[ctx.session.userData.userId];
@@ -455,7 +471,11 @@ const self = module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
-      await gameCore.initValidateData(ctx, "SUMMON_CARD");
+      let retry = await gameCore.initValidateData(ctx, "SUMMON_CARD");
+
+      if (retry) {
+        return;
+      }
 
       let gameState = ctx.gameplayData.gameState;
       let playerState = gameState.playersState[ctx.session.userData.userId];
@@ -497,7 +517,11 @@ const self = module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
-      await gameCore.initValidateData(ctx, "DRAW_CARD_FROM_ENEMY_HAND");
+      let retry = await gameCore.initValidateData(ctx, "DRAW_CARD_FROM_ENEMY_HAND");
+
+      if (retry) {
+        return;
+      }
 
       let gameState = ctx.gameplayData.gameState;
       let playerState = gameState.playersState[ctx.session.userData.userId];
@@ -541,7 +565,11 @@ const self = module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
-      await gameCore.initValidateData(ctx, "TAKE_CARD_FROM_GRAVEYARD");
+      let retry = await gameCore.initValidateData(ctx, "TAKE_CARD_FROM_GRAVEYARD");
+
+      if (retry) {
+        return;
+      }
 
       let gameState = ctx.gameplayData.gameState;
       let playerState = gameState.playersState[ctx.session.userData.userId];
@@ -594,7 +622,11 @@ const self = module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
-      await gameCore.initValidateData(ctx, "DESTROY_CARD_FROM_ENEMY_FIELD");
+      let retry = await gameCore.initValidateData(ctx, "DESTROY_CARD_FROM_ENEMY_FIELD");
+
+      if (retry) {
+        return;
+      }
 
       let gameState = ctx.gameplayData.gameState;
       let playerState = gameState.playersState[ctx.session.userData.userId];
@@ -636,7 +668,11 @@ const self = module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
-      await gameCore.initValidateData(ctx, "ROLL_PHASE");
+      let retry = await gameCore.initValidateData(ctx, "ROLL_PHASE");
+
+      if (retry) {
+        return;
+      }
 
       let gameState = ctx.gameplayData.gameState;
       let playerState = gameState.playersState[ctx.session.userData.userId];
@@ -671,7 +707,11 @@ const self = module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
-      await gameCore.initValidateData(ctx, "ROLL_DICE_BOARD");
+      let retry = await gameCore.initValidateData(ctx, "ROLL_DICE_BOARD");
+
+      if (retry) {
+        return;
+      }
 
       let gameState = ctx.gameplayData.gameState;
       let playerState = gameState.playersState[ctx.session.userData.userId];
@@ -707,7 +747,11 @@ const self = module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
-      await gameCore.initValidateData(ctx, "END_PHASE");
+      let retry = await gameCore.initValidateData(ctx, "END_PHASE");
+
+      if (retry) {
+        return;
+      }
 
       let gameState = ctx.gameplayData.gameState;
       let playerState = gameState.playersState[ctx.session.userData.userId];
@@ -754,7 +798,11 @@ const self = module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
-      await gameCore.initValidateData(ctx, "DISCARD_CARD");
+      let retry = await gameCore.initValidateData(ctx, "DISCARD_CARD");
+
+      if (retry) {
+        return;
+      }
 
       let gameState = ctx.gameplayData.gameState;
       let playerState = gameState.playersState[ctx.session.userData.userId];
@@ -798,7 +846,11 @@ const self = module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
-      await gameCore.initValidateData(ctx, "FINISH_CARD");
+      let retry = await gameCore.initValidateData(ctx, "FINISH_CARD");
+
+      if (retry) {
+        return;
+      }
 
       let gameState = ctx.gameplayData.gameState;
       let playerState = gameState.playersState[ctx.session.userData.userId];
@@ -837,7 +889,11 @@ const self = module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
-      await gameCore.initValidateData(ctx, "ACTIVATE_CARD_EFFECT");
+      let retry = await gameCore.initValidateData(ctx, "ACTIVATE_CARD_EFFECT");
+
+      if (retry) {
+        return;
+      }
 
       let gameState = ctx.gameplayData.gameState;
       let playerState = gameState.playersState[ctx.session.userData.userId];
@@ -873,7 +929,11 @@ const self = module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
-      await gameCore.initValidateData(ctx, "FINISH_CARD_CONTINUOUS");
+      let retry = await gameCore.initValidateData(ctx, "FINISH_CARD_CONTINUOUS");
+
+      if (retry) {
+        return;
+      }
 
       let gameState = ctx.gameplayData.gameState;
       let playerState = gameState.playersState[ctx.session.userData.userId];
@@ -909,7 +969,11 @@ const self = module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
-      await gameCore.initValidateData(ctx, "FINISH_CHAIN_EFFECT");
+      let retry = await gameCore.initValidateData(ctx, "FINISH_CHAIN_EFFECT");
+
+      if (retry) {
+        return;
+      }
 
       let gameState = ctx.gameplayData.gameState;
       let playerState = gameState.playersState[ctx.session.userData.userId];

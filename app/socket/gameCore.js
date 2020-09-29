@@ -30,6 +30,7 @@ var self = module.exports = {
    	ctx.data.cardId = parseInt(ctx.data.cardId);
     ctx.data.cardIdx = parseInt(ctx.data.cardIdx);
     ctx.data.playerIdGraveyard = parseInt(ctx.data.playerIdGraveyard);
+    ctx.data.retryLastCommand = (ctx.data.retryLastCommand == 'true');
 
    	const isSchemaValid = ajv.validate(SCHEMAS[command], ctx.data);
    	assert(isSchemaValid);
@@ -49,8 +50,14 @@ var self = module.exports = {
     let enemyUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
     let playerStateEnemy = gameState.playersState[enemyUserId];
 
+    ctx.cardDrawn = playerState.cardsInHandArr[playerState.cardsInHandArr.length - 1];
+
     if (gameState.nextPhase != TURN_PHASES.DRAW) {
     	assert(gameState.activePlayerId == yourUserId);
+    }
+
+    if (ctx.data.retryLastCommand) {
+    	return true;
     }
 
     switch(command) {
@@ -247,6 +254,8 @@ var self = module.exports = {
     	default:
     		assert(0);
     }
+
+    return false;
 	},
 	drawPhaseHook: async (ctx) => {
 		let gameState = ctx.gameplayData.gameState;

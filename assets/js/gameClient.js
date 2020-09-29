@@ -54,6 +54,7 @@ gameClient.prototype.drawCard = function (_data) {
 	clearInterval(_self.gameController.retryLastCommandInterval);
 
 	_self.gameController.retryLastCommandInterval = setInterval(function() {
+		_data.retryLastCommand = true;
 		_self.socket.emit('drawCard', _data);
 	}, 2000);
 };
@@ -94,6 +95,7 @@ gameClient.prototype.drawPhase = function (_data) {
 	clearInterval(_self.gameController.retryLastCommandInterval);
 
 	_self.gameController.retryLastCommandInterval = setInterval(function() {
+		_data.retryLastCommand = true;
 		_self.socket.emit('drawPhase', _data);
 	}, 2000);
 };
@@ -121,6 +123,7 @@ gameClient.prototype.standByPhase = function (_data) {
 	clearInterval(_self.gameController.retryLastCommandInterval);
 
 	_self.gameController.retryLastCommandInterval = setInterval(function() {
+		_data.retryLastCommand = true;
 		_self.socket.emit('standByPhase', _data);
 	}, 2000);
 };
@@ -148,6 +151,7 @@ gameClient.prototype.mainPhase = function (_data) {
 	clearInterval(_self.gameController.retryLastCommandInterval);
 
 	_self.gameController.retryLastCommandInterval = setInterval(function() {
+		_data.retryLastCommand = true;
 		_self.socket.emit('mainPhase', _data);
 	}, 2000);
 };
@@ -175,6 +179,7 @@ gameClient.prototype.summonCard = function (_data) {
 	clearInterval(_self.gameController.retryLastCommandInterval);
 
 	_self.gameController.retryLastCommandInterval = setInterval(function() {
+		_data.retryLastCommand = true;
 		_self.socket.emit('summonCard', _data);
 	}, 2000);
 };
@@ -202,6 +207,7 @@ gameClient.prototype.drawCardFromEnemyHand = function (_data) {
 	clearInterval(_self.gameController.retryLastCommandInterval);
 
 	_self.gameController.retryLastCommandInterval = setInterval(function() {
+		_data.retryLastCommand = true;
 		_self.socket.emit('drawCardFromEnemyHand', _data);
 	}, 2000);
 };
@@ -229,6 +235,7 @@ gameClient.prototype.destroyCardFromEnemyField = function (_data) {
 	clearInterval(_self.gameController.retryLastCommandInterval);
 
 	_self.gameController.retryLastCommandInterval = setInterval(function() {
+		_data.retryLastCommand = true;
 		_self.socket.emit('destroyCardFromEnemyField', _data);
 	}, 2000);
 };
@@ -256,6 +263,7 @@ gameClient.prototype.takeCardFromGraveyard = function (_data) {
 	clearInterval(_self.gameController.retryLastCommandInterval);
 
 	_self.gameController.retryLastCommandInterval = setInterval(function() {
+		_data.retryLastCommand = true;
 		_self.socket.emit('takeCardFromGraveyard', _data);
 	}, 2000);
 };
@@ -283,6 +291,7 @@ gameClient.prototype.rollPhase = function (_data) {
 	clearInterval(_self.gameController.retryLastCommandInterval);
 
 	_self.gameController.retryLastCommandInterval = setInterval(function() {
+		_data.retryLastCommand = true;
 		_self.socket.emit('rollPhase', _data);
 	}, 2000);
 };
@@ -310,6 +319,7 @@ gameClient.prototype.rollDiceBoard = function (_data) {
 	clearInterval(_self.gameController.retryLastCommandInterval);
 
 	_self.gameController.retryLastCommandInterval = setInterval(function() {
+		_data.retryLastCommand = true;
 		_self.socket.emit('rollDiceBoard', _data);
 	}, 2000);
 };
@@ -337,6 +347,7 @@ gameClient.prototype.endPhase = function (_data) {
 	clearInterval(_self.gameController.retryLastCommandInterval);
 
 	_self.gameController.retryLastCommandInterval = setInterval(function() {
+		_data.retryLastCommand = true;
 		_self.socket.emit('endPhase', _data);
 	}, 2000);
 };
@@ -364,6 +375,7 @@ gameClient.prototype.discardCard = function (_data) {
 	clearInterval(_self.gameController.retryLastCommandInterval);
 
 	_self.gameController.retryLastCommandInterval = setInterval(function() {
+		_data.retryLastCommand = true;
 		_self.socket.emit('discardCard', _data);
 	}, 2000);
 };
@@ -391,6 +403,7 @@ gameClient.prototype.finishCardEffect = function (_data) {
 	clearInterval(_self.gameController.retryLastCommandInterval);
 
 	_self.gameController.retryLastCommandInterval = setInterval(function() {
+		_data.retryLastCommand = true;
 		_self.socket.emit('finishCardEffect', _data);
 	}, 2000);
 };
@@ -418,6 +431,7 @@ gameClient.prototype.activateCardEffect = function (_data) {
 	clearInterval(_self.gameController.retryLastCommandInterval);
 
 	_self.gameController.retryLastCommandInterval = setInterval(function() {
+		_data.retryLastCommand = true;
 		_self.socket.emit('activateCardEffect', _data);
 	}, 2000);
 };
@@ -445,6 +459,7 @@ gameClient.prototype.finishCardEffectContinuous = function (_data) {
 	clearInterval(_self.gameController.retryLastCommandInterval);
 
 	_self.gameController.retryLastCommandInterval = setInterval(function() {
+		_data.retryLastCommand = true;
 		_self.socket.emit('finishCardEffectContinuous', _data);
 	}, 2000);
 };
@@ -472,6 +487,7 @@ gameClient.prototype.finishChainEffect = function (_data) {
 	clearInterval(_self.gameController.retryLastCommandInterval);
 
 	_self.gameController.retryLastCommandInterval = setInterval(function() {
+		_data.retryLastCommand = true;
 		_self.socket.emit('finishChainEffect', _data);
 	}, 2000);
 };
@@ -499,6 +515,7 @@ gameClient.prototype.winGameFormally = function(_data) {
 	clearInterval(_self.gameController.retryLastCommandInterval);
 
 	_self.gameController.retryLastCommandInterval = setInterval(function() {
+		_data.retryLastCommand = true;
 		_self.socket.emit('winGameFormally', _data);
 	}, 2000);
 };

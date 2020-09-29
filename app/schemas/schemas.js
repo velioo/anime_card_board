@@ -184,6 +184,7 @@ const _DRAW_CARD = {
   "type": "object",
   "properties": {
     "roomId": { "type": "integer" },
+    "retryLastCommand": { "type": "boolean" },
   },
   "required": [ "roomId" ],
 };
@@ -197,6 +198,7 @@ const _SUMMON_CARD = {
     "roomId": { "type": "integer" },
     "cardId": { "type": "integer" },
     "cardIdx": { "type": "integer" },
+    "retryLastCommand": { "type": "boolean" },
   },
   "required": [ "roomId", "cardId", "cardIdx" ],
 };
@@ -210,6 +212,7 @@ const _FINISH_CARD = {
   "properties": {
     "roomId": { "type": "integer" },
     "cardId": { "type": "integer" },
+    "retryLastCommand": { "type": "boolean" },
   },
   "required": [ "roomId", "cardId" ],
 };
@@ -255,6 +258,7 @@ const _DRAW_CARD_FROM_ENEMY_HAND = {
   "properties": {
     "roomId": { "type": "integer" },
     "cardIdx": { "type": "integer" },
+    "retryLastCommand": { "type": "boolean" },
   },
   "required": [ "roomId", "cardIdx" ],
 };
@@ -264,6 +268,7 @@ const _DESTROY_CARD_FROM_ENEMY_FIELD = {
   "properties": {
     "roomId": { "type": "integer" },
     "cardId": { "type": "integer" },
+    "retryLastCommand": { "type": "boolean" },
   },
   "required": [ "roomId", "cardId" ],
 };
@@ -274,6 +279,7 @@ const _TAKE_CARD_FROM_GRAVEYARD = {
     "roomId": { "type": "integer" },
     "cardIdx": { "type": "integer" },
     "playerIdGraveyard": { "type": "integer" },
+    "retryLastCommand": { "type": "boolean" },
   },
   "required": [ "roomId", "cardIdx", "playerIdGraveyard" ],
 };

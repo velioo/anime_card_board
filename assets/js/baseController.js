@@ -111,9 +111,9 @@ baseController.prototype._initListeners = function() {
 	  }
 
 	  if ((stateObj === null) || (_self.IGNORE_SCREENS.includes(stateObj.screenClass))) {
-	  	_self.switchToScreen(_self.MAIN_MENU_SCREEN_CLASS);
+	  	_self.processChangeScreen(_self.DEFAULT_SCREEN_CLASS);
 	  } else {
-		  _self.switchToScreen(stateObj.screenClass);
+		  _self.processChangeScreen(stateObj.screenClass);
 		}
 	});
 };
@@ -122,9 +122,13 @@ baseController.prototype._initState = function() {
   var stateObj = history.state;
   var _self = this;
 
+  console.log('_initState');
+
 	if (stateObj !== null) {
 		if (!_self.IGNORE_SCREENS.includes(stateObj.screenClass)) {
-	  	_self.switchToScreen(stateObj.screenClass);
+	  	_self.processChangeScreen(stateObj.screenClass);
+		} else {
+			_self.processChangeScreen(_self.DEFAULT_SCREEN_CLASS);
 		}
 	} else {
 		_self.processChangeScreen(_self.DEFAULT_SCREEN_CLASS);
@@ -169,7 +173,7 @@ baseController.prototype.switchToScreen = function(screenClass) {
 baseController.prototype.preSwitchScreenHook = function(screenClass) {
 	var _self = this;
 
-	if (screenClass == _self.GAME_SCREEN_CLASS || (!_self.client.logInSignUpController.isUserLoggedIn())) {
+	if ((screenClass == _self.GAME_SCREEN_CLASS) || (!_self.client.logInSignUpController.isUserLoggedIn())) {
 		_self.GAME_HIDE_WRAPPERS.forEach(wrapper => $(wrapper).hide());
 	} else {
 		_self.GAME_HIDE_WRAPPERS.forEach(wrapper => $(wrapper).show());
