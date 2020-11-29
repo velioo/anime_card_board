@@ -1,6 +1,7 @@
 var _isBaseControllerStateInited = false;
 var _isBaseControllerListenersInited = false;
 var _lastHistoryState = history.state;
+var _clearUserMsg = false;
 
 var _lastScreenClass = null;
 if (_lastHistoryState) {
@@ -122,8 +123,6 @@ baseController.prototype._initState = function() {
   var stateObj = history.state;
   var _self = this;
 
-  console.log('_initState');
-
 	if (stateObj !== null) {
 		if (!_self.IGNORE_SCREENS.includes(stateObj.screenClass)) {
 	  	_self.processChangeScreen(stateObj.screenClass);
@@ -137,6 +136,7 @@ baseController.prototype._initState = function() {
 	$(_self.SUBMAIN_WRAPPER_ID).show();
 
 	_isBaseControllerStateInited = true;
+	_clearUserMsg = true;
 };
 
 baseController.prototype.switchToScreen = function(screenClass) {
@@ -217,7 +217,9 @@ baseController.prototype.resetAllScreens = function() {
 };
 
 baseController.prototype.clearAllUserMessages = function() {
-	$(this.USER_MESSAGE_CLASS).html('');
+	if (_clearUserMsg) {
+		$(this.USER_MESSAGE_CLASS).html('');
+	}
 };
 
 baseController.prototype.clearAllInputs = function() {
