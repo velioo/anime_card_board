@@ -2542,6 +2542,13 @@ let updateUserLevelStatus = async (ctx, userId, userIdWin, xpGain) => {
 		userRow.current_level_xp = userRow.current_level_xp + xpGain - userRow.max_level_xp;
 		userRow.max_level_xp = Math.floor(userRow.max_level_xp * 1.1);
 		userRow.level++;
+
+		while (userRow.current_level_xp > userRow.max_level_xp)
+		{
+			userRow.current_level_xp = userRow.current_level_xp - userRow.max_level_xp;
+			userRow.max_level_xp = Math.floor(userRow.max_level_xp * 1.1);
+			userRow.level++;
+		}
 	}
 
 	if (userId == userIdWin) {
