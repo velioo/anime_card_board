@@ -11,6 +11,12 @@ var hbsPartials = {
   game: '../partials/game',
   matchmaking: '../partials/matchmaking',
   settings: '../partials/settings',
+  play: '../partials/play',
+  info: '../partials/info',
+  rules: '../partials/rules',
+  cards: '../partials/cards',
+  characters: '../partials/characters',
+  about: '../partials/about',
 };
 
 module.exports = hbsPartials;

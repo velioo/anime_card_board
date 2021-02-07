@@ -1,5 +1,7 @@
-const PORT = +process.argv[2] || 8882;
-const ROOT = 'http://localhost:' + PORT + '/';
+const PORT = process.env.PORT || 8882;
+const prod_url = 'https://anime-card-board.herokuapp.com/';
+const dev_url = 'http://localhost:' + PORT + '/';
+const ROOT = (process.env.NODE_ENV ? prod_url : dev_url);
 
 exports.PORT = PORT;
 exports.ROOT = ROOT;
@@ -38,7 +40,8 @@ let sessions;
 app.use(globalErrHandler);
 
 app.use(new StaticCache('./assets', {
-  maxAge: MAX_ASSETS_AGE
+  maxAge: MAX_ASSETS_AGE,
+  // maxAge: 1,
 }, dirs));
 app.use(new StaticCache('./uploads', {
   maxAge: MAX_UPLOADS_AGE

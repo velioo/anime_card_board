@@ -1,6 +1,7 @@
 var _isBaseControllerStateInited = false;
 var _isBaseControllerListenersInited = false;
 var _lastHistoryState = history.state;
+var _clearUserMsg = false;
 
 var _lastScreenClass = null;
 if (_lastHistoryState) {
@@ -29,8 +30,10 @@ baseController.prototype._initConstants = function() {
 	_self.FORM_CLASS = '.anime-cb-form';
 	_self.MAIN_WRAPPER_ID = '#acb-main-wrapper';
 	_self.SUBMAIN_WRAPPER_ID = '#acb-submain-wrapper'
+	_self.INFO_HEADER_ID = '#acb-info-header';
+	_self.CHAT_WRAPPER_ID = '#acb-chat-wrapper';
 
-	_self.CHANGE_SCREEN_BTNS_CLASS = '.anime-cb-button';
+	_self.CHANGE_SCREEN_BTNS_CLASS = '.anime-cb-button, .anime-cb-button-no-style';
 
 	_self.SCREEN_CLASS_PREFIX = '.anime-cb-screen-';
 	_self.SCREENS_CLASS = '.anime-cb-screen';
@@ -45,16 +48,22 @@ baseController.prototype._initConstants = function() {
 	_self.GAME_SCREEN_CLASS = '.anime-cb-screen-game';
 	_self.MATCHMAKING_SCREEN_CLASS = '.anime-cb-screen-matchmaking';
 	_self.SETTINGS_SCREEN_CLASS = '.anime-cb-screen-settings';
+	_self.PLAY_SCREEN_CLASS = '.anime-cb-screen-play';
+	_self.INFO_SCREEN_CLASS = '.anime-cb-screen-info';
+	_self.RULES_SCREEN_CLASS = '.anime-cb-screen-rules';
+	_self.CARDS_SCREEN_CLASS = '.anime-cb-screen-cards';
+	_self.CHARACTERS_SCREEN_CLASS = '.anime-cb-screen-characters';
+	_self.ABOUT_SCREEN_CLASS = '.anime-cb-screen-about';
 
 	_self.USER_MESSAGE_CLASS = '.user-message';
-
+	_self.CHARACTER_CHOOSE_CLASS = '.anime-cb-character-choose';
 	_self.SPINNER_CLASS = '.spinner';
 	_self.MAIN_SPINNER_CLASS = '.main.spinner';
 	_self.PRE_SCREEN_SPINNER_CLASS = '.pre-screen-spinner';
 	_self.SCREEN_FOOTER_CLASS = '.anime-cb-screen_footer';
-
 	_self.INPUT_ERRORS_CLASS = '.errors';
 
+	_self.DEFAULT_SCREEN_CLASS = _self.MAIN_MENU_SCREEN_CLASS;
 	_self.LOGGED_IN_BLACKLISTED_SCREENS = [
 		_self.LOGIN_SCREEN_CLASS,
 		_self.SIGN_UP_SCREEN_CLASS,
@@ -66,16 +75,26 @@ baseController.prototype._initConstants = function() {
 		_self.LOGIN_SCREEN_CLASS,
 		_self.SIGN_UP_SCREEN_CLASS,
 		_self.SIGN_UP_SUCCESS_SCREEN_CLASS,
+		_self.INFO_SCREEN_CLASS,
+		_self.RULES_SCREEN_CLASS,
+		_self.CARDS_SCREEN_CLASS,
+		_self.CHARACTERS_SCREEN_CLASS,
+		_self.ABOUT_SCREEN_CLASS,
 	];
 
 	_self.IGNORE_SCREENS = [
 		_self.LOBBY_SCREEN_CLASS,
 		_self.GAME_SCREEN_CLASS,
 	];
+
+	_self.GAME_HIDE_WRAPPERS = [
+		_self.INFO_HEADER_ID,
+		_self.CHAT_WRAPPER_ID,
+	];
 };
 
 baseController.prototype._initElements = function() {
-	this.$allInputs = $(this.FORM_CLASS).find('input');
+	this.$allInputs = $(this.FORM_CLASS).find('input, textarea');
 };
 
 baseController.prototype._initListeners = function() {
@@ -88,15 +107,14 @@ baseController.prototype._initListeners = function() {
 	window.addEventListener('popstate', function(e) {
 	  var stateObj = e.state;
 
-	  _lastScreenClass = _lastHistoryState.screenClass;
-	  if (history.state) {
-			console.log('History popstate: ', stateObj.screenClass);
-		}
+	  if (_lastHistoryState) {
+	  	_lastScreenClass = _lastHistoryState.screenClass;
+	  }
 
 	  if ((stateObj === null) || (_self.IGNORE_SCREENS.includes(stateObj.screenClass))) {
-	  	_self.switchToScreen(_self.MAIN_MENU_SCREEN_CLASS);
+	  	_self.processChangeScreen(_self.DEFAULT_SCREEN_CLASS);
 	  } else {
-		  _self.switchToScreen(stateObj.screenClass);
+		  _self.processChangeScreen(stateObj.screenClass);
 		}
 	});
 };
@@ -107,13 +125,18 @@ baseController.prototype._initState = function() {
 
 	if (stateObj !== null) {
 		if (!_self.IGNORE_SCREENS.includes(stateObj.screenClass)) {
-	  	_self.switchToScreen(stateObj.screenClass);
+	  	_self.processChangeScreen(stateObj.screenClass);
+		} else {
+			_self.processChangeScreen(_self.DEFAULT_SCREEN_CLASS);
 		}
+	} else {
+		_self.processChangeScreen(_self.DEFAULT_SCREEN_CLASS);
 	}
 
 	$(_self.SUBMAIN_WRAPPER_ID).show();
 
 	_isBaseControllerStateInited = true;
+	_clearUserMsg = true;
 };
 
 baseController.prototype.switchToScreen = function(screenClass) {
@@ -148,17 +171,20 @@ baseController.prototype.switchToScreen = function(screenClass) {
 };
 
 baseController.prototype.preSwitchScreenHook = function(screenClass) {
-	logger.info('preSwitchScreenHook');
-	console.log('preSwitchScreenHook');
-	console.log(_lastHistoryState);
 	var _self = this;
+
+	if ((screenClass == _self.GAME_SCREEN_CLASS) || (!_self.client.logInSignUpController.isUserLoggedIn())) {
+		_self.GAME_HIDE_WRAPPERS.forEach(wrapper => $(wrapper).hide());
+	} else {
+		_self.GAME_HIDE_WRAPPERS.forEach(wrapper => $(wrapper).show());
+	}
 
 	if (typeof _self.client.roomController.preSwitchScreenHookRoomController === "function") {
 		_self.client.roomController.preSwitchScreenHookRoomController(screenClass);
 	}
 
-	if (typeof _self.client.logInSignUpController.preSwitchScreenHookLogInSignUpController === "function") {
-		_self.client.logInSignUpController.preSwitchScreenHookLogInSignUpController(screenClass);
+	if (typeof _self.client.settingsController.preSwitchScreenHookSettingsController === "function") {
+		_self.client.settingsController.preSwitchScreenHookSettingsController(screenClass);
 	}
 };
 
@@ -176,6 +202,8 @@ baseController.prototype.postSwitchScreenHook = function(screenClass) {
 	if (screenClass != _self.GAME_SCREEN_CLASS) {
 		_self.client.gameController.resetGameState();
 	}
+
+	$('html').scrollTop(0);
 };
 
 baseController.prototype.resetAllScreens = function() {
@@ -189,7 +217,9 @@ baseController.prototype.resetAllScreens = function() {
 };
 
 baseController.prototype.clearAllUserMessages = function() {
-	$(this.USER_MESSAGE_CLASS).html('');
+	if (_clearUserMsg) {
+		$(this.USER_MESSAGE_CLASS).html('');
+	}
 };
 
 baseController.prototype.clearAllInputs = function() {
@@ -344,4 +374,14 @@ baseController.prototype.processChangeScreen = function(input) {
 	_lastHistoryState = history.state;
 
 	_self.switchToScreen(screenClass);
+};
+
+var getRandomInt = function (min, max) {
+	min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+var getKeyByValue = function (object, value) {
+	return Object.keys(object).find(key => object[key] === value);
 };

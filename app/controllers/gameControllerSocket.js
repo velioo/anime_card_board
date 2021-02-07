@@ -30,9 +30,6 @@ const self = module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
-      // let rand = utils.getRandomInt(0, 1);
-      // assert(rand);
-
       ctx.data.roomId = parseInt(ctx.data.roomId);
       ctx.data.player1Id = parseInt(ctx.data.player1Id);
       ctx.data.player2Id = parseInt(ctx.data.player2Id);
@@ -47,7 +44,9 @@ const self = module.exports = {
       let queryStatus = await pg.pool.query(`
 
         SELECT
-          R.*, U1.username as player1_name, U2.username as player2_name
+          R.*, U1.username as player1_name, U2.username as player2_name, U1.level as player1_level, U2.level as player2_level,
+          U1.current_level_xp as player1_current_level_xp, U2.current_level_xp as player2_current_level_xp,
+          U1.max_level_xp as player1_max_level_xp, U2.max_level_xp as player2_max_level_xp
         FROM rooms as R
         JOIN users as U1 ON U1.id = R.player1_id
         LEFT JOIN users as U2 ON U2.id = R.player2_id
@@ -66,21 +65,88 @@ const self = module.exports = {
         player2Name: queryStatus.rows[0].player2_name,
         player1Id: queryStatus.rows[0].player1_id,
         player2Id: queryStatus.rows[0].player2_id,
+        player1Level: queryStatus.rows[0].player1_level,
+        player2Level: queryStatus.rows[0].player2_level,
+        player1CurrLevelXp: queryStatus.rows[0].player1_current_level_xp,
+        player2CurrLevelXp: queryStatus.rows[0].player2_current_level_xp,
+        player1MaxLevelXp: queryStatus.rows[0].player1_max_level_xp,
+        player2MaxLevelXp: queryStatus.rows[0].player2_max_level_xp,
       };
 
       let roomSettings = JSON.parse(queryStatus.rows[0].settings_json);
-      assert(roomSettings.board_id);
+      assert(roomSettings.boardId);
+      assert(roomSettings.player1Character.id);
+      assert(roomSettings.player2Character.id);
 
       let queryStatusBoards = await pg.pool.query(`
 
         SELECT * FROM boards
         WHERE id = $1
 
-      `, [ roomSettings.board_id ]);
+      `, [ roomSettings.boardId ]);
 
       assert(queryStatusBoards.rows.length == 1);
 
+      let queryStatusCharacters = await pg.pool.query(`
+
+        SELECT * FROM characters
+        WHERE id in ($1, $2)
+
+      `, [ roomSettings.player1Character.id, roomSettings.player2Character.id ]);
+
+      assert(queryStatusCharacters.rowCount >= 1 && queryStatusCharacters.rowCount <= 2);
+
+      queryStatusCharacters.rows.forEach(function(character) {
+        let playerCharacter = {
+          characterId: character.id,
+          characterName: character.name,
+          characterImg: character.image,
+          characterText: character.description,
+          characterEffect: JSON.parse(character.effect_json),
+        };
+
+        if (character.id == roomSettings.player1Character.id) {
+          ctx.roomData.player1Character = playerCharacter;
+        }
+
+        if (character.id == roomSettings.player2Character.id) {
+          ctx.roomData.player2Character = playerCharacter;
+        }
+      });
+
+      assert(ctx.roomData.player1Character && ctx.roomData.player2Character);
+
       let boardDataPlayers = JSON.parse(queryStatusBoards.rows[0].board_data_json);
+      let boardMatrix = JSON.parse(queryStatusBoards.rows[0].board_matrix_json);
+
+      let timesGenerated = 0;
+      if ("random" in boardDataPlayers) {
+        assert("rows" in boardDataPlayers);
+        assert("columns" in boardDataPlayers);
+
+        let minSpacesDefault = (boardDataPlayers.rows * boardDataPlayers.columns) / 2;
+        let minSpaces = boardDataPlayers.minSpaces || minSpacesDefault;
+
+        assert(minSpaces && minSpaces <= minSpacesDefault);
+
+        do {
+          let result = gameCore.generateRandomBoard(ctx, boardDataPlayers);
+          boardMatrixTmp = result[0];
+          boardDataPlayersTmp = result[1];
+          timesGenerated++;
+
+          assert(boardMatrixTmp);
+          assert(boardDataPlayersTmp);
+        } while (boardDataPlayersTmp.boardPath.length < minSpaces);
+
+        boardMatrix = boardMatrixTmp;
+        boardDataPlayers = boardDataPlayersTmp;
+
+        assert(boardMatrix);
+        assert(boardDataPlayers);
+      }
+
+      console.log('Times generated: ' + timesGenerated);
 
       ctx.gameplayData = {
         gameState: {
@@ -89,7 +155,7 @@ const self = module.exports = {
           roomId: ctx.roomData.id,
           boardData: {
             id: queryStatusBoards.rows[0].board_id,
-            boardMatrix: JSON.parse(queryStatusBoards.rows[0].board_matrix_json),
+            boardMatrix: boardMatrix,
             boardDataPlayers: boardDataPlayers,
           },
           timerSeconds: 300,
@@ -128,6 +194,7 @@ const self = module.exports = {
               cardsToDrawFromEnemyHand: 0,
               cardsToDestroyFromEnemyField: 0,
               cardsToTakeFromYourGraveyard: 0,
+              cardsToTakeFromEnemyGraveyard: 0,
               cardsSummonConstraints: {
                 cardsCanSummonAny: false,
                 cardsCanSummonCommon: true,
@@ -144,6 +211,7 @@ const self = module.exports = {
               maxCardsOnField: 8,
               canRollDiceBoardInRollPhase: true,
               canRollDiceBoardCount: 0,
+              canRollDiceBoardCountBackward: 0,
               rollAgain: false,
               moveBackwardsOnNextRoll: null,
               moveBackwards: null,
@@ -151,7 +219,10 @@ const self = module.exports = {
               energyPoints: 0,
               maxEnergyPoints: 10,
               energyPerTurnGain: 5,
-              energyRegen: 0,
+              totalTurns: 0,
+              totalCardsUsed: 0,
+              chainObj: {},
+              minMaxEnergyPoints: 5,
             },
             [ctx.roomData.player2Id]: {
               name: ctx.roomData.player2Name,
@@ -164,6 +235,7 @@ const self = module.exports = {
               cardsToDrawFromEnemyHand: 0,
               cardsToDestroyFromEnemyField: 0,
               cardsToTakeFromYourGraveyard: 0,
+              cardsToTakeFromEnemyGraveyard: 0,
               cardsSummonConstraints: {
                 cardsCanSummonAny: false,
                 cardsCanSummonCommon: true,
@@ -180,6 +252,7 @@ const self = module.exports = {
               maxCardsOnField: 8,
               canRollDiceBoardInRollPhase: true,
               canRollDiceBoardCount: 0,
+              canRollDiceBoardCountBackward: 0,
               rollAgain: false,
               moveBackwardsOnNextRoll: null,
               moveBackwards: null,
@@ -187,11 +260,16 @@ const self = module.exports = {
               energyPoints: 0,
               maxEnergyPoints: 10,
               energyPerTurnGain: 5,
-              energyRegen: 0,
+              totalTurns: 0,
+              totalCardsUsed: 0,
+              chainObj: {},
+              minMaxEnergyPoints: 5,
             },
           },
         },
       };
+
+      await gameCore.startGameCharacterEffectsHook(ctx);
 
       queryStatus = await pg.pool.query(`
 
@@ -230,29 +308,14 @@ const self = module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
-      // let rand = utils.getRandomInt(0, 1);
-      // assert(rand);
+      let retry = await gameCore.initValidateData(ctx, "DRAW_CARD");
 
-      ctx.data.roomId = parseInt(ctx.data.roomId);
-
-      const isSchemaValid = ajv.validate(SCHEMAS.DRAW_CARD, ctx.data);
-      assert(isSchemaValid);
-
-      assert(ctx.session.userData && ctx.session.userData.userId);
-
-      let queryStatus = await utils.lockRowById({ table: 'games', field: 'room_id', queryArg: ctx.data.roomId });
-
-      assert(queryStatus.rows[0].player1_id == ctx.session.userData.userId
-        || queryStatus.rows[0].player2_id == ctx.session.userData.userId);
-
-      ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
-      ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
-      ctx.cardsInDeckArr = JSON.parse(queryStatus.rows[0].deck_json);
+      if (retry) {
+        return;
+      }
 
       let gameState = ctx.gameplayData.gameState;
       let playerState = gameState.playersState[ctx.session.userData.userId];
-
-      assert(playerState.cardsToDraw > 0);
 
       playerState.cardsToDraw--;
       playerState.cardsInHand++;
@@ -289,28 +352,14 @@ const self = module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
-      // let rand = utils.getRandomInt(0, 1);
-      // assert(rand);
-      ctx.data.roomId = parseInt(ctx.data.roomId);
+      let retry = await gameCore.initValidateData(ctx, "DRAW_PHASE");
 
-      const isSchemaValid = ajv.validate(SCHEMAS.DRAW_PHASE, ctx.data);
-      assert(isSchemaValid);
-
-      assert(ctx.session.userData && ctx.session.userData.userId);
-
-      let queryStatus = await utils.lockRowById({ table: 'games', field: 'room_id', queryArg: ctx.data.roomId });
-
-      assert(queryStatus.rows[0].player1_id == ctx.session.userData.userId
-        || queryStatus.rows[0].player2_id == ctx.session.userData.userId);
-
-      ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
-      ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
+      if (retry) {
+        return;
+      }
 
       let gameState = ctx.gameplayData.gameState;
       let playerState = gameState.playersState[ctx.session.userData.userId];
-
-      assert(gameState.currPlayerId == ctx.session.userData.userId);
-      assert(gameState.nextPhase == TURN_PHASES.DRAW);
 
       gameState.nextPhase = TURN_PHASES.STANDBY;
 
@@ -344,28 +393,14 @@ const self = module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
-      // let rand = utils.getRandomInt(0, 1);
-      // assert(rand);
-      ctx.data.roomId = parseInt(ctx.data.roomId);
+      let retry = await gameCore.initValidateData(ctx, "STANDBY_PHASE");
 
-      const isSchemaValid = ajv.validate(SCHEMAS.STANDBY_PHASE, ctx.data);
-      assert(isSchemaValid);
-
-      assert(ctx.session.userData && ctx.session.userData.userId);
-
-      let queryStatus = await utils.lockRowById({ table: 'games', field: 'room_id', queryArg: ctx.data.roomId });
-
-      assert(queryStatus.rows[0].player1_id == ctx.session.userData.userId
-        || queryStatus.rows[0].player2_id == ctx.session.userData.userId);
-
-      ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
-      ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
+      if (retry) {
+        return;
+      }
 
       let gameState = ctx.gameplayData.gameState;
       let playerState = gameState.playersState[ctx.session.userData.userId];
-
-      assert(gameState.currPlayerId == ctx.session.userData.userId);
-      assert(gameState.nextPhase == TURN_PHASES.STANDBY);
 
       gameState.nextPhase = TURN_PHASES.MAIN;
 
@@ -397,28 +432,14 @@ const self = module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
-      // let rand = utils.getRandomInt(0, 1);
-      // assert(rand);
-      ctx.data.roomId = parseInt(ctx.data.roomId);
+      let retry = await gameCore.initValidateData(ctx, "MAIN_PHASE");
 
-      const isSchemaValid = ajv.validate(SCHEMAS.MAIN_PHASE, ctx.data);
-      assert(isSchemaValid);
-
-      assert(ctx.session.userData && ctx.session.userData.userId);
-
-      let queryStatus = await utils.lockRowById({ table: 'games', field: 'room_id', queryArg: ctx.data.roomId });
-
-      assert(queryStatus.rows[0].player1_id == ctx.session.userData.userId
-        || queryStatus.rows[0].player2_id == ctx.session.userData.userId);
-
-      ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
-      ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
+      if (retry) {
+        return;
+      }
 
       let gameState = ctx.gameplayData.gameState;
       let playerState = gameState.playersState[ctx.session.userData.userId];
-
-      assert(gameState.currPlayerId == ctx.session.userData.userId);
-      assert(gameState.nextPhase == TURN_PHASES.MAIN);
 
       gameState.nextPhase = TURN_PHASES.ROLL;
 
@@ -450,66 +471,23 @@ const self = module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
-      // let rand = utils.getRandomInt(0, 1);
-      // assert(rand);
-      ctx.data.roomId = parseInt(ctx.data.roomId);
-      ctx.data.cardId = parseInt(ctx.data.cardId);
-      ctx.data.cardIdx = parseInt(ctx.data.cardIdx);
+      let retry = await gameCore.initValidateData(ctx, "SUMMON_CARD");
 
-      const isSchemaValid = ajv.validate(SCHEMAS.SUMMON_CARD, ctx.data);
-      assert(isSchemaValid);
-
-      assert(ctx.session.userData && ctx.session.userData.userId);
-
-      let queryStatus = await utils.lockRowById({ table: 'games', field: 'room_id', queryArg: ctx.data.roomId });
-
-      assert(queryStatus.rows[0].player1_id == ctx.session.userData.userId
-        || queryStatus.rows[0].player2_id == ctx.session.userData.userId);
-
-      ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
-      ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
+      if (retry) {
+        return;
+      }
 
       let gameState = ctx.gameplayData.gameState;
       let playerState = gameState.playersState[ctx.session.userData.userId];
 
-      assert(playerState.cardsOnFieldArr.length
-        < playerState.maxCardsOnField);
-      assert(playerState.cardsSummonConstraints.cardsCanSummonAny);
-
-      playerState.cardsOnFieldArr.forEach(function(card, idx) {
-        assert(card.cardId != ctx.data.cardId);
-      });
-
       let cardSelected = playerState.cardsInHandArr[ctx.data.cardIdx];
-      assert(cardSelected && (cardSelected.cardId == ctx.data.cardId));
-
-      assert(playerState.energyPoints >= cardSelected.cardCost);
-      playerState.energyPoints -= cardSelected.cardCost;
-
-      switch(cardSelected.cardRarity) {
-        case CARD_RARITIES.COMMON:
-          assert(playerState.cardsSummonConstraints.cardsCanSummonCommon);
-          playerState.cardsSummonedThisTurnCount.common++;
-          break;
-        case CARD_RARITIES.RARE:
-          assert(playerState.cardsSummonConstraints.cardsCanSummonRare);
-          playerState.cardsSummonedThisTurnCount.rare++;
-          break;
-        case CARD_RARITIES.EPIC:
-          assert(playerState.cardsSummonConstraints.cardsCanSummonEpic);
-          playerState.cardsSummonedThisTurnCount.epic++;
-          break;
-        default:
-          assert(0, "Invalid card rarity: " + cardRarity);
-          break;
-      }
-
       gameState.cardSummonedIdxInPlayerHand = ctx.data.cardIdx;
       playerState.cardsOnFieldArr.push(cardSelected);
       gameState.cardSummoned = playerState.cardsOnFieldArr[playerState.cardsOnFieldArr.length - 1];
       playerState.cardsInHandArr.splice(ctx.data.cardIdx, 1);
       playerState.cardsInHand--;
       gameState.playerIdSummonedCard = ctx.session.userData.userId;
+      playerState.totalCardsUsed++;
 
       await gameCore.summonCardHook(ctx);
       await gameCore.activePlayerHook(ctx);
@@ -539,29 +517,16 @@ const self = module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
-      ctx.data.roomId = parseInt(ctx.data.roomId);
-      ctx.data.cardIdx = parseInt(ctx.data.cardIdx);
+      let retry = await gameCore.initValidateData(ctx, "DRAW_CARD_FROM_ENEMY_HAND");
 
-      const isSchemaValid = ajv.validate(SCHEMAS.DRAW_CARD_FROM_ENEMY_HAND, ctx.data);
-      assert(isSchemaValid);
-
-      assert(ctx.session.userData && ctx.session.userData.userId);
-
-      let queryStatus = await utils.lockRowById({ table: 'games', field: 'room_id', queryArg: ctx.data.roomId });
-
-      assert(queryStatus.rows[0].player1_id == ctx.session.userData.userId
-        || queryStatus.rows[0].player2_id == ctx.session.userData.userId);
-
-      ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
-      ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
+      if (retry) {
+        return;
+      }
 
       let gameState = ctx.gameplayData.gameState;
       let playerState = gameState.playersState[ctx.session.userData.userId];
       let enemyUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
       let playerStateEnemy = gameState.playersState[enemyUserId];
-
-      assert(playerState.cardsToDrawFromEnemyHand > 0);
-      assert((ctx.data.cardIdx >= 0) && (ctx.data.cardIdx < playerStateEnemy.cardsInHandArr.length));
 
       gameState.playerIdDrawnCardFromEnemyHand = ctx.session.userData.userId;
       gameState.cardDrawnFromEnemyHand = playerStateEnemy.cardsInHandArr[ctx.data.cardIdx];
@@ -593,46 +558,42 @@ const self = module.exports = {
       logger.info('Failed to draw card from enemy hand: %o', err);
     }
   },
-  takeCardFromYourGraveyard: async (ctx, next) => {
-    logger.info('takeCardFromYourGraveyard gameController');
+  takeCardFromGraveyard: async (ctx, next) => {
+    logger.info('takeCardFromGraveyard gameController');
     ctx.errors = [];
 
     await pg.pool.query('BEGIN');
 
     try {
-      ctx.data.roomId = parseInt(ctx.data.roomId);
-      ctx.data.cardIdx = parseInt(ctx.data.cardIdx);
+      let retry = await gameCore.initValidateData(ctx, "TAKE_CARD_FROM_GRAVEYARD");
 
-      const isSchemaValid = ajv.validate(SCHEMAS.TAKE_CARD_FROM_GRAVEYARD, ctx.data);
-      assert(isSchemaValid);
-
-      assert(ctx.session.userData && ctx.session.userData.userId);
-
-      let queryStatus = await utils.lockRowById({ table: 'games', field: 'room_id', queryArg: ctx.data.roomId });
-
-      assert(queryStatus.rows[0].player1_id == ctx.session.userData.userId
-        || queryStatus.rows[0].player2_id == ctx.session.userData.userId);
-
-      ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
-      ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
+      if (retry) {
+        return;
+      }
 
       let gameState = ctx.gameplayData.gameState;
       let playerState = gameState.playersState[ctx.session.userData.userId];
+      let enemyUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
+      let playerStateEnemy = gameState.playersState[enemyUserId];
 
-      assert(playerState.cardsToTakeFromYourGraveyard > 0);
-      assert(playerState.cardsInGraveyardArr.length > 0);
-      assert((ctx.data.cardIdx >= 0) && (ctx.data.cardIdx < playerState.cardsInGraveyardArr.length));
+      if (ctx.data.playerIdGraveyard == ctx.session.userData.userId) {
+        gameState.cardTakenFromGraveyard = playerState.cardsInGraveyardArr[ctx.data.cardIdx];
+        playerState.cardsInGraveyardArr.splice(ctx.data.cardIdx, 1);
+        playerState.cardsToTakeFromYourGraveyard--;
+      } else if (ctx.data.playerIdGraveyard == enemyUserId) {
+        gameState.cardTakenFromGraveyard = playerStateEnemy.cardsInGraveyardArr[ctx.data.cardIdx];
+        playerStateEnemy.cardsInGraveyardArr.splice(ctx.data.cardIdx, 1);
+        playerState.cardsToTakeFromEnemyGraveyard--;
+      }
 
-      gameState.cardTakenFromGraveyard = playerState.cardsInGraveyardArr[ctx.data.cardIdx];
       gameState.cardTakenFromGraveyard.cardInGraveyardIdx = ctx.data.cardIdx;
-
+      gameState.cardTakenFromGraveyard.playerIdGraveyard = ctx.data.playerIdGraveyard;
       gameState.playerIdTakenCardFromGraveyard = ctx.session.userData.userId;
+
       playerState.cardsInHandArr.push(gameState.cardTakenFromGraveyard);
-      playerState.cardsInGraveyardArr.splice(ctx.data.cardIdx, 1);
-      playerState.cardsToTakeFromYourGraveyard--;
       playerState.cardsInHand++;
 
-      await gameCore.takeCardFromYourGraveyardHook(ctx);
+      await gameCore.takeCardFromGraveyardHook(ctx);
       await gameCore.activePlayerHook(ctx);
 
       queryStatus = await utils.updateRowById({ table: 'games', fields: ['data_json', 'room_id'],
@@ -661,48 +622,22 @@ const self = module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
-      ctx.data.roomId = parseInt(ctx.data.roomId);
-      ctx.data.cardId = parseInt(ctx.data.cardId);
+      let retry = await gameCore.initValidateData(ctx, "DESTROY_CARD_FROM_ENEMY_FIELD");
 
-      const isSchemaValid = ajv.validate(SCHEMAS.DESTROY_CARD_FROM_ENEMY_FIELD, ctx.data);
-      assert(isSchemaValid);
-
-      assert(ctx.session.userData && ctx.session.userData.userId);
-
-      let queryStatus = await utils.lockRowById({ table: 'games', field: 'room_id', queryArg: ctx.data.roomId });
-
-      assert(queryStatus.rows[0].player1_id == ctx.session.userData.userId
-        || queryStatus.rows[0].player2_id == ctx.session.userData.userId);
-
-      ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
-      ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
+      if (retry) {
+        return;
+      }
 
       let gameState = ctx.gameplayData.gameState;
       let playerState = gameState.playersState[ctx.session.userData.userId];
       let enemyUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
       let playerStateEnemy = gameState.playersState[enemyUserId];
 
-      assert(playerState.cardsToDestroyFromEnemyField > 0);
-      assert(playerStateEnemy.cardsOnFieldArr.length > 0);
-
-      await gameCore.preDestroyCardFromEnemyFieldHook(ctx);
-
-      let cardToDestroy;
-      let cardIdx;
-      for (let i = 0; i < playerStateEnemy.cardsOnFieldArr.length; i++) {
-        if (playerStateEnemy.cardsOnFieldArr[i].cardId == ctx.data.cardId) {
-          cardToDestroy = playerStateEnemy.cardsOnFieldArr[i];
-          cardIdx = i;
-          break;
-        }
-      }
-
-      assert(cardToDestroy && cardIdx >= 0);
+      await gameCore.putCardInGraveyard(ctx, ctx.data.cardId, playerStateEnemy);
 
       gameState.playerIdDestroyedCardFromEnemyField = ctx.session.userData.userId;
-      gameState.cardDestroyedFromEnemyField = cardToDestroy;
-      playerStateEnemy.cardsOnFieldArr.splice(cardIdx, 1);
-      playerStateEnemy.cardsInGraveyardArr.push(cardToDestroy);
+      gameState.cardDestroyedFromEnemyField = ctx.cardToDestroy;
+      playerStateEnemy.cardsOnFieldArr.splice(ctx.cardIdx, 1);
       playerState.cardsToDestroyFromEnemyField--;
 
       await gameCore.destroyCardFromEnemyFieldHook(ctx);
@@ -733,28 +668,14 @@ const self = module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
-      // let rand = utils.getRandomInt(0, 1);
-      // assert(rand);
-      ctx.data.roomId = parseInt(ctx.data.roomId);
+      let retry = await gameCore.initValidateData(ctx, "ROLL_PHASE");
 
-      const isSchemaValid = ajv.validate(SCHEMAS.ROLL_PHASE, ctx.data);
-      assert(isSchemaValid);
-
-      assert(ctx.session.userData && ctx.session.userData.userId);
-
-      let queryStatus = await utils.lockRowById({ table: 'games', field: 'room_id', queryArg: ctx.data.roomId });
-
-      assert(queryStatus.rows[0].player1_id == ctx.session.userData.userId
-        || queryStatus.rows[0].player2_id == ctx.session.userData.userId);
-
-      ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
-      ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
+      if (retry) {
+        return;
+      }
 
       let gameState = ctx.gameplayData.gameState;
       let playerState = gameState.playersState[ctx.session.userData.userId];
-
-      assert(gameState.currPlayerId == ctx.session.userData.userId);
-      assert(gameState.nextPhase == TURN_PHASES.ROLL);
 
       gameState.nextPhase = TURN_PHASES.END;
 
@@ -786,31 +707,14 @@ const self = module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
-      // let rand = utils.getRandomInt(0, 1);
-      // assert(rand);
-      ctx.data.roomId = parseInt(ctx.data.roomId);
+      let retry = await gameCore.initValidateData(ctx, "ROLL_DICE_BOARD");
 
-      const isSchemaValid = ajv.validate(SCHEMAS.ROLL_PHASE, ctx.data);
-      assert(isSchemaValid);
-
-      assert(ctx.session.userData && ctx.session.userData.userId);
-
-      let queryStatus = await utils.lockRowById({ table: 'games', field: 'room_id', queryArg: ctx.data.roomId });
-
-      assert(queryStatus.rows[0].player1_id == ctx.session.userData.userId
-        || queryStatus.rows[0].player2_id == ctx.session.userData.userId);
-
-      ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
-      ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
+      if (retry) {
+        return;
+      }
 
       let gameState = ctx.gameplayData.gameState;
       let playerState = gameState.playersState[ctx.session.userData.userId];
-
-      assert(playerState.canRollDiceBoardCount > 0);
-
-      if (gameState.nextPhase == TURN_PHASES.ROLL) {
-        assert(playerState.canRollDiceBoardInRollPhase);
-      }
 
       playerState.canRollDiceBoardCount--;
       gameState.rollDiceBoard.playerIdRollDice = ctx.session.userData.userId;
@@ -843,31 +747,18 @@ const self = module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
-      // let rand = utils.getRandomInt(0, 1);
-      // assert(rand);
-      ctx.data.roomId = parseInt(ctx.data.roomId);
+      let retry = await gameCore.initValidateData(ctx, "END_PHASE");
 
-      const isSchemaValid = ajv.validate(SCHEMAS.END_PHASE, ctx.data);
-      assert(isSchemaValid);
-
-      assert(ctx.session.userData && ctx.session.userData.userId);
-
-      let queryStatus = await utils.lockRowById({ table: 'games', field: 'room_id', queryArg: ctx.data.roomId });
-
-      assert(queryStatus.rows[0].player1_id == ctx.session.userData.userId
-        || queryStatus.rows[0].player2_id == ctx.session.userData.userId);
-
-      ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
-      ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
+      if (retry) {
+        return;
+      }
 
       let gameState = ctx.gameplayData.gameState;
       let playerState = gameState.playersState[ctx.session.userData.userId];
 
-      assert(gameState.currPlayerId == ctx.session.userData.userId);
-      assert(gameState.nextPhase == TURN_PHASES.END);
-
       await gameCore.endPhaseHook(ctx);
 
+      playerState.totalTurns++;
       ctx.sessions[ctx.roomData.player1Id].pausedTimer = true;
       ctx.sessions[ctx.roomData.player2Id].pausedTimer = true;
 
@@ -888,6 +779,9 @@ const self = module.exports = {
       gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
       gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
 
+      ctx.sessions[ctx.roomData.player1Id].pausedTimer = true;
+      ctx.sessions[ctx.roomData.player2Id].pausedTimer = true;
+
       await pg.pool.query('COMMIT');
     } catch (err) {
       ctx.errors.push({ dataPath: '/end_phase', message: 'There was a problem with end phase. Retrying...' });
@@ -904,42 +798,25 @@ const self = module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
-      // let rand = utils.getRandomInt(0, 1);
-      // assert(rand);
-      ctx.data.roomId = parseInt(ctx.data.roomId);
-      ctx.data.cardId = parseInt(ctx.data.cardId);
-      ctx.data.cardIdx = parseInt(ctx.data.cardIdx);
+      let retry = await gameCore.initValidateData(ctx, "DISCARD_CARD");
 
-      const isSchemaValid = ajv.validate(SCHEMAS.DISCARD_CARD, ctx.data);
-      assert(isSchemaValid);
-
-      assert(ctx.session.userData && ctx.session.userData.userId);
-
-      let queryStatus = await utils.lockRowById({ table: 'games', field: 'room_id', queryArg: ctx.data.roomId });
-
-      assert(queryStatus.rows[0].player1_id == ctx.session.userData.userId
-        || queryStatus.rows[0].player2_id == ctx.session.userData.userId);
-
-      ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
-      ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
+      if (retry) {
+        return;
+      }
 
       let gameState = ctx.gameplayData.gameState;
       let playerState = gameState.playersState[ctx.session.userData.userId];
 
-      assert(playerState.cardsToDiscard > 0);
       playerState.cardsToDiscard--;
-
       let cardSelected = playerState.cardsInHandArr[ctx.data.cardIdx];
 
-      assert(cardSelected && cardSelected.cardId == ctx.data.cardId);
+      await gameCore.putCardInGraveyard(ctx, ctx.data.cardId, playerState);
 
       gameState.cardDiscarded = cardSelected;
       gameState.cardDiscarded.cardInHandIdx = ctx.data.cardIdx;
       playerState.cardsInHandArr.splice(ctx.data.cardIdx, 1);
       playerState.cardsInHand--;
       gameState.playerIdDiscardedCard = ctx.session.userData.userId;
-
-      playerState.cardsInGraveyardArr.push(cardSelected);
 
       await gameCore.discardCardHook(ctx);
       await gameCore.activePlayerHook(ctx);
@@ -969,46 +846,19 @@ const self = module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
-      // let rand = utils.getRandomInt(0, 1);
-      // assert(rand);
-      ctx.data.roomId = parseInt(ctx.data.roomId);
-      ctx.data.cardId = parseInt(ctx.data.cardId);
-      assert(ctx.data.finishData);
+      let retry = await gameCore.initValidateData(ctx, "FINISH_CARD");
 
-      const isSchemaValid = ajv.validate(SCHEMAS.FINISH_CARD, ctx.data);
-      assert(isSchemaValid);
-
-      assert(ctx.session.userData && ctx.session.userData.userId);
-
-      let queryStatus = await utils.lockRowById({ table: 'games', field: 'room_id', queryArg: ctx.data.roomId });
-
-      assert(queryStatus.rows[0].player1_id == ctx.session.userData.userId
-        || queryStatus.rows[0].player2_id == ctx.session.userData.userId);
-
-      ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
-      ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
+      if (retry) {
+        return;
+      }
 
       let gameState = ctx.gameplayData.gameState;
       let playerState = gameState.playersState[ctx.session.userData.userId];
 
-      let cardFinish;
-      let cardIdx;
+      ctx.cardFinish.cardEffect.isFinished = true;
 
-      for (let i = 0; i < playerState.cardsOnFieldArr.length; i++) {
-        if (playerState.cardsOnFieldArr[i].cardId == ctx.data.cardId) {
-          cardFinish = playerState.cardsOnFieldArr[i];
-          cardIdx = i;
-        }
-      }
-
-      assert(cardFinish);
-      assert(cardIdx >= 0);
-      assert((cardFinish.cardId == ctx.data.cardId) && (!cardFinish.cardEffect.isFinished));
-
-      cardFinish.cardEffect.isFinished = true;
-
-      gameState.cardFinish = cardFinish;
-      playerState.cardsOnFieldArr.splice(cardIdx, 1);
+      gameState.cardFinish = ctx.cardFinish;
+      playerState.cardsOnFieldArr.splice(ctx.cardIdx, 1);
       gameState.playerIdFinishCard = ctx.session.userData.userId;
 
       await gameCore.cardFinishHook(ctx);
@@ -1039,43 +889,16 @@ const self = module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
-      // let rand = utils.getRandomInt(0, 1);
-      // assert(rand);
-      ctx.data.roomId = parseInt(ctx.data.roomId);
-      ctx.data.cardId = parseInt(ctx.data.cardId);
+      let retry = await gameCore.initValidateData(ctx, "ACTIVATE_CARD_EFFECT");
 
-      const isSchemaValid = ajv.validate(SCHEMAS.ACTIVATE_CARD_EFFECT, ctx.data);
-      assert(isSchemaValid);
-
-      assert(ctx.session.userData && ctx.session.userData.userId);
-
-      let queryStatus = await utils.lockRowById({ table: 'games', field: 'room_id', queryArg: ctx.data.roomId });
-
-      assert(queryStatus.rows[0].player1_id == ctx.session.userData.userId
-        || queryStatus.rows[0].player2_id == ctx.session.userData.userId);
-
-      ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
-      ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
+      if (retry) {
+        return;
+      }
 
       let gameState = ctx.gameplayData.gameState;
       let playerState = gameState.playersState[ctx.session.userData.userId];
 
-      assert(gameState.currPlayerId == ctx.session.userData.userId);
-      assert(gameState.nextPhase == TURN_PHASES.ROLL);
-
-      let cardActivated;
-
-      for (let i = 0; i < playerState.cardsOnFieldArr.length; i++) {
-        if (playerState.cardsOnFieldArr[i].cardId == ctx.data.cardId) {
-          cardActivated = playerState.cardsOnFieldArr[i];
-          break;
-        }
-      }
-
-      assert(cardActivated);
-      assert((cardActivated.cardId == ctx.data.cardId) && (!cardActivated.cardEffect.isFinished));
-
-      gameState.cardActivated = cardActivated;
+      gameState.cardActivated = ctx.cardActivated;
       gameState.playerIdActivatedCard = ctx.session.userData.userId;
 
       await gameCore.activateCardEffectHook(ctx);
@@ -1106,45 +929,56 @@ const self = module.exports = {
     await pg.pool.query('BEGIN');
 
     try {
-      // let rand = utils.getRandomInt(0, 1);
-      // assert(rand);
-      ctx.data.roomId = parseInt(ctx.data.roomId);
-      ctx.data.cardId = parseInt(ctx.data.cardId);
-      assert(ctx.data.finishData);
+      let retry = await gameCore.initValidateData(ctx, "FINISH_CARD_CONTINUOUS");
 
-      const isSchemaValid = ajv.validate(SCHEMAS.FINISH_CARD_CONTINUOUS, ctx.data);
-      assert(isSchemaValid);
-
-      assert(ctx.session.userData && ctx.session.userData.userId);
-
-      let queryStatus = await utils.lockRowById({ table: 'games', field: 'room_id', queryArg: ctx.data.roomId });
-
-      assert(queryStatus.rows[0].player1_id == ctx.session.userData.userId
-        || queryStatus.rows[0].player2_id == ctx.session.userData.userId);
-
-      ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
-      ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
+      if (retry) {
+        return;
+      }
 
       let gameState = ctx.gameplayData.gameState;
       let playerState = gameState.playersState[ctx.session.userData.userId];
 
-      let cardFinishContinuous;
-
-      for (let i = 0; i < playerState.cardsOnFieldArr.length; i++) {
-        if (playerState.cardsOnFieldArr[i].cardId == ctx.data.cardId) {
-          cardFinishContinuous = playerState.cardsOnFieldArr[i];
-          ctx.cardIdx = i;
-        }
-      }
-
-      assert(cardFinishContinuous);
-      assert(ctx.cardIdx >= 0);
-      assert((cardFinishContinuous.cardId == ctx.data.cardId) && (!cardFinishContinuous.cardEffect.isFinished));
-
-      gameState.cardFinishContinuous = cardFinishContinuous;
+      gameState.cardFinishContinuous = ctx.cardFinishContinuous;
       gameState.playerIdFinishCardContinuous = ctx.session.userData.userId;
 
       await gameCore.cardFinishContinuousHook(ctx);
+      await gameCore.activePlayerHook(ctx);
+
+      queryStatus = await utils.updateRowById({ table: 'games', fields: ['data_json', 'room_id'],
+        queryArgs: [JSON.stringify(ctx.gameplayData), ctx.data.roomId] });
+
+      ctx.cardsInHandArrPlayer1 = gameState.playersState[ctx.roomData.player1Id].cardsInHandArr;
+      ctx.cardsInHandArrPlayer2 = gameState.playersState[ctx.roomData.player2Id].cardsInHandArr;
+
+      gameState.playersState[ctx.roomData.player1Id].cardsInHandArr = null;
+      gameState.playersState[ctx.roomData.player2Id].cardsInHandArr = null;
+
+      await pg.pool.query('COMMIT');
+    } catch (err) {
+      ctx.errors.push({ dataPath: '/finish_card', message: 'There was a problem while finishing card effect. Retrying...' });
+
+      await pg.pool.query('ROLLBACK');
+
+      logger.info('Failed to finish card: %o', err);
+    }
+  },
+  finishChainEffect: async (ctx, next) => {
+    logger.info('finishChainEffect gameController');
+    ctx.errors = [];
+
+    await pg.pool.query('BEGIN');
+
+    try {
+      let retry = await gameCore.initValidateData(ctx, "FINISH_CHAIN_EFFECT");
+
+      if (retry) {
+        return;
+      }
+
+      let gameState = ctx.gameplayData.gameState;
+      let playerState = gameState.playersState[ctx.session.userData.userId];
+
+      await gameCore.chainFinishHook(ctx);
       await gameCore.activePlayerHook(ctx);
 
       queryStatus = await utils.updateRowById({ table: 'games', fields: ['data_json', 'room_id'],
@@ -1196,27 +1030,22 @@ const self = module.exports = {
 
       queryStatus = await utils.lockRowById({ table: 'games', field: 'room_id', queryArg: ctx.data.roomId });
 
+      assert(queryStatus.rows[0].player1_id == ctx.session.userData.userId
+        || queryStatus.rows[0].player2_id == ctx.session.userData.userId);
+
       if (player2LeftTheRoom) {
         assert(queryStatus.rows[0].player1_id == ctx.session.userData.userId);
       } else {
         assert(queryStatus.rows[0].player2_id == ctx.session.userData.userId);
       }
 
-      queryStatus = await pg.pool.query(`
+      ctx.gameplayData = JSON.parse(queryStatus.rows[0].data_json);
+      ctx.roomData = JSON.parse(queryStatus.rows[0].room_data_json);
 
-        UPDATE games
-        SET status_id = 2,
-          winning_player_id = $1,
-          finished_at = now()
-        WHERE room_id = $2
-          AND status_id = 1
-        RETURNING id
+      let playerIdLose = ctx.session.userData.userId == queryStatus.rows[0].player1_id
+        ? queryStatus.rows[0].player2_id : queryStatus.rows[0].player1_id;
 
-      `, [ ctx.session.userData.userId, ctx.data.roomId ]);
-
-      logger.info('queryStatus: ', queryStatus);
-
-      // assert(queryStatus.rows[0].id);
+      await gameCore.winGame(ctx, ctx.session.userData.userId, playerIdLose, ctx.data.roomId);
 
       await pg.pool.query('COMMIT');
     } catch(err) {
@@ -1244,22 +1073,13 @@ const self = module.exports = {
 
       assert(userId != ctx.gameplayData.gameState.activePlayerId);
 
-      queryStatus = await pg.pool.query(`
+      let playerIdLose = userId == queryStatus.rows[0].player1_id
+        ? queryStatus.rows[0].player2_id : queryStatus.rows[0].player1_id;
 
-        UPDATE games
-        SET status_id = 2,
-          winning_player_id = $1,
-          finished_at = now()
-        WHERE room_id = $2
-          AND status_id = 1
-        RETURNING id
-
-      `, [ userId, roomId ]);
-
-      logger.info('queryStatus: ', queryStatus);
+      let success = await gameCore.winGame(ctx, userId, playerIdLose, roomId);
 
       let playerIdWinGame = null;
-      if (queryStatus.rowCount >= 1) {
+      if (success) {
         playerIdWinGame = userId;
       }
 
@@ -1271,6 +1091,7 @@ const self = module.exports = {
           errors: ctx.errors,
           isSuccessful: true,
           roomData: ctx.roomData,
+          gameplayData: ctx.gameplayData,
           roomId: roomId,
           playerIdWinGame: playerIdWinGame,
         });
@@ -1279,6 +1100,7 @@ const self = module.exports = {
           errors: ctx.errors,
           isSuccessful: true,
           roomData: ctx.roomData,
+          gameplayData: ctx.gameplayData,
           roomId: roomId,
           playerIdWinGame: playerIdWinGame,
         });
@@ -1287,6 +1109,7 @@ const self = module.exports = {
           errors: ctx.errors,
           isSuccessful: true,
           roomData: ctx.roomData,
+          gameplayData: ctx.gameplayData,
           roomId: roomId,
           playerIdWinGame: playerIdWinGame,
         });
@@ -1322,6 +1145,7 @@ let resetTurn = (ctx) => {
         card.cardEffect.activationsCountThisTurn = 0;
       }
     });
+    gameState.playersState[playerId].chainObj = {};
   }
   gameState.playerIdDrawnCard = null;
   gameState.playerIdSummonedCard = null;
@@ -1369,7 +1193,7 @@ let resetTimers = (ctx) => {
 
     sendTimerValues(ctx);
 
-    console.log('Player 1 turn seconds left: ', ctx.sessions[ctx.roomData.player1Id].timerValue);
+    // console.log('Player 1 turn seconds left: ', ctx.sessions[ctx.roomData.player1Id].timerValue);
 
     if (ctx.sessions[ctx.roomData.player1Id].timerValue <= 0) {
       clearInterval(ctx.sessions[ctx.roomData.player1Id].turnInterval);
@@ -1386,7 +1210,7 @@ let resetTimers = (ctx) => {
 
     sendTimerValues(ctx);
 
-    console.log('Player 2 turn seconds left: ', ctx.sessions[ctx.roomData.player2Id].timerValue);
+    // console.log('Player 2 turn seconds left: ', ctx.sessions[ctx.roomData.player2Id].timerValue);
 
     if (ctx.sessions[ctx.roomData.player2Id].timerValue <= 0) {
       clearInterval(ctx.sessions[ctx.roomData.player2Id].turnInterval);

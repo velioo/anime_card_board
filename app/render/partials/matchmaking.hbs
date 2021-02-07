@@ -9,7 +9,16 @@
 		<h2 class="anime-cb-matchmaking-match-found">Match found, starting game in: <span class="anime-cb-matchmaking-countdown"></span></h2>
 		<form id="anime-cb-form-matchmaking" class="anime-cb-form" action="#">
 			<div class="anime-cb-box anime-cb-box-matchmaking">
-			  <div class="form-group">
+			<div class="form-group">
+				<label for="character_id">Character: &nbsp;</label>
+				<img style="margin-top: 0px;" class="anime-cb-character-img" src="/imgs/player_pieces/{{default_character.image}}">
+				<select class="form-control anime-cb-character-choose" name="character_id">
+					{{#each characters}}
+						<option value="{{id}}" data-character-image="{{image}}">{{name}}</option>
+					{{/each}}
+				</select>
+			</div>
+			<div class="form-group">
 			    <label for="board_id">Board:</label>
 			    <select name="board_id" class="selectpicker form-control">
 			    	{{#each boards}}
@@ -22,7 +31,7 @@
 			</div>
 		</form>
 		<div class="anime-cb-screen_footer">
-			<button type="button" class="btn btn-primary anime-cb-button anime-cb-btn-main-menu">Back to Main Menu</button>
+			<button type="button" class="btn btn-primary anime-cb-button anime-cb-btn-play">Back</button>
 		</div>
 	</div>
 </div>

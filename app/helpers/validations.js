@@ -13,4 +13,7 @@ module.exports = {
   boardExists: async (ctx) => {
   	return Utils.rowExists({ table: 'boards', field: 'id', queryArg: ctx.request.body.data.board_id });
   },
+  characterExists: async (ctx) => {
+    return Utils.rowExists({ table: 'characters', field: 'id', queryArg: ctx.request.body.data.character_id });
+  },
 };

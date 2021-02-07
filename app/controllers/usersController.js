@@ -83,6 +83,11 @@ var self = module.exports = {
   logIn: async (ctx, next) => {
     ctx.errors = [];
     ctx.settings = null;
+    ctx.level = null;
+    ctx.currentLevelXp = null;
+    ctx.maxLevelXp = null;
+    ctx.winsCount = null;
+    ctx.losesCount = null;
 
     const isSchemaValid = ajv.validate(SCHEMAS.LOGIN, ctx.request.body.data);
 
@@ -99,7 +104,7 @@ var self = module.exports = {
     try {
       const userData = await pg.pool.query(`
 
-        SELECT username, password, salt, id, is_confirmed, settings_json
+        SELECT *
         FROM users
         WHERE
           username = $1
@@ -113,14 +118,18 @@ var self = module.exports = {
           ctx.session.userData = { userId: userData.rows[0].id, username: userData.rows[0].username };
           ctx.session.isUserLoggedIn = true;
           ctx.session.userData.settings = JSON.parse(userData.rows[0].settings_json);
+          ctx.settings = ctx.session.userData.settings;
+          ctx.level = userData.rows[0].level;
+          ctx.currentLevelXp = userData.rows[0].current_level_xp;
+          ctx.maxLevelXp = userData.rows[0].max_level_xp;
+          ctx.winsCount = userData.rows[0].wins_count;
+          ctx.losesCount = userData.rows[0].loses_count;
         } else {
           ctx.errors.push({ dataPath: '/username', message: 'You must confirm your email before logging in.' });
         }
       } else {
         ctx.errors.push({ dataPath: '/username', message: 'Wrong username or password.' });
       }
-
-      ctx.settings = ctx.session.userData.settings;
     } catch(err) {
       ctx.errors.push({ dataPath: '/username', message: 'There was a problem while logging in. Please try again later.' });
 
@@ -130,11 +139,37 @@ var self = module.exports = {
     return self.sendResponse(ctx, next);
   },
   isUserLoggedIn: async (ctx, next) => {
+    let userDataDb;
+    if (ctx.session.isUserLoggedIn) {
+      try {
+        const userData = await pg.pool.query(`
+
+          SELECT *
+          FROM users
+          WHERE
+            id = $1
+
+        `, [ ctx.session.userData.userId ]);
+
+        assert(userData.rowCount == 1);
+
+        userDataDb = userData.rows[0];
+      } catch (err) {
+        ctx.errors.push({ dataPath: '/is_user_logged_in', message: 'There was a problem while getting user data.' });
+        logger.info('Failed to get user data: %o', err);
+      }
+    }
+
     ctx.body = {
       isUserLoggedIn: ctx.session.isUserLoggedIn,
       userId: ctx.session.userData ? ctx.session.userData.userId || null : null,
       username: ctx.session.userData ? ctx.session.userData.username || null : null,
       settings: ctx.session.userData ? ctx.session.userData.settings || null : null,
+      level: userDataDb ? userDataDb.level : null,
+      currentLevelXp: userDataDb ? userDataDb.current_level_xp : null,
+      maxLevelXp: userDataDb ? userDataDb.max_level_xp : null,
+      winsCount: userDataDb ? userDataDb.wins_count : null,
+      losesCount: userDataDb ? userDataDb.loses_count : null,
       isSuccessful: true,
     };
   },
@@ -152,12 +187,33 @@ var self = module.exports = {
       ctx.body.settings = ctx.settings;
     }
 
+    if ("level" in ctx) {
+      ctx.body.level = ctx.level;
+    }
+
+    if ("currentLevelXp" in ctx) {
+      ctx.body.currentLevelXp = ctx.currentLevelXp;
+    }
+
+    if ("maxLevelXp" in ctx) {
+      ctx.body.maxLevelXp = ctx.maxLevelXp;
+    }
+
+    if ("winsCount" in ctx) {
+      ctx.body.winsCount = ctx.winsCount;
+    }
+
+    if ("losesCount" in ctx) {
+      ctx.body.losesCount = ctx.losesCount;
+    }
+
     ctx.body.userId = ctx.session.userData ? ctx.session.userData.userId : null;
     ctx.body.username = ctx.session.userData ? ctx.session.userData.username : null;
   },
   logOut: async (ctx, next) => {
     ctx.errors = [];
 
+    await gameServer.removeFromMatchmaking(ctx);
     await gameServer.processDisconnect(ctx, next);
 
     if (ctx.session.isUserLoggedIn) {
@@ -176,6 +232,11 @@ var self = module.exports = {
       assert(ctx.session.userData && ctx.session.userData.username);
 
       ctx.request.body.data.sound = (ctx.request.body.data.sound == 'true');
+      ctx.request.body.data.backgroundSound = (ctx.request.body.data.backgroundSound == 'true');
+      ctx.request.body.data.cardBoardEffectSounds = (ctx.request.body.data.cardBoardEffectSounds == 'true');
+      ctx.request.body.data.cardAnimations = (ctx.request.body.data.cardAnimations == 'true');
+      ctx.request.body.data.soundVolume = (+ctx.request.body.data.soundVolume);
+      ctx.request.body.data.defaultCharacter = (+ctx.request.body.data.defaultCharacter);
       const isSchemaValid = ajv.validate(SCHEMAS.SETTINGS, ctx.request.body.data);
 
       if (!isSchemaValid) {
@@ -190,6 +251,11 @@ var self = module.exports = {
 
       let settingsJson = {
         sound: ctx.request.body.data.sound,
+        backgroundSound: ctx.request.body.data.backgroundSound,
+        cardBoardEffectSounds: ctx.request.body.data.cardBoardEffectSounds,
+        soundVolume: ctx.request.body.data.soundVolume,
+        cardAnimations: ctx.request.body.data.cardAnimations,
+        defaultCharacter: ctx.request.body.data.defaultCharacter,
       };
 
       const queryStatus = await pg.pool.query(`
@@ -243,7 +309,12 @@ let getUserData = (ctx) => {
     'password': sha256(ctx.request.body.data.password + salt),
     'salt': salt,
     'settings_json': JSON.stringify({
-      sound: false,
+      sound: true,
+      backgroundSound: false,
+      cardBoardEffectSounds: true,
+      soundVolume: 20,
+      cardAnimations: false,
+      defaultCharacter: 1,
     }),
   };
 };
@@ -258,11 +329,13 @@ let sendConfirmationEmail = async (ctx, tempCode) => {
   });
 
   const mailOptions = {
-    from: `Anime Card Board Game, ${SERVICE_EMAIL}`,
+    from: `"Anime Card Board Game" ${SERVICE_EMAIL}`,
     to: ctx.request.body.data.email,
     subject: 'Confirm email',
-    text: 'Please confirm your account by clicking the link below.',
-    html: `Confirm Account: <a href="${ROOT}confirm_account/${tempCode}">Click Here</a>`,
+    text: `Please confirm your account by clicking the link below. <br>
+      Confirm Account: <a href="${ROOT}confirm_account/${tempCode}">Click Here</a>`,
+    html: `Please confirm your account by clicking the link below. <br>
+      Confirm Account: <a href="${ROOT}confirm_account/${tempCode}">Click Here</a>`,
   };
 
   try {

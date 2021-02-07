@@ -263,12 +263,16 @@ roomController.prototype.updateRoomState = function(data) {
 	logger.info('updateRoomState');
 
 	var _self = this;
-	var players = data.result.player2Name ? data.result.player1Name + ', ' + data.result.player2Name : data.result.player1Name;
 
-	$(_self.LOBBY_ROOM_PLAYERS_CLASS).text('Players: ' + players);
+	var players = data.result.player1Name
+		+ ' <img class="anime-cb-character-img game-found" src="/imgs/player_pieces/' + data.result.roomSettings.player1Character.image + '">';
 
-	//console.log('data: ', data);
-	//console.log('userId: ', _self.client.logInSignUpController._userId);
+	if (data.result.player2Name) {
+		players += ', ' + data.result.player2Name
+		+ ' <img class="anime-cb-character-img game-found" src="/imgs/player_pieces/' + data.result.roomSettings.player2Character.image + '">'
+	}
+
+	$(_self.LOBBY_ROOM_PLAYERS_CLASS).html('Players: ' + players);
 
 	if (data.result.player1Id === _self.client.logInSignUpController._userId) {
 		if (data.result.player1Id && data.result.player2Id) {
@@ -291,6 +295,7 @@ roomController.prototype.resetRoomState = function () {
 	_self._user2Id = null;
 	_self._matchmaking = false;
 	_self._matchFound = false;
+	_self._hostId = null;
 };
 
 roomController.prototype.processCreateRoomResponse = function(data) {
@@ -322,12 +327,10 @@ roomController.prototype.processCreateRoomResponse = function(data) {
 roomController.prototype.processLeaveRoomResponse = function(data) {
 	logger.info('processLeaveRoomResponse');
 	logger.info('To validate: ', JSON.stringify(data));
-	console.log('processLeaveRoomResponse, data: ', data);
 
 	var _self = this;
 
   if (_self._roomId && _self._roomId == data.roomId) {
-  	console.log('Room found, refreshing: ', _self._roomId);
   	_self.resetRoomsInterval();
   	_self.client.getCurrentRoomData({ roomId: _self._roomId });
   }
@@ -479,7 +482,11 @@ roomController.prototype.showMatchmakingSuccess = function(data) {
 
 	assert(startGameData.player1Id && startGameData.player2Id && startGameData.roomId);
 
-	$(_self.MATCHMAKING_PLAYERS_CLASS).text('Players: ' + data.result.player1Name + ', ' + data.result.player2Name);
+	$(_self.MATCHMAKING_PLAYERS_CLASS).html('Players: ' + data.result.player1Name
+		+ ' <img class="anime-cb-character-img game-found" src="/imgs/player_pieces/' + data.result.roomSettings.player1Character.image + '">'
+		+ ', ' + data.result.player2Name
+		+ ' <img class="anime-cb-character-img game-found" src="/imgs/player_pieces/' + data.result.roomSettings.player2Character.image + '">');
+
 	$(_self.MATCHMAKING_PLAYERS_CLASS).show();
 	$(_self.MATCHMAKING_WAITING_PLAYERS_CLASS).hide();
 
@@ -491,15 +498,19 @@ roomController.prototype.showMatchmakingSuccess = function(data) {
 	_self.matchmakingStartGameCountdownInterval = setInterval(function() {
 		_self.matchmakingCountdownValue--;
 
+		$(_self.MATCHMAKING_COUNTDOWN_CLASS).text(_self.matchmakingCountdownValue);
+
 		if (_self.matchmakingCountdownValue <= 0) {
 			if (_self.client.logInSignUpController._userId == startGameData.player1Id) {
+				_self._hostId = _self.client.logInSignUpController._userId;
 				_self.client.startGame(startGameData);
+			} else {
+				_self._hostId = null;
 			}
-			clearInterval(_self.matchmakingCountdownValue);
+
+			clearInterval(_self.matchmakingStartGameCountdownInterval);
 			return;
 		}
-
-		$(_self.MATCHMAKING_COUNTDOWN_CLASS).text(_self.matchmakingCountdownValue);
 	}, 1000)
 };
 
@@ -510,8 +521,9 @@ roomController.prototype.showCreateRoomSuccess = function(data) {
 	_self._hostId = _self.client.logInSignUpController._userId;
 
 	$(_self.LOBBY_ROOM_NAME_CLASS).text('Room: ' + data.result.roomName);
-	$(_self.LOBBY_ROOM_PLAYERS_CLASS).text('Players: ' + data.result.player1Name);
-	$(_self.LOBBY_ROOM_BOARD_CLASS).text('Board: ' + data.result.boardName);
+	$(_self.LOBBY_ROOM_PLAYERS_CLASS).html('Players: ' + data.result.player1Name
+		+ ' <img class="anime-cb-character-img game-found" src="/imgs/player_pieces/' + data.result.roomSettings.player1Character.image + '">');
+	$(_self.LOBBY_ROOM_BOARD_CLASS).text('Board: ' + data.result.roomSettings.boardName);
 	$(_self.LOBBY_SCREEN_CLASS).find(_self.SCREEN_FOOTER_CLASS)
 		.html('<button disabled id="anime-cb-start-game" type="button" class="btn btn-primary anime-cb-button-stateless anime-cb-btn-game">Start Game</button>\
 			<button id="anime-cb-leave-room" type="button" class="btn btn-primary anime-cb-button anime-cb-btn-main-menu">Leave</button>');
@@ -528,8 +540,11 @@ roomController.prototype.showJoinRoomSuccess = function(data) {
 	_self._hostId = null;
 
 	$(_self.LOBBY_ROOM_NAME_CLASS).text('Room: ' + data.result.name);
-	$(_self.LOBBY_ROOM_PLAYERS_CLASS).text('Players: ' + data.result.player1Name + ', ' + data.result.player2Name);
-	$(_self.LOBBY_ROOM_BOARD_CLASS).text('Board: ' + data.result.boardName);
+	$(_self.MATCHMAKING_PLAYERS_CLASS).html('Players: ' + data.result.player1Name
+		+ ' <img class="anime-cb-character-img game-found" src="/imgs/player_pieces/' + data.result.roomSettings.player1Character.image + '">'
+		+ ', ' + data.result.player2Name
+		+ ' <img class="anime-cb-character-img game-found" src="/imgs/player_pieces/' + data.result.roomSettings.player2Character.image + '">');
+	$(_self.LOBBY_ROOM_BOARD_CLASS).text('Board: ' + data.result.roomSettings.boardName);
 	$(_self.LOBBY_SCREEN_CLASS).find(_self.SCREEN_FOOTER_CLASS)
 		.html('<button id="anime-cb-leave-room" type="button" class="btn btn-primary anime-cb-button anime-cb-btn-main-menu">Leave</button>');
 	$(_self.LOBBY_ROOM_WAITING_PLAYERS_CLASS).hide();
@@ -548,19 +563,25 @@ roomController.prototype.preSwitchScreenHookRoomController = function (screenCla
 		_self.client.sendLeaveRoomRequest({ roomId: _self._roomId, userId: _self.client.logInSignUpController._userId });
 	}
 
-	if (screenClass === _self.BROWSE_ROOMS_SCREEN_CLASS) {
+	if (_lastScreenClass == _self.GAME_SCREEN_CLASS) {
+		setTimeout(function() {
+			_self.client.logInSignUpController.checkIsUserLoggedIn();
+		}, 1000);
+	}
+
+	if (screenClass == _self.BROWSE_ROOMS_SCREEN_CLASS) {
 		_self.clearBrowseRoomsTable();
 		_self.showBrowseRoomsSpinner();
 		_self.client.getBrowseRoomsData();
 	}
 
-	if (screenClass === _self.GAME_SCREEN_CLASS) {
+	if (screenClass == _self.GAME_SCREEN_CLASS) {
 		_self._inGame = true;
 	} else {
 		_self._inGame = false;
 	}
 
-	if (screenClass === _self.MATCHMAKING_SCREEN_CLASS) {
+	if (screenClass == _self.MATCHMAKING_SCREEN_CLASS) {
 		$(_self.MATCHMAKING_WAITING_PLAYERS_CLASS).hide();
 		_self.enableElement(_self.MATCHMAKING_SUBMIT_BTN_ID);
 	  _self.$matchmakingInputs.each(function() {
@@ -568,7 +589,7 @@ roomController.prototype.preSwitchScreenHookRoomController = function (screenCla
 	  });
 	}
 
-	if (screenClass === _self.CREATE_ROOM_SCREEN_CLASS) {
+	if (screenClass == _self.CREATE_ROOM_SCREEN_CLASS) {
 		_self.enableElement(_self.CREATE_ROOM_SUBMIT_BTN_ID);
 	  _self.$createRoomInputs.each(function() {
 	  	_self.enableElement(this);

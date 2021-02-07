@@ -6,12 +6,36 @@
 		<div class="user-message"></div>
 		<form id="anime-cb-form-settings" class="anime-cb-form" action="#">
 			<div class="anime-cb-box anime-cb-box-settings">
-			  <div class="form-group">
-			    <div class="anime-cb-setting-label">Sound:</div><label class="switch"><input type="checkbox" name="sound"><div class="slider round"></div></label>
-			  </div>
-			  <div class="errors"></div>
-			  <img class="spinner" src="/imgs/spinner.gif">
-			  <button id="anime-cb-submit-settings" type="submit" class="btn btn-default">Save</button>
+				<div class="form-group">
+					<div class="anime-cb-setting-label">Default character:</div>
+					<img class="anime-cb-character-img" src="/imgs/player_pieces/{{default_character.image}}">
+					<select class="form-control anime-cb-character-choose" name="defaultCharacter">
+						{{#each characters}}
+							<option value="{{id}}" data-character-image="{{image}}">{{name}}</option>
+						{{/each}}
+					</select>
+				</div>
+				<div style="color:red;">(takes some time to load all the gif images for the first time !!!)</div>
+				<div class="form-group">
+					<div class="anime-cb-setting-label">Card Animations:</div><label class="switch"><input type="checkbox" name="cardAnimations"><div class="slider round"></div></label>
+				</div>
+				<div class="form-group">
+					<div class="anime-cb-setting-label">Sound:</div><label class="switch"><input type="checkbox" name="sound"><div class="slider round"></div></label>
+				</div>
+				<div class="form-group">
+					<div class="anime-cb-setting-label">Background Sound:</div><label class="switch"><input type="checkbox" name="backgroundSound"><div class="slider round"></div></label>
+				</div>
+				<div class="form-group">
+					<div class="anime-cb-setting-label">Card/Board Sound Effects:</div><label class="switch"><input type="checkbox" name="cardBoardEffectSounds"><div class="slider round"></div></label>
+				</div>
+				<div class="form-group">
+					<div class="anime-cb-setting-label-2">Volume:</div>
+					<p><span id="anime-cb-setting-volume-label"></span></p>
+					<div id="anime-cb-setting-volume" name="soundVolume"></div>
+				</div>
+				<div class="errors"></div>
+				<img class="spinner" src="/imgs/spinner.gif">
+				<button id="anime-cb-submit-settings" type="submit" class="btn btn-default">Save</button>
 			</div>
 		</form>
 		<div class="anime-cb-screen_footer">

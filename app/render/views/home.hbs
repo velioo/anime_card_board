@@ -7,16 +7,46 @@
 <script src="/js/loginSignUpController.js"></script>
 <script src="/js/roomController.js"></script>
 <script src="/js/gameController.js"></script>
-<script src="/js/client.js"></script>
+<script src="/js/cardsInfoController.js"></script>
+<script src="/js/chatController.js"></script>
+<script src="/js/settingsController.js"></script>
 <script src="/js/generalClient.js"></script>
 <script src="/js/gameClient.js"></script>
+<script src="/js/client.js"></script>
 
 <div id="acb-submain-wrapper">
+<div id="acb-info-header">
+	<div class="anime-cb-user-info-wrapper">
+		<span class="anime-cb-user-info-username"></span>
+		<span class="anime-cb-user-info-level"></span>
+		<span class="anime-cb-user-info-wins"></span>
+		<span class="anime-cb-user-info-loses"></span>
+	</div>
+	XP: <div class="progress anime-cb-level-progress-bar-wrapper">
+	  <div class="progress-bar progress-bar-striped progress-bar-warning active anime-cb-level-progress-bar" role="progressbar">
+	  <div class="anime-cb-level-progress-bar-text anime-cb-user-info-level-xp"></div>
+	  </div>
+	</div>
+</div>
+
+<div id="acb-chat-wrapper">
+	<div class="anime-cb-chat-title">Chat</div>
+	<div class="anime-cb-chat-box"></div>
+	<div class="form-group">
+	    <input id="anime-cb-chat-input" type="text" class="form-control" placeholder="Enter msg...">
+  	</div>
+</div>
 
 {{> mainMenu }}
 {{> signUp }}
 {{> login }}
 {{> signUpSuccess }}
+{{> play }}
+{{> info }}
+{{> rules }}
+{{> cards }}
+{{> characters }}
+{{> about }}
 {{> matchmaking }}
 {{> createRoom }}
 {{> browseRooms }}

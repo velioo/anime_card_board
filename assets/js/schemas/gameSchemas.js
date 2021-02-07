@@ -42,8 +42,38 @@ var startGameResponse = {
 				"player2Id": { "type": "integer" },
 				"player1Name": { "type": "string" },
 				"player2Name": { "type": "string" },
+				"player1Level": { "type": "integer" },
+				"player2Level": { "type": "integer" },
+				"player1CurrLevelXp": { "type": "integer" },
+				"player2CurrLevelXp": { "type": "integer" },
+				"player1MaxLevelXp": { "type": "integer" },
+				"player2MaxLevelXp": { "type": "integer" },
+				"player1Character": {
+					"type": "object",
+					"properties": {
+						"characterId": { "type": "integer" },
+						"characterName": { "type": "string" },
+						"characterImg": { "type": "string" },
+						"characterText": { "type": "string" },
+						"characterEffect": { "type": "object" },
+					},
+					"required": [ "characterId", "characterName", "characterImg", "characterText", "characterEffect" ],
+				},
+				"player2Character": {
+					"type": "object",
+					"properties": {
+						"characterId": { "type": "integer" },
+						"characterName": { "type": "string" },
+						"characterImg": { "type": "string" },
+						"characterText": { "type": "string" },
+						"characterEffect": { "type": "object" },
+					},
+					"required": [ "characterId", "characterName", "characterImg", "characterText", "characterEffect" ],
+				},
 			},
-			"required": [ "id", "name", "player1Id", "player2Id", "player1Name", "player2Name" ],
+			"required": [ "id", "name", "player1Id", "player2Id", "player1Name",
+				"player2Name", "player1Level", "player2Level", "player1CurrLevelXp",
+				"player2CurrLevelXp", "player1MaxLevelXp", "player2MaxLevelXp", "player1Character", "player2Character" ],
 		},
 		"gameplayData": {
 			"type": "object",
@@ -144,6 +174,8 @@ var startGameResponse = {
 									"cardsToDrawFromEnemyHand": { "type": "integer" },
 									"cardsToDestroyFromEnemyField": { "type": "integer" },
 									"cardsToTakeFromYourGraveyard": { "type": "integer" },
+									"cardsToTakeFromEnemyGraveyard": { "type": "integer" },
+									"playerIdGraveyard": { "type": ["integer", "null"] },
 									"cardsSummonConstraints": {
 										"type": "object",
 										"properties": {
@@ -169,6 +201,7 @@ var startGameResponse = {
 									"maxCardsOnField": { "type": "integer" },
 									"canRollDiceBoardInRollPhase": { "type": "boolean" },
 									"canRollDiceBoardCount": { "type": ["integer", "null"] },
+									"canRollDiceBoardCountBackward": { "type": ["integer", "null"] },
 									"rollAgain": { "type": "boolean" },
 									"moveBackwards": { "type": ["boolean", "null"] },
 									"moveBackwardsOnNextRoll": { "type": ["boolean", "null"] },
@@ -180,12 +213,13 @@ var startGameResponse = {
 									},
 									"energyPoints": { "type": "integer" },
 									"maxEnergyPoints": { "type": "integer" },
+									"minMaxEnergyPoints": { "type": "integer" },
 									"energyPerTurnGain": { "type": "integer" },
-									"energyRegen": { "type": "integer" },
 									"cardsExpired": {
 										"type": "array",
 										"items": cardObj,
 									},
+									"canChainCards": { "type": "boolean", },
 								},
 							},
 							"additionalProperties": false,
@@ -214,42 +248,51 @@ var rollDiceBoardResponse = startGameResponse;
 var endPhaseResponse = startGameResponse;
 var discardCardResponse = startGameResponse;
 var finishCardEffectResponse = startGameResponse;
-var winGameResponse = {
-	"type": "object",
-	"properties": {
-		"errors" : {
-			"type": "array",
-			"items": {
-				"type": "object",
-				"properties": {
-					"dataPath": { "type": "string", "pattern": "/.+"  },
-					"message": { "type": "string" },
-				},
-				"required": [ "dataPath", "message" ]
-			}
-		},
-		"isSuccessful": { "type": "boolean" },
-		"roomData": {
-			"type": "object",
-			"properties": {
-				"id": { "type": "integer" },
-				"name": { "type": "string" },
-				"player1Id": { "type": "integer" },
-				"player2Id": { "type": "integer" },
-				"player1Name": { "type": "string" },
-				"player2Name": { "type": "string" },
-			},
-			"required": [ "id", "name", "player1Id", "player2Id", "player1Name", "player2Name" ],
-		},
-		"playerIdWinGame": { "type": ["integer", "null"] },
-	},
-};
+// var winGameResponse = {
+// 	"type": "object",
+// 	"properties": {
+// 		"errors" : {
+// 			"type": "array",
+// 			"items": {
+// 				"type": "object",
+// 				"properties": {
+// 					"dataPath": { "type": "string", "pattern": "/.+"  },
+// 					"message": { "type": "string" },
+// 				},
+// 				"required": [ "dataPath", "message" ]
+// 			}
+// 		},
+// 		"isSuccessful": { "type": "boolean" },
+// 		"roomData": {
+// 			"type": "object",
+// 			"properties": {
+// 				"id": { "type": "integer" },
+// 				"name": { "type": "string" },
+// 				"player1Id": { "type": "integer" },
+// 				"player2Id": { "type": "integer" },
+// 				"player1Name": { "type": "string" },
+// 				"player2Name": { "type": "string" },
+// 				"player1Level": { "type": "integer" },
+// 				"player2Level": { "type": "integer" },
+// 				"player1CurrLevelXp": { "type": "integer" },
+// 				"player2CurrLevelXp": { "type": "integer" },
+// 				"player1MaxLevelXp": { "type": "integer" },
+// 				"player2MaxLevelXp": { "type": "integer" },
+// 			},
+// 			"required": [ "id", "name", "player1Id", "player2Id", "player1Name",
+// 				"player2Name", "player1Level", "player2Level", "player1CurrLevelXp",
+// 				"player2CurrLevelXp", "player1MaxLevelXp", "player2MaxLevelXp" ],
+// 		},
+// 		"playerIdWinGame": { "type": ["integer", "null"] },
+// 	},
+// };
 
 var activateCardEffectResponse = startGameResponse;
 var finishCardEffectContinuousResponse = startGameResponse;
 var drawCardFromEnemyHandResponse = startGameResponse;
 var destroyCardFromEnemyFieldResponse = startGameResponse;
-var takeCardFromYourGraveyardResponse = startGameResponse;
+var takeCardFromGraveyardResponse = startGameResponse;
+var finishChainEffectResponse = startGameResponse;
 
 var drawCardYouResponse = {
 	"type": "object",

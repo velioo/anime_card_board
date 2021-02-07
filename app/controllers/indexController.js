@@ -1,22 +1,59 @@
 const logger = require('../helpers/logger');
 const pg = require('../db/pg');
 const {
+  ROOT,
+  SERVICE_EMAIL_PROVIDER,
+  SERVICE_EMAIL,
+  EMAIL_PASS,
+  CONTACT_EMAIL_SEND_INTERVAL_MILLISECONDS,
 } = require('../constants/constants');
-
+const SCHEMAS = require('../schemas/schemas');
 const assert = require('assert');
 const _ = require('lodash/lang');
+const Nodemailer = require('nodemailer');
+const Ajv = require('ajv');
+const ajv = new Ajv({ allErrors: true, $data: true, jsonPointers: true, format: "full" });
+const ajvErrors = require('ajv-errors')(ajv);
 
 var self = module.exports = {
 	renderHomeScreen: async (ctx) => {
     ctx.state.userMessage = ctx.request.query.msg || "";
 
-    const queryStatus = await pg.pool.query(`
+    let queryStatus = await pg.pool.query(`
       SELECT id, name FROM boards ORDER BY name
     `);
 
-    assert(queryStatus.rowCount >= 1);
-
+    assert(queryStatus.rowCount > 0);
     ctx.state.boards = queryStatus.rows;
+
+    queryStatus = await pg.pool.query(`
+      SELECT * FROM cards ORDER BY name
+    `);
+
+    assert(queryStatus.rowCount >= 0);
+    ctx.state.cards = queryStatus.rows;
+
+    queryStatus = await pg.pool.query(`
+      SELECT * FROM characters ORDER BY name
+    `);
+
+    assert(queryStatus.rowCount >= 0);
+    ctx.state.characters = queryStatus.rows;
+
+    ctx.state.characters.forEach(function(character) {
+      if (character.id == 1) {
+        ctx.state.default_character = character;
+      }
+    });
+
+    ctx.state.cards.forEach(function(card) {
+      card.original_image = card.image;
+      if (ctx.session.userData && ctx.session.userData.settings && !ctx.session.userData.settings.cardAnimations) {
+        if (card.image.split('.').pop() == "gif") {
+          card.image = card.image.substr(0, card.image.lastIndexOf(".")) + ".jpg";
+        }
+      }
+    });
 
 		await ctx.render('./views/home.hbs');
 	},
@@ -75,6 +112,43 @@ var self = module.exports = {
 
     ctx.redirect('/main-menu?msg=' + ctx.state.userMessage);
   },
+  contactData: async (ctx, next) => {
+    ctx.errors = [];
+
+    try {
+      const requestData = ctx.request.body.data;
+      const isSchemaValid = ajv.validate(SCHEMAS.CONTACT_DATA, requestData);
+
+      if (!isSchemaValid) {
+        ajv.errors.forEach((el) => {
+          ctx.errors.push(el);
+        })
+      }
+
+      if (ctx.session.lastSentEmailMilliseconds
+        && (ctx.session.lastSentEmailMilliseconds + CONTACT_EMAIL_SEND_INTERVAL_MILLISECONDS) > new Date().getTime()) {
+        let CONTACT_EMAIL_SEND_INTERVAL_MINUTES = CONTACT_EMAIL_SEND_INTERVAL_MILLISECONDS / (1000 * 60);
+        ctx.errors.push({
+          dataPath: '/email',
+          message: `You can send only 1 email on every ${CONTACT_EMAIL_SEND_INTERVAL_MINUTES} minutes.`
+        });
+      }
+
+      if (ctx.errors.length) {
+        return self.sendResponse(ctx, next);
+      }
+
+      await sendContactEmail(ctx);
+      ctx.session.lastSentEmailMilliseconds = new Date().getTime();
+
+      logger.info('Contact email sent');
+    } catch (err) {
+      ctx.errors.push({ dataPath: '/email', message: 'There was a problem while sending email. Please try again later.' });
+      logger.info('Problem while sending contact data: %o', err);
+    }
+
+    return self.sendResponse(ctx, next);
+  },
 	frontendLogger: async (ctx, next) => {
     const requestBody = ctx.request.body;
 
@@ -88,5 +162,51 @@ var self = module.exports = {
         '\n------------------------------------------------------------');
     }
     ctx.status = 200;
+  },
+  sendResponse: async (ctx, next) => {
+    ctx.body = {
+      errors: ctx.errors,
+      isSuccessful: ctx.errors.length ? false : true,
+    };
+
+    if (ctx.userMessage) {
+      ctx.body.userMessage = ctx.userMessage;
+    }
+  },
+};
+
+let sendContactEmail = async (ctx) => {
+  const transporter = Nodemailer.createTransport({
+    service: SERVICE_EMAIL_PROVIDER,
+    auth: {
+      user: SERVICE_EMAIL,
+      pass: EMAIL_PASS
+    }
+  });
+
+  let fromText;
+  if (ctx.session.userData && ctx.session.userData.username) {
+    fromText = '"' + ctx.session.userData.username + '" ' + ctx.request.body.data.email;
+  } else {
+    fromText = ctx.request.body.data.email;
   }
+
+  const mailOptions = {
+    from: `"Anime Card Board Game" ${SERVICE_EMAIL}`,
+    to: `"Anime Card Board Game" ${SERVICE_EMAIL}`,
+    subject: 'Contact Email from ' + fromText,
+    text: ctx.request.body.data.content,
+    html: ctx.request.body.data.content,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    ctx.userMessage = `Email successfully sent.`;
+    logger.info("Mail options: %o", mailOptions);
+  } catch (err) {
+    logger.error('Error while sending mail: ' + err.stack);
+    throw(err);
+  }
+
+  transporter.close();
 };

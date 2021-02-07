@@ -55,6 +55,11 @@
 	</div>
 	<div class="anime-cb-energy-points-regen player-enemy">
 	</div>
+	<div class="anime-cb-change-chain-decision">
+		Change Chain Decision
+	</div>
+	<div class="anime-cb-roll-die" data-tooltip="rollDie">
+	</div>
 	<table id="anime-cb-phases-wrapper">
 		<tr class="anime-cb-phase-row">
 			<td id="anime-cb-phase-draw" class="anime-cb-phase-column ended" data-phase-text="Draw Phase">DP</td>
@@ -179,7 +184,7 @@
 	  <div class="modal-content">
 	    <div class="modal-header player-you">
 	      <span class="close">&times;</span>
-	      <h2>Your Graveyard</h2>
+	      <h2 class="modal-title">Your Graveyard</h2>
 	    </div>
 	    <div class="modal-body">
 			<img class="anime-cb-card player-you in-graveyard" data-card-text="This is Jeanne" data-card-name="Jeanne" src="imgs/player_cards/Jeanne Alter 2.jpg">
@@ -225,7 +230,7 @@
 	  <div class="modal-content">
 	    <div class="modal-header player-enemy">
 	      <span class="close">&times;</span>
-	      <h2>Enemy Graveyard</h2>
+	      <h2 class="modal-title">Enemy Graveyard</h2>
 	    </div>
 	    <div class="modal-body">
 			<img class="anime-cb-card player-enemy in-graveyard" data-card-text="This is Kurumi" data-card-name="Kurumi" src="imgs/player_cards/Kurumi 3.jpg">
@@ -707,7 +712,6 @@ function switchPhase(e) {
 
 // -----------------------------------
 
-
 // Timers-------------------------
 var timeLeftSeconds = 60;
 $('.anime-cb-turn-timer-text.player-you').text(timeLeftSeconds);
@@ -725,6 +729,7 @@ var turnTimer = setInterval(function() {
 }, 1000);
 //----------------------
 
+var quickGameInfoShowEnabled = true;
 // Draw card---------------------------
 $('#anime-cb-card-global-deck').on('click', function(e) {
 	// drawCardFromEnemyHandEnemy();
@@ -732,8 +737,29 @@ $('#anime-cb-card-global-deck').on('click', function(e) {
 	drawCardFromGraveyardYou();
 	drawCardFromGraveyardEnemy();
 
+	if (quickGameInfoShowEnabled) {
+		showQuickGameInfo();
+	}
+
 	// drawCardFromEnemyHandYou();
 });
+
+function showQuickGameInfo () {
+	quickGameInfoShowEnabled = false;
+
+	$('.anime-cb-screen-game').append('<div class="anime-cb-quick-game-info">\
+		Cannot sad asd asd as asd asd asdas dasd s\
+	</div>');
+	var $gameInfoElement = $('.anime-cb-quick-game-info').last().css("margin-right", "-" + ($('.anime-cb-quick-game-info').outerWidth() / 2) + "px");
+
+	setTimeout(function() {
+		$gameInfoElement.remove();
+	}, 3000);
+
+	setTimeout(function() {
+		quickGameInfoShowEnabled = true;
+	}, 1000);
+};
 
 function drawCardFromGraveyardYou() {
   var cardsInHandCount = $('.anime-cb-cards-in-hand.player-you .anime-cb-card.player-you').length;
@@ -746,7 +772,7 @@ function drawCardFromGraveyardYou() {
   }
 
   $('.anime-cb-cards-in-hand.player-you').css("overflow", "visible");
-  $('.anime-cb-cards-in-hand.player-you').append('<img style="animation: take-card-from-your-graveyard-you-' + drawFromDeckAnimationCount + ' 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both; -webkit-animation: take-card-from-your-graveyard-you-' + drawFromDeckAnimationCount + ' 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;" class="anime-cb-card player-you" data-card-text="This is Misaka" data-card-name="Misaka" src="imgs/player_cards/Misaka.jpg">');
+  $('.anime-cb-cards-in-hand.player-you').append('<img style="animation: take-card-from-enemy-graveyard-you-' + drawFromDeckAnimationCount + ' 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both; -webkit-animation: take-card-from-enemy-graveyard-you-' + drawFromDeckAnimationCount + ' 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;" class="anime-cb-card player-you" data-card-text="This is Misaka" data-card-name="Misaka" src="imgs/player_cards/Misaka.jpg">');
 
   increaseYourCardsInHandDensity();
 
@@ -777,7 +803,7 @@ function drawCardFromGraveyardEnemy() {
   }
 
   $('.anime-cb-cards-in-hand.player-enemy').css("overflow", "visible");
-  $('.anime-cb-cards-in-hand.player-enemy').append('<img style="animation: take-card-from-your-graveyard-enemy-' + drawFromDeckAnimationCount + ' 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both; -webkit-animation: take-card-from-your-graveyard-enemy-' + drawFromDeckAnimationCount + ' 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;" class="anime-cb-card player-enemy" data-card-text="This is Misaka" data-card-name="Misaka" src="imgs/player_cards/Misaka.jpg">');
+  $('.anime-cb-cards-in-hand.player-enemy').append('<img style="animation: take-card-from-enemy-graveyard-enemy-' + drawFromDeckAnimationCount + ' 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both; -webkit-animation: take-card-from-enemy-graveyard-enemy-' + drawFromDeckAnimationCount + ' 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;" class="anime-cb-card player-enemy" data-card-text="This is Misaka" data-card-name="Misaka" src="imgs/player_cards/Misaka.jpg">');
 
   increaseEnemyCardsInHandDensity();
 

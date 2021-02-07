@@ -7,6 +7,8 @@ const {
   MIN_USER_PASSWORD_LEN,
   MIN_ROOM_NAME_LEN,
   MAX_ROOM_NAME_LEN,
+  MIN_EMAIL_CONTENT_LEN,
+  MAX_EMAIL_CONTENT_LEN,
 } = require('../constants/constants');
 
 const _SIGN_UP = {
@@ -49,21 +51,43 @@ const _LOGIN = {
   }
 };
 
+const _CONTACT_DATA = {
+  "type": "object",
+  "properties": {
+    "email": { "type": "string", "minLength": MIN_USER_EMAIL_LEN, "maxLength": MAX_USER_EMAIL_LEN, "format": "email" },
+    "content": { "type": "string", "minLength": MIN_EMAIL_CONTENT_LEN, "maxLength": MAX_EMAIL_CONTENT_LEN },
+  },
+  "required": [ "email", "content" ],
+  "errorMessage": {
+    "properties": {
+      "email": `The entered email should be valid and at least ${MIN_USER_EMAIL_LEN} characters long`,
+      "content": `Email content should be between ${MIN_EMAIL_CONTENT_LEN} and ${MAX_EMAIL_CONTENT_LEN} characters`,
+    },
+    "required": {
+      "email": 'You must enter an email',
+      "content": 'Email content can\'t be empty.',
+    },
+  }
+};
+
 const _CREATE_ROOM = {
   "type": "object",
   "properties": {
     "room_name": { "type": "string", "minLength": MIN_ROOM_NAME_LEN, "maxLength": MAX_ROOM_NAME_LEN },
     "board_id": { "type": "integer" },
+    "character_id": { "type": "integer" },
   },
-  "required": [ "room_name", "board_id" ],
+  "required": [ "room_name", "board_id", "character_id" ],
   "errorMessage": {
     "properties" : {
       "room_name": `Room name should be between ${MIN_USER_NAME_LEN} and ${MAX_USER_NAME_LEN} characters`,
       "board_id": `Invalid board !`,
+      "character_id": `Invalid character !`,
     },
     "required": {
       "room_name": 'You must enter a room name',
       "board_id": 'Invalid board !',
+      "character_id": `Invalid character !`,
     },
   }
 };
@@ -160,6 +184,7 @@ const _DRAW_CARD = {
   "type": "object",
   "properties": {
     "roomId": { "type": "integer" },
+    "retryLastCommand": { "type": "boolean" },
   },
   "required": [ "roomId" ],
 };
@@ -173,18 +198,21 @@ const _SUMMON_CARD = {
     "roomId": { "type": "integer" },
     "cardId": { "type": "integer" },
     "cardIdx": { "type": "integer" },
+    "retryLastCommand": { "type": "boolean" },
   },
   "required": [ "roomId", "cardId", "cardIdx" ],
 };
 
 const _ROLL_PHASE = _DRAW_CARD;
 const _END_PHASE = _DRAW_CARD;
+const _ROLL_DICE_BOARD = _DRAW_CARD;
 const _DISCARD_CARD = _SUMMON_CARD;
 const _FINISH_CARD = {
   "type": "object",
   "properties": {
     "roomId": { "type": "integer" },
     "cardId": { "type": "integer" },
+    "retryLastCommand": { "type": "boolean" },
   },
   "required": [ "roomId", "cardId" ],
 };
@@ -196,14 +224,17 @@ const _MATCHMAKE = {
   "type": "object",
   "properties": {
     "board_id": { "type": "integer" },
+    "character_id": { "type": "integer" },
   },
-  "required": [ "board_id" ],
+  "required": [ "board_id", "character_id" ],
   "errorMessage": {
     "properties" : {
       "board_id": `Invalid board !`,
+      "character_id": `Invalid character !`,
     },
     "required": {
       "board_id": 'Invalid board !',
+      "character_id": `Invalid character !`,
     },
   }
 };
@@ -212,8 +243,14 @@ const _SETTINGS = {
   "type": "object",
   "properties": {
     "sound": { "type": "boolean" },
+    "soundVolume": { "type": "number", "minimum": 1, "maximum": 100 },
+    "backgroundSound": { "type": "boolean" },
+    "cardBoardEffectSounds": { "type": "boolean" },
+    "cardAnimations": { "type": "boolean" },
+    "defaultCharacter": { "type": "integer", "minimum": 1 },
   },
-  "required": [ "sound" ],
+  "required": [ "sound", "soundVolume", "backgroundSound",
+    "cardBoardEffectSounds", "cardAnimations", "defaultCharacter" ],
 };
 
 const _DRAW_CARD_FROM_ENEMY_HAND = {
@@ -221,6 +258,7 @@ const _DRAW_CARD_FROM_ENEMY_HAND = {
   "properties": {
     "roomId": { "type": "integer" },
     "cardIdx": { "type": "integer" },
+    "retryLastCommand": { "type": "boolean" },
   },
   "required": [ "roomId", "cardIdx" ],
 };
@@ -230,11 +268,23 @@ const _DESTROY_CARD_FROM_ENEMY_FIELD = {
   "properties": {
     "roomId": { "type": "integer" },
     "cardId": { "type": "integer" },
+    "retryLastCommand": { "type": "boolean" },
   },
   "required": [ "roomId", "cardId" ],
 };
 
-const _TAKE_CARD_FROM_GRAVEYARD = _DRAW_CARD_FROM_ENEMY_HAND;
+const _TAKE_CARD_FROM_GRAVEYARD = {
+  "type": "object",
+  "properties": {
+    "roomId": { "type": "integer" },
+    "cardIdx": { "type": "integer" },
+    "playerIdGraveyard": { "type": "integer" },
+    "retryLastCommand": { "type": "boolean" },
+  },
+  "required": [ "roomId", "cardIdx", "playerIdGraveyard" ],
+};
+
+const _FINISH_CHAIN_EFFECT = _DRAW_CARD;
 
 module.exports = {
   SIGN_UP: _SIGN_UP,
@@ -262,4 +312,7 @@ module.exports = {
   DRAW_CARD_FROM_ENEMY_HAND: _DRAW_CARD_FROM_ENEMY_HAND,
   DESTROY_CARD_FROM_ENEMY_FIELD: _DESTROY_CARD_FROM_ENEMY_FIELD,
   TAKE_CARD_FROM_GRAVEYARD: _TAKE_CARD_FROM_GRAVEYARD,
+  FINISH_CHAIN_EFFECT: _FINISH_CHAIN_EFFECT,
+  ROLL_DICE_BOARD: _ROLL_DICE_BOARD,
+  CONTACT_DATA: _CONTACT_DATA,
 };

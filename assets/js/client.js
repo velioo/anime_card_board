@@ -8,6 +8,9 @@ window.onload = function() {
 	_gameClient.generalClient = _generalClient;
 	_gameClient.logInSignUpController = _generalClient.logInSignUpController;
 	_gameClient.roomController = _generalClient.roomController;
+	_gameClient.cardsInfoController = _generalClient.cardsInfoController;
+	_gameClient.chatController = _generalClient.chatController;
+	_gameClient.settingsController = _generalClient.settingsController;
 	_generalClient.gameController = _gameClient.gameController;
 	_gameClient.initSocket();
 };

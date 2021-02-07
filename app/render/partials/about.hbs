@@ -1,0 +1,32 @@
+<div class="anime-cb-screen-about anime-cb-screen">
+	<div class="center-screen">
+		<div class="anime-cb-title-page">
+			<h1>About</h1>
+		</div>
+		<div class="user-message"></div>
+		<div class="anime-cb-about-wrapper">
+			<span class="anime-cb-about-wrapper-title">
+				Have an idea for a cool feature or you've found a nasty bug ? Contact me :)
+			</span>
+			<br><br>
+			<form id="anime-cb-form-contact" class="anime-cb-form" action="#">
+			  <div class="form-group">
+			    <label for="email">Email:</label>
+			    <input type="text" class="form-control" name="email" value="{{email}}">
+			    <div class="errors"></div>
+			  </div>
+			  <div class="form-group">
+			    <label for="content">Comment:</label>
+			    <textarea class="form-control" rows="5" name="content"></textarea>
+			    <div class="errors"></div>
+			  </div>
+			  <img class="spinner" src="/imgs/spinner.gif">
+			  <button id="anime-cb-submit-contact" type="submit" class="btn btn-default">Send Message</button>
+			</form>
+		</div>
+		<div class="btn-group-vertical anime-cb-btn-group">
+		    <button type="button" class="btn btn-primary anime-cb-button anime-cb-btn-info">Back</button>
+		    <img class="pre-screen-spinner" src="/imgs/spinner.gif">
+	 	</div>
+	</div>
+</div>
