@@ -832,7 +832,8 @@ const self = module.exports = {
 
       await pg.pool.query('COMMIT');
     } catch (err) {
-      ctx.errors.push({ dataPath: '/discard_card', message: 'There was a problem while discarding card. Retrying...' });
+      ctx.errors.push({ dataPath: '/discard_card', message: 'There was a problem while discarding card. Retrying...'
+        + JSON.stringify(err) });
 
       await pg.pool.query('ROLLBACK');
 

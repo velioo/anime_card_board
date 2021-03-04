@@ -276,6 +276,7 @@ gameController.prototype.resetGameState = function () {
 	_self.quickGameInfoMsg = "";
 	clearTimeout(_self.waitForMsgTimeout);
 	clearInterval(_self.retryLastCommandInterval);
+	clearTimeout(_self.waitAnimationsTimeout);
 
 	_self._postGame = true;
 	setTimeout(function() {
@@ -1986,6 +1987,7 @@ gameController.prototype.setCardChainListener = function () {
 		src="/imgs/no.png" data-chain-cards="false" style="width: 100px; height: 100px;">');
 
 	_self.chooseCardEffectInitStyles();
+	$(_self.CHOOSE_CARD_EFFECT_CLASS).off("click");
 
 	$(_self.CHOOSE_CARD_EFFECT_CLASS).on("click", _self.CHOOSE_CARD_EFFECT_CHOICE_CLASS, function() {
 		$(_self.CHOOSE_CARD_EFFECT_CLASS).off("click");
@@ -3994,6 +3996,7 @@ gameController.prototype.setCardDrawListener = function () {
 			eventInfoText += " card from the deck";
 	}
 	_self.showEventsInfo(eventInfoText);
+	$(_self.DECK_GLOBAL_ID).off("click");
 
 	$(_self.DECK_GLOBAL_ID).attr("data-tooltip", "drawCardDeck");
 	$(_self.DECK_GLOBAL_ID).on('click', function(e) {
@@ -4014,6 +4017,7 @@ gameController.prototype.setCardDiscardListener = function () {
 			eventInfoText += " card from your hand";
 	}
 	_self.showEventsInfo(eventInfoText);
+	$(_self.CARDS_IN_HAND_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_YOU_CLASS).off();
 
 	$(_self.CARDS_IN_HAND_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_YOU_CLASS).attr("data-tooltip", "discardCard");
 	$(_self.CARDS_IN_HAND_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_YOU_CLASS).on('click', function(e) {
@@ -4035,6 +4039,7 @@ gameController.prototype.setDrawCardFromEnemyHandListener = function () {
 	}
 
 	_self.showEventsInfo(eventInfoText);
+	$(_self.CARDS_IN_HAND_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_ENEMY_CLASS).off();
 
 	$(_self.CARDS_IN_HAND_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_ENEMY_CLASS).attr("data-tooltip", "takeCard");
 	$(_self.CARDS_IN_HAND_CLASS + ' ' + _self.CARD_CLASS + _self.PLAYER_ENEMY_CLASS).on('click', function(e) {
@@ -4059,6 +4064,7 @@ gameController.prototype.setDestroyCardFromEnemyFieldListener = function () {
 	}
 
 	_self.showEventsInfo(eventInfoText);
+	$(_self.CARD_ON_FIELD_CLASS + _self.PLAYER_ENEMY_CLASS).off("click");
 
 	$(_self.CARD_ON_FIELD_CLASS + _self.PLAYER_ENEMY_CLASS).each(function() {
 		var card = this;
@@ -4101,6 +4107,7 @@ gameController.prototype.setTakeCardFromYourGraveyardListener = function () {
 	_self.populateGraveyard(_self._yourUserId, _self.PLAYER_YOU_CLASS);
 	_self.disableGraveyardPopulation();
 	$(_self.MODAL_GRAVEYARD_CLASS + _self.PLAYER_YOU_CLASS).show();
+	$(_self.MODAL_GRAVEYARD_CLASS + _self.PLAYER_YOU_CLASS + ' .modal-body img').off("click");
 
 	$(_self.MODAL_GRAVEYARD_CLASS + _self.PLAYER_YOU_CLASS + ' .modal-body img').each(function() {
 		if (!_self.canTakeCardFromGraveyard(this)) {
@@ -4136,6 +4143,7 @@ gameController.prototype.setTakeCardFromEnemyGraveyardListener = function () {
 	_self.populateGraveyard(_self._enemyUserId, _self.PLAYER_ENEMY_CLASS);
 	_self.disableGraveyardPopulation();
 	$(_self.MODAL_GRAVEYARD_CLASS + _self.PLAYER_ENEMY_CLASS).show();
+	$(_self.MODAL_GRAVEYARD_CLASS + _self.PLAYER_ENEMY_CLASS + ' .modal-body img').off("click");
 
 	$(_self.MODAL_GRAVEYARD_CLASS + _self.PLAYER_ENEMY_CLASS + ' .modal-body img').each(function() {
 		if (!_self.canTakeCardFromGraveyard(this)) {
@@ -4235,6 +4243,7 @@ gameController.prototype.enableRollDiceBoard = function () {
 	_self.showEventsInfo(eventInfoText);
 
 	$(_self.ROLL_DIE_CLASS).show();
+	$(_self.ROLL_DIE_CLASS).off("click");
 
 	$(_self.ROLL_DIE_CLASS).on("click", function(e) {
 		$(_self.ROLL_DIE_CLASS).off("click");
