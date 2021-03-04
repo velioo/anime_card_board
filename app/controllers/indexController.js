@@ -17,6 +17,7 @@ const ajvErrors = require('ajv-errors')(ajv);
 
 var self = module.exports = {
 	renderHomeScreen: async (ctx) => {
+    console.log("render HOme screen");
     ctx.state.userMessage = ctx.request.query.msg || "";
 
     let queryStatus = await pg.pool.query(`
@@ -55,6 +56,7 @@ var self = module.exports = {
       }
     });
 
+    console.log("Finish render home screen");
 		await ctx.render('./views/home.hbs');
 	},
   renderTestGame: async (ctx) => {
