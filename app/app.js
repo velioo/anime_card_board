@@ -67,6 +67,8 @@ app.use(async (ctx, next) => {
   ctx.session.isUserLoggedIn = ctx.session.isUserLoggedIn || false;
   ctx.sessions = sessions;
 
+  console.log('New request: ');
+
   await next();
 });
 
