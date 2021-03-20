@@ -7,11 +7,10 @@ module.exports = async (ctx, next) => {
   const userLoggedInUrls = [
     '/create_room/',
     '/log_out/',
-    '/destroy_room/',
-    '/create_room/',
     '/browse_rooms/',
     '/room_data/',
     '/join_room/',
+    '/settings/',
   ];
 
   if (userServiceUrls.some((url) => requestUrl.startsWith(url) ||
