@@ -1814,11 +1814,11 @@ var self = module.exports = {
 			switch(randNum) {
 				case DIRECTIONS.UP:
 					if (!canMoveUp
-						|| (prevRow <= 0)
-						|| (boardMatrix[prevRow - 1][prevCol] > 0)
-						|| (((prevCol - 1) >= 0) && (boardMatrix[prevRow - 1][prevCol - 1] > 0))
-						|| (((prevCol + 1) < cols) && (boardMatrix[prevRow - 1][prevCol + 1] > 0))
-						|| ((prevRow - 2 >= 0) && (boardMatrix[prevRow - 2][prevCol] > 0))) {
+						|| (prevRow <= 0) // no space upper row = 0
+						|| (boardMatrix[prevRow - 1][prevCol] > 0) // the space is already taken
+						|| (((prevCol - 1) >= 0) && (boardMatrix[prevRow - 1][prevCol - 1] > 0)) // the space next to the right is taken
+						|| (((prevCol + 1) < cols) && (boardMatrix[prevRow - 1][prevCol + 1] > 0)) // the space next to the left is taken
+						|| ((prevRow - 2 >= 0) && (boardMatrix[prevRow - 2][prevCol] > 0))) { // the space above is taken
 						canMoveUp = false;
 						break;
 					}
