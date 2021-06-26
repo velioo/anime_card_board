@@ -91,7 +91,7 @@ cardsInfoController.prototype.initListeners = function() {
 cardsInfoController.prototype.filterCards = function () {
 	var _self = this;
 
-	var filterCardNameValue = $(_self.FILTER_CARD_NAME_ID).val().toLowerCase();
+	var filterCardNameValue = escapeRegExp($(_self.FILTER_CARD_NAME_ID).val().toLowerCase());
 	var cardsFilteredCount = 0;
 	_self.$cards.each(function() {
 		var cardName = $(this).data("cardName").toLowerCase();
@@ -106,7 +106,7 @@ cardsInfoController.prototype.filterCards = function () {
 
 		_self.$cardAttributes.each(function() {
 			if ($(this).prop("checked")) {
-				if (!cardAttributes.match($(this).val())) {
+				if (!cardAttributes.match(escapeRegExp($(this).val()))) {
 					shouldHide = true;
 				}
 			}
@@ -245,3 +245,7 @@ cardsInfoController.prototype.switchCardsImgs = function (haveAnimations) {
 		}
   });
 };
+
+var escapeRegExp = function (string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+}
