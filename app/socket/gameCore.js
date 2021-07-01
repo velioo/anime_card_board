@@ -1505,6 +1505,7 @@ var self = module.exports = {
 	    let playerIdMovedOnBoard = ctx.session.userData.userId;
 
 			let cardsToChainYou = [];
+
 			gameState.playersState[yourUserId].cardsInHandArr.forEach(function(card) {
 				let canChainCard = canChainCardSpecialBoardSpace(ctx, card, yourUserId, playerIdMovedOnBoard);
 
@@ -1514,6 +1515,7 @@ var self = module.exports = {
 			});
 
 			let cardsToChainEnemy = [];
+
 			gameState.playersState[enemyUserId].cardsInHandArr.forEach(function(card) {
 				let canChainCard = canChainCardSpecialBoardSpace(ctx, card, enemyUserId, playerIdMovedOnBoard);
 
@@ -1524,25 +1526,29 @@ var self = module.exports = {
 
 			if ((cardsToChainYou.length > 0) || (cardsToChainEnemy.length > 0)) {
 				if (cardsToChainYou.length > 0) {
-					gameState.playersState[yourUserId].chainObj = {
-						playerIdBoardSpace: ctx.session.userData.userId,
-						rowIndex: rowIndex,
-						columnIndex: columnIndex,
-						cardsToChain: cardsToChainYou,
-						chainTrigger: "movedToSpecialBoardSpace",
-						nullifySpecialBoardSpace: false,
-					};
+					gameState.playersState[yourUserId].chainObj = gameState.playersState[yourUserId].chainObj.chainTrigger
+						? gameState.playersState[yourUserId].chainObj
+						: {
+								playerIdBoardSpace: ctx.session.userData.userId,
+								rowIndex: rowIndex,
+								columnIndex: columnIndex,
+								cardsToChain: cardsToChainYou,
+								chainTrigger: "movedToSpecialBoardSpace",
+								nullifySpecialBoardSpace: false,
+							};
 				}
 
 				if (cardsToChainEnemy.length > 0) {
-					gameState.playersState[enemyUserId].chainObj = {
-						playerIdBoardSpace: ctx.session.userData.userId,
-						rowIndex: rowIndex,
-						columnIndex: columnIndex,
-						cardsToChain: cardsToChainEnemy,
-						chainTrigger: "movedToSpecialBoardSpace",
-						nullifySpecialBoardSpace: false,
-					};
+					gameState.playersState[enemyUserId].chainObj = gameState.playersState[enemyUserId].chainObj.chainTrigger
+						? gameState.playersState[enemyUserId].chainObj
+						: {
+								playerIdBoardSpace: ctx.session.userData.userId,
+								rowIndex: rowIndex,
+								columnIndex: columnIndex,
+								cardsToChain: cardsToChainEnemy,
+								chainTrigger: "movedToSpecialBoardSpace",
+								nullifySpecialBoardSpace: false,
+							};
 				}
 			} else {
     		checkForSpecialBoardSpace(ctx, rowIndex, columnIndex);
@@ -1580,11 +1586,13 @@ var self = module.exports = {
 
 		updateCardsStatus(ctx);
 	},
-	activePlayerHook: async (ctx, card) => {
+	activePlayerHook: async (ctx) => {
 		let gameState = ctx.gameplayData.gameState;
 
     let currPlayerId = gameState.currPlayerId;
     let notCurrPlayerId = currPlayerId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
+
+		removeChainCardsWithTooMuchEnergy(ctx);
 
 		if ((gameState.playersState[notCurrPlayerId].canRollDiceBoardCount > 0
 			|| gameState.playersState[notCurrPlayerId].cardsToDraw > 0
@@ -1806,11 +1814,11 @@ var self = module.exports = {
 			switch(randNum) {
 				case DIRECTIONS.UP:
 					if (!canMoveUp
-						|| (prevRow <= 0)
-						|| (boardMatrix[prevRow - 1][prevCol] > 0)
-						|| (((prevCol - 1) >= 0) && (boardMatrix[prevRow - 1][prevCol - 1] > 0))
-						|| (((prevCol + 1) < cols) && (boardMatrix[prevRow - 1][prevCol + 1] > 0))
-						|| ((prevRow - 2 >= 0) && (boardMatrix[prevRow - 2][prevCol] > 0))) {
+						|| (prevRow <= 0) // no space upper row = 0
+						|| (boardMatrix[prevRow - 1][prevCol] > 0) // the space is already taken
+						|| (((prevCol - 1) >= 0) && (boardMatrix[prevRow - 1][prevCol - 1] > 0)) // the space next to the right is taken
+						|| (((prevCol + 1) < cols) && (boardMatrix[prevRow - 1][prevCol + 1] > 0)) // the space next to the left is taken
+						|| ((prevRow - 2 >= 0) && (boardMatrix[prevRow - 2][prevCol] > 0))) { // the space above is taken
 						canMoveUp = false;
 						break;
 					}
@@ -2599,5 +2607,31 @@ let generateRandomBoardSpace = () => {
 	} else {
 		randNum = utils.getRandomInt(0, BOARD_FIELDS_TIERS[tiersCount - 2].length - 1);
 		return BOARD_FIELDS_TIERS[tiersCount - 2][randNum];
+	}
+};
+
+let removeChainCardsWithTooMuchEnergy = (ctx) => {
+	let gameState = ctx.gameplayData.gameState;
+	let yourUserId = ctx.session.userData.userId;
+  let enemyUserId = ctx.session.userData.userId == ctx.roomData.player1Id ? ctx.roomData.player2Id : ctx.roomData.player1Id;
+	let playerStateYou = gameState.playersState[yourUserId];
+	let playerStateEnemy = gameState.playersState[enemyUserId];
+
+	if (playerStateYou.chainObj.chainTrigger) {
+		let cardsToChain = playerStateYou.chainObj.cardsToChain.slice().reverse();
+		for (let i = 0; i < cardsToChain.length; i++) {
+			if (cardsToChain[i].cardCost > playerStateYou.energyPoints) {
+		  	playerStateYou.chainObj.cardsToChain.splice(cardsToChain.length - 1 - i, 1);
+			}
+		}
+	}
+
+	if (playerStateEnemy.chainObj.chainTrigger) {
+		let cardsToChain = playerStateEnemy.chainObj.cardsToChain.slice().reverse();
+		for (let i = 0; i < cardsToChain.length; i++) {
+			if (cardsToChain[i].cardCost > playerStateEnemy.energyPoints) {
+		  	playerStateEnemy.chainObj.cardsToChain.splice(cardsToChain.length - 1 - i, 1);
+			}
+		}
 	}
 };

@@ -404,6 +404,11 @@ var self = module.exports = {
             });
 
             await pg.pool.query('COMMIT');
+
+            queryStatusMatchmake.rows[i] = null;
+            queryStatusMatchmake.rows[k] = null;
+
+            break;
           } catch (err) {
             await pg.pool.query('ROLLBACK');
             logger.info('Failed to matchmake players: %o', err);

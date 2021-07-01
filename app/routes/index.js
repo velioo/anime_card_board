@@ -53,7 +53,7 @@ router
 	.post('/room_data', new KoaBody(), getRoomData)
 	.post('/join_room', new KoaBody(), joinRoom)
 	.post('/contact_data', new KoaBody(), contactData)
-	.get('/confirm_account/:code', confirmAccount)
+	.get('/confirm-account/:code', confirmAccount)
 	.post('/frontend_logger', new KoaBody(), frontendLogger);
 
 exports.routes = router.routes();
