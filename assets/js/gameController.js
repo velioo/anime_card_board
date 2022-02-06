@@ -2098,7 +2098,13 @@ gameController.prototype.enableActionsInEnemyPhase = function () {
 		if (_self._postDestroyCard) {
 			var card = _self._postDestroyCard;
 			_self._postDestroyCard = null;
-			_self.destroyCardAnimationYou.call(_self, card, _self.enableActionsInEnemyPhase.bind(_self));
+
+			if (_self._gameplayData.gameState.currPlayerId == _self._yourUserId) {
+				_self.destroyCardAnimationYou.call(_self, card, _self.enableActionsInEnemyPhase.bind(_self));
+			} else {
+				_self.destroyCardAnimationEnemy.call(_self, card, _self.enableActionsInEnemyPhase.bind(_self));
+			}
+
 			return;
 		}
 
@@ -2129,7 +2135,13 @@ gameController.prototype.enableActionsInEnemyPhase = function () {
 	} else if (_self._postDestroyCard) {
 		var card = _self._postDestroyCard;
 		_self._postDestroyCard = null;
-		_self.destroyCardAnimationEnemy.call(_self, card);
+
+		if (_self._gameplayData.gameState.currPlayerId == _self._yourUserId) {
+			_self.destroyCardAnimationYou.call(_self, card);
+		} else {
+			_self.destroyCardAnimationEnemy.call(_self, card);
+		}
+
 		setTimeout(_self.waitForEnemyActions.bind(_self), 0);
 		return;
 	} else {
@@ -3863,10 +3875,17 @@ gameController.prototype.waitForEnemyActions = function () {
 
 	if (playerStateEnemy.chainObj && playerStateEnemy.chainObj.chainTrigger) {
 		_self.showEventsInfo("Waiting for opponent's chain decision...");
+
 		if (_self._postDestroyCard) {
 			var card = _self._postDestroyCard;
 			_self._postDestroyCard = null;
-			_self.destroyCardAnimationEnemy.call(_self, card, _self.waitForEnemyActions.bind(_self));
+
+			if (_self._gameplayData.gameState.currPlayerId == _self._yourUserId) {
+				_self.destroyCardAnimationYou.call(_self, card, _self.waitForEnemyActions.bind(_self));
+			} else {
+				_self.destroyCardAnimationEnemy.call(_self, card, _self.waitForEnemyActions.bind(_self));
+			}
+
 			return;
 		}
 	} else if (playerStateEnemy.cardsToDraw > 0) {
@@ -3973,7 +3992,13 @@ gameController.prototype.waitForEnemyActions = function () {
 	} else if (_self._postDestroyCard) {
 		var card = _self._postDestroyCard;
 		_self._postDestroyCard = null;
-		_self.destroyCardAnimationEnemy.call(_self, card);
+
+		if (_self._gameplayData.gameState.currPlayerId == _self._yourUserId) {
+			_self.destroyCardAnimationYou.call(_self, card);
+		} else {
+			_self.destroyCardAnimationEnemy.call(_self, card);
+		}
+
 		setTimeout(_self.waitForEnemyActions.bind(_self));
 	} else {
 		if (_self._gameplayData.gameState.nextPhase != _self.TURN_PHASES.STANDBY
